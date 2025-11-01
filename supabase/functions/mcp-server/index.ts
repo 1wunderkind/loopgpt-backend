@@ -42,6 +42,55 @@ function loadManifest() {
 }
 
 // ============================================================================
+// Deprecated Tool Redirects (Taxonomy v2)
+// ============================================================================
+
+const DEPRECATED_REDIRECTS: Record<string, string> = {
+  "set_weight_goal": "user_set_weight_goal",
+  "tracker_set_goals": "user_set_weight_goal",
+  "get_user_profile": "user_get_profile",
+  "update_diet_preferences": "user_update_diet_preferences",
+  "create_meal_plan": "plan_create_meal_plan",
+  "generate_recipes": "plan_generate_from_leftovers",
+  "random_meal": "plan_random_meal",
+  "nutrition_analyze": "nutrition_analyze_food",
+  "get_weight_history": "tracker_get_progress",
+  "get_weight_trend": "tracker_get_progress",
+  "order_meal_delivery": "delivery_place_order",
+  "mealme_search": "delivery_search_restaurants"
+};
+
+/**
+ * Handles deprecated tool names by redirecting to new names
+ * Logs usage for sunset tracking
+ */
+async function handleDeprecatedTool(oldName: string, supabase: any): Promise<string | null> {
+  const newName = DEPRECATED_REDIRECTS[oldName];
+  
+  if (newName) {
+    console.warn(`[DEPRECATED] Tool '${oldName}' redirected to '${newName}'`);
+    
+    // Log to tool_choice_log for sunset tracking
+    try {
+      await supabase
+        .from("tool_choice_log")
+        .insert({
+          input_query: `[DEPRECATED_ALIAS] ${oldName}`,
+          chosen_tool: newName,
+          confidence: 1.0,
+          timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+      console.error("Failed to log deprecated tool usage:", error);
+    }
+    
+    return newName;
+  }
+  
+  return null;
+}
+
+// ============================================================================
 // Validation Utilities
 // ============================================================================
 
@@ -203,7 +252,13 @@ serve(async (req: Request) => {
   const toolMatch = url.pathname.match(/\/tools\/([\w_]+)$/);
   
   if (req.method === "POST" && toolMatch) {
-    const toolName = toolMatch[1];
+    let toolName = toolMatch[1];
+    
+    // Handle deprecated tool redirects
+    const redirectedName = await handleDeprecatedTool(toolName, supabase);
+    if (redirectedName) {
+      toolName = redirectedName;
+    }
     const startTime = performance.now();
     
     try {
