@@ -1087,6 +1087,131 @@
           }
         }
       }
+    },
+    {
+      "name": "upgrade_to_premium",
+      "category": "Billing & Subscriptions",
+      "description": "Initiates the premium upgrade flow by sending a magic link to the user's email. User clicks the link to complete payment via Stripe. Includes 7-day free trial.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "Unique user identifier from ChatGPT"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email address for magic link"
+          },
+          "plan": {
+            "type": "string",
+            "enum": ["monthly", "annual", "family"],
+            "description": "Subscription plan type",
+            "default": "monthly"
+          }
+        },
+        "required": ["chatgpt_user_id", "email"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "magic_link_sent": {
+            "type": "boolean"
+          },
+          "plan": {
+            "type": "string"
+          },
+          "plan_price": {
+            "type": "string"
+          },
+          "trial_period": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "check_subscription_status",
+      "category": "Billing & Subscriptions",
+      "description": "Checks the user's current subscription status, tier, trial status, and remaining credits. Returns upgrade URL if not premium.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "Unique user identifier"
+          }
+        },
+        "required": ["chatgpt_user_id"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "has_access": {
+            "type": "boolean"
+          },
+          "tier": {
+            "type": "string",
+            "enum": ["free", "premium", "family"]
+          },
+          "status": {
+            "type": "string"
+          },
+          "trial_active": {
+            "type": "boolean"
+          },
+          "trial_days_remaining": {
+            "type": "number"
+          },
+          "renewal_date": {
+            "type": "string"
+          },
+          "credits": {
+            "type": "number"
+          },
+          "upgrade_url": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "manage_billing",
+      "category": "Billing & Subscriptions",
+      "description": "Generates a Stripe Customer Portal link for users to manage their subscription, update payment methods, view invoices, and cancel if needed.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "Unique user identifier"
+          }
+        },
+        "required": ["chatgpt_user_id"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "portal_url": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
     }
   ]
 }
