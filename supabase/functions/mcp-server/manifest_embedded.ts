@@ -1289,6 +1289,278 @@ export const MANIFEST =
           }
         }
       }
+    },
+    {
+      "name": "tracker_log_food",
+      "category": "Calorie Tracking",
+      "description": "Log food intake with detailed nutrition tracking. Searches the food database (107+ foods), calculates macros, updates daily summary, and maintains streak tracking. Supports custom foods and meal categorization (breakfast, lunch, dinner, snack).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "ChatGPT user ID for tracking"
+          },
+          "food_name": {
+            "type": "string",
+            "description": "Name of the food to log (e.g., 'Chicken Breast', 'Apple', 'Pizza')"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity of food consumed",
+            "minimum": 0
+          },
+          "quantity_unit": {
+            "type": "string",
+            "description": "Unit of measurement: g, kg, ml, cup, tbsp, tsp, oz, lb, piece, slice, serving",
+            "default": "g"
+          },
+          "meal_type": {
+            "type": "string",
+            "enum": ["breakfast", "lunch", "dinner", "snack"],
+            "description": "Type of meal",
+            "default": "snack"
+          },
+          "log_date": {
+            "type": "string",
+            "description": "Date to log (YYYY-MM-DD format). Defaults to today if not provided."
+          }
+        },
+        "required": ["chatgpt_user_id", "food_name", "quantity"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "message": {"type": "string"},
+          "log_entry": {
+            "type": "object",
+            "properties": {
+              "food_name": {"type": "string"},
+              "calories": {"type": "integer"},
+              "protein_g": {"type": "number"},
+              "carbs_g": {"type": "number"},
+              "fat_g": {"type": "number"},
+              "meal_type": {"type": "string"}
+            }
+          },
+          "daily_progress": {
+            "type": "object",
+            "properties": {
+              "calories_consumed": {"type": "integer"},
+              "calories_remaining": {"type": "integer"},
+              "protein_consumed_g": {"type": "number"},
+              "current_streak_days": {"type": "integer"}
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "tracker_get_daily_summary",
+      "category": "Calorie Tracking",
+      "description": "Get comprehensive daily nutrition summary with progress tracking, meal breakdown, streak stats, and personalized insights. Shows calories, macros (protein, carbs, fat, fiber), progress toward goals, and all food logs for the day.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "ChatGPT user ID"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date for summary (YYYY-MM-DD format). Defaults to today if not provided."
+          }
+        },
+        "required": ["chatgpt_user_id"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "date": {"type": "string"},
+          "summary": {
+            "type": "object",
+            "properties": {
+              "calories": {
+                "type": "object",
+                "properties": {
+                  "consumed": {"type": "integer"},
+                  "target": {"type": "integer"},
+                  "remaining": {"type": "integer"},
+                  "progress_percent": {"type": "integer"}
+                }
+              },
+              "protein": {
+                "type": "object",
+                "properties": {
+                  "consumed_g": {"type": "number"},
+                  "target_g": {"type": "integer"},
+                  "remaining_g": {"type": "number"},
+                  "progress_percent": {"type": "integer"}
+                }
+              }
+            }
+          },
+          "stats": {
+            "type": "object",
+            "properties": {
+              "current_streak_days": {"type": "integer"},
+              "longest_streak_days": {"type": "integer"},
+              "total_days_logged": {"type": "integer"}
+            }
+          },
+          "insights": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Personalized insights and recommendations"
+          }
+        }
+      }
+    },
+    {
+      "name": "tracker_set_goals",
+      "category": "Calorie Tracking",
+      "description": "Set or update nutrition goals and user profile. Supports automatic macro calculation based on weight, height, age, activity level, and goal type (weight loss, muscle gain, maintenance). Creates personalized daily targets for calories, protein, carbs, and fat.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "ChatGPT user ID"
+          },
+          "age": {
+            "type": "integer",
+            "description": "Age in years",
+            "minimum": 13,
+            "maximum": 120
+          },
+          "height_cm": {
+            "type": "integer",
+            "description": "Height in centimeters",
+            "minimum": 100,
+            "maximum": 250
+          },
+          "weight_kg": {
+            "type": "number",
+            "description": "Weight in kilograms",
+            "minimum": 30,
+            "maximum": 300
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["male", "female", "other"],
+            "description": "Gender for BMR calculation"
+          },
+          "activity_level": {
+            "type": "string",
+            "enum": ["sedentary", "light", "moderate", "active", "very_active"],
+            "description": "Physical activity level"
+          },
+          "goal_type": {
+            "type": "string",
+            "enum": ["weight_loss", "muscle_gain", "maintenance", "health"],
+            "description": "Primary fitness goal"
+          },
+          "daily_calorie_target": {
+            "type": "integer",
+            "description": "Manual daily calorie target (overrides auto-calculation)",
+            "minimum": 1000,
+            "maximum": 5000
+          },
+          "daily_protein_target_g": {
+            "type": "integer",
+            "description": "Manual daily protein target in grams",
+            "minimum": 50,
+            "maximum": 400
+          }
+        },
+        "required": ["chatgpt_user_id"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "message": {"type": "string"},
+          "user": {
+            "type": "object",
+            "properties": {
+              "chatgpt_user_id": {"type": "string"},
+              "age": {"type": "integer"},
+              "weight_kg": {"type": "number"},
+              "goal_type": {"type": "string"},
+              "daily_targets": {
+                "type": "object",
+                "properties": {
+                  "calories": {"type": "integer"},
+                  "protein_g": {"type": "integer"},
+                  "carbs_g": {"type": "integer"},
+                  "fat_g": {"type": "integer"}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "tracker_quick_add_calories",
+      "category": "Calorie Tracking",
+      "description": "Quickly log calories without detailed food information. Perfect for when you know the calorie count but don't want to search for specific foods. Automatically estimates macros and updates daily summary and streak tracking.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "ChatGPT user ID"
+          },
+          "calories": {
+            "type": "integer",
+            "description": "Number of calories to log",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "meal_type": {
+            "type": "string",
+            "enum": ["breakfast", "lunch", "dinner", "snack"],
+            "description": "Type of meal",
+            "default": "snack"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of what you ate",
+            "default": "Quick add"
+          },
+          "log_date": {
+            "type": "string",
+            "description": "Date to log (YYYY-MM-DD format). Defaults to today."
+          }
+        },
+        "required": ["chatgpt_user_id", "calories"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "message": {"type": "string"},
+          "log_entry": {
+            "type": "object",
+            "properties": {
+              "description": {"type": "string"},
+              "calories": {"type": "integer"},
+              "meal_type": {"type": "string"},
+              "estimated_macros": {
+                "type": "object",
+                "properties": {
+                  "protein_g": {"type": "integer"},
+                  "carbs_g": {"type": "integer"},
+                  "fat_g": {"type": "integer"}
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }
