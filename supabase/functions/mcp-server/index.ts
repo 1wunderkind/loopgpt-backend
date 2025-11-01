@@ -16,6 +16,7 @@
 
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { MANIFEST } from "./manifest_embedded.ts";
 
 // ============================================================================
 // Environment Configuration
@@ -35,22 +36,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Manifest Loading
 // ============================================================================
 
-let manifestCache: any = null;
-
-async function loadManifest() {
-  if (manifestCache) {
-    return manifestCache;
-  }
-  
-  try {
-    const manifestPath = new URL("../../manifest.json", import.meta.url).pathname;
-    const manifestText = await Deno.readTextFile(manifestPath);
-    manifestCache = JSON.parse(manifestText);
-    return manifestCache;
-  } catch (error) {
-    console.error("Failed to load manifest.json:", error);
-    throw new Error("Manifest file not found or invalid");
-  }
+// Use embedded manifest instead of loading from file
+function loadManifest() {
+  return Promise.resolve(MANIFEST);
 }
 
 // ============================================================================
@@ -169,15 +157,18 @@ const corsHeaders = {
 serve(async (req: Request) => {
   const url = new URL(req.url);
   
+  // Debug logging
+  console.log(`[MCP] ${req.method} ${url.pathname}`);
+  
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
   
   // ========================================================================
-  // ROUTE 1: Manifest Endpoint (GET /)
+  // ROUTE 1: Manifest Endpoint (GET / or GET /mcp-server)
   // ========================================================================
-  if (req.method === "GET" && url.pathname === "/") {
+  if (req.method === "GET" && (url.pathname === "/" || url.pathname === "" || !url.pathname.includes("/tools/"))) {
     try {
       const manifest = await loadManifest();
       return new Response(JSON.stringify(manifest, null, 2), {
@@ -203,9 +194,9 @@ serve(async (req: Request) => {
   }
   
   // ========================================================================
-  // ROUTE 2: Tool Execution (POST /tools/:tool_name)
+  // ROUTE 2: Tool Execution (POST /tools/:tool_name or POST /mcp-server/tools/:tool_name)
   // ========================================================================
-  const toolMatch = url.pathname.match(/^\/tools\/([\w-]+)$/);
+  const toolMatch = url.pathname.match(/\/tools\/([\w_]+)$/);
   
   if (req.method === "POST" && toolMatch) {
     const toolName = toolMatch[1];
