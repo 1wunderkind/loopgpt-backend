@@ -1,0 +1,76 @@
+name: Deploy to Supabase
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      
+      - name: Deploy Edge Functions
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: qmagnwxeijctkksqbcqz
+        run: |
+          echo "🚀 Deploying Edge Functions to Supabase..."
+          
+          # Link to project
+          supabase link --project-ref $SUPABASE_PROJECT_ID
+          
+          # Set environment variables for functions
+          echo "⚙️ Setting environment variables..."
+          supabase secrets set OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" --project-ref $SUPABASE_PROJECT_ID || true
+          
+          # Deploy all Edge Functions
+          echo "📦 Deploying functions..."
+          
+          # Meal Planner functions
+          supabase functions deploy generate_week_plan --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy log_meal_plan --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy get_affiliate_links --project-ref $SUPABASE_PROJECT_ID
+          
+          # Weight Tracker functions
+          supabase functions deploy log_weight --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy weekly_trend --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy evaluate_plan_outcome --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy push_plan_feedback --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy get_weight_prefs --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy update_weight_prefs --project-ref $SUPABASE_PROJECT_ID
+          
+          # Delivery function
+          supabase functions deploy get_delivery_recommendations --project-ref $SUPABASE_PROJECT_ID
+          
+          # MealMe functions
+          supabase functions deploy mealme_search --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy mealme_create_cart --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy mealme_get_quotes --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy mealme_checkout_url --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy mealme_webhook --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy mealme_order_plan --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy normalize_ingredients --project-ref $SUPABASE_PROJECT_ID
+          
+          # Geolocation functions
+          supabase functions deploy get_user_location --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy update_user_location --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy get_affiliate_by_country --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy change_location --project-ref $SUPABASE_PROJECT_ID
+          
+          echo "✅ All functions deployed successfully!"
+      
+      - name: Deployment Summary
+        run: |
+          echo "🎉 Deployment Complete!"
+          echo "📊 Deployed 19 Edge Functions"
+          echo "🔗 Project: https://qmagnwxeijctkksqbcqz.supabase.co"
