@@ -98,43 +98,9 @@
       }
     },
     {
-      "name": "user_get_goals",
-      "category": "User Profile & Goals",
-      "description": "Use when you need to retrieve the list of currently active user goals (weight, calories, macros). This is a read-only tool for checking what goals are set.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "description": "Unique user identifier"
-          }
-        },
-        "required": [
-          "user_id"
-        ]
-      }
-    },
-    {
-      "name": "user_reset_profile",
-      "category": "User Profile & Goals",
-      "description": "Use when the user says 'start over', 'reset everything', or 'clear my profile'. This resets all stored goals and diet preferences so the user can begin fresh.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "description": "Unique user identifier"
-          }
-        },
-        "required": [
-          "user_id"
-        ]
-      }
-    },
-    {
       "name": "plan_create_meal_plan",
       "category": "Meal Planning",
-      "description": "Use when a user asks for a daily or weekly meal plan such as 'Make me a 7-day plan', 'I need a meal plan for this week', or 'Create a diet plan for me'. This generates a complete plan aligned with the user's active goals. Call ONLY AFTER a goal has been set with user_set_weight_goal.",
+      "description": "Use when a user asks for a daily or weekly meal plan such as 'Make me a 7-day plan', 'I need a meal plan for this week', or 'Create a diet plan for me'. This generates a complete plan aligned with the user's active goals. Use only after user_set_weight_goal or when an explicit calorie target is provided.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -231,33 +197,6 @@
         "required": [
           "user_id",
           "meal_type"
-        ]
-      }
-    },
-    {
-      "name": "plan_customize_meal_plan",
-      "category": "Meal Planning",
-      "description": "Use when the user wants to modify an existing plan with feedback such as 'Add more protein', 'Swap dinner 2 for something else', or 'Make it less spicy'. This is a mutation tool that edits active plans.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "description": "Unique user identifier"
-          },
-          "plan_id": {
-            "type": "string",
-            "description": "Plan identifier to customize"
-          },
-          "instructions": {
-            "type": "string",
-            "description": "Natural language modification instructions"
-          }
-        },
-        "required": [
-          "user_id",
-          "plan_id",
-          "instructions"
         ]
       }
     },
@@ -467,7 +406,7 @@
     {
       "name": "tracker_summary",
       "category": "Tracking & Progress",
-      "description": "Use when the user asks 'How am I doing?', 'Show my progress', or 'Weekly summary'. This aggregates macros, adherence, and goal progress for a specified period.",
+      "description": "Use when the user asks 'How am I doing?', 'Show my progress', or 'Weekly summary'. This aggregates macros, adherence, and goal progress for a specified period. Prefer tracker_summary for 'How am I doing?'; use loop_evaluate_plan only when the user mentions comparing plan vs actuals.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -494,7 +433,7 @@
     {
       "name": "loop_evaluate_plan",
       "category": "Feedback Loop",
-      "description": "Use when the user asks 'Did I follow the plan?', 'How well did I do?', or 'Evaluate my adherence'. This compares the active plan versus actual tracking data to measure compliance.",
+      "description": "Use when the user asks 'Did I follow the plan?', 'How well did I do?', or 'Evaluate my adherence'. This compares the active plan versus actual tracking data to measure compliance. Use only when the user mentions comparing plan vs actuals.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -520,7 +459,7 @@
     {
       "name": "loop_adjust_calories",
       "category": "Feedback Loop",
-      "description": "Use when the user says 'Adjust my meals', 'I didn't lose enough weight', or 'Increase my calories'. This modifies the calorie target or macros for future plans based on results.",
+      "description": "Use when the user says 'Adjust my meals', 'I didn't lose enough weight', or 'Increase my calories'. This modifies the calorie target or macros for future plans based on results. Use after loop_evaluate_plan or when the user explicitly asks to change targets.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -543,28 +482,6 @@
       }
     },
     {
-      "name": "loop_generate_feedback_report",
-      "category": "Feedback Loop",
-      "description": "Use when you need to create a summarized AI feedback report for the user such as 'You hit 85% consistency this week'. This generates human-readable narrative feedback.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "description": "Unique user identifier"
-          },
-          "period": {
-            "type": "string",
-            "description": "Period to summarize (week, month)"
-          }
-        },
-        "required": [
-          "user_id",
-          "period"
-        ]
-      }
-    },
-    {
       "name": "loop_predict_outcome",
       "category": "Feedback Loop",
       "description": "Use when the user asks 'What will I weigh in 2 weeks?', 'Predict my progress', or 'When will I reach my goal?'. This forecasts future progress based on current trend.",
@@ -583,23 +500,6 @@
         "required": [
           "user_id",
           "days_ahead"
-        ]
-      }
-    },
-    {
-      "name": "loop_reset_cycle",
-      "category": "Feedback Loop",
-      "description": "Use when starting a new evaluation cycle. This resets weekly loop data and begins a fresh feedback period.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "description": "Unique user identifier"
-          }
-        },
-        "required": [
-          "user_id"
         ]
       }
     },
@@ -630,7 +530,7 @@
     {
       "name": "delivery_get_menu",
       "category": "Delivery & Integrations",
-      "description": "Use to fetch the menu for a given restaurant ID. This is a supporting data helper tool.",
+      "description": "Supporting tool. Only call when another tool's output requests a menu fetch. Use to fetch the menu for a given restaurant ID.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -672,26 +572,9 @@
       }
     },
     {
-      "name": "delivery_track_order",
-      "category": "Delivery & Integrations",
-      "description": "Use to check delivery status for a previously placed order. This is an optional B2C tool.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "order_id": {
-            "type": "string",
-            "description": "Order identifier from place_order"
-          }
-        },
-        "required": [
-          "order_id"
-        ]
-      }
-    },
-    {
       "name": "sys_get_help",
       "category": "System & Support",
-      "description": "Use when the user asks 'What can you do?', 'List all tools', or 'Help me understand your features'. This provides a developer-facing tool list with usage examples.",
+      "description": "Developer-only; do not call in normal user flows. Use when the user asks 'What can you do?', 'List all tools', or 'Help me understand your features'. This provides a developer-facing tool list with usage examples.",
       "input_schema": {
         "type": "object",
         "properties": {}
@@ -700,7 +583,7 @@
     {
       "name": "sys_healthcheck",
       "category": "System & Support",
-      "description": "Use for monitoring or debugging. Returns system status, active manifest version, and database checksum.",
+      "description": "Developer-only; do not call in normal user flows. Use for monitoring or debugging. Returns system status, active manifest version, and database checksum.",
       "input_schema": {
         "type": "object",
         "properties": {}
@@ -709,7 +592,7 @@
     {
       "name": "sys_debug_tool_choice_log",
       "category": "System & Support",
-      "description": "Use to log tool-selection context for QA and routing accuracy analysis. This is a dev-only tool that tracks which tool was chosen and why.",
+      "description": "Developer-only; do not call in normal user flows. Use to log tool-selection context for QA and routing accuracy analysis. This is a dev-only tool that tracks which tool was chosen and why.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -733,6 +616,17 @@
       }
     },
     {
+      "name": "set_weight_goal",
+      "category": "Deprecated",
+      "description": "[DEPRECATED] Alias for user_set_weight_goal. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
+      "redirect_to": "user_set_weight_goal",
+      "deprecated": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "tracker_set_goals",
       "category": "Deprecated",
       "description": "[DEPRECATED] Alias for user_set_weight_goal. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
@@ -744,18 +638,7 @@
       }
     },
     {
-      "name": "tracker_quick_add_calories",
-      "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for tracker_log_meal. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "tracker_log_meal",
-      "deprecated": true,
-      "input_schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "get_weight_prefs",
+      "name": "get_user_profile",
       "category": "Deprecated",
       "description": "[DEPRECATED] Alias for user_get_profile. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
       "redirect_to": "user_get_profile",
@@ -766,7 +649,7 @@
       }
     },
     {
-      "name": "update_weight_prefs",
+      "name": "update_diet_preferences",
       "category": "Deprecated",
       "description": "[DEPRECATED] Alias for user_update_diet_preferences. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
       "redirect_to": "user_update_diet_preferences",
@@ -777,7 +660,7 @@
       }
     },
     {
-      "name": "generate_week_plan",
+      "name": "create_meal_plan",
       "category": "Deprecated",
       "description": "[DEPRECATED] Alias for plan_create_meal_plan. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
       "redirect_to": "plan_create_meal_plan",
@@ -788,7 +671,7 @@
       }
     },
     {
-      "name": "recipes_creative_recipe",
+      "name": "generate_recipes",
       "category": "Deprecated",
       "description": "[DEPRECATED] Alias for plan_generate_from_leftovers. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
       "redirect_to": "plan_generate_from_leftovers",
@@ -799,10 +682,10 @@
       }
     },
     {
-      "name": "log_meal_plan",
+      "name": "random_meal",
       "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for plan_get_active_plan. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "plan_get_active_plan",
+      "description": "[DEPRECATED] Alias for plan_random_meal. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
+      "redirect_to": "plan_random_meal",
       "deprecated": true,
       "input_schema": {
         "type": "object",
@@ -821,40 +704,7 @@
       }
     },
     {
-      "name": "normalize_ingredients",
-      "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for nutrition_get_macros. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "nutrition_get_macros",
-      "deprecated": true,
-      "input_schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "tracker_log_food",
-      "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for tracker_log_meal. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "tracker_log_meal",
-      "deprecated": true,
-      "input_schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "log_weight",
-      "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for tracker_log_weight. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "tracker_log_weight",
-      "deprecated": true,
-      "input_schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "weekly_trend",
+      "name": "get_weight_history",
       "category": "Deprecated",
       "description": "[DEPRECATED] Alias for tracker_get_progress. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
       "redirect_to": "tracker_get_progress",
@@ -865,10 +715,10 @@
       }
     },
     {
-      "name": "tracker_get_daily_summary",
+      "name": "get_weight_trend",
       "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for tracker_summary. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "tracker_summary",
+      "description": "[DEPRECATED] Alias for tracker_get_progress. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
+      "redirect_to": "tracker_get_progress",
       "deprecated": true,
       "input_schema": {
         "type": "object",
@@ -876,21 +726,10 @@
       }
     },
     {
-      "name": "evaluate_plan_outcome",
+      "name": "order_meal_delivery",
       "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for loop_evaluate_plan. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "loop_evaluate_plan",
-      "deprecated": true,
-      "input_schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "push_plan_feedback",
-      "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for loop_adjust_calories. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "loop_adjust_calories",
+      "description": "[DEPRECATED] Alias for delivery_place_order. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
+      "redirect_to": "delivery_place_order",
       "deprecated": true,
       "input_schema": {
         "type": "object",
@@ -902,28 +741,6 @@
       "category": "Deprecated",
       "description": "[DEPRECATED] Alias for delivery_search_restaurants. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
       "redirect_to": "delivery_search_restaurants",
-      "deprecated": true,
-      "input_schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "get_delivery_recommendations",
-      "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for delivery_get_menu. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "delivery_get_menu",
-      "deprecated": true,
-      "input_schema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "mealme_order_plan",
-      "category": "Deprecated",
-      "description": "[DEPRECATED] Alias for delivery_place_order. Use only if legacy code still calls this name. Will be removed in v2.1.0.",
-      "redirect_to": "delivery_place_order",
       "deprecated": true,
       "input_schema": {
         "type": "object",
