@@ -3,9 +3,11 @@
 // =====================================================
 // Migrated from: K-Cal GPT
 // Function: Log food intake with automatic nutrition calculation
+// Updated: Integrated with 1,000-food resolver (Nov 2025)
 // =====================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { lookupFoodForTracker, convertToGrams } from '../../lib/tracker_food_integration.ts'
 
 interface LogFoodRequest {
   chatgpt_user_id: string
@@ -74,13 +76,8 @@ Deno.serve(async (req) => {
       user = newUser
     }
 
-    // Look up food in database
-    const { data: foodData, error: foodError } = await supabaseClient
-      .from('tracker_foods')
-      .select('*')
-      .ilike('name', `%${food_name}%`)
-      .limit(1)
-      .single()
+    // Look up food using resolver (with database fallback)
+    const foodLookup = await lookupFoodForTracker(food_name, user.id)
 
     let calories = 0
     let protein_g = 0
@@ -88,19 +85,20 @@ Deno.serve(async (req) => {
     let fat_g = 0
     let fiber_g = 0
     let sugar_g = 0
-    let food_id = null
+    let food_id = foodLookup.food_id
 
-    if (foodData) {
+    if (foodLookup.source !== 'not_found') {
       // Calculate nutrition based on quantity
-      food_id = foodData.id
       const multiplier = convertToGrams(quantity, quantity_unit) / 100
 
-      calories = Math.round(foodData.calories_per_100g * multiplier)
-      protein_g = parseFloat((foodData.protein_per_100g * multiplier).toFixed(1))
-      carbs_g = parseFloat((foodData.carbs_per_100g * multiplier).toFixed(1))
-      fat_g = parseFloat((foodData.fat_per_100g * multiplier).toFixed(1))
-      fiber_g = parseFloat((foodData.fiber_per_100g * multiplier).toFixed(1))
-      sugar_g = parseFloat((foodData.sugar_per_100g * multiplier).toFixed(1))
+      calories = Math.round(foodLookup.calories_per_100g * multiplier)
+      protein_g = parseFloat((foodLookup.protein_per_100g * multiplier).toFixed(1))
+      carbs_g = parseFloat((foodLookup.carbs_per_100g * multiplier).toFixed(1))
+      fat_g = parseFloat((foodLookup.fat_per_100g * multiplier).toFixed(1))
+      fiber_g = parseFloat((foodLookup.fiber_per_100g * multiplier).toFixed(1))
+      sugar_g = parseFloat((foodLookup.sugar_per_100g * multiplier).toFixed(1))
+      
+      console.log(`✅ Food found via ${foodLookup.source}: ${food_name}`);
     } else {
       // Estimate using simple heuristics (fallback)
       const grams = convertToGrams(quantity, quantity_unit)
@@ -108,6 +106,8 @@ Deno.serve(async (req) => {
       protein_g = parseFloat((grams * 0.1).toFixed(1))
       carbs_g = parseFloat((grams * 0.3).toFixed(1))
       fat_g = parseFloat((grams * 0.05).toFixed(1))
+      
+      console.warn(`⚠️  Food not found, using estimates: ${food_name}`);
     }
 
     // Determine log date
@@ -180,30 +180,7 @@ Deno.serve(async (req) => {
 // =====================================================
 // HELPER FUNCTIONS
 // =====================================================
-
-function convertToGrams(quantity: number, unit: string): number {
-  const unitLower = unit.toLowerCase()
-  
-  // Weight units
-  if (unitLower === 'g' || unitLower === 'gram' || unitLower === 'grams') return quantity
-  if (unitLower === 'kg' || unitLower === 'kilogram' || unitLower === 'kilograms') return quantity * 1000
-  if (unitLower === 'oz' || unitLower === 'ounce' || unitLower === 'ounces') return quantity * 28.35
-  if (unitLower === 'lb' || unitLower === 'pound' || unitLower === 'pounds') return quantity * 453.59
-  
-  // Volume units (approximate for food)
-  if (unitLower === 'ml' || unitLower === 'milliliter' || unitLower === 'milliliters') return quantity
-  if (unitLower === 'l' || unitLower === 'liter' || unitLower === 'liters') return quantity * 1000
-  if (unitLower === 'cup' || unitLower === 'cups') return quantity * 240
-  if (unitLower === 'tbsp' || unitLower === 'tablespoon' || unitLower === 'tablespoons') return quantity * 15
-  if (unitLower === 'tsp' || unitLower === 'teaspoon' || unitLower === 'teaspoons') return quantity * 5
-  
-  // Piece/serving units (rough estimates)
-  if (unitLower === 'piece' || unitLower === 'pieces' || unitLower === 'serving' || unitLower === 'servings') return quantity * 100
-  if (unitLower === 'slice' || unitLower === 'slices') return quantity * 30
-  
-  // Default fallback
-  return quantity
-}
+// Note: convertToGrams is now imported from tracker_food_integration.ts
 
 async function updateDailySummary(client: any, userId: string, logDate: string) {
   // Get all logs for this day

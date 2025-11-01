@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "count": 1000,
+  "existing_count": 107,
+  "new_count": 893,
+  "groups": {
+    "fruit": 10,
+    "misc": 68,
+    "fat": 228,
+    "veg": 11,
+    "dairy": 294,
+    "condiment": 60,
+    "meat": 329
+  },
+  "generated_at": "2025-11-01T21:32:55.048Z"
+}
