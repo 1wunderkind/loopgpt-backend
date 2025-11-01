@@ -9,7 +9,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
-import { formatCountryDisplay, isValidCountryCode, normalizeCountryCode } from "../../../../lib/locationUtils.ts";
+import { formatCountryDisplay, isValidCountryCode, normalizeCountryCode } from "../_lib/locationUtils.ts";
 
 interface ChangeLocationRequest {
   chatgpt_user_id: string;

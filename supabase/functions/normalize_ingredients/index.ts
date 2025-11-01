@@ -11,7 +11,7 @@ import {
   groupIngredients, 
   toMealMeCartItems,
   validateIngredients,
-} from "../../../lib/ingredientNormalizer.ts";
+} from "../_lib/ingredientNormalizer.ts";
 
 interface NormalizeRequest {
   ingredients: string[];

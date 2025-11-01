@@ -12,14 +12,14 @@ import {
   ErrorCodes,
 } from "../../middleware/errorHandler.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../../../../lib/deliveryAffiliate.ts";
-import { rankPartners, suggestAlternativeCuisines } from "../../../../lib/deliveryMatcher.ts";
+import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../_lib/deliveryAffiliate.ts";
+import { rankPartners, suggestAlternativeCuisines } from "../_lib/deliveryMatcher.ts";
 import type {
   GetDeliveryRecommendationsRequest,
   GetDeliveryRecommendationsResponse,
   DeliveryPartner,
   DeliveryMatchCriteria,
-} from "../../../../lib/types.ts";
+} from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {

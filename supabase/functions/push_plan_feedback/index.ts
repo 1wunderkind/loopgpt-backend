@@ -15,7 +15,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
-import { formatFeedbackConfirmation } from "../../../lib/weightTrackerMultilingual.ts";
+import { formatFeedbackConfirmation } from "../_lib/weightTrackerMultilingual.ts";
 
 interface PushPlanFeedbackRequest {
   chatgpt_user_id: string;

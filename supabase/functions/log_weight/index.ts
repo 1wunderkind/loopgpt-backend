@@ -17,7 +17,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
-import { formatWeightLogConfirmation } from "../../../lib/weightTrackerMultilingual.ts";
+import { formatWeightLogConfirmation } from "../_lib/weightTrackerMultilingual.ts";
 
 interface LogWeightRequest {
   chatgpt_user_id: string;

@@ -7,17 +7,17 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
-import { getKCalGoals, getRecipesFromLeftover, getMacrosFromNutrition } from "../../../../lib/mcpWrappers.ts";
-import { buildAffiliateLinks, generateAffiliateSummary } from "../../../../lib/affiliate.ts";
-import { formatMealPlan, detectLanguage } from "../../../../lib/multilingual.ts";
+import { getKCalGoals, getRecipesFromLeftover, getMacrosFromNutrition } from "../_lib/mcpWrappers.ts";
+import { buildAffiliateLinks, generateAffiliateSummary } from "../_lib/affiliate.ts";
+import { formatMealPlan, detectLanguage } from "../_lib/multilingual.ts";
 import { 
   formatCountryDisplay, 
   needsLocationConfirmation, 
   generateLocationConfirmationPrompt,
   getAlternativeCountries,
   calculateLocationConfidence 
-} from "../../../../lib/locationUtils.ts";
-import type { GenerateWeekPlanRequest, GenerateWeekPlanResponse } from "../../../../lib/types.ts";
+} from "../_lib/locationUtils.ts";
+import type { GenerateWeekPlanRequest, GenerateWeekPlanResponse } from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {
