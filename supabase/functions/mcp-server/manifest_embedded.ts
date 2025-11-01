@@ -1183,6 +1183,112 @@ export const MANIFEST =
           }
         }
       }
+    },
+    {
+      "name": "nutrition_analyze",
+      "category": "Nutrition Analysis",
+      "description": "Analyzes a recipe and returns comprehensive nutritional information including macros (calories, protein, carbs, fat, fiber, sugar, sodium), micronutrients (vitamins, minerals), diet tags (vegan, keto, gluten-free, etc.), and confidence scoring. Supports 40+ common ingredients with USDA-based nutrition data. Automatically responds in the same language as the recipe name and ingredients. Perfect for meal planning, diet tracking, and understanding nutritional content.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "recipeName": {
+            "type": "string",
+            "description": "Name of the recipe to analyze (in any language, e.g., 'Chicken Stir Fry', '鸡肉炒饭', 'Pollo Salteado')"
+          },
+          "servings": {
+            "type": "integer",
+            "description": "Number of servings the recipe makes",
+            "minimum": 1
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Ingredient name in any language (e.g., 'chicken breast', '鸡胸肉', 'pechuga de pollo')"
+                },
+                "quantity": {
+                  "type": "number",
+                  "description": "Quantity of the ingredient",
+                  "minimum": 0
+                },
+                "unit": {
+                  "type": "string",
+                  "description": "Unit of measurement: g (grams), kg (kilograms), ml (milliliters), cup, tbsp (tablespoon), tsp (teaspoon), oz (ounce), lb (pound), piece, slice, whole, or localized units"
+                }
+              },
+              "required": ["name", "quantity", "unit"]
+            },
+            "description": "List of ingredients with quantities and units"
+          },
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "ChatGPT user ID for personalized healthy delivery recommendations (optional)"
+          }
+        },
+        "required": ["recipeName", "servings", "ingredients"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "nutrition_markdown": {
+            "type": "string",
+            "description": "Fully formatted nutrition analysis in markdown, presented in the same language as the recipe name. Includes per-serving and total nutrition, micronutrients, diet tags, and confidence level."
+          },
+          "nutrition_data": {
+            "type": "object",
+            "description": "Structured nutrition data",
+            "properties": {
+              "perServingNutrition": {
+                "type": "object",
+                "properties": {
+                  "calories": {"type": "integer"},
+                  "protein_g": {"type": "number"},
+                  "carbs_g": {"type": "number"},
+                  "fat_g": {"type": "number"},
+                  "fiber_g": {"type": "number"},
+                  "sugar_g": {"type": "number"},
+                  "sodium_mg": {"type": "integer"}
+                }
+              },
+              "totalNutrition": {
+                "type": "object",
+                "description": "Same structure as perServingNutrition"
+              },
+              "micronutrients": {
+                "type": "object",
+                "properties": {
+                  "vitamin_a_mcg": {"type": "integer"},
+                  "vitamin_c_mg": {"type": "integer"},
+                  "vitamin_e_mg": {"type": "number"},
+                  "calcium_mg": {"type": "integer"},
+                  "iron_mg": {"type": "number"},
+                  "potassium_mg": {"type": "integer"}
+                }
+              },
+              "dietTags": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Array of diet tags: vegan, vegetarian, gluten_free, dairy_free, high_protein, high_fiber, low_carb, low_fat, low_sodium, low_sugar, keto_friendly, paleo_friendly"
+              },
+              "confidenceLevel": {
+                "type": "string",
+                "enum": ["high", "medium", "low"],
+                "description": "Confidence level of the nutrition estimate based on ingredient database coverage"
+              },
+              "servings": {
+                "type": "integer"
+              },
+              "insights": {
+                "type": "string",
+                "description": "Analysis notes about data sources and accuracy"
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

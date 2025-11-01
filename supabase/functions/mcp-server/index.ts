@@ -81,7 +81,11 @@ function validateInput(toolName: string, body: any, manifest: any): { valid: boo
       const propSchema = schema.properties[key];
       if (propSchema && propSchema.type) {
         const actualType = Array.isArray(value) ? 'array' : typeof value;
-        if (actualType !== propSchema.type && !(propSchema.type === 'number' && actualType === 'number')) {
+        // Allow integer to be treated as number (JSON doesn't distinguish)
+        const isValidType = actualType === propSchema.type || 
+                           (propSchema.type === 'integer' && actualType === 'number') ||
+                           (propSchema.type === 'number' && actualType === 'number');
+        if (!isValidType) {
           errors.push(`Field '${key}' should be type '${propSchema.type}' but got '${actualType}'`);
         }
       }
