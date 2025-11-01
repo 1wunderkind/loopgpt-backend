@@ -1,0 +1,235 @@
+/**
+ * evaluate_plan_outcome Edge Function
+ * 
+ * Compares planned vs. observed weight change for a week.
+ * Generates bounded calorie adjustment recommendations (±300 kcal/day max).
+ * Stores result in plan_outcomes table.
+ * 
+ * @param {string} chatgpt_user_id - User identifier
+ * @param {string} meal_plan_id - Meal plan UUID (optional)
+ * @param {string} week_start - Week start date (YYYY-MM-DD)
+ * @param {number} target_delta_kg - Expected weekly weight change (negative = loss)
+ * 
+ * @returns {object} { ok: true, observed_delta_kg, prediction_error_kg, recommendation }
+ */
+
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { withLogging } from "../../middleware/logging.ts";
+import { handleError } from "../../middleware/errorHandler.ts";
+
+interface EvaluatePlanOutcomeRequest {
+  chatgpt_user_id: string;
+  meal_plan_id?: string;
+  week_start: string;
+  target_delta_kg: number;
+}
+
+interface Recommendation {
+  type: string;
+  delta_kcal_per_day?: number;
+  message: string;
+  rationale?: string;
+}
+
+async function handler(req: Request): Promise<Response> {
+  try {
+    // Parse request body
+    const body: EvaluatePlanOutcomeRequest = await req.json();
+    const { chatgpt_user_id, meal_plan_id, week_start, target_delta_kg } = body;
+
+    // Validation
+    if (!chatgpt_user_id) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "chatgpt_user_id is required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!week_start) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "week_start is required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (target_delta_kg === undefined || target_delta_kg === null) {
+      return new Response(
+        JSON.stringify({ ok: false, error: "target_delta_kg is required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate date format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(week_start)) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: "week_start must be in YYYY-MM-DD format",
+        }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Create Supabase client
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // Calculate week_end (6 days after week_start)
+    const weekStartDate = new Date(week_start);
+    const weekEndDate = new Date(weekStartDate);
+    weekEndDate.setDate(weekEndDate.getDate() + 6);
+    const week_end = weekEndDate.toISOString().slice(0, 10);
+
+    // Query weight logs for the week
+    const { data, error } = await supabase
+      .from("weight_logs")
+      .select("date, weight_kg")
+      .eq("chatgpt_user_id", chatgpt_user_id)
+      .gte("date", week_start)
+      .lte("date", week_end)
+      .order("date", { ascending: true });
+
+    if (error) {
+      console.error("Database error:", error);
+      return new Response(
+        JSON.stringify({ ok: false, error: error.message }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Check if we have sufficient data (at least 2 data points)
+    if (!data || data.length < 2) {
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: "INSUFFICIENT_DATA",
+          message: "Need at least 2 weight measurements during the week to evaluate",
+          data_points: data?.length || 0,
+        }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Calculate observed weight change (first vs last measurement)
+    const weights = data.map((d) => Number(d.weight_kg));
+    const first_weight = weights[0];
+    const last_weight = weights[weights.length - 1];
+    const observed_delta_kg = Number((last_weight - first_weight).toFixed(2));
+
+    // Calculate prediction error
+    const prediction_error_kg = Number(
+      (observed_delta_kg - target_delta_kg).toFixed(2)
+    );
+
+    // Get user's safe loss rate preference
+    const { data: prefsData } = await supabase
+      .from("weight_prefs")
+      .select("safe_loss_kg_per_week")
+      .eq("chatgpt_user_id", chatgpt_user_id)
+      .single();
+
+    const safe_loss_kg_per_week = prefsData?.safe_loss_kg_per_week || 0.5;
+
+    // Generate recommendation based on prediction error
+    const kcalPerKg = 7700; // Heuristic: 1 kg ≈ 7700 kcal
+    let recommendation: Recommendation;
+
+    // If error is small (within 0.15 kg), maintain current plan
+    if (Math.abs(prediction_error_kg) <= 0.15) {
+      recommendation = {
+        type: "maintain",
+        message: "On target. Keep the same plan.",
+        rationale: `Observed change (${observed_delta_kg} kg) is within 0.15 kg of target (${target_delta_kg} kg).`,
+      };
+    } else {
+      // Calculate raw adjustment
+      let raw_adjustment = Math.round((prediction_error_kg * kcalPerKg) / 7);
+
+      // Cap adjustment to ±300 kcal/day
+      let delta_kcal_per_day = Math.max(-300, Math.min(300, raw_adjustment));
+
+      // Safety check: Don't suggest faster loss than safe rate
+      const max_safe_loss_per_day = safe_loss_kg_per_week / 7;
+      if (observed_delta_kg < -max_safe_loss_per_day * 7) {
+        // Losing too fast, suggest adding calories
+        delta_kcal_per_day = Math.max(delta_kcal_per_day, 100);
+      }
+
+      if (delta_kcal_per_day === 0) {
+        recommendation = {
+          type: "maintain",
+          message: "Adjustment too small. Keep the same plan.",
+          rationale: `Calculated adjustment was ${raw_adjustment} kcal/day, which is negligible.`,
+        };
+      } else if (delta_kcal_per_day < 0) {
+        recommendation = {
+          type: "calorie_adjustment",
+          delta_kcal_per_day,
+          message: `Reduce ~${Math.abs(delta_kcal_per_day)} kcal/day.`,
+          rationale: `Observed loss (${observed_delta_kg} kg) was less than target (${target_delta_kg} kg). Reduce intake to accelerate progress.`,
+        };
+      } else {
+        recommendation = {
+          type: "calorie_adjustment",
+          delta_kcal_per_day,
+          message: `Add ~${delta_kcal_per_day} kcal/day for safety.`,
+          rationale: `Observed loss (${observed_delta_kg} kg) exceeded target (${target_delta_kg} kg). Add calories to slow down for safety.`,
+        };
+      }
+    }
+
+    // Store outcome in plan_outcomes table
+    const { data: outcomeData, error: outcomeError } = await supabase
+      .from("plan_outcomes")
+      .upsert(
+        {
+          chatgpt_user_id,
+          meal_plan_id: meal_plan_id || null,
+          week_start,
+          week_end,
+          target_delta_kg,
+          observed_delta_kg,
+          prediction_error_kg,
+          recommendation,
+          applied: false, // User hasn't applied yet
+        },
+        {
+          onConflict: "chatgpt_user_id,week_start",
+        }
+      )
+      .select()
+      .single();
+
+    if (outcomeError) {
+      console.error("Error storing outcome:", outcomeError);
+      // Don't fail the request, just log the error
+    }
+
+    // Return evaluation result
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        outcome_id: outcomeData?.id,
+        week_start,
+        week_end,
+        target_delta_kg,
+        observed_delta_kg,
+        prediction_error_kg,
+        recommendation,
+        data_points: data.length,
+        safe_loss_kg_per_week,
+        message: recommendation.message,
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+// Export with logging middleware
+export default withLogging(handler);
+

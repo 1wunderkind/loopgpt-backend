@@ -1,0 +1,23 @@
+{
+  "name": "loopgpt-backend",
+  "version": "1.0.0",
+  "description": "TheLoopGPT.ai Supabase Backend - Unified backend for MealPlanner, WeightTracker, and future GPT integrations",
+  "private": true,
+  "scripts": {
+    "deploy": "./scripts/deploy-all.sh",
+    "test": "./scripts/test-functions.sh",
+    "generate-types": "./scripts/generate-types.sh"
+  },
+  "keywords": [
+    "supabase",
+    "meal-planning",
+    "weight-tracking",
+    "mealme",
+    "delivery",
+    "gpt",
+    "ai"
+  ],
+  "author": "TheLoopGPT.ai",
+  "license": "UNLICENSED"
+}
+
