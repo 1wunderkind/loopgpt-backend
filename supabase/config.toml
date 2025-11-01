@@ -23,7 +23,7 @@ max_client_conn = 100
 
 [realtime]
 enabled = true
-ip_version = "ipv4"
+ip_version = "IPv4"
 
 [studio]
 enabled = true
@@ -54,6 +54,6 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
-[edge_functions]
+[functions]
 enabled = true
 
