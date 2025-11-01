@@ -1091,6 +1091,98 @@ export const MANIFEST =
           }
         }
       }
+    },
+    {
+      "name": "recipes_creative_recipe",
+      "category": "Recipe Generation",
+      "description": "Transform random leftover ingredients into creative, hilarious recipes with chaos ratings. Perfect for using random fridge items, reducing food waste, and discovering unexpected flavor combinations. Features chef personalities, dietary restriction support, and shareable recipe cards.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of ingredients you have available. Can be random, mismatched, or unusual combinations."
+          },
+          "dietary_restrictions": {
+            "type": "string",
+            "enum": ["none", "vegan", "vegetarian", "gluten-free", "low-carb", "dairy-free", "nut-free", "keto", "paleo"],
+            "default": "none",
+            "description": "Dietary restrictions: none (no restrictions), vegan (no animal products), vegetarian (no meat/fish), gluten-free (no wheat/gluten), low-carb (minimal carbs), dairy-free (no milk products), nut-free (no nuts), keto (high-fat low-carb), paleo (no grains/dairy/processed foods)"
+          },
+          "vibe": {
+            "type": "string",
+            "enum": ["comfort", "quick", "healthy", "impressive", "chaos", "normal", "surprise-me"],
+            "default": "comfort",
+            "description": "Cooking vibe/mood: comfort = cozy warming comfort food, quick = fast meals under 20 minutes, healthy = nutritious fresh options, impressive = elegant dishes to wow guests, chaos = wild unexpected combinations (maximum chaos/weirdness), normal = balanced everyday meals, surprise-me = random vibe chosen by the chef"
+          },
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "ChatGPT user ID for personalized delivery options (optional)"
+          }
+        },
+        "required": ["ingredients"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "recipe_markdown": {
+            "type": "string",
+            "description": "Fully formatted recipe in markdown with chef personality, chaos rating, ingredients, instructions, and pro tips"
+          },
+          "canva_image_url": {
+            "type": "string",
+            "description": "URL to shareable recipe card image (1080x1920px) generated via Canva"
+          },
+          "recipe_data": {
+            "type": "object",
+            "description": "Structured recipe data",
+            "properties": {
+              "recipe_name": {
+                "type": "string"
+              },
+              "chaos_rating": {
+                "type": "integer",
+                "description": "Chaos rating from 1-10"
+              },
+              "time_minutes": {
+                "type": "integer"
+              },
+              "difficulty": {
+                "type": "string",
+                "enum": ["Easy", "Medium", "Hard"]
+              },
+              "chef_name": {
+                "type": "string",
+                "description": "Chef personality (Jamie Leftover, Paul Leftovuse, or Gordon Leftover-Slay)"
+              },
+              "ingredients_you_have": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ingredients_to_add": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "instructions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "pro_tip": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }
