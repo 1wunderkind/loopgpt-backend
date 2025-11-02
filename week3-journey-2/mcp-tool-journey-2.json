@@ -1,0 +1,65 @@
+{
+  "name": "journey_2_tracking",
+  "description": "Log user's weight and automatically evaluate progress to adjust their meal plan. This is the core 'Loop' feature that makes plans adaptive. Call this tool whenever the user mentions their weight, weighs in, reports progress, or wants to track results. Examples: 'I weighed 165 lbs today', 'My weight is 75kg', 'I lost 2 pounds this week', 'Here's my Monday weigh-in', 'I'm down to 170', 'Scale says 68kg', 'Weighed myself this morning', 'Progress update: 163 lbs'. The tool will: 1) Log the weight, 2) Evaluate progress against goals, 3) Automatically adjust the meal plan if needed, 4) Explain what changed and why, 5) Provide encouragement and next steps. This creates the adaptive feedback loop that sets LoopGPT apart from static diet plans.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "chatgpt_user_id": {
+        "type": "string",
+        "description": "The ChatGPT user's unique identifier"
+      },
+      "weight_kg": {
+        "type": "number",
+        "description": "User's current weight in kilograms (if user provides lbs, convert first or use weight_unit parameter)"
+      },
+      "weight_unit": {
+        "type": "string",
+        "enum": ["kg", "lbs"],
+        "description": "Unit of measurement for the weight. Defaults to 'kg'. If user says 'pounds' or 'lbs', set this to 'lbs'."
+      },
+      "notes": {
+        "type": "string",
+        "description": "Optional notes from the user about their weigh-in (e.g., 'feeling great!', 'after workout', 'morning weigh-in')"
+      }
+    },
+    "required": ["chatgpt_user_id", "weight_kg"]
+  },
+  "trigger_phrases": [
+    "I weighed X lbs today",
+    "My weight is X kg",
+    "I lost X pounds",
+    "I gained X kg",
+    "Scale says X",
+    "Weighed myself this morning",
+    "Monday weigh-in: X lbs",
+    "Progress update",
+    "I'm down to X pounds",
+    "Current weight: X kg",
+    "Weight check: X lbs",
+    "Stepped on the scale",
+    "I'm at X kg now",
+    "Lost X lbs this week",
+    "Gained X kg",
+    "Weight today: X",
+    "Morning weight: X lbs",
+    "I weigh X",
+    "My weight: X kg",
+    "Track my weight",
+    "Log my weight"
+  ],
+  "success_criteria": {
+    "tool_call_success_rate": "80%+",
+    "response_time_ms": "<2000",
+    "plan_adjustment_accuracy": "90%+",
+    "user_understanding": "User clearly understands why plan was adjusted"
+  },
+  "best_practices": [
+    "Always acknowledge the weight log first ('Great! I've recorded your weight')",
+    "Explain progress in simple terms (avoid jargon)",
+    "If adjusting plan, clearly explain WHY",
+    "Celebrate wins, encourage through plateaus",
+    "Remind users to weigh in weekly for best results",
+    "If insufficient data, encourage continued tracking",
+    "Frame adjustments as positive (not failure)"
+  ]
+}
