@@ -1,0 +1,104 @@
+{
+  "name": "friday_takeover_reflection",
+  "description": "Your weekly ritual with LoopGPT. Every Friday, reflect on your week, celebrate wins, acknowledge challenges, and plan for next week. Get a shareable 'Week in Review' card to show off your progress. This is the engagement driver that keeps you coming back and the viral mechanism that brings new users.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "chatgpt_user_id": {
+        "type": "string",
+        "description": "Unique identifier for the ChatGPT user"
+      },
+      "week_number": {
+        "type": "integer",
+        "description": "Week number to review (optional - defaults to current week)"
+      }
+    },
+    "required": ["chatgpt_user_id"]
+  },
+  "trigger_phrases": [
+    "Friday takeover",
+    "weekly reflection",
+    "week in review",
+    "how was my week",
+    "weekly check in",
+    "Friday check in",
+    "reflect on my week",
+    "weekly summary",
+    "this week's progress",
+    "what did I accomplish this week",
+    "review my week",
+    "weekly report",
+    "Friday recap",
+    "week recap",
+    "how did I do this week",
+    "weekly wins",
+    "celebrate my week",
+    "what went well this week",
+    "what were my challenges",
+    "plan for next week",
+    "next week focus",
+    "weekly planning",
+    "Friday ritual",
+    "end of week",
+    "week summary",
+    "weekly update",
+    "Friday update",
+    "this week recap",
+    "share my week",
+    "create week review card"
+  ],
+  "response_format": {
+    "success": true,
+    "week_summary": {
+      "week_number": 6,
+      "weight_change": -0.8,
+      "days_tracked": 6,
+      "meals_logged": 18,
+      "plan_adherence": 85,
+      "biggest_win": "Lost 0.8 kg this week!"
+    },
+    "reflection": {
+      "what_went_well": [
+        "Weight loss of 0.8 kg",
+        "Consistent tracking throughout the week",
+        "Excellent meal logging discipline",
+        "Strong adherence to your plan"
+      ],
+      "challenges": [
+        "Tracking consistency could be improved"
+      ],
+      "lessons_learned": [
+        "Consistency with tracking leads to results",
+        "Regular weigh-ins help maintain accountability"
+      ]
+    },
+    "next_week_plan": {
+      "focus_areas": [
+        "Maintain your current momentum",
+        "Continue tracking consistently"
+      ],
+      "suggested_adjustments": [
+        "Keep doing what you're doing - it's working!"
+      ],
+      "motivation": "Amazing progress! Keep up the great work - you're crushing it! 🔥"
+    },
+    "shareable_card": {
+      "title": "Week 6: Lost 0.8 kg this week!",
+      "preview_text": "Lost 0.8 kg | 6/7 days tracked | 85% adherence",
+      "share_url": "https://loopgpt.app/week-review/xyz789"
+    },
+    "formatted_response": "Markdown-formatted weekly reflection with next week plan",
+    "analytics": {
+      "tool_call_id": "UUID",
+      "duration_ms": 531
+    }
+  },
+  "integration_notes": {
+    "journey_flow": "Journey 7 creates a weekly ritual that drives engagement and retention. Users look forward to Friday Takeover as a moment to reflect, celebrate, and recommit. This is the 'sticky' feature that keeps users coming back.",
+    "reflection_generation": "Analyzes the entire week's data (weight, meals, adherence) to generate personalized reflections. Celebrates wins, acknowledges challenges with empathy, and extracts lessons learned.",
+    "next_week_planning": "Provides actionable focus areas and suggested adjustments based on the week's performance. Conservative recommendations avoid overwhelming users.",
+    "viral_mechanics": "Week in Review cards are the most shareable content. Users are proud to show their weekly wins, and the cards include impressive stats that attract new users.",
+    "friday_timing": "Designed for Friday engagement, but users can trigger it any day. The Friday framing creates anticipation and ritual.",
+    "analytics_tracking": "Tracks Friday Takeover engagement, card sharing, and week-over-week retention to measure the ritual's effectiveness."
+  }
+}

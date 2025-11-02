@@ -1,0 +1,208 @@
+{
+  "name": "LoopGPT",
+  "version": "1.0.0",
+  "description": "AI nutrition coach that adapts to your progress. Get personalized meal plans, track your journey, and let your plan automatically adjust based on weekly weigh-ins. The nutrition coach that actually works.",
+  "author": "LoopGPT Team",
+  "homepage": "https://loopgpt.app",
+  "repository": "https://github.com/loopgpt/loopgpt-backend",
+  "tools": [
+    {
+      "name": "start_nutrition_journey",
+      "description": "Start your personalized nutrition journey with LoopGPT",
+      "endpoint": "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/journey_1_onboarding",
+      "method": "POST",
+      "schema_file": "journey-1-onboarding.json"
+    },
+    {
+      "name": "track_weekly_progress",
+      "description": "Log weekly weigh-in and get automatic plan adjustment",
+      "endpoint": "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/journey_2_tracking",
+      "method": "POST",
+      "schema_file": "journey-2-tracking.json"
+    },
+    {
+      "name": "generate_leftover_recipe",
+      "description": "Turn leftovers into recipes with AI chef personas",
+      "endpoint": "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/journey_3_chef_recipes",
+      "method": "POST",
+      "schema_file": "journey-3-chef-recipes.json"
+    },
+    {
+      "name": "find_goal_aligned_restaurants",
+      "description": "Find restaurants with meals that fit your nutrition goals",
+      "endpoint": "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/journey_4_food_ordering",
+      "method": "POST",
+      "schema_file": "journey-4-food-ordering.json"
+    },
+    {
+      "name": "log_food_intake",
+      "description": "Log meals through photos, barcodes, or search",
+      "endpoint": "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/journey_5_nutrition_analysis",
+      "method": "POST",
+      "schema_file": "journey-5-nutrition-analysis.json"
+    },
+    {
+      "name": "visualize_progress",
+      "description": "See weight trends and celebrate milestones",
+      "endpoint": "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/journey_6_progress_viz",
+      "method": "POST",
+      "schema_file": "journey-6-progress-viz.json"
+    },
+    {
+      "name": "friday_takeover_reflection",
+      "description": "Weekly reflection, celebration, and planning ritual",
+      "endpoint": "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/journey_7_friday_takeover",
+      "method": "POST",
+      "schema_file": "journey-7-friday-takeover.json"
+    }
+  ],
+  "authentication": {
+    "type": "bearer",
+    "header": "Authorization",
+    "token_prefix": "Bearer",
+    "token_env_var": "SUPABASE_ANON_KEY",
+    "token_value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtYWdud3hlaWpjdGtrc3FiY3F6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5NTg0OTcsImV4cCI6MjA3NzUzNDQ5N30.YGBL-hCDbxEaPLCzAgiJJ2mXRkVucJIj9vIcf3dh5Do"
+  },
+  "cors": {
+    "enabled": true,
+    "allowed_origins": ["*"],
+    "allowed_methods": ["POST", "OPTIONS"],
+    "allowed_headers": ["authorization", "content-type"]
+  },
+  "rate_limiting": {
+    "enabled": false,
+    "requests_per_minute": 60
+  },
+  "analytics": {
+    "enabled": true,
+    "track_tool_calls": true,
+    "track_user_events": true,
+    "track_errors": true
+  },
+  "features": {
+    "automatic_plan_adaptation": true,
+    "chef_personas": true,
+    "goal_aligned_ordering": true,
+    "multi_method_logging": true,
+    "progress_visualization": true,
+    "weekly_reflection": true,
+    "shareable_cards": true,
+    "affiliate_links": true
+  },
+  "supported_goals": [
+    "weight_loss",
+    "muscle_gain",
+    "maintenance"
+  ],
+  "supported_diets": [
+    "vegan",
+    "vegetarian",
+    "keto",
+    "paleo",
+    "gluten_free",
+    "dairy_free",
+    "halal",
+    "kosher"
+  ],
+  "supported_logging_methods": [
+    "photo",
+    "barcode",
+    "search"
+  ],
+  "chef_personas": [
+    {
+      "name": "Jamie Leftover",
+      "chaos_range": [1, 3],
+      "style": "Simple, comforting, beginner-friendly"
+    },
+    {
+      "name": "Paul Leftovuse",
+      "chaos_range": [4, 7],
+      "style": "Refined, technical, sophisticated"
+    },
+    {
+      "name": "Gordon Leftover-Slay",
+      "chaos_range": [8, 10],
+      "style": "Wild, experimental, intense"
+    }
+  ],
+  "revenue_model": {
+    "type": "affiliate",
+    "partners": [
+      {
+        "name": "MealMe",
+        "commission_per_order": 2.50,
+        "journeys": ["journey_3_chef_recipes", "journey_4_food_ordering"]
+      }
+    ],
+    "future_premium": {
+      "price_per_month": 9.99,
+      "features": [
+        "Advanced analytics",
+        "Custom meal plans",
+        "Priority support"
+      ]
+    }
+  },
+  "viral_mechanics": {
+    "shareable_cards": [
+      {
+        "type": "recipe",
+        "journey": "journey_3_chef_recipes",
+        "share_rate_target": 0.40
+      },
+      {
+        "type": "progress",
+        "journey": "journey_6_progress_viz",
+        "share_rate_target": 0.40
+      },
+      {
+        "type": "week_review",
+        "journey": "journey_7_friday_takeover",
+        "share_rate_target": 0.50
+      }
+    ],
+    "viral_coefficient_target": 1.3
+  },
+  "performance_targets": {
+    "journey_1_onboarding": {
+      "response_time_ms": 5000,
+      "success_rate": 0.80
+    },
+    "journey_2_tracking": {
+      "response_time_ms": 3000,
+      "success_rate": 0.80
+    },
+    "journey_3_chef_recipes": {
+      "response_time_ms": 5000,
+      "success_rate": 0.80
+    },
+    "journey_4_food_ordering": {
+      "response_time_ms": 3000,
+      "success_rate": 0.80
+    },
+    "journey_5_nutrition_analysis": {
+      "response_time_ms": 2000,
+      "success_rate": 0.80
+    },
+    "journey_6_progress_viz": {
+      "response_time_ms": 1500,
+      "success_rate": 0.80
+    },
+    "journey_7_friday_takeover": {
+      "response_time_ms": 2000,
+      "success_rate": 0.80
+    }
+  },
+  "metadata": {
+    "created_at": "2024-11-02",
+    "last_updated": "2024-11-02",
+    "version_history": [
+      {
+        "version": "1.0.0",
+        "date": "2024-11-02",
+        "changes": "Initial MVP release with all 7 journeys"
+      }
+    ]
+  }
+}

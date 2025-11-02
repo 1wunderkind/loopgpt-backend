@@ -1,0 +1,114 @@
+{
+  "name": "generate_leftover_recipe",
+  "description": "Turn your leftovers into amazing recipes with three AI chef personas: Jamie Leftover (simple comfort food), Paul Leftovuse (refined technique), or Gordon Leftover-Slay (wild experiments). Choose your chaos level (1-10) and get a recipe that fits your vibe. Includes nutrition info and affiliate links for missing ingredients.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "chatgpt_user_id": {
+        "type": "string",
+        "description": "Unique identifier for the ChatGPT user"
+      },
+      "ingredients": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of leftover ingredients you have (e.g., ['chicken', 'rice', 'broccoli'])"
+      },
+      "chaos_level": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10,
+        "description": "Chaos level: 1-3 = Jamie (simple), 4-7 = Paul (refined), 8-10 = Gordon (wild)"
+      },
+      "dietary_restrictions": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["vegan", "vegetarian", "keto", "paleo", "gluten_free", "dairy_free"]
+        },
+        "description": "Dietary restrictions to respect (optional)"
+      },
+      "cuisine_preference": {
+        "type": "string",
+        "description": "Preferred cuisine style (e.g., 'Italian', 'Asian', 'Mexican') - optional"
+      },
+      "cooking_time_max": {
+        "type": "integer",
+        "description": "Maximum cooking time in minutes (optional)"
+      }
+    },
+    "required": ["chatgpt_user_id", "ingredients", "chaos_level"]
+  },
+  "trigger_phrases": [
+    "what can I make with {ingredients}",
+    "recipe for {ingredients}",
+    "I have {ingredients} what should I cook",
+    "turn my leftovers into a recipe",
+    "generate a recipe",
+    "what can I cook with {ingredients}",
+    "recipe ideas for {ingredients}",
+    "help me use up {ingredients}",
+    "I need a recipe",
+    "give me a {cuisine} recipe",
+    "make something with {ingredients}",
+    "chaos level {number}",
+    "surprise me with a recipe",
+    "get creative with {ingredients}",
+    "I want a simple recipe",
+    "I want a fancy recipe",
+    "I want a crazy recipe",
+    "Jamie Leftover recipe",
+    "Paul Leftovuse recipe",
+    "Gordon Leftover-Slay recipe",
+    "easy recipe with {ingredients}",
+    "advanced recipe with {ingredients}",
+    "experimental recipe with {ingredients}",
+    "what's for dinner",
+    "help me cook",
+    "recipe suggestion",
+    "meal idea",
+    "cooking inspiration",
+    "use my leftovers",
+    "leftover recipe",
+    "quick recipe with {ingredients}"
+  ],
+  "response_format": {
+    "success": true,
+    "recipe": {
+      "name": "Gordon's Chaos Chicken Explosion",
+      "chef": "Gordon Leftover-Slay",
+      "chaos_level": 9,
+      "description": "An intense fusion of flavors...",
+      "ingredients_used": ["chicken", "rice", "broccoli"],
+      "missing_ingredients": [
+        {
+          "name": "sriracha",
+          "affiliate_link": "https://mealme.ai/..."
+        }
+      ],
+      "instructions": ["Step 1...", "Step 2..."],
+      "nutrition": {
+        "calories": 520,
+        "protein": 45,
+        "carbs": 48,
+        "fat": 15
+      },
+      "cooking_time": 25,
+      "difficulty": "medium"
+    },
+    "chef_commentary": "RIGHT! Listen up, you donut! This is how you turn boring leftovers into something SPECTACULAR!",
+    "formatted_response": "Markdown-formatted recipe with chef personality",
+    "analytics": {
+      "tool_call_id": "UUID",
+      "duration_ms": 350
+    }
+  },
+  "integration_notes": {
+    "journey_flow": "Journey 3 adds fun and virality to LoopGPT. The three chef personas create shareable content that drives word-of-mouth growth. Recipes are designed to be entertaining while still being practical.",
+    "chef_selection": "Chaos 1-3 = Jamie (warm, encouraging), 4-7 = Paul (precise, technical), 8-10 = Gordon (intense, bold). Each has a distinct personality and recipe style.",
+    "leftovergpt_integration": "Currently uses mock data. Future integration with LeftoverGPT API will provide AI-generated recipes based on actual ingredient combinations.",
+    "affiliate_revenue": "Missing ingredients include MealMe affiliate links, generating revenue while helping users complete their recipes.",
+    "viral_mechanics": "Recipe cards are designed to be shareable on social media, with memorable chef personalities and impressive results."
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "name": "find_goal_aligned_restaurants",
+  "description": "Find restaurants and menu items that actually fit your nutrition goals. Each dish is scored 0-100 on how well it matches your calorie target and macros. Order meals that keep you on track through MealMe (DoorDash, Uber Eats, Grubhub, and more). Eating out doesn't mean giving up on your goals.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "chatgpt_user_id": {
+        "type": "string",
+        "description": "Unique identifier for the ChatGPT user"
+      },
+      "location": {
+        "type": "string",
+        "description": "Location for restaurant search (e.g., 'New York, NY', 'Los Angeles, CA'). Optional if latitude/longitude provided."
+      },
+      "latitude": {
+        "type": "number",
+        "description": "Latitude for restaurant search. Optional if location string provided."
+      },
+      "longitude": {
+        "type": "number",
+        "description": "Longitude for restaurant search. Optional if location string provided."
+      },
+      "calorie_target": {
+        "type": "number",
+        "description": "Target calories for the meal (e.g., 500, 600, 700). Used to filter menu items."
+      },
+      "macro_targets": {
+        "type": "object",
+        "properties": {
+          "protein_min": {
+            "type": "number",
+            "description": "Minimum protein in grams (e.g., 30, 40, 50)"
+          },
+          "carbs_max": {
+            "type": "number",
+            "description": "Maximum carbs in grams (e.g., 50, 60, 80)"
+          },
+          "fat_max": {
+            "type": "number",
+            "description": "Maximum fat in grams (e.g., 20, 25, 30)"
+          }
+        },
+        "description": "Optional macro targets for filtering menu items"
+      },
+      "cuisine_preference": {
+        "type": "string",
+        "description": "Optional cuisine preference (e.g., 'Italian', 'Asian', 'Mexican', 'American', 'Healthy')"
+      },
+      "price_range": {
+        "type": "string",
+        "enum": ["budget", "moderate", "premium"],
+        "description": "Optional price range preference"
+      },
+      "meal_type": {
+        "type": "string",
+        "enum": ["breakfast", "lunch", "dinner", "snack"],
+        "description": "Optional meal type for better recommendations"
+      },
+      "goal_type": {
+        "type": "string",
+        "enum": ["weight_loss", "muscle_gain", "maintenance"],
+        "description": "User's nutrition goal type for optimized filtering"
+      }
+    },
+    "required": ["chatgpt_user_id"]
+  },
+  "trigger_phrases": [
+    "find restaurants near me",
+    "what can I order that fits my plan",
+    "restaurants with {calories} calorie meals",
+    "order food that fits my macros",
+    "where can I eat out and stay on track",
+    "healthy restaurants near {location}",
+    "find {cuisine} food under {calories} calories",
+    "what should I order for {meal_type}",
+    "restaurants with high protein meals",
+    "low carb options near me",
+    "where can I order dinner",
+    "find food delivery near me",
+    "restaurants that fit my diet",
+    "order healthy food",
+    "find restaurants with nutrition info",
+    "what's good to order for weight loss",
+    "muscle gain meal delivery",
+    "order food for my meal plan",
+    "find restaurants with {calories} cal meals",
+    "delivery options near me",
+    "order food that fits my goals",
+    "find healthy food delivery",
+    "restaurants with macro info",
+    "order high protein meal",
+    "find low calorie restaurants",
+    "delivery near {location}",
+    "order food for lunch",
+    "find dinner options",
+    "restaurants that deliver",
+    "order meal that fits plan",
+    "eating out tonight",
+    "restaurant recommendations"
+  ],
+  "response_format": {
+    "success": true,
+    "recommendations": [
+      {
+        "restaurant_id": "rest-123",
+        "restaurant_name": "Healthy Bowl Co",
+        "cuisine_type": "healthy",
+        "rating": 4.5,
+        "estimated_delivery_time": 25,
+        "menu_items": [
+          {
+            "item_name": "Grilled Chicken Bowl",
+            "description": "Grilled chicken with quinoa and vegetables",
+            "price": 12.99,
+            "calories": 520,
+            "macros": {
+              "protein": 45,
+              "carbs": 48,
+              "fat": 15
+            },
+            "goal_alignment_score": 88,
+            "alignment_reasons": ["Perfect calorie match", "High protein"]
+          }
+        ],
+        "order_link": "MealMe affiliate link"
+      }
+    ],
+    "summary": {
+      "total_restaurants": 3,
+      "total_matching_items": 12,
+      "best_match": "Healthy Bowl Co"
+    },
+    "formatted_response": "Markdown-formatted restaurant recommendations",
+    "analytics": {
+      "tool_call_id": "UUID",
+      "duration_ms": 300
+    }
+  },
+  "integration_notes": {
+    "journey_flow": "Journey 4 removes the 'I can't eat out' barrier. Users can maintain their plan while enjoying restaurant meals, increasing adherence and reducing plan abandonment.",
+    "goal_alignment_scoring": "Each menu item is scored 0-100 based on calorie alignment (40%), protein (30%), carbs (20%), and fat (10%). Only items scoring 60+ are shown.",
+    "mealme_integration": "MealMe aggregates menus from DoorDash, Uber Eats, Grubhub, and other delivery platforms, providing comprehensive restaurant coverage.",
+    "affiliate_revenue": "This is the highest revenue journey per conversion at $2.50+ per order. Users have high intent (ready to order) and the value is clear.",
+    "analytics_tracking": "All searches, clicks, and orders are tracked for revenue optimization and performance monitoring."
+  }
+}

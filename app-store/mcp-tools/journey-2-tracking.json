@@ -1,0 +1,91 @@
+{
+  "name": "track_weekly_progress",
+  "description": "Log your weekly weigh-in and let LoopGPT automatically evaluate your progress and adjust your meal plan if needed. This is the core 'Loop' - your plan adapts based on real results, not guesses. Weigh in once a week for best results.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "chatgpt_user_id": {
+        "type": "string",
+        "description": "Unique identifier for the ChatGPT user"
+      },
+      "weight_kg": {
+        "type": "number",
+        "description": "Current weight in kilograms"
+      },
+      "date": {
+        "type": "string",
+        "format": "date",
+        "description": "Date of weigh-in (YYYY-MM-DD format, optional - defaults to today)"
+      },
+      "notes": {
+        "type": "string",
+        "description": "Optional notes about the week (how you felt, challenges, wins, etc.)"
+      }
+    },
+    "required": ["chatgpt_user_id", "weight_kg"]
+  },
+  "trigger_phrases": [
+    "log my weight",
+    "I weighed in at {number}",
+    "my weight is {number}",
+    "track my weight",
+    "weekly weigh in",
+    "I'm {number} kg now",
+    "I'm {number} pounds now",
+    "update my weight",
+    "record my weight",
+    "I lost {number} pounds",
+    "I gained {number} pounds",
+    "weigh in",
+    "check in",
+    "weekly check in",
+    "my current weight is {number}",
+    "I weigh {number}",
+    "log weight",
+    "track progress",
+    "how am I doing",
+    "check my progress",
+    "am I on track",
+    "update weight",
+    "record weigh in",
+    "Friday weigh in",
+    "Monday weigh in",
+    "weekly update",
+    "progress update",
+    "I stepped on the scale",
+    "scale says {number}",
+    "weighed myself today",
+    "my weight today is {number}"
+  ],
+  "response_format": {
+    "success": true,
+    "progress_evaluation": {
+      "status": "on_track",
+      "weight_change_kg": -0.8,
+      "weeks_elapsed": 2,
+      "expected_change_kg": -1.0,
+      "deviation_percentage": 20
+    },
+    "plan_adjustment": {
+      "adjustment_made": false,
+      "old_calories": 1810,
+      "new_calories": 1810,
+      "reason": "Progress is on track - no adjustment needed"
+    },
+    "motivation": {
+      "message": "Great progress! You're right on track.",
+      "encouragement": "Keep up the excellent work!"
+    },
+    "formatted_response": "Markdown-formatted progress report with motivational messaging",
+    "analytics": {
+      "tool_call_id": "UUID",
+      "duration_ms": 150
+    }
+  },
+  "integration_notes": {
+    "journey_flow": "Journey 2 is the core 'Loop' mechanism. It evaluates weekly progress and automatically adjusts the meal plan if the user is ahead or behind schedule. This adaptation is what makes LoopGPT unique.",
+    "adaptation_logic": "If weight change is >20% off target, calories are adjusted by 100-200. The system is conservative to avoid drastic changes.",
+    "frequency": "Users should weigh in once per week, ideally on the same day and time for consistency.",
+    "analytics_tracking": "All weigh-ins and plan adjustments are logged for progress visualization in Journey 6 and Friday Takeover in Journey 7."
+  }
+}

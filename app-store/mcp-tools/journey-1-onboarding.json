@@ -1,0 +1,120 @@
+{
+  "name": "start_nutrition_journey",
+  "description": "Start your personalized nutrition journey with LoopGPT. Set your goals (weight loss, muscle gain, or maintenance), specify dietary preferences, and get a customized meal plan with calorie targets and macro distribution. This is the first step in your adaptive nutrition coaching experience.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "chatgpt_user_id": {
+        "type": "string",
+        "description": "Unique identifier for the ChatGPT user"
+      },
+      "goal": {
+        "type": "string",
+        "enum": ["weight_loss", "muscle_gain", "maintenance"],
+        "description": "Primary nutrition goal"
+      },
+      "current_weight_kg": {
+        "type": "number",
+        "description": "Current weight in kilograms"
+      },
+      "target_weight_kg": {
+        "type": "number",
+        "description": "Target weight in kilograms"
+      },
+      "height_cm": {
+        "type": "number",
+        "description": "Height in centimeters"
+      },
+      "age": {
+        "type": "integer",
+        "description": "Age in years"
+      },
+      "gender": {
+        "type": "string",
+        "enum": ["male", "female", "other"],
+        "description": "Gender for calorie calculation"
+      },
+      "activity_level": {
+        "type": "string",
+        "enum": ["sedentary", "lightly_active", "moderately_active", "very_active", "extremely_active"],
+        "description": "Physical activity level"
+      },
+      "dietary_preferences": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["vegan", "vegetarian", "keto", "paleo", "gluten_free", "dairy_free", "halal", "kosher"]
+        },
+        "description": "Dietary restrictions or preferences (optional)"
+      },
+      "timeline_weeks": {
+        "type": "integer",
+        "description": "Target timeline in weeks (optional, default: 12)"
+      }
+    },
+    "required": ["chatgpt_user_id", "goal", "current_weight_kg", "target_weight_kg", "height_cm", "age", "gender", "activity_level"]
+  },
+  "trigger_phrases": [
+    "help me lose weight",
+    "I want to start a diet",
+    "create a meal plan for me",
+    "I need to gain muscle",
+    "help me with nutrition",
+    "start my fitness journey",
+    "I want to eat healthier",
+    "create a personalized meal plan",
+    "help me reach my weight goal",
+    "I need a nutrition coach",
+    "start tracking my nutrition",
+    "help me with my diet",
+    "I want to lose {number} pounds",
+    "I want to gain {number} pounds",
+    "create a weight loss plan",
+    "create a muscle gain plan",
+    "help me maintain my weight",
+    "I'm ready to start",
+    "let's begin my journey",
+    "onboard me",
+    "set up my nutrition plan",
+    "I need help with my diet",
+    "create a custom meal plan",
+    "help me track calories",
+    "I want to count macros",
+    "start my weight loss journey",
+    "help me get in shape",
+    "I need a diet plan",
+    "create my meal plan",
+    "set up my profile",
+    "let's get started"
+  ],
+  "response_format": {
+    "success": true,
+    "user_profile": {
+      "goal": "weight_loss",
+      "current_weight_kg": 80,
+      "target_weight_kg": 70,
+      "bmr": 1650,
+      "tdee": 2310,
+      "daily_calorie_target": 1810
+    },
+    "meal_plan": {
+      "daily_calories": 1810,
+      "protein_g": 135,
+      "carbs_g": 180,
+      "fat_g": 60,
+      "meals_per_day": 3,
+      "sample_day": "Detailed meal plan..."
+    },
+    "formatted_response": "Markdown-formatted onboarding response with meal plan",
+    "analytics": {
+      "tool_call_id": "UUID",
+      "duration_ms": 304
+    }
+  },
+  "integration_notes": {
+    "journey_flow": "Journey 1 is the entry point for all users. It creates the user profile and generates the first meal plan that will adapt based on weekly progress tracking in Journey 2.",
+    "next_steps": "After onboarding, users should track their weight weekly (Journey 2) and log meals daily (Journey 5) to enable automatic plan adaptation.",
+    "personalization": "Meal plans are personalized based on BMR/TDEE calculations, dietary preferences, and goal-specific macro distributions.",
+    "analytics_tracking": "All onboarding events are logged for funnel analysis and optimization."
+  }
+}

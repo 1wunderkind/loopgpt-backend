@@ -1,0 +1,97 @@
+{
+  "name": "visualize_progress",
+  "description": "See your weight trends over time, celebrate milestones, and share your wins with beautiful progress cards. View your journey by week, month, or all-time. Get insights and recommendations based on your data. Perfect for staying motivated and showing off your results.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "chatgpt_user_id": {
+        "type": "string",
+        "description": "Unique identifier for the ChatGPT user"
+      },
+      "time_range": {
+        "type": "string",
+        "enum": ["week", "month", "all"],
+        "description": "Time range for progress visualization (default: month)"
+      },
+      "chart_type": {
+        "type": "string",
+        "enum": ["weight", "calories", "adherence"],
+        "description": "Type of chart to generate (default: weight)"
+      },
+      "generate_shareable": {
+        "type": "boolean",
+        "description": "Whether to generate a shareable progress card (default: true)"
+      }
+    },
+    "required": ["chatgpt_user_id"]
+  },
+  "trigger_phrases": [
+    "show my progress",
+    "how am I doing",
+    "show my weight trend",
+    "visualize my progress",
+    "show my chart",
+    "progress report",
+    "how much weight have I lost",
+    "show my results",
+    "progress update",
+    "see my progress",
+    "weight trend",
+    "progress chart",
+    "show my stats",
+    "how's my progress",
+    "am I making progress",
+    "show my journey",
+    "progress visualization",
+    "show my milestones",
+    "what milestones have I hit",
+    "share my progress",
+    "create progress card",
+    "show weekly progress",
+    "show monthly progress",
+    "show all time progress",
+    "progress this week",
+    "progress this month",
+    "total progress",
+    "weight loss progress",
+    "muscle gain progress",
+    "show my achievements",
+    "celebrate my wins"
+  ],
+  "response_format": {
+    "success": true,
+    "progress_data": {
+      "weight_change": -5.2,
+      "weight_change_percentage": -6.5,
+      "days_tracked": 42,
+      "adherence_rate": 85,
+      "milestones_achieved": [
+        "Lost 5 lbs!",
+        "Lost 10 lbs!",
+        "30-day tracking streak!"
+      ]
+    },
+    "chart_data": {
+      "labels": ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"],
+      "values": [80, 79.2, 78.5, 77.8, 76.9, 74.8],
+      "trend_line": [80, 79, 78, 77, 76, 75]
+    },
+    "shareable_card": {
+      "title": "Lost 5.2 kg in 42 days",
+      "preview_text": "I'm making progress with LoopGPT! 5.2 kg down, 85% adherence.",
+      "share_url": "https://loopgpt.app/progress/abc123"
+    },
+    "formatted_response": "Markdown-formatted progress report with ASCII chart",
+    "analytics": {
+      "tool_call_id": "UUID",
+      "duration_ms": 236
+    }
+  },
+  "integration_notes": {
+    "journey_flow": "Journey 6 provides the visual feedback that keeps users motivated. Seeing progress over time and hitting milestones creates a sense of achievement that drives continued engagement.",
+    "milestone_detection": "Automatically detects weight loss milestones (5 lbs, 10 lbs, 20 lbs), tracking streaks (7 days, 30 days, 90 days), and adherence achievements (90%+, 95%+).",
+    "shareable_cards": "Progress cards are designed for social sharing, driving viral growth through word-of-mouth. Each card includes impressive stats and a link back to LoopGPT.",
+    "chart_generation": "Uses ASCII charts for text-based display. Future enhancement could include image generation for more visually appealing charts.",
+    "analytics_tracking": "Tracks when users view progress and share cards, providing insights into engagement patterns and viral growth."
+  }
+}

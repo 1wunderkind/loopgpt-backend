@@ -1,0 +1,107 @@
+{
+  "name": "log_food_intake",
+  "description": "Log your meals quickly through photos, barcode scanning, or search. Track calories and macros automatically, see your daily progress with a visual progress bar, and stay accountable to your plan. No tedious manual entry - just snap, scan, or search.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "chatgpt_user_id": {
+        "type": "string",
+        "description": "Unique identifier for the ChatGPT user"
+      },
+      "method": {
+        "type": "string",
+        "enum": ["photo", "barcode", "search"],
+        "description": "How you're logging the food: photo (image recognition), barcode (UPC/EAN scan), or search (manual search)"
+      },
+      "photo_url": {
+        "type": "string",
+        "format": "uri",
+        "description": "URL of the food photo (required if method is 'photo')"
+      },
+      "barcode": {
+        "type": "string",
+        "description": "Barcode number (UPC/EAN) (required if method is 'barcode')"
+      },
+      "search_query": {
+        "type": "string",
+        "description": "Food name to search for (required if method is 'search')"
+      },
+      "serving_size": {
+        "type": "number",
+        "description": "Serving size multiplier (e.g., 1.5 for 1.5 servings). Default: 1"
+      },
+      "meal_type": {
+        "type": "string",
+        "enum": ["breakfast", "lunch", "dinner", "snack"],
+        "description": "Type of meal being logged (optional, default: snack)"
+      }
+    },
+    "required": ["chatgpt_user_id", "method"]
+  },
+  "trigger_phrases": [
+    "log my meal",
+    "I ate {food}",
+    "track {food}",
+    "log {food}",
+    "I had {food} for {meal_type}",
+    "add {food} to my log",
+    "record {food}",
+    "I just ate {food}",
+    "log this meal",
+    "scan barcode",
+    "log from photo",
+    "track my food",
+    "what did I eat today",
+    "log breakfast",
+    "log lunch",
+    "log dinner",
+    "log snack",
+    "I'm eating {food}",
+    "just had {food}",
+    "consumed {food}",
+    "ate {food}",
+    "food log",
+    "meal log",
+    "track calories",
+    "log calories",
+    "how many calories in {food}",
+    "nutrition for {food}",
+    "log my food",
+    "add to food diary",
+    "track my meal",
+    "record my meal"
+  ],
+  "response_format": {
+    "success": true,
+    "food_item": {
+      "name": "Grilled Chicken Breast",
+      "brand": "Generic",
+      "calories": 165,
+      "macros": {
+        "protein": 31,
+        "carbs": 0,
+        "fat": 3.6
+      },
+      "serving_size": "100g",
+      "confidence": 0.85
+    },
+    "plan_adherence": {
+      "daily_target": 2000,
+      "consumed_today": 1250,
+      "remaining": 750,
+      "percentage": 63
+    },
+    "formatted_response": "Markdown-formatted food log with progress bar",
+    "analytics": {
+      "tool_call_id": "UUID",
+      "duration_ms": 1437
+    }
+  },
+  "integration_notes": {
+    "journey_flow": "Journey 5 makes daily tracking effortless. Users can log meals in seconds through multiple methods, removing the friction that causes most people to abandon nutrition tracking.",
+    "photo_recognition": "Currently uses mock data. Future integration with food recognition API will provide accurate nutrition data from photos.",
+    "barcode_database": "Integrates with nutrition databases (Open Food Facts, USDA) to look up products by barcode. Common items are cached for faster lookup.",
+    "plan_adherence": "Shows daily progress with a visual progress bar and motivational messaging based on how close the user is to their target.",
+    "analytics_tracking": "All meal logs are stored for progress visualization (Journey 6) and weekly reflection (Journey 7)."
+  }
+}
