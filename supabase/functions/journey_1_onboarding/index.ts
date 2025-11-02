@@ -1,15 +1,11 @@
 /**
- * Journey 1: Onboarding & First Meal Plan
+ * Journey 1: Onboarding & First Meal Plan (Standalone Version)
  * 
- * This Edge Function orchestrates the complete onboarding experience:
- * 1. Detects user location
- * 2. Creates personalized meal plan
- * 3. Gets affiliate partners for grocery delivery
- * 4. Formats complete response with Demo Loop
- * 5. Logs analytics
+ * This is a simplified standalone version for testing that creates
+ * mock meal plans without depending on other Edge Functions.
  * 
- * This is a single tool call from ChatGPT's perspective, ensuring
- * consistent, reliable UX with guaranteed affiliate link appearance.
+ * Once the full backend is deployed, this will be replaced with
+ * the orchestration version that calls real Edge Functions.
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
@@ -57,22 +53,11 @@ serve(async (req) => {
       throw new Error('Missing required fields: chatgpt_user_id and goal_type');
     }
 
-    // Step 1: Get user location
-    console.log('[Journey 1] Step 1: Getting user location...');
-    const { data: locationData, error: locationError } = await supabase.functions.invoke(
-      'get_user_location',
-      {
-        body: {
-          chatgpt_user_id: body.chatgpt_user_id,
-          ip_address: body.ip_address
-        }
-      }
-    );
-
-    const countryCode = locationData?.country_code || 'US';
+    // Step 1: Detect country (simplified - default to US for now)
+    const countryCode = 'US';
     console.log(`[Journey 1] User location: ${countryCode}`);
 
-    // Step 2: Calculate calories if not provided
+    // Step 2: Calculate calories
     let caloriesTarget = body.calories_target;
     if (!caloriesTarget && body.current_weight && body.height_cm && body.age && body.gender) {
       caloriesTarget = calculateCalories(
@@ -95,29 +80,12 @@ serve(async (req) => {
       console.log(`[Journey 1] Using default calories: ${caloriesTarget}`);
     }
 
-    // Step 3: Create meal plan
-    console.log('[Journey 1] Step 2: Creating meal plan...');
-    const { data: mealPlanData, error: mealPlanError } = await supabase.functions.invoke(
-      'plan_create_meal_plan',
-      {
-        body: {
-          chatgpt_user_id: body.chatgpt_user_id,
-          goal_type: body.goal_type,
-          calories_target: caloriesTarget,
-          dietary_restrictions: body.dietary_restrictions || [],
-          preferences: body.preferences || {}
-        }
-      }
-    );
+    // Step 3: Create mock meal plan (simplified for testing)
+    const mealPlan = createMockMealPlan(body.goal_type, caloriesTarget, body.dietary_restrictions || []);
+    console.log(`[Journey 1] Mock meal plan created`);
 
-    if (mealPlanError || !mealPlanData) {
-      throw new Error(`Failed to create meal plan: ${mealPlanError?.message || 'Unknown error'}`);
-    }
-
-    console.log(`[Journey 1] Meal plan created: ${mealPlanData.id}`);
-
-    // Step 4: Get affiliate partners for grocery delivery
-    console.log('[Journey 1] Step 3: Getting affiliate partners...');
+    // Step 4: Get affiliate partners
+    console.log('[Journey 1] Getting affiliate partners...');
     const { data: affiliateData, error: affiliateError } = await supabase
       .from('affiliate_partner_map')
       .select('*')
@@ -131,22 +99,23 @@ serve(async (req) => {
     console.log(`[Journey 1] Found ${affiliatePartners.length} affiliate partners`);
 
     // Step 5: Format complete response
-    console.log('[Journey 1] Step 4: Formatting response...');
+    console.log('[Journey 1] Formatting response...');
     const formattedResponse = formatCompleteOnboarding(
-      mealPlanData,
+      mealPlan,
       affiliatePartners,
       countryCode,
-      body.goal_type
+      body.goal_type,
+      caloriesTarget
     );
 
     // Step 6: Log analytics
     const duration = Date.now() - startTime;
-    console.log('[Journey 1] Step 5: Logging analytics...');
+    console.log('[Journey 1] Logging analytics...');
     
     await logJourneyAnalytics({
       user_id: body.chatgpt_user_id,
       journey_name: 'journey_1_onboarding',
-      meal_plan_id: mealPlanData.id,
+      meal_plan_id: `mock_${Date.now()}`,
       country_code: countryCode,
       affiliate_partners_shown: affiliatePartners.length,
       duration_ms: duration,
@@ -161,10 +130,11 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         formatted_response: formattedResponse,
-        meal_plan_id: mealPlanData.id,
+        meal_plan_id: `mock_${Date.now()}`,
         country_code: countryCode,
         calories_target: caloriesTarget,
-        duration_ms: duration
+        duration_ms: duration,
+        note: "This is a test version with mock meal plans. Full version will call real Edge Functions."
       }),
       {
         headers: {
@@ -177,19 +147,6 @@ serve(async (req) => {
   } catch (error) {
     const duration = Date.now() - startTime;
     console.error('[Journey 1] Error:', error);
-
-    // Log error analytics
-    try {
-      await logJourneyAnalytics({
-        user_id: (await req.json()).chatgpt_user_id || 'unknown',
-        journey_name: 'journey_1_onboarding',
-        duration_ms: duration,
-        success: false,
-        error_message: error.message
-      });
-    } catch (logError) {
-      console.error('[Journey 1] Failed to log error:', logError);
-    }
 
     return new Response(
       JSON.stringify({
@@ -240,13 +197,34 @@ function calculateCalories(
   // Goal adjustment
   let calories = tdee;
   if (goal_type === 'weight_loss') {
-    calories = tdee - 500; // 500 cal deficit for ~1 lb/week loss
+    calories = tdee - 500;
   } else if (goal_type === 'muscle_gain') {
-    calories = tdee + 300; // 300 cal surplus for muscle gain
+    calories = tdee + 300;
   }
 
-  // Round to nearest 50
   return Math.round(calories / 50) * 50;
+}
+
+/**
+ * Create mock meal plan for testing
+ */
+function createMockMealPlan(goalType: string, calories: number, restrictions: string[]) {
+  const protein = Math.round(calories * 0.30 / 4);
+  const carbs = Math.round(calories * 0.40 / 4);
+  const fat = Math.round(calories * 0.30 / 9);
+
+  return {
+    id: `mock_${Date.now()}`,
+    goal_type: goalType,
+    calories_target: calories,
+    macros_target: {
+      protein_g: protein,
+      carbs_g: carbs,
+      fat_g: fat
+    },
+    dietary_restrictions: restrictions,
+    days: 7
+  };
 }
 
 /**
@@ -256,7 +234,8 @@ function formatCompleteOnboarding(
   mealPlan: any,
   affiliatePartners: any[],
   countryCode: string,
-  goalType: string
+  goalType: string,
+  calories: number
 ): string {
   const goalEmoji = {
     weight_loss: '🎯',
@@ -275,11 +254,12 @@ function formatCompleteOnboarding(
   let output = `# ${goalEmoji} ${goalText}\n\n`;
   output += `## 📖 Your Week 1 Meal Plan\n\n`;
   output += `Your personalized meal plan is ready! Here's what makes it special:\n\n`;
-  output += `- 🎯 **Daily Target**: ${mealPlan.calories_target} calories\n`;
-  output += `- 💪 **Protein**: ${mealPlan.macros_target?.protein_g || 'TBD'}g | `;
-  output += `🍞 **Carbs**: ${mealPlan.macros_target?.carbs_g || 'TBD'}g | `;
-  output += `🥑 **Fat**: ${mealPlan.macros_target?.fat_g || 'TBD'}g\n`;
-  output += `- 📅 **Duration**: 7 days\n\n`;
+  output += `- 🎯 **Daily Target**: ${calories} calories\n`;
+  output += `- 💪 **Protein**: ${mealPlan.macros_target.protein_g}g | `;
+  output += `🍞 **Carbs**: ${mealPlan.macros_target.carbs_g}g | `;
+  output += `🥑 **Fat**: ${mealPlan.macros_target.fat_g}g\n`;
+  output += `- 📅 **Duration**: 7 days\n`;
+  output += `- 🥗 **Meals**: Breakfast, Lunch, Dinner, Snacks\n\n`;
 
   output += `---\n\n`;
 
@@ -288,13 +268,13 @@ function formatCompleteOnboarding(
   output += `Here's the magic of LoopGPT - your plan **learns and adapts** based on your results:\n\n`;
   
   output += `### 📊 Week 1 (This Week)\n`;
-  output += `- 🎯 Target: ${mealPlan.calories_target} calories/day\n`;
+  output += `- 🎯 Target: ${calories} calories/day\n`;
   output += `- 📝 You follow the plan and track your weight\n`;
   output += `- 📈 We measure your progress\n\n`;
 
   const adjustedCalories = goalType === 'weight_loss' 
-    ? mealPlan.calories_target - 100 
-    : mealPlan.calories_target + 100;
+    ? calories - 100 
+    : calories + 100;
 
   output += `### 🔄 Week 2 (Next Week)\n`;
   output += `- 📊 Based on your Week 1 results, we adjust:\n`;
@@ -320,11 +300,27 @@ function formatCompleteOnboarding(
       output += `### ${emoji} ${partner.partner_name}\n`;
       output += `${partner.description || 'Convenient grocery delivery'}\n\n`;
       output += `- 💡 **Benefit**: ${partner.benefit || 'Fast delivery'}\n`;
+      if (partner.commission_rate) {
+        output += `- 💵 **Commission**: ${partner.commission_rate}\n`;
+      }
       output += `- 🔗 [Order Now](${partner.base_url})\n\n`;
     });
 
     output += `> 💡 **Tip**: These links support LoopGPT at no extra cost to you. Thank you!\n\n`;
+  } else {
+    output += `## 🛒 Get Your Ingredients\n\n`;
+    output += `You can purchase ingredients from your local grocery store or use online delivery services like Amazon Fresh, Instacart, or Walmart Grocery.\n\n`;
   }
+
+  output += `---\n\n`;
+  output += `## 🚀 Ready to Start?\n\n`;
+  output += `Your personalized plan is ready! Here's what to do next:\n\n`;
+  output += `1. 📋 Review your meal plan\n`;
+  output += `2. 🛒 Order groceries (use links above)\n`;
+  output += `3. 📅 Start tomorrow morning\n`;
+  output += `4. ⚖️ Weigh yourself Monday mornings\n`;
+  output += `5. 💬 Check in with me weekly for adjustments\n\n`;
+  output += `Let's do this! 💪\n`;
 
   return output;
 }
@@ -377,6 +373,5 @@ async function logJourneyAnalytics(data: {
     console.log('[Journey 1] Analytics logged successfully');
   } catch (error) {
     console.error('[Journey 1] Failed to log analytics:', error);
-    // Don't throw - analytics failures shouldn't break the user experience
   }
 }
