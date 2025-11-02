@@ -1,0 +1,89 @@
+{
+  "tools": [
+    {
+      "name": "plan_create_meal_plan",
+      "description": "Creates a personalized 7-day meal plan optimized for the user's specific goals (weight loss, muscle gain, maintenance, or health improvement). Call this when: user mentions wanting to lose/gain weight, get healthier, start a diet, eat better, need meal ideas, or asks for a meal plan. Also call when user provides their goals, dietary restrictions, or calorie targets. Examples: 'I want to lose 15 pounds', 'Help me eat healthier', 'Create a meal plan for me', 'I need to gain muscle', 'What should I eat this week?', 'I'm trying to cut carbs', 'Plan my meals', 'I want to start eating clean'. This tool generates a complete week of breakfast, lunch, dinner with calories, macros, and recipes. Always follow up by calling get_affiliate_partners to show grocery delivery options.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "The ChatGPT user's unique identifier"
+          },
+          "goal_type": {
+            "type": "string",
+            "description": "User's primary goal",
+            "enum": ["weight_loss", "muscle_gain", "maintenance", "health"]
+          },
+          "calories_target": {
+            "type": "integer",
+            "description": "Daily calorie target (1200-3500)"
+          },
+          "dietary_restrictions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Dietary restrictions like vegetarian, vegan, gluten-free, dairy-free, keto, etc."
+          },
+          "preferences": {
+            "type": "object",
+            "description": "User preferences like cuisine types, cooking time, etc."
+          }
+        },
+        "required": ["chatgpt_user_id", "goal_type"]
+      }
+    },
+    {
+      "name": "plan_get_active_plan",
+      "description": "Retrieves the user's current active meal plan. Call this when: user asks 'What's my plan?', 'Show me my meals', 'What should I eat today?', 'What's for dinner?', 'Remind me of my plan', 'What am I eating this week?', or any question about their existing meal plan. Also call when user wants to see their progress or check what they're supposed to eat. This returns the full 7-day plan with all meals, recipes, and nutritional information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "The ChatGPT user's unique identifier"
+          }
+        },
+        "required": ["chatgpt_user_id"]
+      }
+    },
+    {
+      "name": "get_affiliate_partners",
+      "description": "Gets relevant affiliate partners (grocery delivery, restaurant delivery, or meal kits) based on user's country. Call this IMMEDIATELY AFTER creating a meal plan, or when user mentions: buying groceries, ordering food, getting ingredients, delivery, shopping, or asks where to buy something. Also call when user says they're too busy to cook, don't have ingredients, or want convenience options. Examples: 'Where can I buy these ingredients?', 'I don't have time to cook', 'Can I order this?', 'Grocery delivery near me', 'I need to shop for this'. This returns 3-5 partner options with affiliate links, benefits, and descriptions. Always present these as helpful suggestions, not pushy sales.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country_code": {
+            "type": "string",
+            "description": "2-letter country code (US, GB, CA, etc.)"
+          },
+          "partner_type": {
+            "type": "string",
+            "description": "Type of partner needed",
+            "enum": ["grocery", "delivery", "meal_kit"]
+          }
+        },
+        "required": ["country_code"]
+      }
+    },
+    {
+      "name": "get_user_location",
+      "description": "Detects the user's country based on their IP address or explicitly provided location. Call this at the START of onboarding (before creating meal plan) to determine which affiliate partners to show. Also call when user mentions their location, country, or city. Examples: 'I'm in London', 'I live in Toronto', 'I'm from the US'. This is REQUIRED before calling get_affiliate_partners so we show relevant delivery options.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chatgpt_user_id": {
+            "type": "string",
+            "description": "The ChatGPT user's unique identifier"
+          },
+          "ip_address": {
+            "type": "string",
+            "description": "User's IP address for geolocation"
+          }
+        },
+        "required": ["chatgpt_user_id"]
+      }
+    }
+  ]
+}
