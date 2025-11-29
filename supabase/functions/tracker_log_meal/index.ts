@@ -7,7 +7,7 @@
 // =====================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { lookupFoodForTracker, convertToGrams } from '../../lib/tracker_food_integration.ts'
+import { lookupFoodForTracker, convertToGrams } from '../_lib/tracker_food_integration.ts'
 
 interface LogFoodRequest {
   chatgpt_user_id: string

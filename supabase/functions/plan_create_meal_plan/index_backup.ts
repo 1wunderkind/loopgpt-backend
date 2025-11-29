@@ -5,10 +5,10 @@
 
 import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired, AppError, ErrorCodes } from "../../middleware/errorHandler.ts";
-import { getKCalGoals, getRecipesFromLeftover, getMacrosFromNutrition } from "../../../../lib/mcpWrappers.ts";
-import { buildAffiliateLinks, generateAffiliateSummary } from "../../../../lib/affiliate.ts";
-import { isFeatureEnabled } from "../../../../lib/featureFlags.ts";
-import type { GenerateWeekPlanRequest, GenerateWeekPlanResponse } from "../../../../lib/types.ts";
+import { getKCalGoals, getRecipesFromLeftover, getMacrosFromNutrition } from "../_lib/mcpWrappers.ts";
+import { buildAffiliateLinks, generateAffiliateSummary } from "../_lib/affiliate.ts";
+import { isFeatureEnabled } from "../_lib/featureFlags.ts";
+import type { GenerateWeekPlanRequest, GenerateWeekPlanResponse } from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {
