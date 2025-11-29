@@ -14,11 +14,11 @@
  * @returns {object} { ok: true, data: {...} }
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 import { formatWeightLogConfirmation } from "../_lib/weightTrackerMultilingual.ts";
 
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 interface LogWeightRequest {
   chatgpt_user_id: string;
   weight: number;
@@ -86,10 +86,37 @@ async function handler(req: Request): Promise<Response> {
     }
 
     // Create Supabase client
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    // Get authenticated Supabase client (enforces RLS)
+
+    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
+
+    
+
+    if (authError) {
+
+      return new Response(
+
+        JSON.stringify({ ok: false, error: authError }),
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+      );
+
+    }
+
+    
+
+    if (!userId) {
+
+      return new Response(
+
+        JSON.stringify({ ok: false, error: "Authentication required" }),
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+      );
+
+    }
 
     // Upsert weight log (prevents duplicates for same user/date)
     const { data, error } = await supabase

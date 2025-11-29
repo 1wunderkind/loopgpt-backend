@@ -12,11 +12,11 @@
  * @returns {object} { ok: true, outcome: {...} }
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 import { formatFeedbackConfirmation } from "../_lib/weightTrackerMultilingual.ts";
 
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 interface PushPlanFeedbackRequest {
   chatgpt_user_id: string;
   outcome_id: string;
@@ -60,10 +60,37 @@ async function handler(req: Request): Promise<Response> {
     }
 
     // Create Supabase client
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    // Get authenticated Supabase client (enforces RLS)
+
+    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
+
+    
+
+    if (authError) {
+
+      return new Response(
+
+        JSON.stringify({ ok: false, error: authError }),
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+      );
+
+    }
+
+    
+
+    if (!userId) {
+
+      return new Response(
+
+        JSON.stringify({ ok: false, error: "Authentication required" }),
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+      );
+
+    }
 
     // Update plan_outcomes table
     const { data, error } = await supabase

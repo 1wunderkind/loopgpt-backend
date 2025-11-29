@@ -7,8 +7,7 @@
 
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 const MEALME_API = Deno.env.get("MEALME_API_BASE") || "https://api.mealme.ai";
 const API_KEY = Deno.env.get("MEALME_API_KEY");
 const PARTNER = Deno.env.get("MEALME_PARTNER_NAME") || "whatsfordinner";

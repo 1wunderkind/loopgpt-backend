@@ -10,10 +10,10 @@
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
 
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 interface GetUserLocationRequest {
   chatgpt_user_id: string;
   detected_language?: string;
@@ -40,15 +40,58 @@ async function handler(req: Request): Promise<Response> {
 
     console.log(`[GetUserLocation] User: ${chatgpt_user_id}, Language: ${detected_language}, Geo Hint: ${geo_hint}`);
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    // Get authenticated Supabase client (enforces RLS)
 
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error("Supabase credentials not configured");
+
+    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
+
+
+    
+
+
+    if (authError) {
+
+
+      return new Response(
+
+
+        JSON.stringify({ ok: false, error: authError }),
+
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+
+      );
+
+
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    
+
+
+    if (!userId) {
+
+
+      return new Response(
+
+
+        JSON.stringify({ ok: false, error: "Authentication required" }),
+
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+
+      );
+
+
+    }
+
+
+    
+
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
     // 1. Try to get stored profile
     const { data: existingProfile, error: profileError } = await supabase

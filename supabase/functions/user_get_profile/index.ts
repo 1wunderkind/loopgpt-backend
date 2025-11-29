@@ -9,9 +9,9 @@
  * @returns {object} { ok: true, prefs: {...} }
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
-import { handleError } from "../../middleware/errorHandler.ts";
+import { handleError, createErrorResponse } from "../../middleware/errorHandler.ts";
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 import { formatPreferencesMessage } from "../_lib/weightTrackerMultilingual.ts";
 
 interface GetWeightPrefsRequest {
@@ -44,11 +44,16 @@ async function handler(req: Request): Promise<Response> {
       );
     }
 
-    // Create Supabase client
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    // Get authenticated Supabase client (enforces RLS)
+    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
+    
+    if (authError) {
+      return createErrorResponse("AUTH_ERROR", authError, 401);
+    }
+    
+    if (!userId) {
+      return createErrorResponse("UNAUTHORIZED", "Authentication required", 401);
+    }
 
     // Query preferences
     const { data, error } = await supabase

@@ -11,9 +11,9 @@ import {
   AppError,
   ErrorCodes,
 } from "../../middleware/errorHandler.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../_lib/deliveryAffiliate.ts";
 import { rankPartners, suggestAlternativeCuisines } from "../_lib/deliveryMatcher.ts";
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 import type {
   GetDeliveryRecommendationsRequest,
   GetDeliveryRecommendationsResponse,
@@ -42,10 +42,58 @@ async function handler(req: Request): Promise<Response> {
       `Fetching delivery recommendations for user ${chatgpt_user_id}, cuisine: ${cuisine}, diet: ${diet}`
     );
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    // Get authenticated Supabase client (enforces RLS)
+
+
+    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
+
+
+    
+
+
+    if (authError) {
+
+
+      return new Response(
+
+
+        JSON.stringify({ ok: false, error: authError }),
+
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+
+      );
+
+
+    }
+
+
+    
+
+
+    if (!userId) {
+
+
+      return new Response(
+
+
+        JSON.stringify({ ok: false, error: "Authentication required" }),
+
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+
+      );
+
+
+    }
+
+
+    
+
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
     // Query active delivery partners
     const { data: partners, error: partnersError } = await supabase

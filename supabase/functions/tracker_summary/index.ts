@@ -1,4 +1,5 @@
-// =====================================================
+/import { createAuthenticatedClient } from "../_lib/auth.ts";
+/ =====================================================
 // THELOOP TRACKER - GET DAILY SUMMARY
 // =====================================================
 // Migrated from: K-Cal GPT

@@ -6,11 +6,11 @@
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
 import { formatCountryDisplay, isValidCountryCode, normalizeCountryCode } from "../_lib/locationUtils.ts";
 
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 interface ChangeLocationRequest {
   chatgpt_user_id: string;
   new_country: string;
@@ -52,15 +52,58 @@ async function handler(req: Request): Promise<Response> {
 
     console.log(`[ChangeLocation] User ${chatgpt_user_id} changing location to ${normalizedCountry}`);
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    // Get authenticated Supabase client (enforces RLS)
 
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error("Supabase credentials not configured");
+
+    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
+
+
+    
+
+
+    if (authError) {
+
+
+      return new Response(
+
+
+        JSON.stringify({ ok: false, error: authError }),
+
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+
+      );
+
+
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    
+
+
+    if (!userId) {
+
+
+      return new Response(
+
+
+        JSON.stringify({ ok: false, error: "Authentication required" }),
+
+
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+
+      );
+
+
+    }
+
+
+    
+
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
     // Get old location (if exists)
     const { data: existingProfile } = await supabase

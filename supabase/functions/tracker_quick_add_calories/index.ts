@@ -1,4 +1,5 @@
-// =====================================================
+/import { createAuthenticatedClient } from "../_lib/auth.ts";
+/ =====================================================
 // THELOOP TRACKER - QUICK ADD CALORIES
 // =====================================================
 // Migrated from: K-Cal GPT

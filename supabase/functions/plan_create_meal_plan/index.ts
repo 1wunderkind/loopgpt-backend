@@ -4,9 +4,9 @@
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 import { getKCalGoals, getRecipesFromLeftover, getMacrosFromNutrition } from "../_lib/mcpWrappers.ts";
 import { buildAffiliateLinks, generateAffiliateSummary } from "../_lib/affiliate.ts";
 import { formatMealPlan, detectLanguage } from "../_lib/multilingual.ts";
@@ -41,15 +41,18 @@ async function handler(req: Request): Promise<Response> {
       confirmed_country, // NEW: User-confirmed country (if provided)
     } = body;
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error("Supabase credentials not configured");
+    // Get authenticated Supabase client (enforces RLS)
+    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
+    
+    if (authError) {
+      return createErrorResponse("AUTH_ERROR", authError, 401);
+    }
+    
+    if (!userId) {
+      return createErrorResponse("UNAUTHORIZED", "Authentication required", 401);
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
     // Step 1: Detect language from user input
     const userInput = vibe || goal_type || dietary_restrictions.join(" ") || "healthy meal plan";

@@ -17,6 +17,7 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { MANIFEST } from "./manifest_embedded.ts";
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 
 // ============================================================================
 // Environment Configuration
@@ -216,6 +217,57 @@ serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+  
+  // ========================================================================
+  // OAuth Validation (for tool execution only, not manifest)
+  // ========================================================================
+  if (req.method === 'POST') {
+    // Validate OAuth token from ChatGPT
+    const authHeader = req.headers.get('Authorization');
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('[MCP] Missing or invalid Authorization header');
+      return new Response(
+        JSON.stringify({
+          error: 'UNAUTHORIZED',
+          message: 'Valid OAuth token required for tool execution',
+          hint: 'Include Authorization: Bearer <token> header'
+        }),
+        {
+          status: 401,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+    
+    const token = authHeader.replace('Bearer ', '');
+    
+    // Verify token with Supabase Auth
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      console.error('[MCP] Token verification failed:', authError?.message);
+      return new Response(
+        JSON.stringify({
+          error: 'INVALID_TOKEN',
+          message: authError?.message || 'Invalid or expired OAuth token',
+          hint: 'Token must be issued by Supabase Auth'
+        }),
+        {
+          status: 401,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+    
+    console.log(`[MCP] Authenticated user: ${user.id} (${user.email})`);
   }
   
   // ========================================================================

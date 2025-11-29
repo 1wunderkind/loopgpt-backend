@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
+import { createAuthenticatedClient } from "../_lib/auth.ts";
 serve(async (req) => {
   try {
     const { user_id, days_ahead } = await req.json();
@@ -12,9 +11,58 @@ serve(async (req) => {
       );
     }
     
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    // Get authenticated Supabase client (enforces RLS)
+
+    
+    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
+
+    
+    
+
+    
+    if (authError) {
+
+    
+      return new Response(
+
+    
+        JSON.stringify({ ok: false, error: authError }),
+
+    
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+    
+      );
+
+    
+    }
+
+    
+    
+
+    
+    if (!userId) {
+
+    
+      return new Response(
+
+    
+        JSON.stringify({ ok: false, error: "Authentication required" }),
+
+    
+        { status: 401, headers: { "Content-Type": "application/json" } }
+
+    
+      );
+
+    
+    }
+
+    
+    
+
+    
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
     
     // Get recent weight history (last 30 days)
     const { data: weightHistory, error } = await supabase
