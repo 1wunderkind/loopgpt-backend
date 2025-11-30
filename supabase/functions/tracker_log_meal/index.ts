@@ -99,7 +99,6 @@ Deno.serve(async (req) => {
       sugar_g = parseFloat((foodLookup.sugar_per_100g * multiplier).toFixed(1))
       
       console.log(`✅ Food found via ${foodLookup.source}: ${food_name}`);
-import { createAuthenticatedClient } from "../_lib/auth.ts";
     } else {
       // Estimate using simple heuristics (fallback)
       const grams = convertToGrams(quantity, quantity_unit)
