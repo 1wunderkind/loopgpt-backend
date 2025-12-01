@@ -40,7 +40,7 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_ID: qmagnwxeijctkksqbcqz
         run: |
-          echo "🚀 Deploying all 19 Edge Functions in parallel..."
+          echo "🚀 Deploying all 20 Edge Functions in parallel..."
           
           # Deploy all functions in parallel using background jobs
           supabase functions deploy generate_week_plan --project-ref $SUPABASE_PROJECT_ID &
@@ -64,6 +64,7 @@ jobs:
           supabase functions deploy update_user_location --project-ref $SUPABASE_PROJECT_ID &
           supabase functions deploy get_affiliate_by_country --project-ref $SUPABASE_PROJECT_ID &
           supabase functions deploy change_location --project-ref $SUPABASE_PROJECT_ID &
+          supabase functions deploy mcp-server --project-ref $SUPABASE_PROJECT_ID &
           
           # Wait for all background jobs to complete
           echo "⏳ Waiting for all deployments to complete..."
@@ -74,5 +75,5 @@ jobs:
       - name: Deployment Summary
         run: |
           echo "🎉 Deployment Complete!"
-          echo "📊 Deployed 19 Edge Functions"
+          echo "📊 Deployed 20 Edge Functions"
           echo "🔗 Project: https://qmagnwxeijctkksqbcqz.supabase.co"

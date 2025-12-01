@@ -1344,6 +1344,449 @@ export const MANIFEST =
           }
         }
       }
+    },
+
+    // ===== NEW TRACKING TOOLS =====
+    {
+      "name": "tracker_log_weight",
+      "category": "Tracking",
+      "description": "Logs a user's weight measurement. Use when the user says things like 'I weigh 175 pounds', 'log my weight as 80kg', or 'record today's weight'. Supports both pounds and kilograms with automatic conversion.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Weight value"
+          },
+          "unit": {
+            "type": "string",
+            "enum": ["kg", "lbs"],
+            "description": "Weight unit (kg or lbs)"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of measurement (ISO format, defaults to today)"
+          }
+        },
+        "required": ["user_id", "weight"]
+      }
+    },
+    {
+      "name": "tracker_get_progress",
+      "category": "Tracking",
+      "description": "Retrieves user's weight tracking progress and trends. Use when the user asks 'how am I doing?', 'show my progress', 'what's my weight trend?', or 'am I on track?'. Returns weight history, goal progress, and trend analysis.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "period": {
+            "type": "string",
+            "enum": ["week", "month", "quarter", "year"],
+            "description": "Time period for progress analysis"
+          }
+        },
+        "required": ["user_id"]
+      }
+    },
+    {
+      "name": "tracker_quick_add_calories",
+      "category": "Tracking",
+      "description": "Quickly logs calories without detailed food information. Use when the user says 'add 500 calories', 'log 300 calories for lunch', or 'I just ate about 800 calories'. For detailed food logging, use tracker_log_meal instead.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "calories": {
+            "type": "number",
+            "description": "Number of calories to add"
+          },
+          "meal_type": {
+            "type": "string",
+            "enum": ["breakfast", "lunch", "dinner", "snack"],
+            "description": "Type of meal"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note about what was eaten"
+          }
+        },
+        "required": ["user_id", "calories"]
+      }
+    },
+    {
+      "name": "tracker_summary",
+      "category": "Tracking",
+      "description": "Provides daily or weekly nutrition and calorie summaries. Use when the user asks 'what did I eat today?', 'show my weekly summary', 'how many calories have I had?', or 'summarize my nutrition'. Returns totals, macro breakdown, and goal comparison.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "period": {
+            "type": "string",
+            "enum": ["today", "yesterday", "week", "month"],
+            "description": "Summary period"
+          }
+        },
+        "required": ["user_id"]
+      }
+    },
+    {
+      "name": "tracker_log_meal",
+      "category": "Tracking",
+      "description": "Logs a complete meal with detailed nutrition information. Use when the user describes what they ate with specifics like 'I had grilled chicken with rice', 'log my breakfast: eggs and toast', or 'I just ate a salad with salmon'. Calculates and stores full macro breakdown.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "meal_type": {
+            "type": "string",
+            "enum": ["breakfast", "lunch", "dinner", "snack"],
+            "description": "Type of meal"
+          },
+          "foods": {
+            "type": "array",
+            "description": "Array of food items with portions",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "quantity": { "type": "number" },
+                "unit": { "type": "string" }
+              }
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Free-text description of the meal"
+          }
+        },
+        "required": ["user_id", "meal_type"]
+      }
+    },
+
+    // ===== USER MANAGEMENT TOOLS =====
+    {
+      "name": "user_get_profile",
+      "category": "User Management",
+      "description": "Retrieves the user's profile including dietary preferences, goals, and settings. Use when the user asks 'what are my settings?', 'show my profile', 'what diet am I on?', or when you need context about their preferences before making recommendations.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          }
+        },
+        "required": ["user_id"]
+      }
+    },
+    {
+      "name": "user_set_weight_goal",
+      "category": "User Management",
+      "description": "Sets or updates the user's weight goal. Use when the user says 'I want to lose 10 pounds', 'my goal weight is 150', 'I want to gain 5kg of muscle', or 'set my target weight'. Calculates timeline and daily calorie targets.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "goal_weight": {
+            "type": "number",
+            "description": "Target weight"
+          },
+          "unit": {
+            "type": "string",
+            "enum": ["kg", "lbs"],
+            "description": "Weight unit"
+          },
+          "goal_type": {
+            "type": "string",
+            "enum": ["lose", "gain", "maintain"],
+            "description": "Type of weight goal"
+          },
+          "pace": {
+            "type": "string",
+            "enum": ["slow", "moderate", "aggressive"],
+            "description": "Rate of change"
+          }
+        },
+        "required": ["user_id", "goal_weight"]
+      }
+    },
+    {
+      "name": "user_update_diet_preferences",
+      "category": "User Management",
+      "description": "Updates dietary preferences, restrictions, and allergies. Use when the user says 'I'm vegetarian', 'I'm allergic to nuts', 'I don't eat gluten', 'I'm doing keto', or 'update my diet to vegan'. Affects all future meal recommendations.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "diet_type": {
+            "type": "string",
+            "description": "Diet type (e.g., vegetarian, vegan, keto, paleo)"
+          },
+          "allergies": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of food allergies"
+          },
+          "restrictions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Foods to avoid"
+          }
+        },
+        "required": ["user_id"]
+      }
+    },
+
+    // ===== NUTRITION ANALYSIS TOOLS =====
+    {
+      "name": "nutrition_analyze_food",
+      "category": "Nutrition Analysis",
+      "description": "Analyzes the nutritional content of a food item or meal. Use when the user asks 'how many calories in a banana?', 'what's the nutrition of grilled chicken?', 'is this food healthy?', or 'analyze this meal'. Returns calories, macros, vitamins, and health insights.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "food": {
+            "type": "string",
+            "description": "Food item or meal to analyze"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Amount"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement (g, oz, cup, serving)"
+          }
+        },
+        "required": ["food"]
+      }
+    },
+    {
+      "name": "nutrition_get_macros",
+      "category": "Nutrition Analysis",
+      "description": "Calculates the macro breakdown (protein, carbs, fat) for a recipe or list of ingredients. Use when the user asks 'what are the macros for this recipe?', 'how much protein is in my meal plan?', or 'calculate the carbs in these ingredients'. Ideal for recipe analysis.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "ingredients": {
+            "type": "array",
+            "description": "List of ingredients with quantities",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "amount": { "type": "number" },
+                "unit": { "type": "string" }
+              }
+            }
+          },
+          "servings": {
+            "type": "number",
+            "description": "Number of servings the recipe makes"
+          }
+        },
+        "required": ["ingredients"]
+      }
+    },
+    {
+      "name": "nutrition_compare_foods",
+      "category": "Nutrition Analysis",
+      "description": "Compares the nutritional value of two foods or meals side by side. Use when the user asks 'is chicken healthier than beef?', 'compare rice vs quinoa', 'which has more protein?', or 'what's the difference between these foods?'. Returns comparative analysis.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "food_a": {
+            "type": "string",
+            "description": "First food to compare"
+          },
+          "food_b": {
+            "type": "string",
+            "description": "Second food to compare"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity for comparison (same for both)"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit for comparison"
+          }
+        },
+        "required": ["food_a", "food_b"]
+      }
+    },
+    {
+      "name": "nutrition_get_recommendations",
+      "category": "Nutrition Analysis",
+      "description": "Provides personalized nutrition recommendations based on user's goals and current intake. Use when the user asks 'what should I eat?', 'how can I get more protein?', 'I need to eat healthier', or 'nutrition advice'. Considers dietary preferences and deficiencies.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "focus": {
+            "type": "string",
+            "enum": ["weight_loss", "muscle_gain", "balanced", "energy", "specific_nutrient"],
+            "description": "Area to focus recommendations on"
+          }
+        },
+        "required": ["user_id"]
+      }
+    },
+
+    // ===== FOOD DATABASE TOOLS =====
+    {
+      "name": "food_search",
+      "category": "Food Database",
+      "description": "Searches the food database for items matching a query. Use when the user needs to find specific foods, asks 'what foods have high protein?', 'find low carb snacks', or needs food options before logging. Returns matching foods with nutrition data.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "category": {
+            "type": "string",
+            "description": "Food category filter"
+          },
+          "max_results": {
+            "type": "number",
+            "description": "Maximum number of results to return"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+
+    // ===== MEAL PLANNING TOOLS =====
+    {
+      "name": "plan_generate_from_leftovers",
+      "category": "Meal Planning",
+      "description": "Generates creative recipes from leftover ingredients in the user's fridge. Use when the user says 'I have leftover chicken and rice', 'what can I make with these ingredients?', 'use up my leftovers', or lists random ingredients they have available. Includes Chaos Rating for entertainment value. Specialty of LeftoverGPT.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "ingredients": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of available ingredients"
+          },
+          "preferences": {
+            "type": "object",
+            "description": "Optional dietary preferences and restrictions",
+            "properties": {
+              "diet": { "type": "string" },
+              "avoid": { "type": "array", "items": { "type": "string" } },
+              "max_time": { "type": "number" }
+            }
+          },
+          "chaos_level": {
+            "type": "number",
+            "description": "Desired creativity level 1-10 (higher = more experimental)"
+          }
+        },
+        "required": ["ingredients"]
+      }
+    },
+    {
+      "name": "plan_create_meal_plan",
+      "category": "Meal Planning",
+      "description": "Creates a structured meal plan for a specified duration. Use when the user says 'plan my meals for the week', 'create a meal plan', 'help me eat better this week', or 'I need a 7-day meal plan'. Considers calories, macros, and dietary preferences. Integrates with nutrition tracking.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "duration_days": {
+            "type": "number",
+            "description": "Number of days to plan (e.g., 7 for a week)"
+          },
+          "meals_per_day": {
+            "type": "number",
+            "description": "Number of meals per day (typically 3-5)"
+          },
+          "calories_target": {
+            "type": "number",
+            "description": "Daily calorie target"
+          },
+          "diet_type": {
+            "type": "string",
+            "description": "Diet type (e.g., balanced, keto, vegetarian)"
+          }
+        },
+        "required": ["user_id", "duration_days"]
+      }
+    },
+    {
+      "name": "plan_get_active_plan",
+      "category": "Meal Planning",
+      "description": "Retrieves the user's current active meal plan. Use when the user asks 'what's my meal plan?', 'what should I eat today?', 'show my plan', or 'what's for dinner tonight?'. Returns the full meal plan with today's meals highlighted.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "include_past": {
+            "type": "boolean",
+            "description": "Whether to include meals from past days"
+          }
+        },
+        "required": ["user_id"]
+      }
+    },
+    {
+      "name": "plan_random_meal",
+      "category": "Meal Planning",
+      "description": "Suggests a random meal based on user preferences and available options. Use when the user says 'I don't know what to eat', 'surprise me', 'random meal idea', or 'what should I have for dinner?'. Great for breaking decision fatigue. Respects dietary preferences.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User identifier (for personalization)"
+          },
+          "meal_type": {
+            "type": "string",
+            "enum": ["breakfast", "lunch", "dinner", "snack"],
+            "description": "Type of meal to suggest"
+          },
+          "max_prep_time": {
+            "type": "number",
+            "description": "Maximum preparation time in minutes"
+          }
+        },
+        "required": []
+      }
     }
   ]
 }
