@@ -4,12 +4,15 @@
  * =====================================================
  * Helper functions for food search and autocomplete
  * Used by food_search endpoint for frontend autocomplete
+ * 
+ * UPDATED: Now uses smart_food_search() PostgreSQL function
+ * with advanced full-text search, fuzzy matching, and typo tolerance
  * =====================================================
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL" )!;
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -35,6 +38,12 @@ export interface FoodSuggestion {
 /**
  * Get food suggestions for autocomplete
  * 
+ * Uses the smart_food_search() PostgreSQL function which combines:
+ * - Exact matching (score: 1.0)
+ * - Prefix matching (score: 0.9)
+ * - Full-text search (score: 0.7 * ts_rank)
+ * - Fuzzy/typo matching (score: 0.5 * similarity)
+ * 
  * @param query - Search query from user
  * @param limit - Maximum number of results (default: 10)
  * @param userId - Optional user ID for logging
@@ -50,50 +59,54 @@ export async function getFoodSuggestions(
       return [];
     }
 
-    const searchTerm = query.toLowerCase().trim();
+    const searchTerm = query.trim();
     
-    // Strategy 1: Try exact match first
-    const { data: exactMatches, error: exactError } = await supabase
-      .from('tracker_foods')
-      .select('*')
-      .ilike('name', searchTerm)
-      .eq('verified', true)
-      .limit(limit);
+    // Use the smart_food_search PostgreSQL function
+    const { data, error } = await supabase
+      .rpc('smart_food_search', {
+        search_query: searchTerm,
+        result_limit: limit
+      });
     
-    if (!exactError && exactMatches && exactMatches.length > 0) {
-      return transformToSuggestions(exactMatches);
+    if (error) {
+      console.error('Error in smart_food_search:', error);
+      
+      // Fallback to basic search if smart search fails
+      return await fallbackSearch(searchTerm, limit);
     }
     
-    // Strategy 2: Try prefix match (starts with)
-    const { data: prefixMatches, error: prefixError } = await supabase
-      .from('tracker_foods')
-      .select('*')
-      .ilike('name', `${searchTerm}%`)
-      .eq('verified', true)
-      .order('name')
-      .limit(limit);
-    
-    if (!prefixError && prefixMatches && prefixMatches.length > 0) {
-      return transformToSuggestions(prefixMatches);
+    if (!data || data.length === 0) {
+      // Log unsuccessful search for analytics
+      if (userId) {
+        await logFoodSearch(userId, query, false);
+      }
+      return [];
     }
     
-    // Strategy 3: Try full-text search
-    const { data: textMatches, error: textError } = await supabase
-      .from('tracker_foods')
-      .select('*')
-      .textSearch('name', searchTerm, {
-        type: 'websearch',
-        config: 'english'
-      })
-      .eq('verified', true)
-      .limit(limit);
-    
-    if (!textError && textMatches && textMatches.length > 0) {
-      return transformToSuggestions(textMatches);
+    // Log successful search
+    if (userId) {
+      await logFoodSearch(userId, query, true);
     }
     
-    // Strategy 4: Try partial match (contains)
-    const { data: partialMatches, error: partialError } = await supabase
+    return transformToSuggestions(data);
+  } catch (error) {
+    console.error('Error getting food suggestions:', error);
+    
+    // Fallback to basic search on exception
+    return await fallbackSearch(query.trim(), limit);
+  }
+}
+
+/**
+ * Fallback search using basic ILIKE query
+ * Used when smart_food_search fails
+ */
+async function fallbackSearch(
+  searchTerm: string,
+  limit: number
+): Promise<FoodSuggestion[]> {
+  try {
+    const { data, error } = await supabase
       .from('tracker_foods')
       .select('*')
       .ilike('name', `%${searchTerm}%`)
@@ -101,18 +114,13 @@ export async function getFoodSuggestions(
       .order('name')
       .limit(limit);
     
-    if (!partialError && partialMatches && partialMatches.length > 0) {
-      return transformToSuggestions(partialMatches);
+    if (error || !data) {
+      return [];
     }
     
-    // Log unsuccessful search for analytics
-    if (userId) {
-      await logFoodSearch(userId, query, false);
-    }
-    
-    return [];
+    return transformToSuggestions(data);
   } catch (error) {
-    console.error('Error getting food suggestions:', error);
+    console.error('Error in fallback search:', error);
     return [];
   }
 }
