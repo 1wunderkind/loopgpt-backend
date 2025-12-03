@@ -14,8 +14,8 @@ import {
 import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../_lib/deliveryAffiliate.ts";
 import { rankPartners, suggestAlternativeCuisines } from "../_lib/deliveryMatcher.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
-import type {
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
+import type {
   GetDeliveryRecommendationsRequest,
   GetDeliveryRecommendationsResponse,
   DeliveryPartner,
