@@ -553,8 +553,11 @@ serve(async (req: Request) => {
   
   // GET /metadata - Complete metadata package
   if (req.method === "GET" && url.pathname === "/metadata") {
+    console.log('[MCP] Matched /metadata route');
     try {
+      console.log('[MCP] Calling getCompleteMetadata()');
       const metadata = getCompleteMetadata();
+      console.log('[MCP] Metadata retrieved:', Object.keys(metadata));
       return new Response(JSON.stringify(metadata, null, 2), {
         status: 200,
         headers: {
@@ -563,8 +566,12 @@ serve(async (req: Request) => {
         }
       });
     } catch (error) {
+      console.error('[MCP] Error loading metadata:', error);
       return new Response(
-        JSON.stringify({ error: "Failed to load metadata" }),
+        JSON.stringify({ 
+          error: "Failed to load metadata",
+          details: error instanceof Error ? error.message : String(error)
+        }),
         {
           status: 500,
           headers: {
