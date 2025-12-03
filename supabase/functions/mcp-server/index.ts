@@ -4166,25 +4166,141 @@ export const ROUTING_METADATA: RoutingMetadata = {
 };
 
 // ============================================================================
-// CONVENIENCE FUNCTIONS (from index.ts)
+// CONVENIENCE FUNCTIONS
 // ============================================================================
+
 /**
- * TheLoopGPT Metadata Configuration - Central Export
- * 
- * This file exports all metadata configurations for TheLoopGPT.
- * Import from this file to access any metadata component.
- * 
- * Usage:
- *   import { THELOOPGPT_METADATA, ALL_TOOL_DESCRIPTIONS, ROUTING_METADATA } from "../_lib/config/index.ts";
+ * Get complete metadata package for MCP server
  */
+export function getCompleteMetadata() {
+  return {
+    app: THELOOPGPT_METADATA,
+    tools: ALL_TOOL_DESCRIPTIONS,
+    routing: ROUTING_METADATA,
+    summary: {
+      toolCount: getToolCount(),
+      categories: Object.keys(TOOL_SUMMARY.categories),
+      lastUpdated: TOOL_SUMMARY.lastUpdated
+    }
+  };
+}
 
-// Export types
+/**
+ * Get tool description with routing hints
+ */
+export function getToolWithRouting(toolId: string) {
+  const tool = getToolDescription(toolId);
+  if (!tool) return null;
+  
+  // Find matching routing hints
+  const routingHints = Object.entries(ROUTING_METADATA.triggerHints)
+    .filter(([_, hint]) => hint.relatedTools?.includes(toolId))
+    .map(([key, hint]) => ({ key, ...hint }));
+  
+  return {
+    ...tool,
+    routingHints
+  };
+}
 
+/**
+ * Search tools by keyword
+ */
+export function searchTools(keyword: string): ToolDescription[] {
+  const lowerKeyword = keyword.toLowerCase();
+  return Object.values(ALL_TOOL_DESCRIPTIONS).filter(tool => 
+    tool.displayName.toLowerCase().includes(lowerKeyword) ||
+    tool.primaryDescription.toLowerCase().includes(lowerKeyword) ||
+    tool.category.toLowerCase().includes(lowerKeyword)
+  );
+}
+
+/**
+ * Get recommended tool for user query
+ */
+export function getRecommendedTool(userQuery: string): {
+  toolId: string;
+  confidence: number;
+  reason: string;
+} | null {
+  const lowerQuery = userQuery.toLowerCase();
+  
+  // Check trigger hints
+  for (const [hintKey, hint] of Object.entries(ROUTING_METADATA.triggerHints)) {
+    for (const example of hint.examples) {
+      if (lowerQuery.includes(example.toLowerCase().slice(0, 20))) {
+        return {
+          toolId: hint.relatedTools[0],
+          confidence: hint.confidence,
+          reason: `Matched trigger hint: ${hintKey}`
+        };
+      }
+    }
+  }
+  
+  // Fallback to keyword search
+  const matches = searchTools(userQuery);
+  if (matches.length > 0) {
+    return {
+      toolId: matches[0].toolId,
+      confidence: 0.5,
+      reason: "Keyword match"
+    };
+  }
+  
+  return null;
+}
+
+/**
+ * Validate tool invocation
+ */
+export function validateToolInvocation(
+  toolId: string,
+  params: Record<string, any>
+): { valid: boolean; errors: string[] } {
+  const tool = getToolDescription(toolId);
+  if (!tool) {
+    return { valid: false, errors: [`Tool ${toolId} not found`] };
+  }
+  
+  const errors: string[] = [];
+  
+  // Check required params
+  for (const param of tool.requiredParams) {
+    if (!(param.name in params)) {
+      errors.push(`Missing required parameter: ${param.name}`);
+    }
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
+// ============================================================================
+// METADATA CONSTANTS FOR QUICK ACCESS
+// ============================================================================
+
+export const METADATA_VERSION = "1.0.0";
+export const METADATA_LAST_UPDATED = "2025-12-03";
+export const TOTAL_TOOLS = getToolCount();
+
+// Export for MCP server manifest
+export const MCP_SERVER_INFO = {
+  name: "theloopgpt",
+  version: METADATA_VERSION,
+  description: THELOOPGPT_METADATA.shortDescription,
+  tools: getAllToolIds(),
+  capabilities: [
+    "recipe_generation",
+    "nutrition_analysis",
+    "meal_planning",
+    "food_tracking",
+    "grocery_ordering",
+    "ai_predictions"
   ]
 };
-
-
-
 
 // ============================================================================
 // Environment Configuration
@@ -4378,8 +4494,17 @@ const corsHeaders = {
 serve(async (req: Request) => {
   const url = new URL(req.url);
   
+  // Strip the function name prefix from pathname
+  let pathname = url.pathname;
+  if (pathname.startsWith('/mcp-server')) {
+    pathname = pathname.replace('/mcp-server', '') || '/';
+  }
+  
   // Debug logging
-  console.log(`[MCP] ${req.method} ${url.pathname}`);
+  console.log(`[MCP] ${req.method} ${url.pathname} -> ${pathname}`);
+  
+  // Update url.pathname for route matching
+  Object.defineProperty(url, 'pathname', { value: pathname, writable: true });
   
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -4387,9 +4512,9 @@ serve(async (req: Request) => {
   }
   
   // ========================================================================
-  // OAuth Validation (for tool execution only, not manifest)
+  // OAuth Validation (for tool execution only, not manifest or metadata)
   // ========================================================================
-  if (req.method === 'POST') {
+  if (req.method === 'POST' && !url.pathname.startsWith('/metadata')) {
     // Validate OAuth token from ChatGPT
     const authHeader = req.headers.get('Authorization');
     
@@ -4709,11 +4834,8 @@ serve(async (req: Request) => {
   
   // GET /metadata - Complete metadata package
   if (req.method === "GET" && url.pathname === "/metadata") {
-    console.log('[MCP] Matched /metadata route');
     try {
-      console.log('[MCP] Calling getCompleteMetadata()');
       const metadata = getCompleteMetadata();
-      console.log('[MCP] Metadata retrieved:', Object.keys(metadata));
       return new Response(JSON.stringify(metadata, null, 2), {
         status: 200,
         headers: {
@@ -4874,6 +4996,8 @@ serve(async (req: Request) => {
     JSON.stringify({
       error: "Not found",
       hint: "Use GET / for manifest or POST /tools/{tool_name} to execute a tool",
+      debug_pathname: url.pathname,
+      debug_method: req.method,
       available_routes: [
         "GET /",
         "POST /tools/{tool_name}",

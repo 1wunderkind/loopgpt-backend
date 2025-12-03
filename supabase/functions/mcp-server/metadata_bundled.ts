@@ -30,26 +30,22 @@ export type RoutingHint = {
   priority: RoutingPriority;
   confidence: number; // 0.0 - 1.0, threshold for invocation
   relatedTools: string[]; // Which tools should be called for this intent
-};
 
 export type NegativeRoutingHint = {
   description: string;
   examples: string[];
   reason: string; // Why we should NOT invoke for these
-};
 
 export type ToolChain = {
   name: string;
   description: string;
   sequence: string[]; // Tool IDs in order
   trigger: string; // When to use this chain
-};
 
 export type RoutingMetadata = {
   triggerHints: Record<string, RoutingHint>;
   negativeHints: NegativeRoutingHint[];
   toolChains: ToolChain[];
-};
 
 // ============================================================================
 // Tool Description Types
@@ -61,13 +57,11 @@ export type ToolParameter = {
   description: string;
   example: string;
   default?: string;
-};
 
 export type ToolReturnFormat = {
   description: string;
   fields: string[];
   example: string;
-};
 
 export type ToolDescription = {
   // Identity
@@ -101,7 +95,6 @@ export type ToolDescription = {
   // Categorization
   category: string;
   subcategory?: string;
-};
 
 // ============================================================================
 // App Identity Types
@@ -123,19 +116,16 @@ export type AppIdentity = {
     nutrition: string;
     tracking: string;
     planning: string;
-  };
-  
+
   // URLs
   website: string;
   statusPage: string;
   supportEmail: string;
-};
 
 export type AppTitles = {
   primary: string;
   variants: string[];
   subtitle: string;
-};
 
 // ============================================================================
 // Seasonal & Contextual Types
@@ -151,8 +141,7 @@ export type SeasonalKeywords = {
     afternoon: string[];
     evening: string[];
     lateNight: string[];
-  };
-};
+
 
 // ============================================================================
 // Complete Metadata Type
@@ -183,7 +172,6 @@ export type TheLoopGPTMetadata = {
   // Metadata
   version: string;
   lastUpdated: string;
-};
 
 // ============================================================================
 // Export Configuration Types
@@ -200,7 +188,6 @@ export type AppStoreSubmission = {
   website: string;
   supportEmail: string;
   version: string;
-};
 
 export type MCPToolManifest = {
   version: string;
@@ -212,8 +199,6 @@ export type MCPToolManifest = {
     returnFormat: ToolReturnFormat;
   }>;
   routing: RoutingMetadata;
-};
-
 // ============================================================================
 // THELOOPGPT METADATA
 // ============================================================================
@@ -545,7 +530,7 @@ export const THELOOPGPT_METADATA = {
     "Families",
     "Budget-conscious shoppers",
     "Health-conscious individuals"
-  ]
+
 } as const;
 
 // ============================================================================
@@ -567,7 +552,7 @@ export function generateAppStoreSubmission(): AppStoreSubmission {
     website: APP_IDENTITY.website,
     supportEmail: APP_IDENTITY.supportEmail,
     version: APP_IDENTITY.METADATA_VERSION
-  };
+
 }
 
 /**
@@ -636,7 +621,6 @@ export function getCurrentTimeOfDay(): "morning" | "afternoon" | "evening" | "la
   if (hour >= 17 && hour < 22) return "evening";
   return "lateNight";
 }
-
 // ============================================================================
 // TOOL DESCRIPTIONS
 // ============================================================================
@@ -781,7 +765,6 @@ export const TOOL_PLAN_GENERATE_FROM_LEFTOVERS: ToolDescription = {
   },
   
   chainsWith: ["nutrition_analyze_food", "tracker_log_meal"]
-};
 
 export const TOOL_PLAN_CREATE_MEAL_PLAN: ToolDescription = {
   toolId: "plan_create_meal_plan",
@@ -897,7 +880,6 @@ export const TOOL_PLAN_CREATE_MEAL_PLAN: ToolDescription = {
   },
   
   chainsWith: ["nutrition_analyze_food", "tracker_log_meal"]
-};
 
 export const TOOL_PLAN_RANDOM_MEAL: ToolDescription = {
   toolId: "plan_random_meal",
@@ -968,7 +950,6 @@ export const TOOL_PLAN_RANDOM_MEAL: ToolDescription = {
   },
   
   chainsWith: ["nutrition_analyze_food", "tracker_log_meal"]
-};
 
 export const TOOL_PLAN_GET_ACTIVE_PLAN: ToolDescription = {
   toolId: "plan_get_active_plan",
@@ -1026,7 +1007,6 @@ export const TOOL_PLAN_GET_ACTIVE_PLAN: ToolDescription = {
   },
   
   chainsWith: ["tracker_log_meal", "tracker_summary"]
-};
 
 // ============================================================================
 // NUTRITION ANALYSIS TOOLS
@@ -1128,7 +1108,6 @@ export const TOOL_NUTRITION_ANALYZE_FOOD: ToolDescription = {
   },
   
   chainsWith: ["tracker_log_meal", "nutrition_compare_foods"]
-};
 
 export const TOOL_NUTRITION_COMPARE_FOODS: ToolDescription = {
   toolId: "nutrition_compare_foods",
@@ -1197,7 +1176,6 @@ export const TOOL_NUTRITION_COMPARE_FOODS: ToolDescription = {
   },
   
   chainsWith: ["nutrition_analyze_food", "food_search"]
-};
 
 export const TOOL_NUTRITION_GET_MACROS: ToolDescription = {
   toolId: "nutrition_get_macros",
@@ -1280,7 +1258,6 @@ export const TOOL_NUTRITION_GET_MACROS: ToolDescription = {
   },
   
   chainsWith: ["user_set_weight_goal", "plan_create_meal_plan"]
-};
 
 export const TOOL_NUTRITION_GET_RECOMMENDATIONS: ToolDescription = {
   toolId: "nutrition_get_recommendations",
@@ -1340,7 +1317,6 @@ export const TOOL_NUTRITION_GET_RECOMMENDATIONS: ToolDescription = {
   },
   
   chainsWith: ["tracker_summary", "plan_create_meal_plan"]
-};
 
 // ============================================================================
 // FOOD TRACKING TOOLS
@@ -1443,7 +1419,6 @@ export const TOOL_TRACKER_LOG_MEAL: ToolDescription = {
   },
   
   chainsWith: ["nutrition_analyze_food", "tracker_summary"]
-};
 
 export const TOOL_TRACKER_SUMMARY: ToolDescription = {
   toolId: "tracker_summary",
@@ -1517,7 +1492,6 @@ export const TOOL_TRACKER_SUMMARY: ToolDescription = {
   },
   
   chainsWith: ["tracker_log_meal", "tracker_get_progress"]
-};
 
 export const TOOL_TRACKER_LOG_WEIGHT: ToolDescription = {
   toolId: "tracker_log_weight",
@@ -1593,7 +1567,6 @@ export const TOOL_TRACKER_LOG_WEIGHT: ToolDescription = {
   },
   
   chainsWith: ["tracker_get_progress", "loop_predict_outcome"]
-};
 
 export const TOOL_TRACKER_QUICK_ADD_CALORIES: ToolDescription = {
   toolId: "tracker_quick_add_calories",
@@ -1676,7 +1649,6 @@ export const TOOL_TRACKER_QUICK_ADD_CALORIES: ToolDescription = {
   },
   
   chainsWith: ["tracker_summary"]
-};
 
 export const TOOL_TRACKER_GET_PROGRESS: ToolDescription = {
   toolId: "tracker_get_progress",
@@ -1752,7 +1724,6 @@ export const TOOL_TRACKER_GET_PROGRESS: ToolDescription = {
   },
   
   chainsWith: ["loop_predict_outcome", "loop_adjust_calories"]
-};
 
 // Export all tool descriptions as a record
 export const ALL_TOOL_DESCRIPTIONS: Record<string, ToolDescription> = {
@@ -1774,7 +1745,6 @@ export const ALL_TOOL_DESCRIPTIONS: Record<string, ToolDescription> = {
   tracker_log_weight: TOOL_TRACKER_LOG_WEIGHT,
   tracker_quick_add_calories: TOOL_TRACKER_QUICK_ADD_CALORIES,
   tracker_get_progress: TOOL_TRACKER_GET_PROGRESS
-};
 
 // Helper function to get tool description by ID
 export function getToolDescription(toolId: string): ToolDescription | undefined {
@@ -1850,7 +1820,6 @@ export const TOOL_USER_GET_PROFILE: ToolDescription = {
   },
   
   chainsWith: ["plan_create_meal_plan", "nutrition_get_recommendations"]
-};
 
 export const TOOL_USER_SET_WEIGHT_GOAL: ToolDescription = {
   toolId: "user_set_weight_goal",
@@ -1926,7 +1895,6 @@ export const TOOL_USER_SET_WEIGHT_GOAL: ToolDescription = {
   },
   
   chainsWith: ["plan_create_meal_plan", "nutrition_get_macros"]
-};
 
 export const TOOL_USER_UPDATE_DIET_PREFERENCES: ToolDescription = {
   toolId: "user_update_diet_preferences",
@@ -1989,7 +1957,6 @@ export const TOOL_USER_UPDATE_DIET_PREFERENCES: ToolDescription = {
   },
   
   chainsWith: ["plan_create_meal_plan", "plan_generate_from_leftovers"]
-};
 
 export const TOOL_FOOD_SEARCH: ToolDescription = {
   toolId: "food_search",
@@ -2049,12 +2016,11 @@ export const TOOL_FOOD_SEARCH: ToolDescription = {
   "results": [
     { "food_id": "f_123", "food_name": "Chicken Breast, Raw", "category": "Poultry" },
     { "food_id": "f_124", "food_name": "Chicken Breast, Grilled", "category": "Poultry" }
-  ]
+
 }`
   },
   
   chainsWith: ["nutrition_analyze_food", "nutrition_compare_foods"]
-};
 
 // ============================================================================
 // DELIVERY & COMMERCE TOOLS
@@ -2133,12 +2099,11 @@ export const TOOL_DELIVERY_SEARCH_RESTAURANTS: ToolDescription = {
       "delivery_time": "30-40 min",
       "delivery_fee": "$2.99"
     }
-  ]
+
 }`
   },
   
   chainsWith: ["delivery_get_menu", "loopgpt_route_order"]
-};
 
 export const TOOL_DELIVERY_GET_MENU: ToolDescription = {
   toolId: "delivery_get_menu",
@@ -2198,12 +2163,11 @@ export const TOOL_DELIVERY_GET_MENU: ToolDescription = {
       "calories": 450,
       "dietary_tags": ["high-protein", "gluten-free"]
     }
-  ]
+
 }`
   },
   
   chainsWith: ["loopgpt_route_order", "nutrition_analyze_food"]
-};
 
 export const TOOL_DELIVERY_PLACE_ORDER: ToolDescription = {
   toolId: "delivery_place_order",
@@ -2281,7 +2245,6 @@ export const TOOL_DELIVERY_PLACE_ORDER: ToolDescription = {
   },
   
   chainsWith: ["tracker_log_meal"]
-};
 
 export const TOOL_LOOPGPT_ROUTE_ORDER: ToolDescription = {
   toolId: "loopgpt_route_order",
@@ -2354,7 +2317,6 @@ export const TOOL_LOOPGPT_ROUTE_ORDER: ToolDescription = {
   },
   
   chainsWith: ["loopgpt_confirm_order", "plan_create_meal_plan"]
-};
 
 export const TOOL_LOOPGPT_CONFIRM_ORDER: ToolDescription = {
   toolId: "loopgpt_confirm_order",
@@ -2412,7 +2374,6 @@ export const TOOL_LOOPGPT_CONFIRM_ORDER: ToolDescription = {
   },
   
   chainsWith: ["loopgpt_record_outcome"]
-};
 
 export const TOOL_LOOPGPT_CANCEL_ORDER: ToolDescription = {
   toolId: "loopgpt_cancel_order",
@@ -2474,7 +2435,6 @@ export const TOOL_LOOPGPT_CANCEL_ORDER: ToolDescription = {
   },
   
   chainsWith: []
-};
 
 export const TOOL_LOOPGPT_RECORD_OUTCOME: ToolDescription = {
   toolId: "loopgpt_record_outcome",
@@ -2547,7 +2507,6 @@ export const TOOL_LOOPGPT_RECORD_OUTCOME: ToolDescription = {
   },
   
   chainsWith: []
-};
 
 // MealMe Integration Tools
 export const TOOL_MEALME_CREATE_CART: ToolDescription = {
@@ -2566,7 +2525,6 @@ export const TOOL_MEALME_CREATE_CART: ToolDescription = {
   returnFormat: { description: "Cart ID", fields: ["cart_id"], example: '{"cart_id": "cart_123"}' },
   chainsWith: ["mealme_get_quotes"],
   category: "delivery"
-};
 
 export const TOOL_MEALME_GET_QUOTES: ToolDescription = {
   toolId: "mealme_get_quotes",
@@ -2584,7 +2542,6 @@ export const TOOL_MEALME_GET_QUOTES: ToolDescription = {
   returnFormat: { description: "Quote details", fields: ["quote_id", "total", "delivery_time"], example: '{}' },
   chainsWith: ["mealme_checkout_url"],
   category: "delivery"
-};
 
 export const TOOL_MEALME_CHECKOUT_URL: ToolDescription = {
   toolId: "mealme_checkout_url",
@@ -2602,7 +2559,6 @@ export const TOOL_MEALME_CHECKOUT_URL: ToolDescription = {
   returnFormat: { description: "Checkout URL", fields: ["checkout_url"], example: '{"checkout_url": "https://..."}' },
   chainsWith: [],
   category: "delivery"
-};
 
 // ============================================================================
 // LOOP INTELLIGENCE TOOLS
@@ -2692,7 +2648,6 @@ export const TOOL_LOOP_PREDICT_OUTCOME: ToolDescription = {
   },
   
   chainsWith: ["loop_adjust_calories", "plan_create_meal_plan"]
-};
 
 export const TOOL_LOOP_ADJUST_CALORIES: ToolDescription = {
   toolId: "loop_adjust_calories",
@@ -2751,7 +2706,6 @@ export const TOOL_LOOP_ADJUST_CALORIES: ToolDescription = {
   },
   
   chainsWith: ["loop_predict_outcome", "plan_create_meal_plan"]
-};
 
 export const TOOL_LOOP_EVALUATE_PLAN: ToolDescription = {
   toolId: "loop_evaluate_plan",
@@ -2809,7 +2763,6 @@ export const TOOL_LOOP_EVALUATE_PLAN: ToolDescription = {
   },
   
   chainsWith: ["loop_adjust_calories", "plan_create_meal_plan"]
-};
 
 // ============================================================================
 // AFFILIATE & LOCATION TOOLS
@@ -2831,7 +2784,6 @@ export const TOOL_GET_AFFILIATE_LINKS: ToolDescription = {
   returnFormat: { description: "Affiliate links", fields: ["links"], example: '{"links": [...]}' },
   chainsWith: [],
   category: "affiliate"
-};
 
 export const TOOL_GET_AFFILIATE_BY_COUNTRY: ToolDescription = {
   toolId: "get_affiliate_by_country",
@@ -2849,7 +2801,6 @@ export const TOOL_GET_AFFILIATE_BY_COUNTRY: ToolDescription = {
   returnFormat: { description: "Affiliate data", fields: ["affiliate_id"], example: '{}' },
   chainsWith: [],
   category: "affiliate"
-};
 
 export const TOOL_GET_USER_LOCATION: ToolDescription = {
   toolId: "get_user_location",
@@ -2867,7 +2818,6 @@ export const TOOL_GET_USER_LOCATION: ToolDescription = {
   returnFormat: { description: "Location data", fields: ["latitude", "longitude", "address"], example: '{}' },
   chainsWith: ["delivery_search_restaurants"],
   category: "location"
-};
 
 export const TOOL_UPDATE_USER_LOCATION: ToolDescription = {
   toolId: "update_user_location",
@@ -2885,7 +2835,6 @@ export const TOOL_UPDATE_USER_LOCATION: ToolDescription = {
   returnFormat: { description: "Update confirmation", fields: ["success"], example: '{"success": true}' },
   chainsWith: [],
   category: "location"
-};
 
 export const TOOL_CHANGE_LOCATION: ToolDescription = {
   toolId: "change_location",
@@ -2903,7 +2852,6 @@ export const TOOL_CHANGE_LOCATION: ToolDescription = {
   returnFormat: { description: "Location update", fields: ["location", "updated_at"], example: '{}' },
   chainsWith: ["delivery_search_restaurants"],
   category: "location"
-};
 
 // Continue with remaining tool descriptions in next append...
 
@@ -3000,7 +2948,6 @@ export const TOOL_GDPR_EXPORT: ToolDescription = {
   },
   
   chainsWith: []
-};
 
 export const TOOL_GDPR_DELETE: ToolDescription = {
   toolId: "gdpr_delete",
@@ -3063,7 +3010,6 @@ export const TOOL_GDPR_DELETE: ToolDescription = {
   },
   
   chainsWith: []
-};
 
 export const TOOL_CCPA_OPT_OUT: ToolDescription = {
   toolId: "ccpa_opt_out",
@@ -3116,7 +3062,6 @@ export const TOOL_CCPA_OPT_OUT: ToolDescription = {
   },
   
   chainsWith: []
-};
 
 // ============================================================================
 // STRIPE INTEGRATION TOOLS
@@ -3180,7 +3125,6 @@ export const TOOL_CREATE_CHECKOUT_SESSION: ToolDescription = {
   },
   
   chainsWith: ["check_entitlement"]
-};
 
 export const TOOL_CREATE_CUSTOMER_PORTAL: ToolDescription = {
   toolId: "create_customer_portal",
@@ -3232,7 +3176,6 @@ export const TOOL_CREATE_CUSTOMER_PORTAL: ToolDescription = {
   },
   
   chainsWith: []
-};
 
 export const TOOL_CHECK_ENTITLEMENT: ToolDescription = {
   toolId: "check_entitlement",
@@ -3286,7 +3229,6 @@ export const TOOL_CHECK_ENTITLEMENT: ToolDescription = {
   },
   
   chainsWith: []
-};
 
 export const TOOL_UPGRADE_TO_PREMIUM: ToolDescription = {
   toolId: "upgrade_to_premium",
@@ -3338,7 +3280,6 @@ export const TOOL_UPGRADE_TO_PREMIUM: ToolDescription = {
   },
   
   chainsWith: ["create_checkout_session"]
-};
 
 // ============================================================================
 // SYSTEM & MONITORING TOOLS
@@ -3359,7 +3300,6 @@ export const TOOL_HEALTH: ToolDescription = {
   optionalParams: [],
   returnFormat: { description: "Health status", fields: ["status", "timestamp"], example: '{"status": "ok"}' },
   chainsWith: []
-};
 
 export const TOOL_SYS_HEALTHCHECK: ToolDescription = {
   toolId: "sys_healthcheck",
@@ -3380,7 +3320,6 @@ export const TOOL_SYS_HEALTHCHECK: ToolDescription = {
     example: '{"status": "ok", "tools": {"total": 50, "active": 50}}'
   },
   chainsWith: []
-};
 
 export const TOOL_SYS_GET_HELP: ToolDescription = {
   toolId: "sys_get_help",
@@ -3401,7 +3340,6 @@ export const TOOL_SYS_GET_HELP: ToolDescription = {
     example: '{"tools": [...], "categories": [...]}'
   },
   chainsWith: []
-};
 
 export const TOOL_SYS_DEBUG_TOOL_CHOICE_LOG: ToolDescription = {
   toolId: "sys_debug_tool_choice_log",
@@ -3418,7 +3356,6 @@ export const TOOL_SYS_DEBUG_TOOL_CHOICE_LOG: ToolDescription = {
   optionalParams: [],
   returnFormat: { description: "Log entry", fields: ["log_id", "timestamp"], example: '{}' },
   chainsWith: []
-};
 
 export const TOOL_METRICS_FOOD_RESOLVER: ToolDescription = {
   toolId: "metrics_food_resolver",
@@ -3435,7 +3372,6 @@ export const TOOL_METRICS_FOOD_RESOLVER: ToolDescription = {
   optionalParams: [],
   returnFormat: { description: "Metrics data", fields: ["resolution_rate", "avg_time"], example: '{}' },
   chainsWith: []
-};
 
 export const TOOL_TRIAL_REMINDER: ToolDescription = {
   toolId: "trial_reminder",
@@ -3452,7 +3388,6 @@ export const TOOL_TRIAL_REMINDER: ToolDescription = {
   optionalParams: [],
   returnFormat: { description: "Reminder status", fields: ["sent"], example: '{"sent": true}' },
   chainsWith: []
-};
 
 // ============================================================================
 // WEBHOOK HANDLERS
@@ -3473,7 +3408,6 @@ export const TOOL_STRIPE_WEBHOOK: ToolDescription = {
   optionalParams: [],
   returnFormat: { description: "Webhook response", fields: ["received"], example: '{"received": true}' },
   chainsWith: []
-};
 
 export const TOOL_MEALME_WEBHOOK: ToolDescription = {
   toolId: "mealme_webhook",
@@ -3490,7 +3424,6 @@ export const TOOL_MEALME_WEBHOOK: ToolDescription = {
   optionalParams: [],
   returnFormat: { description: "Webhook response", fields: ["received"], example: '{"received": true}' },
   chainsWith: []
-};
 
 // ============================================================================
 // FINAL EXPORTS - Update ALL_TOOL_DESCRIPTIONS with remaining tools
@@ -3553,7 +3486,7 @@ export function getToolsByPriority(): {
     low: tools.filter(t => 
       ["system", "webhooks", "compliance", "affiliate", "location"].includes(t.category)
     )
-  };
+
 }
 
 // Export summary for documentation
@@ -3576,8 +3509,6 @@ export const TOOL_SUMMARY = {
     webhooks: 2
   },
   lastUpdated: "2025-12-03"
-};
-
 // ============================================================================
 // ROUTING HINTS
 // ============================================================================
@@ -4133,9 +4064,6 @@ export const ROUTING_METADATA: RoutingMetadata = {
       ],
       trigger: "User wants comprehensive nutrition analysis"
     }
-  ]
-};
-
 // CONVENIENCE FUNCTIONS
 // ============================================================================
 
