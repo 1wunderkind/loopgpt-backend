@@ -284,7 +284,7 @@ serve(async (req: Request) => {
   // ========================================================================
   // ROUTE 1: Manifest Endpoint (GET / or GET /mcp-server)
   // ========================================================================
-  if (req.method === "GET" && (url.pathname === "/" || url.pathname === "" || !url.pathname.includes("/tools/"))) {
+  if (req.method === "GET" && (url.pathname === "/" || url.pathname === "") && !url.pathname.startsWith("/metadata")) {
     try {
       const manifest = await loadManifest();
       return new Response(JSON.stringify(manifest, null, 2), {
