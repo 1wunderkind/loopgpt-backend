@@ -20,7 +20,7 @@ interface SearchRequest {
   limit?: number;
 }
 
-Deno.const handler = async (req) => {
+const handler = async (req) => {
   try {
     // CORS headers
     if (req.method === "OPTIONS") {
