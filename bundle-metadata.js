@@ -17,9 +17,12 @@ const toolDescriptions = fs.readFileSync(path.join(configDir, 'toolDescriptions.
 const routingHints = fs.readFileSync(path.join(configDir, 'routingHints.ts'), 'utf8');
 const index = fs.readFileSync(path.join(configDir, 'index.ts'), 'utf8');
 
-// Remove import statements
+// Remove ALL import statements (including 'import type')
 function removeImports(content) {
-  return content.replace(/^import\s+.*from\s+['"].*['"];?\s*$/gm, '');
+  return content
+    .replace(/^import\s+type\s+\{[^}]+\}\s+from\s+['"].*['"];?\s*$/gm, '')
+    .replace(/^import\s+type\s+.*from\s+['"].*['"];?\s*$/gm, '')
+    .replace(/^import\s+.*from\s+['"].*['"];?\s*$/gm, '');
 }
 
 // Combine everything

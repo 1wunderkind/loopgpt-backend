@@ -231,14 +231,6 @@ export type MCPToolManifest = {
  * Last Updated: 2025-12-03
  */
 
-import type {
-  AppIdentity,
-  AppTitles,
-  SeasonalKeywords,
-  TheLoopGPTMetadata,
-  AppStoreSubmission,
-  MCPToolManifest
-} from "./types.ts";
 
 // ============================================================================
 // Part 1: App Identity & Branding
