@@ -7,6 +7,7 @@
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 import { 
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
   normalizeIngredients, 
   groupIngredients, 
   toMealMeCartItems,
@@ -81,5 +82,5 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 // Export with logging middleware
-export default withLogging(handler, "normalize_ingredients");
+export default withStandardAPI(withLogging(handler, "normalize_ingredients"));
 

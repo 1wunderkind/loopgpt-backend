@@ -1,6 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
-serve(async (req) => {
+import { withHeavyOperation } from "../_shared/security/applyMiddleware.ts";
+
+const handler = async (req) => {
   try {
     const { user_id, days_ahead } = await req.json();
     
@@ -140,4 +142,7 @@ serve(async (req) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withHeavyOperation(handler));
 

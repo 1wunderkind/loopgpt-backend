@@ -24,6 +24,8 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -36,7 +38,7 @@ interface UpgradeRequest {
   plan?: 'monthly' | 'annual' | 'family';
 }
 
-serve(async (req) => {
+const handler = async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -185,4 +187,7 @@ serve(async (req) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withStandardAPI(handler));
 

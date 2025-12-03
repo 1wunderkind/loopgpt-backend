@@ -11,6 +11,7 @@ import { createErrorResponse, createSuccessResponse, validateRequired } from "..
 import { formatCountryDisplay, isValidCountryCode, normalizeCountryCode } from "../_lib/locationUtils.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 interface ChangeLocationRequest {
   chatgpt_user_id: string;
   new_country: string;
@@ -161,5 +162,5 @@ async function handler(req: Request): Promise<Response> {
 }
 
 // Export handler with logging middleware
-serve(withLogging(handler));
+serve(withStandardAPI(withLogging(handler)));
 

@@ -6,6 +6,7 @@
 
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
+import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
 
 const SDK_BASE = Deno.env.get("MEALME_SDK_BASE") || "https://sdk.mealme.ai";
 const PARTNER = Deno.env.get("MEALME_PARTNER_NAME") || "whatsfordinner";
@@ -67,5 +68,5 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 // Export with logging middleware
-export default withLogging(handler, "mealme_checkout_url");
+export default withOrderAPI(withLogging(handler, "mealme_checkout_url"));
 

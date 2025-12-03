@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { FoodResolver } from "../lib/food_resolver.ts";
+import { withHeavyOperation } from "../_shared/security/applyMiddleware.ts";
+
 
 // Simple meal templates by type
 const MEAL_TEMPLATES = {
@@ -29,7 +31,7 @@ const MEAL_TEMPLATES = {
   ]
 };
 
-serve(async (req) => {
+const handler = async (req) => {
   try {
     const { user_id, meal_type } = await req.json();
     
@@ -93,4 +95,7 @@ serve(async (req) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withHeavyOperation(handler));
 

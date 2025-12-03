@@ -7,6 +7,8 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getFoodSuggestions } from "../../lib/food_lookup_helper.ts";
+import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
+
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -18,7 +20,7 @@ interface SearchRequest {
   limit?: number;
 }
 
-Deno.serve(async (req) => {
+Deno.const handler = async (req) => {
   try {
     // CORS headers
     if (req.method === "OPTIONS") {
@@ -104,4 +106,7 @@ Deno.serve(async (req) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withSearchAPI(handler));
 

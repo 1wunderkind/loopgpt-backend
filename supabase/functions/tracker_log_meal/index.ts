@@ -19,7 +19,7 @@ interface LogFoodRequest {
   notes?: string
 }
 
-Deno.serve(async (req) => {
+const handler = async (req: Request): Promise<Response> => {
   try {
     // Parse request
     const body: LogFoodRequest = await req.json()
@@ -100,6 +100,7 @@ Deno.serve(async (req) => {
       
       console.log(`✅ Food found via ${foodLookup.source}: ${food_name}`);
 import { createAuthenticatedClient } from "../_lib/auth.ts";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
     } else {
       // Estimate using simple heuristics (fallback)
       const grams = convertToGrams(quantity, quantity_unit)
@@ -176,7 +177,9 @@ import { createAuthenticatedClient } from "../_lib/auth.ts";
       headers: { 'Content-Type': 'application/json' }
     })
   }
-})
+};
+
+Deno.serve(withStandardAPI(handler));
 
 // =====================================================
 // HELPER FUNCTIONS

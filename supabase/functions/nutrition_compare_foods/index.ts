@@ -1,7 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { FoodResolver } from "../lib/food_resolver.ts";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
-serve(async (req) => {
+
+const handler = async (req) => {
   try {
     const { food_a, food_b } = await req.json();
     
@@ -87,4 +89,7 @@ serve(async (req) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withStandardAPI(handler));
 

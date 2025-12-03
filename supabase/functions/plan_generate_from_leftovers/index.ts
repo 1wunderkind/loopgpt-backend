@@ -10,6 +10,8 @@
 
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { withHeavyOperation } from "../_shared/security/applyMiddleware.ts";
+
 
 // ============================================================================
 // Environment Configuration
@@ -324,7 +326,7 @@ STYLE:
 // Main Request Handler
 // ============================================================================
 
-serve(async (req: Request) => {
+const handler = async (req: Request) => {
   // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response(null, {
@@ -506,4 +508,7 @@ Remember to output valid JSON only, no markdown formatting.`;
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withHeavyOperation(handler));
 

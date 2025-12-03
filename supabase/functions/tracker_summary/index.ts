@@ -13,7 +13,7 @@ interface GetSummaryRequest {
   date?: string  // YYYY-MM-DD, defaults to today
 }
 
-Deno.serve(async (req) => {
+const handler = async (req: Request): Promise<Response> => {
   try {
     // Parse request
     const body: GetSummaryRequest = await req.json()
@@ -160,7 +160,9 @@ Deno.serve(async (req) => {
       headers: { 'Content-Type': 'application/json' }
     })
   }
-})
+};
+
+Deno.serve(withStandardAPI(handler));
 
 // =====================================================
 // HELPER FUNCTIONS

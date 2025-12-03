@@ -19,6 +19,7 @@ import { handleError } from "../../middleware/errorHandler.ts";
 import { formatWeightLogConfirmation } from "../_lib/weightTrackerMultilingual.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 interface LogWeightRequest {
   chatgpt_user_id: string;
   weight: number;
@@ -184,5 +185,5 @@ async function handler(req: Request): Promise<Response> {
 }
 
 // Export with logging middleware
-export default withLogging(handler);
+export default withStandardAPI(withLogging(handler));
 

@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { FoodResolver } from "../lib/food_resolver.ts";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
+
 
 // Nutrient mappings
 const NUTRIENT_FIELDS: Record<string, string> = {
@@ -12,7 +14,7 @@ const NUTRIENT_FIELDS: Record<string, string> = {
   "energy": "calories"
 };
 
-serve(async (req) => {
+const handler = async (req) => {
   try {
     const { nutrient_name } = await req.json();
     
@@ -79,4 +81,7 @@ serve(async (req) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withStandardAPI(handler));
 

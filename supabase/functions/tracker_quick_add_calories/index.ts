@@ -16,7 +16,7 @@ interface QuickAddRequest {
   log_date?: string  // YYYY-MM-DD
 }
 
-Deno.serve(async (req) => {
+const handler = async (req: Request): Promise<Response> => {
   try {
     // Parse request
     const body: QuickAddRequest = await req.json()
@@ -150,7 +150,9 @@ Deno.serve(async (req) => {
       headers: { 'Content-Type': 'application/json' }
     })
   }
-})
+};
+
+Deno.serve(withStandardAPI(handler));
 
 // =====================================================
 // HELPER FUNCTIONS

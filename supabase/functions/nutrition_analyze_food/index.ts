@@ -11,6 +11,8 @@
 
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
+
 
 // ============================================================================
 // Environment Configuration
@@ -646,7 +648,7 @@ function formatHealthyDeliverySuggestions(options: DeliveryOption[]): string {
 // Main Request Handler
 // ============================================================================
 
-serve(async (req: Request) => {
+const handler = async (req: Request) => {
   // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response(null, {
@@ -728,4 +730,7 @@ serve(async (req: Request) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withOrderAPI(handler));
 

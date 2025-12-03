@@ -7,6 +7,7 @@
 
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
+import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -165,6 +166,6 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
-// Export with logging middleware
-export default withLogging(handler, "mealme_order_plan");
+// Export with logging and security middleware
+export default withOrderAPI(withLogging(handler, "mealme_order_plan"));
 

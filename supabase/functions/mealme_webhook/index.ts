@@ -7,6 +7,7 @@
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { withWebhook } from "../_shared/security/applyMiddleware.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -154,5 +155,5 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 // Export with logging middleware
-export default withLogging(handler, "mealme_webhook");
+export default withWebhook(withLogging(handler, "mealme_webhook"));
 

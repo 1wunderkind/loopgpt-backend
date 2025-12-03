@@ -15,6 +15,7 @@ import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../_lib/del
 import { rankPartners, suggestAlternativeCuisines } from "../_lib/deliveryMatcher.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 import type {
+import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
   GetDeliveryRecommendationsRequest,
   GetDeliveryRecommendationsResponse,
   DeliveryPartner,
@@ -198,5 +199,5 @@ async function handler(req: Request): Promise<Response> {
   }
 }
 
-export default withLogging(handler, "get_delivery_recommendations");
+export default withSearchAPI(withLogging(handler, "get_delivery_recommendations"));
 

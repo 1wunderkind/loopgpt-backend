@@ -17,6 +17,7 @@ import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 interface GetAffiliateByCountryRequest {
   country: string;
   limit?: number;
@@ -170,5 +171,5 @@ async function handler(req: Request): Promise<Response> {
 }
 
 // Export handler with logging middleware
-serve(withLogging(handler));
+serve(withStandardAPI(withLogging(handler)));
 

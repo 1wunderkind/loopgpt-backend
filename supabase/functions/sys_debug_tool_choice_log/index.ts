@@ -1,7 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { withSystemAPI } from "../_shared/security/applyMiddleware.ts";
 
-serve(async (req) => {
+
+const handler = async (req) => {
   try {
     const { input, chosen_tool, confidence } = await req.json();
     
@@ -51,4 +53,7 @@ serve(async (req) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withSystemAPI(handler));
 

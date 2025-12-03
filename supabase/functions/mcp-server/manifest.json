@@ -1087,6 +1087,264 @@
           }
         }
       }
+    },
+    {
+      "name": "loopgpt_route_order",
+      "category": "Commerce",
+      "description": "Routes an order across multiple commerce providers (MealMe, Instacart, Shipt, Amazon Fresh, Walmart) to find the best price, delivery time, and availability. Supports split orders across multiple providers for optimal fulfillment. Returns a quote with confirmation token - order is NOT placed until loopgpt_confirm_order is called.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "Unique user identifier"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Product name"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "description": "Quantity to order"
+                },
+                "preferences": {
+                  "type": "object",
+                  "description": "Optional product preferences (size, brand, etc.)"
+                }
+              },
+              "required": ["name", "quantity"]
+            },
+            "description": "List of items to order"
+          },
+          "delivery_address": {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "zip": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string",
+                "default": "US"
+              }
+            },
+            "required": ["street", "city", "state", "zip"],
+            "description": "Delivery address"
+          },
+          "preferences": {
+            "type": "object",
+            "properties": {
+              "max_delivery_time_minutes": {
+                "type": "integer",
+                "description": "Maximum acceptable delivery time"
+              },
+              "max_delivery_fee": {
+                "type": "number",
+                "description": "Maximum acceptable delivery fee"
+              },
+              "preferred_providers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Preferred provider names (mealme, instacart, shipt, amazon_fresh, walmart)"
+              },
+              "allow_split_orders": {
+                "type": "boolean",
+                "description": "Allow splitting order across multiple providers",
+                "default": true
+              },
+              "split_strategy": {
+                "type": "string",
+                "enum": ["cost", "speed", "providers"],
+                "description": "Strategy for split orders: cost (minimize total), speed (minimize time), providers (minimize provider count)",
+                "default": "cost"
+              }
+            },
+            "description": "Optional ordering preferences"
+          }
+        },
+        "required": ["user_id", "items", "delivery_address"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "quote": {
+            "type": "object",
+            "properties": {
+              "confirmation_token": {
+                "type": "string",
+                "description": "Token to confirm this order (expires in 15 minutes)"
+              },
+              "is_split_order": {
+                "type": "boolean",
+                "description": "Whether order is split across multiple providers"
+              },
+              "orders": {
+                "type": "array",
+                "description": "Array of provider quotes (1 for single provider, multiple for split orders)",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string"
+                    },
+                    "items": {
+                      "type": "array"
+                    },
+                    "subtotal": {
+                      "type": "number"
+                    },
+                    "delivery_fee": {
+                      "type": "number"
+                    },
+                    "tax": {
+                      "type": "number"
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "estimated_delivery_minutes": {
+                      "type": "integer"
+                    },
+                    "score": {
+                      "type": "number",
+                      "description": "Provider score (0-100, higher is better)"
+                    }
+                  }
+                }
+              },
+              "total_cost": {
+                "type": "number",
+                "description": "Total cost across all providers"
+              },
+              "total_items": {
+                "type": "integer"
+              },
+              "unavailable_items": {
+                "type": "array",
+                "description": "Items that couldn't be found at any provider"
+              },
+              "expires_at": {
+                "type": "string",
+                "description": "When this quote expires (ISO 8601)"
+              }
+            }
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "loopgpt_confirm_order",
+      "category": "Commerce",
+      "description": "Confirms and places a pending order using the confirmation token from loopgpt_route_order. This actually charges the user and submits the order to the provider(s).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "confirmation_token": {
+            "type": "string",
+            "description": "Confirmation token from loopgpt_route_order"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "Unique user identifier"
+          },
+          "payment_method": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["card", "paypal", "apple_pay", "google_pay"]
+              },
+              "token": {
+                "type": "string",
+                "description": "Payment method token from payment processor"
+              }
+            },
+            "required": ["type", "token"],
+            "description": "Payment method details"
+          }
+        },
+        "required": ["confirmation_token", "user_id", "payment_method"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "order_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Order IDs from provider(s)"
+          },
+          "tracking_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tracking URLs for each order"
+          },
+          "estimated_delivery": {
+            "type": "string",
+            "description": "Estimated delivery time (ISO 8601)"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "loopgpt_cancel_order",
+      "category": "Commerce",
+      "description": "Cancels a pending order before it's confirmed. Can only cancel orders that haven't been submitted to providers yet (within 15-minute confirmation window).",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "confirmation_token": {
+            "type": "string",
+            "description": "Confirmation token from loopgpt_route_order"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "Unique user identifier"
+          }
+        },
+        "required": ["confirmation_token", "user_id"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
     }
   ]
 }

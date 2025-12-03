@@ -1,7 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import manifest from "../manifest_v2.json" assert { type: "json" };
+import { withSystemAPI } from "../_shared/security/applyMiddleware.ts";
 
-serve(async (req) => {
+
+const handler = async (req) => {
   try {
     // Get all tools from manifest
     const tools = manifest.tools.filter((t: any) => !t.deprecated);
@@ -48,4 +50,7 @@ serve(async (req) => {
     );
   }
 });
+
+// Apply security middleware (rate limiting, request size limits, security headers)
+serve(withSystemAPI(handler));
 

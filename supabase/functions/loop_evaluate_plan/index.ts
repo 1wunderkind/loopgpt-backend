@@ -19,6 +19,7 @@ import { handleError } from "../../middleware/errorHandler.ts";
 import { formatPlanEvaluation } from "../_lib/weightTrackerMultilingual.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
+import { withHeavyOperation } from "../_shared/security/applyMiddleware.ts";
 interface EvaluatePlanOutcomeRequest {
   chatgpt_user_id: string;
   meal_plan_id?: string;
@@ -254,5 +255,5 @@ function generateRecommendation(
 }
 
 // Export with logging middleware
-export default withLogging(handler);
+export default withHeavyOperation(withLogging(handler));
 

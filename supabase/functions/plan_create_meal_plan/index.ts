@@ -18,6 +18,7 @@ import {
   calculateLocationConfidence 
 } from "../_lib/locationUtils.ts";
 import type { GenerateWeekPlanRequest, GenerateWeekPlanResponse } from "../_lib/types.ts";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {
@@ -294,5 +295,5 @@ function getDateAfterDays(startDate: string, days: number): string {
 }
 
 // Export handler with logging middleware
-serve(withLogging(handler));
+serve(withStandardAPI(withLogging(handler)));
 

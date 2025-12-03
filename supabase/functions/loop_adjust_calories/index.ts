@@ -17,6 +17,7 @@ import { handleError } from "../../middleware/errorHandler.ts";
 import { formatFeedbackConfirmation } from "../_lib/weightTrackerMultilingual.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
+import { withHeavyOperation } from "../_shared/security/applyMiddleware.ts";
 interface PushPlanFeedbackRequest {
   chatgpt_user_id: string;
   outcome_id: string;
@@ -161,5 +162,5 @@ async function handler(req: Request): Promise<Response> {
 }
 
 // Export with logging middleware
-export default withLogging(handler);
+export default withHeavyOperation(withLogging(handler));
 
