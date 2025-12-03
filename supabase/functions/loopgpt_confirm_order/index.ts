@@ -112,7 +112,7 @@ const handler = async (req: Request) => {
       }
     );
   }
-});
+};
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withOrderAPI(handler));
