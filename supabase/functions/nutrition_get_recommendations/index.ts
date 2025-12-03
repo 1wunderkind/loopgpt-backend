@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { FoodResolver } from "../lib/food_resolver.ts";
+import { FoodResolver } from "../_lib/food_resolver.ts";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
 
