@@ -3,7 +3,10 @@
  * Provides typed interfaces to call K-Cal GPT, LeftoverGPT, and NutritionGPT
  */
 
-import { config } from "../config/index.ts";
+// Environment variables for external GPT endpoints
+const KCAL_ENDPOINT = Deno.env.get("KCAL_GPT_ENDPOINT") || "";
+const LEFTOVER_ENDPOINT = Deno.env.get("LEFTOVER_GPT_ENDPOINT") || "";
+const NUTRITION_ENDPOINT = Deno.env.get("NUTRITION_GPT_ENDPOINT") || "";
 import type {
   KCalGoals,
   LeftoverRecipeRequest,
@@ -75,7 +78,7 @@ async function callMCP<T>(
  */
 export async function getKCalGoals(chatgptUserId: string): Promise<KCalGoals | null> {
   const response = await callMCP<KCalGoals>(
-    config.externalGPTs.kcalEndpoint,
+    KCAL_ENDPOINT,
     "tools/call",
     {
       name: "get_user_goals",
@@ -103,7 +106,7 @@ export async function logMealToKCal(
   macros?: { protein_g?: number; carbs_g?: number; fat_g?: number }
 ): Promise<boolean> {
   const response = await callMCP(
-    config.externalGPTs.kcalEndpoint,
+    KCAL_ENDPOINT,
     "tools/call",
     {
       name: "log_food",
@@ -127,7 +130,7 @@ export async function getDailySummary(
   date?: string
 ): Promise<unknown> {
   const response = await callMCP(
-    config.externalGPTs.kcalEndpoint,
+    KCAL_ENDPOINT,
     "tools/call",
     {
       name: "get_daily_summary",
@@ -152,7 +155,7 @@ export async function getRecipeFromLeftover(
   request: LeftoverRecipeRequest
 ): Promise<LeftoverRecipeResponse | null> {
   const response = await callMCP<LeftoverRecipeResponse>(
-    config.externalGPTs.leftoverEndpoint,
+    LEFTOVER_ENDPOINT,
     "tools/call",
     {
       name: "generate_recipe",
@@ -211,7 +214,7 @@ export async function getMacrosFromNutrition(
   request: NutritionAnalysisRequest
 ): Promise<NutritionAnalysisResponse | null> {
   const response = await callMCP<NutritionAnalysisResponse>(
-    config.externalGPTs.nutritionEndpoint,
+    NUTRITION_ENDPOINT,
     "tools/call",
     {
       name: "analyze_nutrition",
@@ -257,13 +260,13 @@ export async function healthCheckExternalGPTs(): Promise<{
   nutrition: boolean;
 }> {
   const checks = await Promise.all([
-    fetch(config.externalGPTs.kcalEndpoint, { method: "HEAD" })
+    fetch(KCAL_ENDPOINT, { method: "HEAD" })
       .then(() => true)
       .catch(() => false),
-    fetch(config.externalGPTs.leftoverEndpoint, { method: "HEAD" })
+    fetch(LEFTOVER_ENDPOINT, { method: "HEAD" })
       .then(() => true)
       .catch(() => false),
-    fetch(config.externalGPTs.nutritionEndpoint, { method: "HEAD" })
+    fetch(NUTRITION_ENDPOINT, { method: "HEAD" })
       .then(() => true)
       .catch(() => false),
   ]);
