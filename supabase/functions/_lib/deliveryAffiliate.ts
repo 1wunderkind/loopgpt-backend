@@ -3,7 +3,6 @@
  * Generates affiliate URLs for food delivery partners
  */
 
-import { config } from "../config/index.ts";
 import type { DeliveryPartner, DeliveryAffiliateLink } from "./types.ts";
 
 /**
