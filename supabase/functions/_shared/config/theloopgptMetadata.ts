@@ -245,6 +245,87 @@ export const DIFFERENTIATOR_KEYWORDS = [
 ] as const;
 
 // ============================================================================
+// Main Metadata Export
+// ============================================================================
+
+/**
+ * Complete TheLoopGPT metadata package
+ * This is the main export that combines all metadata components
+ */
+export const THELOOPGPT_METADATA = {
+  // Identity
+  name: APP_IDENTITY.displayName,
+  appId: APP_IDENTITY.appId,
+  shortName: APP_IDENTITY.shortName,
+  version: APP_IDENTITY.METADATA_VERSION,
+  lastUpdated: APP_IDENTITY.LAST_UPDATED,
+  
+  // Titles
+  tagline: APP_TITLES.primary,
+  subtitle: APP_TITLES.subtitle,
+  titleVariants: APP_TITLES.variants,
+  
+  // Descriptions
+  shortDescription: SHORT_DESCRIPTION,
+  longDescription: LONG_DESCRIPTION,
+  
+  // Keywords
+  keywords: getAllKeywords(),
+  primaryTags: [...PRIMARY_TAGS],
+  secondaryTags: [...SECONDARY_TAGS],
+  searchKeywords: [...SEARCH_KEYWORDS],
+  differentiatorKeywords: [...DIFFERENTIATOR_KEYWORDS],
+  
+  // Categories
+  categories: [
+    "Food & Drink",
+    "Health & Fitness",
+    "Lifestyle",
+    "Productivity"
+  ],
+  
+  // URLs
+  website: APP_IDENTITY.website,
+  statusPage: APP_IDENTITY.statusPage,
+  supportEmail: APP_IDENTITY.supportEmail,
+  
+  // Legacy names
+  legacyNames: APP_IDENTITY.legacyNames,
+  
+  // Feature highlights
+  features: [
+    "AI Recipe Generation from Leftovers",
+    "800,000+ Food Nutrition Database",
+    "Natural Language Calorie Tracking",
+    "Personalized Meal Planning",
+    "Smart Grocery Lists",
+    "Weight Goal Tracking",
+    "Macro Calculator",
+    "Delivery Integration"
+  ],
+  
+  // Use cases
+  useCases: [
+    "Reduce food waste by cooking with leftovers",
+    "Track calories and macros for weight goals",
+    "Plan weekly meals based on dietary preferences",
+    "Calculate nutrition for any recipe",
+    "Create organized grocery lists",
+    "Monitor progress toward fitness goals"
+  ],
+  
+  // Target users
+  targetUsers: [
+    "Home cooks",
+    "Fitness enthusiasts",
+    "Busy professionals",
+    "Families",
+    "Budget-conscious shoppers",
+    "Health-conscious individuals"
+  ]
+} as const;
+
+// ============================================================================
 // Export Helper Functions
 // ============================================================================
 
