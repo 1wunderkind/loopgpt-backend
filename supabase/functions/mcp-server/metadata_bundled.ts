@@ -4157,15 +4157,6 @@ export const ROUTING_METADATA: RoutingMetadata = {
  */
 
 // Export types
-export type {
-  ToolDescription,
-  ToolParameter,
-  RoutingMetadata,
-  TriggerHint,
-  NegativeHint,
-  ToolChain,
-  AppMetadata
-} from "./types.ts";
 
 // Export main metadata
 
