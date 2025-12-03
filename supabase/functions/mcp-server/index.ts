@@ -19,6 +19,17 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { MANIFEST } from "./manifest_embedded.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 
+// Import TheLoopGPT metadata configuration
+import {
+  THELOOPGPT_METADATA,
+  ALL_TOOL_DESCRIPTIONS,
+  ROUTING_METADATA,
+  getCompleteMetadata,
+  getToolWithRouting,
+  getRecommendedTool,
+  MCP_SERVER_INFO
+} from "../_shared/config/index.ts";
+
 // ============================================================================
 // Environment Configuration
 // ============================================================================
@@ -537,7 +548,164 @@ serve(async (req: Request) => {
   }
   
   // ========================================================================
-  // ROUTE 3: Fallback - Unknown Route
+  // ROUTE 3: Enhanced Metadata Endpoints
+  // ========================================================================
+  
+  // GET /metadata - Complete metadata package
+  if (req.method === "GET" && url.pathname === "/metadata") {
+    try {
+      const metadata = getCompleteMetadata();
+      return new Response(JSON.stringify(metadata, null, 2), {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json"
+        }
+      });
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ error: "Failed to load metadata" }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+    }
+  }
+  
+  // GET /metadata/tool/:tool_id - Tool description with routing hints
+  const toolMetadataMatch = url.pathname.match(/\/metadata\/tool\/([\w_]+)$/);
+  if (req.method === "GET" && toolMetadataMatch) {
+    const toolId = toolMetadataMatch[1];
+    try {
+      const toolWithRouting = getToolWithRouting(toolId);
+      if (!toolWithRouting) {
+        return new Response(
+          JSON.stringify({ error: `Tool '${toolId}' not found` }),
+          {
+            status: 404,
+            headers: {
+              ...corsHeaders,
+              "Content-Type": "application/json"
+            }
+          }
+        );
+      }
+      return new Response(JSON.stringify(toolWithRouting, null, 2), {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json"
+        }
+      });
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ error: "Failed to load tool metadata" }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+    }
+  }
+  
+  // POST /metadata/recommend - Get recommended tool for query
+  if (req.method === "POST" && url.pathname === "/metadata/recommend") {
+    try {
+      const body = await req.json();
+      const query = body.query || body.user_query || "";
+      
+      if (!query) {
+        return new Response(
+          JSON.stringify({ error: "Missing 'query' field in request body" }),
+          {
+            status: 400,
+            headers: {
+              ...corsHeaders,
+              "Content-Type": "application/json"
+            }
+          }
+        );
+      }
+      
+      const recommendation = getRecommendedTool(query);
+      return new Response(JSON.stringify(recommendation || { message: "No matching tool found" }, null, 2), {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json"
+        }
+      });
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ error: "Failed to process recommendation request" }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+    }
+  }
+  
+  // GET /metadata/routing - Routing hints and trigger examples
+  if (req.method === "GET" && url.pathname === "/metadata/routing") {
+    try {
+      return new Response(JSON.stringify(ROUTING_METADATA, null, 2), {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json"
+        }
+      });
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ error: "Failed to load routing metadata" }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+    }
+  }
+  
+  // GET /metadata/app - App identity and description
+  if (req.method === "GET" && url.pathname === "/metadata/app") {
+    try {
+      return new Response(JSON.stringify(THELOOPGPT_METADATA, null, 2), {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json"
+        }
+      });
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ error: "Failed to load app metadata" }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+    }
+  }
+  
+  // ========================================================================
+  // ROUTE 4: Fallback - Unknown Route
   // ========================================================================
   return new Response(
     JSON.stringify({
@@ -545,7 +713,12 @@ serve(async (req: Request) => {
       hint: "Use GET / for manifest or POST /tools/{tool_name} to execute a tool",
       available_routes: [
         "GET /",
-        "POST /tools/{tool_name}"
+        "POST /tools/{tool_name}",
+        "GET /metadata",
+        "GET /metadata/tool/:tool_id",
+        "POST /metadata/recommend",
+        "GET /metadata/routing",
+        "GET /metadata/app"
       ]
     }),
     {
