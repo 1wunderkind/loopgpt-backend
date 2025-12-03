@@ -147,7 +147,7 @@ const handler = async (req) => {
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
-});
+};
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withWebhook(handler));

@@ -556,5 +556,5 @@ serve(async (req: Request) => {
       }
     }
   );
-});
+};
 

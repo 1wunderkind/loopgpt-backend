@@ -507,7 +507,7 @@ Remember to output valid JSON only, no markdown formatting.`;
       }
     );
   }
-});
+};
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withHeavyOperation(handler));

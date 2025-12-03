@@ -190,7 +190,7 @@ Deno.const handler = async (req) => {
       }
     );
   }
-});
+};
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withSearchAPI(handler));
