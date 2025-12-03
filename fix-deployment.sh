@@ -1,3 +1,22 @@
+#!/bin/bash
+
+# Fix deployment by moving config directory out of functions folder
+# This prevents Supabase from trying to bundle it during deployment
+
+echo "🔧 Fixing TheLoopGPT Backend Deployment..."
+
+# Step 1: Move config directory to project root
+echo "📦 Moving config directory..."
+if [ -d "supabase/functions/_lib/config" ]; then
+  mv supabase/functions/_lib/config ./metadata-config
+  echo "✅ Moved supabase/functions/_lib/config → ./metadata-config"
+else
+  echo "⚠️  Config directory not found (may already be moved)"
+fi
+
+# Step 2: Update bundle script to use new location
+echo "📝 Updating bundle script..."
+cat > bundle-metadata.js << 'EOF'
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
@@ -58,3 +77,30 @@ const bundled = \`/**
 fs.writeFileSync(outputFile, bundled);
 console.log(\`✅ Bundled metadata written to: \${outputFile}\`);
 console.log(\`📊 File size: \${(fs.statSync(outputFile).size / 1024).toFixed(2)} KB\`);
+EOF
+
+chmod +x bundle-metadata.js
+
+# Step 3: Regenerate bundled file
+echo "🔄 Regenerating bundled metadata..."
+node bundle-metadata.js
+
+# Step 4: Verify no problematic imports
+echo "🔍 Verifying bundled file..."
+EXPORT_COUNT=$(grep -c "} from" supabase/functions/mcp-server/metadata_bundled.ts || echo "0")
+if [ "$EXPORT_COUNT" -eq "1" ]; then
+  echo "✅ Bundled file looks good (only comment contains 'from')"
+else
+  echo "⚠️  Found $EXPORT_COUNT instances of '} from' - may need manual review"
+fi
+
+# Step 5: Git operations
+echo "📝 Committing changes..."
+git add -A
+git commit -m "fix: Move config directory out of functions folder to prevent bundling conflicts"
+
+echo ""
+echo "✅ Fix complete! Next steps:"
+echo "1. Push to GitHub: git push origin master"
+echo "2. Deploy: supabase functions deploy mcp-server --no-verify-jwt"
+echo "3. Test all 5 endpoints"
