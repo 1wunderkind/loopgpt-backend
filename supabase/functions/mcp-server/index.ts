@@ -28,7 +28,7 @@ import {
   getToolWithRouting,
   getRecommendedTool,
   MCP_SERVER_INFO
-} from "../_lib/config/index.ts";
+} from "./metadata.ts";
 
 // ============================================================================
 // Environment Configuration
