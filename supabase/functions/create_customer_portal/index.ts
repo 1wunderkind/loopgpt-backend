@@ -31,7 +31,7 @@ interface PortalRequest {
   chatgpt_user_id: string;
 }
 
-const handler = async (req) => {
+const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
