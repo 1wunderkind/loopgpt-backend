@@ -5,7 +5,7 @@
  * Import from this file to access any metadata component.
  * 
  * Usage:
- *   import { THELOOPGPT_METADATA, ALL_TOOL_DESCRIPTIONS, ROUTING_METADATA } from "./_shared/config/index.ts";
+ *   import { THELOOPGPT_METADATA, ALL_TOOL_DESCRIPTIONS, ROUTING_METADATA } from "../_lib/config/index.ts";
  */
 
 // Export types
