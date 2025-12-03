@@ -270,7 +270,20 @@ export const THELOOPGPT_METADATA = {
   longDescription: LONG_DESCRIPTION,
   
   // Keywords
-  keywords: getAllKeywords(),
+  keywords: [
+    ...PRIMARY_TAGS,
+    ...SECONDARY_TAGS,
+    ...SEARCH_KEYWORDS,
+    ...DIFFERENTIATOR_KEYWORDS,
+    ...SEASONAL_KEYWORDS.winter,
+    ...SEASONAL_KEYWORDS.spring,
+    ...SEASONAL_KEYWORDS.summer,
+    ...SEASONAL_KEYWORDS.fall,
+    ...SEASONAL_KEYWORDS.timeOfDay.morning,
+    ...SEASONAL_KEYWORDS.timeOfDay.afternoon,
+    ...SEASONAL_KEYWORDS.timeOfDay.evening,
+    ...SEASONAL_KEYWORDS.timeOfDay.lateNight
+  ].filter((v, i, a) => a.indexOf(v) === i), // Remove duplicates
   primaryTags: [...PRIMARY_TAGS],
   secondaryTags: [...SECONDARY_TAGS],
   searchKeywords: [...SEARCH_KEYWORDS],
