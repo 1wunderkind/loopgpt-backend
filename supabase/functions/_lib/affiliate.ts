@@ -3,7 +3,9 @@
  * Generates affiliate URLs for ingredients
  */
 
-import { config } from "../config/index.ts";
+// Environment variables for affiliate configuration
+const AMAZON_AFFILIATE_TAG = Deno.env.get("AMAZON_AFFILIATE_TAG") || "";
+const INSTACART_AFFILIATE_ID = Deno.env.get("INSTACART_AFFILIATE_ID") || "";
 import type { AffiliateLinks } from "./types.ts";
 
 /**
@@ -23,13 +25,13 @@ export function buildAffiliateLinksForIngredient(ingredient: string): AffiliateL
   const links: AffiliateLinks = {};
 
   // Amazon Fresh link
-  if (config.affiliate.amazonTag) {
-    links.amazon_fresh = `https://www.amazon.com/s?k=${encoded}&tag=${config.affiliate.amazonTag}`;
+  if (AMAZON_AFFILIATE_TAG) {
+    links.amazon_fresh = `https://www.amazon.com/s?k=${encoded}&tag=${AMAZON_AFFILIATE_TAG}`;
   }
 
   // Instacart link
-  if (config.affiliate.instacartId) {
-    links.instacart = `https://www.instacart.com/store/search?q=${encoded}&utm_source=affiliate&utm_medium=mealplanner&utm_campaign=${config.affiliate.instacartId}`;
+  if (INSTACART_AFFILIATE_ID) {
+    links.instacart = `https://www.instacart.com/store/search?q=${encoded}&utm_source=affiliate&utm_medium=mealplanner&utm_campaign=${INSTACART_AFFILIATE_ID}`;
   }
 
   // Walmart link (future)
@@ -65,7 +67,7 @@ export function buildCartUrl(
 
   switch (platform) {
     case "amazon_fresh":
-      return `https://www.amazon.com/s?k=${query}&tag=${config.affiliate.amazonTag}`;
+      return `https://www.amazon.com/s?k=${query}&tag=${AMAZON_AFFILIATE_TAG}`;
     case "instacart":
       return `https://www.instacart.com/store/search?q=${query}&utm_source=affiliate&utm_medium=mealplanner`;
     default:
