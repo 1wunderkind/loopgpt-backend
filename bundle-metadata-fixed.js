@@ -11,28 +11,22 @@ const types = fs.readFileSync(path.join(configDir, 'types.ts'), 'utf8');
 const theloopgptMetadata = fs.readFileSync(path.join(configDir, 'theloopgptMetadata.ts'), 'utf8');
 const toolDescriptions = fs.readFileSync(path.join(configDir, 'toolDescriptions.ts'), 'utf8');
 const routingHints = fs.readFileSync(path.join(configDir, 'routingHints.ts'), 'utf8');
-const indexFull = fs.readFileSync(path.join(configDir, 'index.ts'), 'utf8');
+const index = fs.readFileSync(path.join(configDir, 'index.ts'), 'utf8');
 
 function removeImports(content) {
   return content
     // Remove: export type { ... } from "..."
-    .replace(/export\s+type\s*\{[^}]*\}\s*from\s+['"].*['"];?\s*/gs, '')
-    // Remove: export { ... } from "..." (multiline)
-    .replace(/export\s*\{[^}]*\}\s*from\s+['"].*['"];?\s*/gs, '')
+    .replace(/export\s+type\s*\{[^}]*\}\s*from\s+['"].*['"];?/gs, '')
+    // Remove: export { ... } from "..."
+    .replace(/export\s*\{[^}]*\}\s*from\s+['"].*['"];?/gs, '')
     // Remove: import type { ... } from "..."
     .replace(/^import\s+type\s+\{[^}]+\}\s+from\s+['"].*['"];?\s*$/gm, '')
     // Remove: import type ... from "..."
     .replace(/^import\s+type\s+.*from\s+['"].*['"];?\s*$/gm, '')
     // Remove: import ... from "..."
-    .replace(/^import\s+.*from\s+['"].*['"];?\s*$/gm, '')
-    // Clean up extra blank lines
-    .replace(/\n\n\n+/g, '\n\n');
+    .replace(/^import\s+.*from\s+['"].*['"];?\s*$/gm, '');
+  // NOTE: We do NOT remove "export function" or "export const" - those are kept!
 }
-
-// For index.ts, we only want the convenience functions section (lines 89+)
-const indexLines = indexFull.split('\n');
-const convenienceFunctionsStart = indexLines.findIndex(line => line.includes('// CONVENIENCE FUNCTIONS'));
-const indexConvenienceFunctions = indexLines.slice(convenienceFunctionsStart).join('\n');
 
 const header = `/**
  * BUNDLED METADATA - AUTO-GENERATED
@@ -55,8 +49,8 @@ const parts = [
   removeImports(toolDescriptions),
   '\n// ============================================================================\n// ROUTING HINTS\n// ============================================================================\n',
   removeImports(routingHints),
-  '\n',
-  indexConvenienceFunctions
+  '\n// ============================================================================\n// CONVENIENCE FUNCTIONS (from index.ts)\n// ============================================================================\n',
+  removeImports(index)
 ];
 
 const bundled = parts.join('');
@@ -68,12 +62,3 @@ console.log('📊 File size:', (fs.statSync(outputFile).size / 1024).toFixed(2),
 // Verify the functions are present
 const functionCount = (bundled.match(/export function/g) || []).length;
 console.log('📊 Export functions found:', functionCount);
-
-// Verify key functions
-const hasGetCompleteMetadata = bundled.includes('export function getCompleteMetadata');
-const hasGetToolWithRouting = bundled.includes('export function getToolWithRouting');
-const hasMcpServerInfo = bundled.includes('export const MCP_SERVER_INFO');
-
-console.log('✅ getCompleteMetadata:', hasGetCompleteMetadata ? 'YES' : 'NO');
-console.log('✅ getToolWithRouting:', hasGetToolWithRouting ? 'YES' : 'NO');
-console.log('✅ MCP_SERVER_INFO:', hasMcpServerInfo ? 'YES' : 'NO');
