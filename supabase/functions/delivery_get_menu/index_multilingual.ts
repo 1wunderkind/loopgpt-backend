@@ -5,9 +5,9 @@
 
 import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
-import { matchDeliveryPartners } from "../../../../lib/deliveryMatcher.ts";
-import { formatDeliveryRecommendations, detectLanguage } from "../../../../lib/multilingual.ts";
-import type { GetDeliveryRecommendationsRequest, GetDeliveryRecommendationsResponse } from "../../../../lib/types.ts";
+import { matchDeliveryPartners } from "../_lib/deliveryMatcher.ts";
+import { formatDeliveryRecommendations, detectLanguage } from "../_lib/multilingual.ts";
+import type { GetDeliveryRecommendationsRequest, GetDeliveryRecommendationsResponse } from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {

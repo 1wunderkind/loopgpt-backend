@@ -13,22 +13,22 @@ import {
   AppError,
   ErrorCodes,
 } from "../../middleware/errorHandler.ts";
-import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../../../../lib/deliveryAffiliate.ts";
-import { rankPartners, suggestAlternativeCuisines } from "../../../../lib/deliveryMatcher.ts";
-import { formatDeliveryRecommendations, detectLanguage } from "../../../../lib/multilingual.ts";
+import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../_lib/deliveryAffiliate.ts";
+import { rankPartners, suggestAlternativeCuisines } from "../_lib/deliveryMatcher.ts";
+import { formatDeliveryRecommendations, detectLanguage } from "../_lib/multilingual.ts";
 import {
   formatCountryDisplay,
   needsLocationConfirmation,
   generateLocationConfirmationPrompt,
   getAlternativeCountries,
   calculateLocationConfidence,
-} from "../../../../lib/locationUtils.ts";
+} from "../_lib/locationUtils.ts";
 import type {
   GetDeliveryRecommendationsRequest,
   GetDeliveryRecommendationsResponse,
   DeliveryPartner,
   DeliveryMatchCriteria,
-} from "../../../../lib/types.ts";
+} from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {
