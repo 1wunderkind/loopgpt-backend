@@ -128,7 +128,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
   }
-});
+};
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withStandardAPI(handler));
