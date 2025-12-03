@@ -1,0 +1,176 @@
+/**
+ * Grocery List Tool - Standalone Version
+ * Generate organized shopping lists from recipes or meal plans using OpenAI
+ */
+
+import OpenAI from "https://esm.sh/openai@4.28.0";
+
+// Simple input validation
+function validateGroceryInput(params: any) {
+  const hasRecipes = params.recipes && Array.isArray(params.recipes) && params.recipes.length > 0;
+  const hasMealPlan = params.mealPlan && typeof params.mealPlan === 'object';
+  
+  if (!hasRecipes && !hasMealPlan) {
+    throw new Error("Either recipes array or mealPlan object is required");
+  }
+  
+  return {
+    recipes: params.recipes || [],
+    mealPlan: params.mealPlan || null,
+    servings: params.servings || 1,
+    groupBy: params.groupBy || "category" // category, aisle, recipe
+  };
+}
+
+// JSON Schema for OpenAI Structured Outputs
+const GroceryListJsonSchema = {
+  type: "object",
+  properties: {
+    list: {
+      type: "object",
+      properties: {
+        id: { type: "string" },
+        name: { type: "string" },
+        totalItems: { type: "number" },
+        categories: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              items: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    quantity: { type: "string" },
+                    unit: { type: "string" },
+                    notes: { type: "string" },
+                    usedIn: {
+                      type: "array",
+                      items: { type: "string" }
+                    }
+                  },
+                  required: ["name", "quantity", "unit", "notes", "usedIn"],
+                  additionalProperties: false
+                }
+              }
+            },
+            required: ["name", "items"],
+            additionalProperties: false
+          }
+        },
+        estimatedCost: { type: "number" },
+        tips: {
+          type: "array",
+          items: { type: "string" }
+        }
+      },
+      required: ["id", "name", "totalItems", "categories", "estimatedCost", "tips"],
+      additionalProperties: false
+    }
+  },
+  required: ["list"],
+  additionalProperties: false
+};
+
+export async function generateGroceryList(params: any) {
+  const startTime = Date.now();
+  
+  try {
+    console.log("[grocery.list] Starting...", { params });
+    
+    // Validate input
+    const input = validateGroceryInput(params);
+    
+    // Get OpenAI client
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) {
+      throw new Error("OPENAI_API_KEY not configured");
+    }
+    
+    const client = new OpenAI({ apiKey });
+    
+    // Build prompts
+    const systemPrompt = `You are TheLoopGPT's grocery list generator. Create organized, practical shopping lists from recipes or meal plans.
+
+Rules:
+- Consolidate duplicate ingredients (e.g., "2 cups milk" + "1 cup milk" = "3 cups milk")
+- Group items by category (Produce, Dairy, Meat, Pantry, etc.) or aisle
+- Include notes for special items (e.g., "organic", "fresh", "frozen")
+- Track which recipes use each ingredient
+- Provide estimated total cost (USD)
+- Add shopping tips (e.g., "Buy in bulk", "Check for sales")
+- Use standard grocery quantities (e.g., "1 lb" not "453g")`;
+
+    let sourceText = "";
+    
+    if (input.recipes.length > 0) {
+      sourceText = `Recipes:\n${input.recipes.map((r: any, i: number) => {
+        const ingredients = r.ingredients?.map((ing: any) => 
+          `- ${ing.quantity || ''} ${ing.name}`.trim()
+        ).join('\n') || 'No ingredients';
+        
+        return `${i + 1}. ${r.name || 'Unnamed Recipe'}\n${ingredients}`;
+      }).join('\n\n')}`;
+    }
+    
+    if (input.mealPlan) {
+      const days = input.mealPlan.days || [];
+      sourceText += `\n\nMeal Plan: ${input.mealPlan.name || 'Unnamed Plan'}\n`;
+      sourceText += days.map((day: any) => {
+        const meals = day.meals || [];
+        return `Day ${day.dayNumber}:\n${meals.map((m: any) => {
+          const ingredients = m.ingredients?.map((ing: any) => 
+            `  - ${ing.quantity || ''} ${ing.name}`.trim()
+          ).join('\n') || '';
+          return `${m.mealType}: ${m.recipeName}\n${ingredients}`;
+        }).join('\n')}`;
+      }).join('\n\n');
+    }
+
+    const userPrompt = `Generate a grocery list for ${input.servings} serving(s).
+Group items by: ${input.groupBy}
+
+${sourceText}`;
+
+    console.log("[grocery.list] Calling OpenAI...");
+    
+    // Call OpenAI with Structured Outputs
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-2024-08-06",
+      temperature: 0.3, // Lower temperature for consistent consolidation
+      max_tokens: 4000,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "grocery_list",
+          strict: true,
+          schema: GroceryListJsonSchema,
+        },
+      },
+    });
+
+    const rawContent = completion.choices[0]?.message?.content;
+    if (!rawContent) {
+      throw new Error("Empty response from OpenAI");
+    }
+
+    const parsed = JSON.parse(rawContent);
+    const list = parsed.list || parsed;
+    
+    const duration = Date.now() - startTime;
+    console.log("[grocery.list] Success", { totalItems: list.totalItems, duration });
+    
+    return list;
+  } catch (error: any) {
+    const duration = Date.now() - startTime;
+    console.error("[grocery.list] Error", { error: error.message, duration });
+    throw error;
+  }
+}
