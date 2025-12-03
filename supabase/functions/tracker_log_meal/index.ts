@@ -8,6 +8,8 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { lookupFoodForTracker, convertToGrams } from '../../lib/tracker_food_integration.ts'
+import { createAuthenticatedClient } from "../_lib/auth.ts";
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
 interface LogFoodRequest {
   chatgpt_user_id: string
@@ -99,8 +101,6 @@ const handler = async (req: Request): Promise<Response> => {
       sugar_g = parseFloat((foodLookup.sugar_per_100g * multiplier).toFixed(1))
       
       console.log(`✅ Food found via ${foodLookup.source}: ${food_name}`);
-import { createAuthenticatedClient } from "../_lib/auth.ts";
-import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
     } else {
       // Estimate using simple heuristics (fallback)
       const grams = convertToGrams(quantity, quantity_unit)
