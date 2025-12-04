@@ -10,10 +10,13 @@ import { generateMealPlan, generateMealPlanWithGroceryList } from "./mealplan.ts
 import { generateGroceryList } from "./grocery.ts";
 import { checkRateLimit } from "./rateLimit.ts";
 import { StreamingResponse, wantsStreaming } from "./streaming.ts";
+import { routeFood } from "./foodRouter.ts";
 
 // Helper function to execute tools with optional streaming
 async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
   switch (toolName) {
+    case "food.router":
+      return await routeFood(params);
     case "recipes.generate":
       return await generateRecipes(params);
     case "recipes.generateWithNutrition":
@@ -33,9 +36,9 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
 
 const MANIFEST = {
   name: "TheLoopGPT Tools",
-  version: "1.0.0-optimized",
-  description: "Ultra-reliable food and meal planning tools powered by AI",
-  status: "Optimized: Postgres caching + streaming + progress events",
+  version: "1.1.0-hybrid-router",
+  description: "Ultra-reliable food and meal planning tools powered by AI with smart routing",
+  status: "Optimized: Postgres caching + streaming + smart routing + intent classification",
   tools: [
     {
       name: "health.check",
@@ -43,8 +46,14 @@ const MANIFEST = {
       status: "available"
     },
     {
+      name: "food.router",
+      description: "🌟 PRIMARY ENTRYPOINT: Smart router for any food-related query. Automatically classifies intent (recipes/nutrition/meal planning/grocery) and routes to the appropriate tool. Use this for vague or natural-language queries like 'I'm hungry', 'what should I eat?', 'help me plan meals', etc. For specific requests, you can still use specialized tools directly.",
+      status: "available",
+      primary: true
+    },
+    {
       name: "recipes.generate",
-      description: "Generate creative recipes from available ingredients",
+      description: "Generate creative recipes from available ingredients (direct access)",
       status: "available"
     },
     {
@@ -199,7 +208,9 @@ serve(async (req: Request) => {
         
         let result: any;
         
-        if (toolName === "recipes.generate") {
+        if (toolName === "food.router") {
+          result = await routeFood(params);
+        } else if (toolName === "recipes.generate") {
           result = await generateRecipes(params);
         } else if (toolName === "recipes.generateWithNutrition") {
           result = await generateRecipesWithNutrition(params);
@@ -217,6 +228,7 @@ serve(async (req: Request) => {
               error: "Not implemented",
               message: `Tool ${toolName} is not yet implemented`,
               availableTools: [
+                "food.router",
                 "recipes.generate",
                 "recipes.generateWithNutrition",
                 "nutrition.analyze",
