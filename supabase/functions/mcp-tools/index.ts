@@ -14,6 +14,7 @@ import { routeFood } from "./foodRouter.ts";
 import { prepareCart, confirmOrder, cancelOrder } from "./commerce.ts";
 import { updateUserPreferences } from "./userPreferences.ts";
 import { generateDailySuggestion, generateWeeklyRefresh } from "./retention.ts";
+import { recordSentimentFeedback, getUserFavorites, getContentStats } from "./sentiment.ts";
 
 // Helper function to execute tools with optional streaming
 async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
@@ -44,6 +45,12 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
       return await generateDailySuggestion(params);
     case "retention.weeklyRefresh":
       return await generateWeeklyRefresh(params);
+    case "feedback.sentiment":
+      return await recordSentimentFeedback(params);
+    case "feedback.getFavorites":
+      return await getUserFavorites(params);
+    case "feedback.getStats":
+      return await getContentStats(params);
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
@@ -51,7 +58,7 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
 
 const MANIFEST = {
   name: "TheLoopGPT Tools",
-  version: "1.5.0-retention-layer",
+  version: "1.6.0-sentiment-layer",
   description: "Complete food commerce platform: recipes, meal planning, grocery lists, and intelligent order routing",
   status: "Optimized: Postgres caching + streaming + smart routing + intent classification + commerce integration",
   tools: [
@@ -124,6 +131,21 @@ const MANIFEST = {
     {
       name: "retention.weeklyRefresh",
       description: "📅 Generate personalized weekly meal plan based on user profile. Updates lastPlanDate for retention tracking. Perfect for 'Refresh my weekly plan' or 'Plan my meals for the week' queries.",
+      status: "available"
+    },
+    {
+      name: "feedback.sentiment",
+      description: "💬 Record user feedback on recipes, meal plans, and grocery lists. Supports: 👍 Helpful / 👎 Not Helpful, ⭐ Star Ratings (1-5), ❤️ Favorites. Use this to capture user sentiment for analytics and personalization.",
+      status: "available"
+    },
+    {
+      name: "feedback.getFavorites",
+      description: "❤️ Retrieve user's favorited content (recipes, meal plans, grocery lists). Returns list of favorites with metadata.",
+      status: "available"
+    },
+    {
+      name: "feedback.getStats",
+      description: "📊 Get aggregated sentiment statistics for content. Returns helpful percentage, average rating, favorite count, etc. Useful for ranking and analytics.",
       status: "available"
     }
   ]
@@ -279,6 +301,12 @@ serve(async (req: Request) => {
           result = await generateDailySuggestion(params);
         } else if (toolName === "retention.weeklyRefresh") {
           result = await generateWeeklyRefresh(params);
+        } else if (toolName === "feedback.sentiment") {
+          result = await recordSentimentFeedback(params);
+        } else if (toolName === "feedback.getFavorites") {
+          result = await getUserFavorites(params);
+        } else if (toolName === "feedback.getStats") {
+          result = await getContentStats(params);
         } else {
           return new Response(
             JSON.stringify({
