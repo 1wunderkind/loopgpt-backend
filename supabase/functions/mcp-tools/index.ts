@@ -12,6 +12,8 @@ import { checkRateLimit } from "./rateLimit.ts";
 import { StreamingResponse, wantsStreaming } from "./streaming.ts";
 import { routeFood } from "./foodRouter.ts";
 import { prepareCart, confirmOrder, cancelOrder } from "./commerce.ts";
+// import { updateUserPreferences } from "./userPreferences.ts";
+// import { generateDailySuggestion, generateWeeklyRefresh } from "./retention.ts";
 
 // Helper function to execute tools with optional streaming
 async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
@@ -36,6 +38,12 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
       return await confirmOrder(params);
     case "commerce.cancelOrder":
       return await cancelOrder(params);
+    // case "user.updatePreferences":
+    //   return await updateUserPreferences(params);
+    // case "retention.dailySuggestion":
+    //   return await generateDailySuggestion(params);
+    // case "retention.weeklyRefresh":
+    //   return await generateWeeklyRefresh(params);
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
@@ -43,7 +51,7 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
 
 const MANIFEST = {
   name: "TheLoopGPT Tools",
-  version: "1.4.0-commerce-layer",
+  version: "1.5.0-retention-layer",
   description: "Complete food commerce platform: recipes, meal planning, grocery lists, and intelligent order routing",
   status: "Optimized: Postgres caching + streaming + smart routing + intent classification + commerce integration",
   tools: [
@@ -101,6 +109,21 @@ const MANIFEST = {
     {
       name: "commerce.cancelOrder",
       description: "Cancel pending order using confirmation token",
+      status: "available"
+    },
+    {
+      name: "user.updatePreferences",
+      description: "👤 Update user dietary preferences, calorie targets, and cuisine preferences. Stores preferences for personalized meal suggestions and retention features.",
+      status: "available"
+    },
+    {
+      name: "retention.dailySuggestion",
+      description: "☀️ Generate personalized daily meal suggestions (1-3 recipes) based on user profile. Perfect for re-engagement and 'What should I eat today?' queries. Returns card-friendly format with CTAs.",
+      status: "available"
+    },
+    {
+      name: "retention.weeklyRefresh",
+      description: "📅 Generate personalized weekly meal plan based on user profile. Updates lastPlanDate for retention tracking. Perfect for 'Refresh my weekly plan' or 'Plan my meals for the week' queries.",
       status: "available"
     }
   ]
@@ -250,6 +273,12 @@ serve(async (req: Request) => {
           result = await confirmOrder(params);
         } else if (toolName === "commerce.cancelOrder") {
           result = await cancelOrder(params);
+        // } else if (toolName === "user.updatePreferences") {
+        //   result = await updateUserPreferences(params);
+        // } else if (toolName === "retention.dailySuggestion") {
+        //   result = await generateDailySuggestion(params);
+        // } else if (toolName === "retention.weeklyRefresh") {
+        //   result = await generateWeeklyRefresh(params);
         } else {
           return new Response(
             JSON.stringify({
