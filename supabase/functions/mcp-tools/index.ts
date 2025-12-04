@@ -11,6 +11,7 @@ import { generateGroceryList } from "./grocery.ts";
 import { checkRateLimit } from "./rateLimit.ts";
 import { StreamingResponse, wantsStreaming } from "./streaming.ts";
 import { routeFood } from "./foodRouter.ts";
+import { prepareCart, confirmOrder, cancelOrder } from "./commerce.ts";
 
 // Helper function to execute tools with optional streaming
 async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
@@ -29,6 +30,12 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
       return await generateMealPlanWithGroceryList(params);
     case "grocery.list":
       return await generateGroceryList(params);
+    case "commerce.prepareCart":
+      return await prepareCart(params);
+    case "commerce.confirmOrder":
+      return await confirmOrder(params);
+    case "commerce.cancelOrder":
+      return await cancelOrder(params);
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
@@ -36,9 +43,9 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
 
 const MANIFEST = {
   name: "TheLoopGPT Tools",
-  version: "1.1.0-hybrid-router",
-  description: "Ultra-reliable food and meal planning tools powered by AI with smart routing",
-  status: "Optimized: Postgres caching + streaming + smart routing + intent classification",
+  version: "1.4.0-commerce-layer",
+  description: "Complete food commerce platform: recipes, meal planning, grocery lists, and intelligent order routing",
+  status: "Optimized: Postgres caching + streaming + smart routing + intent classification + commerce integration",
   tools: [
     {
       name: "health.check",
@@ -79,6 +86,21 @@ const MANIFEST = {
     {
       name: "mealplan.generateWithGroceryList",
       description: "Generate meal plan with grocery list (composite)",
+      status: "available"
+    },
+    {
+      name: "commerce.prepareCart",
+      description: "🛒 Prepare shopping cart and route order through intelligent provider selection. Detects missing ingredients (if pantry provided) and calls the LoopGPT Commerce Router to get best provider quotes with multi-factor scoring (price, speed, availability, margin, reliability).",
+      status: "available"
+    },
+    {
+      name: "commerce.confirmOrder",
+      description: "Confirm and place order with selected provider using confirmation token from prepareCart",
+      status: "available"
+    },
+    {
+      name: "commerce.cancelOrder",
+      description: "Cancel pending order using confirmation token",
       status: "available"
     }
   ]
@@ -222,6 +244,12 @@ serve(async (req: Request) => {
           result = await generateMealPlanWithGroceryList(params);
         } else if (toolName === "grocery.list") {
           result = await generateGroceryList(params);
+        } else if (toolName === "commerce.prepareCart") {
+          result = await prepareCart(params);
+        } else if (toolName === "commerce.confirmOrder") {
+          result = await confirmOrder(params);
+        } else if (toolName === "commerce.cancelOrder") {
+          result = await cancelOrder(params);
         } else {
           return new Response(
             JSON.stringify({
@@ -234,7 +262,10 @@ serve(async (req: Request) => {
                 "nutrition.analyze",
                 "mealplan.generate",
                 "mealplan.generateWithGroceryList",
-                "grocery.list"
+                "grocery.list",
+                "commerce.prepareCart",
+                "commerce.confirmOrder",
+                "commerce.cancelOrder"
               ]
             }),
             {

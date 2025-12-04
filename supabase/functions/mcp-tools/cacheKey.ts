@@ -59,7 +59,7 @@ const INGREDIENT_NORMALIZATIONS: Record<string, string> = {
 /**
  * Normalize an ingredient name for caching
  */
-function normalizeIngredient(name: string): string {
+export function normalizeIngredient(name: string): string {
   // Convert to lowercase and trim
   let normalized = name.toLowerCase().trim();
   

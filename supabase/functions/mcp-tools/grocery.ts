@@ -8,6 +8,8 @@ import { cacheGet, cacheSet } from "./cache.ts";
 import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
 import { getFallbackGroceryList } from "./fallbacks.ts";
 import { generateGroceryCtas, addCtasToResponse } from "./ctaSchemas.ts";
+import { validatePantry, type Pantry } from "./commerceSchemas.ts";
+import { detectMissingIngredients, annotateGroceryListWithMissing, getMissingSummary } from "./ingredientMatcher.ts";
 
 // Simple input validation
 function validateGroceryInput(params: any) {
@@ -22,7 +24,8 @@ function validateGroceryInput(params: any) {
     recipes: params.recipes || [],
     mealPlan: params.mealPlan || null,
     servings: params.servings || 1,
-    groupBy: params.groupBy || "category" // category, aisle, recipe
+    groupBy: params.groupBy || "category", // category, aisle, recipe
+    pantry: params.pantry ? validatePantry(params.pantry) : undefined,
   };
 }
 
@@ -184,7 +187,35 @@ ${sourceText}`;
     }
 
     const parsed = JSON.parse(rawContent);
-    const list = parsed.list || parsed;
+    let list = parsed.list || parsed;
+    
+    // Detect missing ingredients if pantry provided
+    if (input.pantry && input.pantry.length > 0) {
+      // Flatten all items from categories
+      const allItems = list.categories?.flatMap((cat: any) => cat.items) || [];
+      
+      // Annotate with missing status
+      const annotatedItems = annotateGroceryListWithMissing(allItems, input.pantry);
+      
+      // Detect missing ingredients
+      const missingResult = detectMissingIngredients(allItems, input.pantry);
+      
+      // Add missing info to list
+      list = {
+        ...list,
+        missingSummary: getMissingSummary(missingResult),
+        missingCount: missingResult.totalMissing,
+        availableCount: missingResult.totalAvailable,
+        // Update categories with annotated items
+        categories: list.categories?.map((cat: any) => ({
+          ...cat,
+          items: cat.items.map((item: any) => {
+            const annotated = annotatedItems.find((a: any) => a.name === item.name);
+            return annotated || item;
+          }),
+        })),
+      };
+    }
     
     // Cache the result for 24 hours
     await cacheSet(cacheKey, JSON.stringify(list), 86400);

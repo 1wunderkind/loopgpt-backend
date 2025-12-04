@@ -274,7 +274,32 @@ export function generateGroceryCtas(
     );
   }
   
-  // CTA 2: Modify list (placeholder for future feature)
+  // CTA 2: Prepare cart to order (NEW: Commerce CTA)
+  ctas.push(
+    createToolCallCta(
+      "prepare-cart",
+      "🛒 Prepare cart to order",
+      "commerce.prepareCart",
+      {
+        groceryList: groceryList,
+        userId: originalParams.userId || "user_default",
+        location: originalParams.location || {
+          street: "123 Main St",
+          city: "San Francisco",
+          state: "CA",
+          zip: "94102",
+        },
+        preferences: originalParams.preferences || {
+          optimizeFor: "balanced",
+        },
+      },
+      groceryList.missingCount
+        ? `Order ${groceryList.missingCount} missing ingredients`
+        : "Create a shopping cart with these ingredients"
+    )
+  );
+  
+  // CTA 3: Modify list (placeholder for future feature)
   ctas.push({
     id: "modify-list",
     label: "✏️ Modify list",
@@ -286,7 +311,7 @@ export function generateGroceryCtas(
     },
   });
   
-  // CTA 3: View meal plan (if created from meal plan)
+  // CTA 4: View meal plan (if created from meal plan)
   if (originalParams.mealPlan) {
     ctas.push({
       id: "view-meal-plan",
