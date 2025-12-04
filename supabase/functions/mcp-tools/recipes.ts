@@ -6,8 +6,9 @@
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { generateRecipesCacheKey } from "./cacheKey.ts";
 import { cacheGet, cacheSet } from "./cache.ts";
-import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
 import { getFallbackRecipes } from "./fallbacks.ts";
+import { generateRecipesCtas, addCtasToResponse } from "./ctaSchemas.ts";
 
 // Simple input validation
 function validateRecipesInput(params: any) {
@@ -188,7 +189,20 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
       fallbackUsed: false,
     });
     
-    return recipes;
+    // Add CTAs to successful response
+    const ctas = generateRecipesCtas(recipes, input);
+    
+    // Log CTA impression
+    logCtaImpression("recipes", ctas.map(c => c.id), {
+      recipeCount: recipes.length,
+      cached: false,
+    });
+    
+    // Return object with recipes and CTAs
+    return {
+      recipes,
+      suggestedActions: ctas,
+    };
   } catch (error: any) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "recipes.generate");
@@ -207,6 +221,13 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
       errorType: categorized.type,
     });
     
-    return fallbackRecipes;
+    // Add CTAs to fallback response
+    const ctasForFallback = generateRecipesCtas(fallbackRecipes, params);
+    
+    // Return object with recipes and CTAs
+    return {
+      recipes: fallbackRecipes,
+      suggestedActions: ctasForFallback,
+    };
   }
 }

@@ -173,3 +173,46 @@ export function logSuccess(
     ...metadata,
   }));
 }
+
+/**
+ * Log CTA click event
+ */
+export function logCtaClick(
+  ctaId: string,
+  sourceType: string, // recipes, mealplan, grocery, nutrition
+  toolInvoked: string,
+  metadata?: Record<string, any>
+) {
+  console.log(
+    JSON.stringify({
+      level: "info",
+      event: "cta.clicked",
+      ctaId,
+      sourceType,
+      toolInvoked,
+      timestamp: new Date().toISOString(),
+      ...metadata,
+    })
+  );
+}
+
+/**
+ * Log CTA impression (when CTAs are shown to user)
+ */
+export function logCtaImpression(
+  sourceType: string,
+  ctaIds: string[],
+  metadata?: Record<string, any>
+) {
+  console.log(
+    JSON.stringify({
+      level: "info",
+      event: "cta.impression",
+      sourceType,
+      ctaIds,
+      ctaCount: ctaIds.length,
+      timestamp: new Date().toISOString(),
+      ...metadata,
+    })
+  );
+}

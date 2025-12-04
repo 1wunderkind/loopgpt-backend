@@ -5,8 +5,9 @@
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { cacheGet, cacheSet } from "./cache.ts";
-import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
 import { getFallbackMealPlan } from "./fallbacks.ts";
+import { generateMealPlanCtas, addCtasToResponse } from "./ctaSchemas.ts";
 
 // Simple input validation
 function validateMealPlanInput(params: any) {
@@ -237,7 +238,16 @@ Start date: ${new Date().toISOString().split('T')[0]}`;
       fallbackUsed: false,
     });
     
-    return plan;
+    // Add CTAs to successful response
+    const ctas = generateMealPlanCtas(plan, input);
+    
+    // Log CTA impression
+    logCtaImpression("mealplan", ctas.map(c => c.id), {
+      days: plan.days?.length,
+      cached: false,
+    });
+    
+    return addCtasToResponse(plan, ctas);
   } catch (error: any) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "mealplan.generate");
@@ -256,6 +266,8 @@ Start date: ${new Date().toISOString().split('T')[0]}`;
       errorType: categorized.type,
     });
     
-    return fallbackPlan;
+    // Add CTAs to fallback response
+    const ctasForFallback = generateMealPlanCtas(fallbackPlan, params);
+    return addCtasToResponse(fallbackPlan, ctasForFallback);
   }
 }

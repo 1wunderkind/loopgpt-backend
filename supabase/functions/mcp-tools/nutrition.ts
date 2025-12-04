@@ -5,8 +5,9 @@
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { cacheGet, cacheSet } from "./cache.ts";
-import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
 import { getFallbackNutrition } from "./fallbacks.ts";
+import { generateNutritionCtas, addCtasToResponse } from "./ctaSchemas.ts";
 
 // Simple input validation
 function validateNutritionInput(params: any) {
@@ -167,7 +168,20 @@ ${ingredients}`;
       fallbackUsed: false,
     });
     
-    return analyses;
+    // Add CTAs to successful response
+    const ctas = generateNutritionCtas(analyses, input);
+    
+    // Log CTA impression
+    logCtaImpression("nutrition", ctas.map(c => c.id), {
+      analysisCount: analyses.length,
+      cached: false,
+    });
+    
+    // Return object with analyses and CTAs
+    return {
+      analyses,
+      suggestedActions: ctas,
+    };
   } catch (error: any) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "nutrition.analyze");
@@ -186,6 +200,13 @@ ${ingredients}`;
       errorType: categorized.type,
     });
     
-    return fallbackNutrition;
+    // Add CTAs to fallback response
+    const ctasForFallback = generateNutritionCtas(fallbackNutrition, params);
+    
+    // Return object with analyses and CTAs
+    return {
+      analyses: fallbackNutrition,
+      suggestedActions: ctasForFallback,
+    };
   }
 }

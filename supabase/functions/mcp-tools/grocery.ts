@@ -5,8 +5,9 @@
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { cacheGet, cacheSet } from "./cache.ts";
-import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
 import { getFallbackGroceryList } from "./fallbacks.ts";
+import { generateGroceryCtas, addCtasToResponse } from "./ctaSchemas.ts";
 
 // Simple input validation
 function validateGroceryInput(params: any) {
@@ -195,7 +196,16 @@ ${sourceText}`;
       fallbackUsed: false,
     });
     
-    return list;
+    // Add CTAs to successful response
+    const ctas = generateGroceryCtas(list, input);
+    
+    // Log CTA impression
+    logCtaImpression("grocery", ctas.map(c => c.id), {
+      totalItems: list.totalItems,
+      cached: false,
+    });
+    
+    return addCtasToResponse(list, ctas);
   } catch (error: any) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "grocery.list");
@@ -214,6 +224,8 @@ ${sourceText}`;
       errorType: categorized.type,
     });
     
-    return fallbackList;
+    // Add CTAs to fallback response
+    const ctasForFallback = generateGroceryCtas(fallbackList, params);
+    return addCtasToResponse(fallbackList, ctasForFallback);
   }
 }
