@@ -22,6 +22,8 @@ export interface RecipesInput {
   excludeIngredients?: string[];
   maxRecipes?: number;
   difficulty?: string;
+  lowEffortMode?: boolean; // Trigger low-effort recipe generation
+  maxPrepTime?: number; // Max prep time in minutes for low-effort mode
 }
 
 // Simple input validation
@@ -154,15 +156,45 @@ export async function generateRecipes(params: any) {
     
     const client = new OpenAI({ apiKey });
     
-    // Build prompts
-    const systemPrompt = `Generate ${input.maxRecipes} recipe(s) using: ${input.ingredients.map((i: any) => i.name).join(', ')}. ${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}. ` : ''}Return JSON with recipes array.`;
+    // Build prompts with low-effort mode support
+    const isLowEffort = params.lowEffortMode === true;
+    const maxPrepTime = params.maxPrepTime || 30;
+    
+    let systemPrompt: string;
+    let userPrompt: string;
+    
+    if (isLowEffort) {
+      // Low-effort mode: quick, easy recipes with common pantry items
+      systemPrompt = `Generate ${input.maxRecipes} QUICK and EASY recipe(s) using common pantry items. Focus on:
+- Minimal prep time (under ${maxPrepTime} minutes total)
+- Simple cooking techniques (no complex steps)
+- Common ingredients most people have at home
+- Low effort, high satisfaction
+${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}Tag all recipes with "low_effort" and "quick". Return JSON with recipes array.`;
 
-    const userPrompt = `Generate ${input.maxRecipes} recipe(s) using these ingredients:
-${input.ingredients.map((i: any) => `- ${i.name}${i.quantity ? ` (${i.quantity})` : ''}`).join('\n')}
+      userPrompt = `Generate ${input.maxRecipes} quick and easy recipe(s) for someone who is tired or wants minimal effort.
+
+Suggested ingredients (use what makes sense): ${input.ingredients.map((i: any) => typeof i === 'string' ? i : i.name).join(', ')}
+
+Requirements:
+- Total time (prep + cook): under ${maxPrepTime} minutes
+- Difficulty: easy
+- Use common pantry staples
+- Minimal cleanup
+${input.dietaryTags.length > 0 ? `Dietary requirements: ${input.dietaryTags.join(', ')}` : ''}
+
+Examples: scrambled eggs, pasta with butter and cheese, rice bowl, quesadilla, instant ramen upgrade`;
+    } else {
+      // Normal mode
+      systemPrompt = `Generate ${input.maxRecipes} recipe(s) using: ${input.ingredients.map((i: any) => typeof i === 'string' ? i : i.name).join(', ')}. ${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}. ` : ''}Return JSON with recipes array.`;
+
+      userPrompt = `Generate ${input.maxRecipes} recipe(s) using these ingredients:
+${input.ingredients.map((i: any) => `- ${typeof i === 'string' ? i : i.name}${i.quantity ? ` (${i.quantity})` : ''}`).join('\n')}
 
 ${input.dietaryTags.length > 0 ? `Dietary requirements: ${input.dietaryTags.join(', ')}` : ''}
 ${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}` : ''}
 ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
+    }
 
     console.log("[recipes.generate] Calling OpenAI...");
     

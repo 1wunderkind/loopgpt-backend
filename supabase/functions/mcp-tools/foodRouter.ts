@@ -15,11 +15,13 @@ import { generateMealPlan } from "./mealplan.ts";
 import { generateGroceryList } from "./grocery.ts";
 import { categorizeError, logStructuredError, logSuccess, ValidationError } from "./errorTypes.ts";
 import { getFallbackRecipes } from "./fallbacks.ts";
+import { getUserProfileStore } from "./userProfile.ts";
 
 // Input schema for the router
 export interface FoodRouterInput {
   query: string;
   locale?: string;
+  userId?: string; // Optional user ID for profile-based enhancements
   userGoals?: {
     caloriesPerDay?: number;
     goal?: "weight_loss" | "muscle_gain" | "general_health";
@@ -136,7 +138,32 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
 
     // Validate input
     const input = validateRouterInput(params);
-    const { query, locale, userGoals } = input;
+    const { query, locale, userId, userGoals } = input;
+
+    // Fetch user profile if userId provided
+    let userProfile = null;
+    if (userId) {
+      try {
+        const profileStore = getUserProfileStore();
+        userProfile = await profileStore.getProfile(userId);
+        console.log("[foodRouter] User profile loaded", {
+          userId,
+          hasDietTags: !!userProfile?.dietTags?.length,
+          hasCuisines: !!userProfile?.cuisines?.length,
+          hasCalories: !!userProfile?.caloriesPerDay,
+        });
+      } catch (error: any) {
+        console.warn("[foodRouter] Failed to load user profile", { userId, error: error.message });
+      }
+    }
+
+    // Merge user profile with userGoals (userGoals takes precedence)
+    const mergedGoals = {
+      caloriesPerDay: userGoals?.caloriesPerDay || userProfile?.caloriesPerDay,
+      goal: userGoals?.goal,
+      dietTags: userGoals?.dietTags || userProfile?.dietTags || [],
+      cuisines: userProfile?.cuisines || [],
+    };
 
     // Classify intent
     const intent = await classifyFoodIntent(query, locale);
@@ -144,7 +171,17 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
       query,
       primaryIntent: intent.primaryIntent,
       confidence: intent.confidence,
+      missingInfo: intent.missingInfo,
     });
+
+    // Log missing info for analytics
+    if (intent.missingInfo && intent.missingInfo.length > 0) {
+      console.log("[foodRouter] Missing info detected", {
+        query,
+        missingInfo: intent.missingInfo,
+        intent: intent.primaryIntent,
+      });
+    }
 
     // Route based on primary intent
     let result: FoodRouterResult;
@@ -153,23 +190,37 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
       case "recipes": {
         console.log("[foodRouter] Routing to recipes.generate");
         
+        // Check if ingredients are missing
+        const hasMissingIngredients = intent.missingInfo?.includes("ingredients");
+        
         // Try to extract ingredients from the query
         const ingredients = extractIngredientsFromQuery(query);
         
         // Build params for recipes tool
         const recipeParams: any = {
-          ingredients: ingredients.length > 0 ? ingredients : ["chicken"], // Fallback ingredient
           count: 3,
-          dietary_restrictions: userGoals?.dietTags || [],
+          dietary_restrictions: mergedGoals.dietTags,
+          cuisines: mergedGoals.cuisines, // Use profile cuisines for vague queries
         };
 
-        // If no ingredients found, this is a free-form query
-        // We'll pass it as-is and let the recipes tool handle it
-        if (ingredients.length === 0) {
-          console.log("[foodRouter] No ingredients extracted, using query as free-form");
-          // For now, use a default ingredient set
-          // TODO: Enhance recipes.generate to accept free-form queries
-          recipeParams.ingredients = ["seasonal ingredients"];
+        // Handle missing ingredients with low-effort mode
+        if (ingredients.length === 0 || hasMissingIngredients) {
+          console.log("[foodRouter] Missing ingredients, triggering low-effort mode");
+          
+          // Check if query suggests low effort (tired, quick, easy, etc.)
+          const isLowEffortQuery = /\b(tired|exhausted|quick|easy|simple|fast|lazy)\b/i.test(query);
+          
+          if (isLowEffortQuery) {
+            // Use low-effort mode with common pantry items
+            recipeParams.ingredients = ["eggs", "rice", "pasta"];
+            recipeParams.lowEffortMode = true;
+            recipeParams.maxPrepTime = 30; // Quick recipes only
+          } else {
+            // Generic suggestions with seasonal ingredients
+            recipeParams.ingredients = ["seasonal ingredients"];
+          }
+        } else {
+          recipeParams.ingredients = ingredients;
         }
 
         const recipes = await generateRecipes(recipeParams);
@@ -206,12 +257,36 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
       case "mealplan": {
         console.log("[foodRouter] Routing to mealplan.generate");
         
+        // Check what info is missing
+        const missingCalories = intent.missingInfo?.includes("caloriesPerDay");
+        const missingDietTags = intent.missingInfo?.includes("dietTags");
+        
+        // Use merged goals (includes profile data)
+        let dailyCalories = mergedGoals.caloriesPerDay || 2000;
+        let dietTags = mergedGoals.dietTags;
+        
+        // Try to extract calorie goal from query
+        const caloriesMatch = query.match(/(\d+)\s*cal/i);
+        if (caloriesMatch) {
+          dailyCalories = parseInt(caloriesMatch[1]);
+        } else if (missingCalories) {
+          // Infer from goal if mentioned
+          if (/\b(lose|loss|diet|cut)\b/i.test(query)) {
+            dailyCalories = 1800; // Weight loss default
+          } else if (/\b(gain|muscle|bulk)\b/i.test(query)) {
+            dailyCalories = 2400; // Muscle gain default
+          } else {
+            dailyCalories = 2000; // General health default
+          }
+          console.log("[foodRouter] Using default calories", { dailyCalories, reason: "missing from query" });
+        }
+        
         // Extract goals from query or use userGoals
         const mealPlanParams: any = {
           goals: {
-            dailyCalories: userGoals?.caloriesPerDay || 2000,
-            proteinGrams: 100, // Default
-            dietTags: userGoals?.dietTags || [],
+            dailyCalories,
+            proteinGrams: Math.round(dailyCalories * 0.3 / 4), // 30% protein
+            dietTags,
           },
           days: 7, // Default to 1 week
           mealsPerDay: 3,
@@ -221,12 +296,6 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
         const daysMatch = query.match(/(\d+)\s*[-]?\s*day/i);
         if (daysMatch) {
           mealPlanParams.days = parseInt(daysMatch[1]);
-        }
-
-        // Try to extract calorie goal from query
-        const caloriesMatch = query.match(/(\d+)\s*cal/i);
-        if (caloriesMatch) {
-          mealPlanParams.goals.dailyCalories = parseInt(caloriesMatch[1]);
         }
 
         const mealPlan = await generateMealPlan(mealPlanParams);

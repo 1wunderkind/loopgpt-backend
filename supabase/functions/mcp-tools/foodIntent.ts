@@ -17,6 +17,7 @@ export interface FoodIntent {
   secondaryIntents?: string[];
   confidence: "low" | "medium" | "high";
   reasoning?: string;
+  missingInfo?: string[]; // e.g. ["ingredients", "caloriesPerDay", "dietTags", "goal"]
 }
 
 /**
@@ -81,7 +82,8 @@ Respond ONLY with valid JSON in this exact format:
   "primaryIntent": "recipes" | "nutrition" | "mealplan" | "grocery" | "other",
   "secondaryIntents": ["optional", "array"],
   "confidence": "low" | "medium" | "high",
-  "reasoning": "brief explanation"
+  "reasoning": "brief explanation",
+  "missingInfo": ["optional", "array", "of", "missing", "fields"]
 }
 
 Rules:
@@ -89,7 +91,21 @@ Rules:
 - Use "high" confidence when query clearly matches one intent
 - Use "medium" when query could fit multiple intents
 - Use "low" when query is vague or unclear
-- Include secondaryIntents only if query genuinely spans multiple areas`;
+- Include secondaryIntents only if query genuinely spans multiple areas
+
+Missing Info Detection:
+- Identify what key information is missing from the query
+- Common missing fields:
+  * "ingredients" - for recipe queries without specific ingredients
+  * "caloriesPerDay" - for meal planning without calorie targets
+  * "dietTags" - when dietary preferences aren't specified
+  * "goal" - when health/fitness goals aren't clear
+  * "cuisinePreferences" - when cuisine type isn't mentioned
+  * "servings" - when portion size isn't specified
+  * "timeConstraint" - when prep/cook time isn't mentioned
+- Only include missingInfo if it would significantly improve the response
+- For vague queries like "I'm tired, what should I eat?", mark ["ingredients"] as missing
+- For goal-based queries like "help me lose weight", mark ["caloriesPerDay", "dietTags"] if not specified`;
 
   const userPrompt = `Query: "${query}"
 Locale: ${locale || "en"}
