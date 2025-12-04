@@ -4,7 +4,7 @@
  */
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
-import { getOrCompute } from "./multiLayerCache.ts";
+import { cacheGet, cacheSet } from "./cache.ts";
 
 // Simple input validation
 function validateMealPlanInput(params: any) {
@@ -149,21 +149,24 @@ export async function generateMealPlan(params: any) {
     // Generate cache key from goals and parameters
     const cacheKey = `mealplan:${input.days}d:${JSON.stringify(input.goals)}:${input.dietaryTags.join(',')}`.substring(0, 200);
     
-    // Use multi-layer cache
-    const result = await getOrCompute(
-      cacheKey,
-      7200, // 2 hours TTL
-      async () => {
-        // Cache miss - generate meal plan
-        const apiKey = Deno.env.get("OPENAI_API_KEY");
-        if (!apiKey) {
-          throw new Error("OPENAI_API_KEY not configured");
-        }
-        
-        const client = new OpenAI({ apiKey });
-        
-        // Build prompts
-        const systemPrompt = `You are TheLoopGPT's meal planning engine. Generate balanced, practical meal plans based on dietary goals.
+    // Check cache first
+    const cached = await cacheGet(cacheKey);
+    if (cached) {
+      const duration = Date.now() - startTime;
+      console.log("[mealplan.generate] Cache hit", { cacheKey, duration });
+      return JSON.parse(cached);
+    }
+    
+    // Cache miss - generate meal plan
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) {
+      throw new Error("OPENAI_API_KEY not configured");
+    }
+    
+    const client = new OpenAI({ apiKey });
+    
+    // Build prompts
+    const systemPrompt = `You are TheLoopGPT's meal planning engine. Generate balanced, practical meal plans based on dietary goals.
 
 Rules:
 - Create ${input.days} days of meals with ${input.mealsPerDay} meals per day
@@ -174,11 +177,11 @@ Rules:
 - Provide shopping-friendly ingredient quantities
 - Consider meal prep efficiency (e.g., batch cooking)`;
 
-        const goalsText = Object.entries(input.goals)
-          .map(([key, value]) => `- ${key}: ${value}`)
-          .join('\n');
+    const goalsText = Object.entries(input.goals)
+      .map(([key, value]) => `- ${key}: ${value}`)
+      .join('\n');
 
-        const userPrompt = `Generate a ${input.days}-day meal plan with ${input.mealsPerDay} meals per day.
+    const userPrompt = `Generate a ${input.days}-day meal plan with ${input.mealsPerDay} meals per day.
 
 Goals:
 ${goalsText}
@@ -188,48 +191,46 @@ ${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.joi
 
 Start date: ${new Date().toISOString().split('T')[0]}`;
 
-        console.log("[mealplan.generate] Calling OpenAI...");
-        
-        // Call OpenAI with Structured Outputs
-        const completion = await client.chat.completions.create({
-          model: "gpt-4o-mini-2024-07-18",
-          temperature: 0.7,
-          max_tokens: 3000,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "meal_plan",
-              strict: true,
-              schema: MealPlanJsonSchema,
-            },
-          },
-        });
+    console.log("[mealplan.generate] Calling OpenAI...");
+    
+    // Call OpenAI with Structured Outputs
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini-2024-07-18",
+      temperature: 0.7,
+      max_tokens: 3000,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "meal_plan",
+          strict: true,
+          schema: MealPlanJsonSchema,
+        },
+      },
+    });
 
-        const rawContent = completion.choices[0]?.message?.content;
-        if (!rawContent) {
-          throw new Error("Empty response from OpenAI");
-        }
+    const rawContent = completion.choices[0]?.message?.content;
+    if (!rawContent) {
+      throw new Error("Empty response from OpenAI");
+    }
 
-        const parsed = JSON.parse(rawContent);
-        const plan = parsed.plan || parsed;
-        
-        return plan;
-      }
-    );
+    const parsed = JSON.parse(rawContent);
+    const plan = parsed.plan || parsed;
+    
+    // Cache the result for 24 hours
+    await cacheSet(cacheKey, JSON.stringify(plan), 86400);
     
     const duration = Date.now() - startTime;
     console.log("[mealplan.generate] Success", { 
-      days: result.value.days?.length, 
+      days: plan.days?.length, 
       duration,
-      source: result.source,
-      durationMs: result.durationMs
+      cached: false
     });
     
-    return result.value;
+    return plan;
   } catch (error: any) {
     const duration = Date.now() - startTime;
     console.error("[mealplan.generate] Error", { error: error.message, duration });

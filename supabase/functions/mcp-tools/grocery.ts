@@ -4,7 +4,7 @@
  */
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
-import { getOrCompute } from "./multiLayerCache.ts";
+import { cacheGet, cacheSet } from "./cache.ts";
 
 // Simple input validation
 function validateGroceryInput(params: any) {
@@ -30,43 +30,43 @@ const GroceryListJsonSchema = {
     list: {
       type: "object",
       properties: {
-        id: { type: "string" },
-        name: { type: "string" },
-        totalItems: { type: "number" },
-        categories: {
-          type: "array",
+    id: { type: "string" },
+    name: { type: "string" },
+    totalItems: { type: "number" },
+    categories: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
           items: {
-            type: "object",
-            properties: {
-              name: { type: "string" },
-              items: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    name: { type: "string" },
-                    quantity: { type: "string" },
-                    unit: { type: "string" },
-                    notes: { type: "string" },
-                    usedIn: {
-                      type: "array",
-                      items: { type: "string" }
-                    }
-                  },
-                  required: ["name", "quantity", "unit", "notes", "usedIn"],
-                  additionalProperties: false
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                name: { type: "string" },
+                quantity: { type: "string" },
+                unit: { type: "string" },
+                notes: { type: "string" },
+                usedIn: {
+                  type: "array",
+                  items: { type: "string" }
                 }
-              }
-            },
-            required: ["name", "items"],
-            additionalProperties: false
+              },
+              required: ["name", "quantity", "unit", "notes", "usedIn"],
+              additionalProperties: false
+            }
           }
         },
-        estimatedCost: { type: "number" },
-        tips: {
-          type: "array",
-          items: { type: "string" }
-        }
+        required: ["name", "items"],
+        additionalProperties: false
+      }
+    },
+    estimatedCost: { type: "number" },
+    tips: {
+      type: "array",
+      items: { type: "string" }
+    }
       },
       required: ["id", "name", "totalItems", "categories", "estimatedCost", "tips"],
       additionalProperties: false
@@ -90,21 +90,24 @@ export async function generateGroceryList(params: any) {
     const mealPlanId = input.mealPlan?.id || input.mealPlan?.name || '';
     const cacheKey = `grocery:${recipeIds}:${mealPlanId}:${input.servings}`.substring(0, 200);
     
-    // Use multi-layer cache
-    const result = await getOrCompute(
-      cacheKey,
-      3600, // 1 hour TTL
-      async () => {
-        // Cache miss - generate grocery list
-        const apiKey = Deno.env.get("OPENAI_API_KEY");
-        if (!apiKey) {
-          throw new Error("OPENAI_API_KEY not configured");
-        }
-        
-        const client = new OpenAI({ apiKey });
-        
-        // Build prompts
-        const systemPrompt = `You are TheLoopGPT's grocery list generator. Create organized, practical shopping lists from recipes or meal plans.
+    // Check cache first
+    const cached = await cacheGet(cacheKey);
+    if (cached) {
+      const duration = Date.now() - startTime;
+      console.log("[grocery.list] Cache hit", { cacheKey, duration });
+      return JSON.parse(cached);
+    }
+    
+    // Cache miss - generate grocery list
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) {
+      throw new Error("OPENAI_API_KEY not configured");
+    }
+    
+    const client = new OpenAI({ apiKey });
+    
+    // Build prompts
+    const systemPrompt = `You are TheLoopGPT's grocery list generator. Create organized, practical shopping lists from recipes or meal plans.
 
 Rules:
 - Consolidate duplicate ingredients (e.g., "2 cups milk" + "1 cup milk" = "3 cups milk")
@@ -115,79 +118,77 @@ Rules:
 - Add shopping tips (e.g., "Buy in bulk", "Check for sales")
 - Use standard grocery quantities (e.g., "1 lb" not "453g")`;
 
-        let sourceText = "";
+    let sourceText = "";
+    
+    if (input.recipes.length > 0) {
+      sourceText = `Recipes:\n${input.recipes.map((r: any, i: number) => {
+        const ingredients = r.ingredients?.map((ing: any) => 
+          `- ${ing.quantity || ''} ${ing.name}`.trim()
+        ).join('\n') || 'No ingredients';
         
-        if (input.recipes.length > 0) {
-          sourceText = `Recipes:\n${input.recipes.map((r: any, i: number) => {
-            const ingredients = r.ingredients?.map((ing: any) => 
-              `- ${ing.quantity || ''} ${ing.name}`.trim()
-            ).join('\n') || 'No ingredients';
-            
-            return `${i + 1}. ${r.name || 'Unnamed Recipe'}\n${ingredients}`;
-          }).join('\n\n')}`;
-        }
-        
-        if (input.mealPlan) {
-          const days = input.mealPlan.days || [];
-          sourceText += `\n\nMeal Plan: ${input.mealPlan.name || 'Unnamed Plan'}\n`;
-          sourceText += days.map((day: any) => {
-            const meals = day.meals || [];
-            return `Day ${day.dayNumber}:\n${meals.map((m: any) => {
-              const ingredients = m.ingredients?.map((ing: any) => 
-                `  - ${ing.quantity || ''} ${ing.name}`.trim()
-              ).join('\n') || '';
-              return `${m.mealType}: ${m.recipeName}\n${ingredients}`;
-            }).join('\n')}`;
-          }).join('\n\n');
-        }
+        return `${i + 1}. ${r.name || 'Unnamed Recipe'}\n${ingredients}`;
+      }).join('\n\n')}`;
+    }
+    
+    if (input.mealPlan) {
+      const days = input.mealPlan.days || [];
+      sourceText += `\n\nMeal Plan: ${input.mealPlan.name || 'Unnamed Plan'}\n`;
+      sourceText += days.map((day: any) => {
+        const meals = day.meals || [];
+        return `Day ${day.dayNumber}:\n${meals.map((m: any) => {
+          const ingredients = m.ingredients?.map((ing: any) => 
+            `  - ${ing.quantity || ''} ${ing.name}`.trim()
+          ).join('\n') || '';
+          return `${m.mealType}: ${m.recipeName}\n${ingredients}`;
+        }).join('\n')}`;
+      }).join('\n\n');
+    }
 
-        const userPrompt = `Generate a grocery list for ${input.servings} serving(s).
+    const userPrompt = `Generate a grocery list for ${input.servings} serving(s).
 Group items by: ${input.groupBy}
 
 ${sourceText}`;
 
-        console.log("[grocery.list] Calling OpenAI...");
-        
-        // Call OpenAI with Structured Outputs
-        const completion = await client.chat.completions.create({
-          model: "gpt-4o-mini-2024-07-18",
-          temperature: 0.3,
-          max_tokens: 2000,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "grocery_list",
-              strict: true,
-              schema: GroceryListJsonSchema,
-            },
-          },
-        });
+    console.log("[grocery.list] Calling OpenAI...");
+    
+    // Call OpenAI with Structured Outputs
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini-2024-07-18",
+      temperature: 0.3,
+      max_tokens: 2000,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "grocery_list",
+          strict: true,
+          schema: GroceryListJsonSchema,
+        },
+      },
+    });
 
-        const rawContent = completion.choices[0]?.message?.content;
-        if (!rawContent) {
-          throw new Error("Empty response from OpenAI");
-        }
+    const rawContent = completion.choices[0]?.message?.content;
+    if (!rawContent) {
+      throw new Error("Empty response from OpenAI");
+    }
 
-        const parsed = JSON.parse(rawContent);
-        const list = parsed.list || parsed;
-        
-        return list;
-      }
-    );
+    const parsed = JSON.parse(rawContent);
+    const list = parsed.list || parsed;
+    
+    // Cache the result for 24 hours
+    await cacheSet(cacheKey, JSON.stringify(list), 86400);
     
     const duration = Date.now() - startTime;
     console.log("[grocery.list] Success", { 
-      totalItems: result.value.totalItems, 
+      totalItems: list.totalItems, 
       duration,
-      source: result.source,
-      durationMs: result.durationMs
+      cached: false
     });
     
-    return result.value;
+    return list;
   } catch (error: any) {
     const duration = Date.now() - startTime;
     console.error("[grocery.list] Error", { error: error.message, duration });
