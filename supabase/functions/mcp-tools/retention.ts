@@ -8,8 +8,8 @@ import { getProfileOrDefaults } from "./userProfile.ts";
 import { generateRecipes, type RecipesInput } from "./recipes.ts";
 import { generateMealPlan, type MealPlanInput } from "./mealplan.ts";
 import { getUserProfileStore } from "./userProfile.ts";
-import { generateCtas, type Cta } from "./ctaSchemas.ts";
-import { logSuccess, logError } from "./errorTypes.ts";
+import { type Cta } from "./ctaSchemas.ts";
+import { logSuccess, logStructuredError, categorizeError } from "./errorTypes.ts";
 
 /**
  * Daily Suggestion Input
@@ -253,8 +253,9 @@ export async function generateDailySuggestion(
     
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    logError("retention.dailySuggestion", error, duration);
-    throw error;
+    const mcpError = categorizeError(error, "retention.dailySuggestion");
+    logStructuredError(mcpError, false, duration);
+    throw mcpError;
   }
 }
 
@@ -354,7 +355,8 @@ export async function generateWeeklyRefresh(
     
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    logError("retention.weeklyRefresh", error, duration);
-    throw error;
+    const mcpError = categorizeError(error, "retention.weeklyRefresh");
+    logStructuredError(mcpError, false, duration);
+    throw mcpError;
   }
 }

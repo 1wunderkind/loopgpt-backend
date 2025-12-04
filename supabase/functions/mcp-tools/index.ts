@@ -12,8 +12,8 @@ import { checkRateLimit } from "./rateLimit.ts";
 import { StreamingResponse, wantsStreaming } from "./streaming.ts";
 import { routeFood } from "./foodRouter.ts";
 import { prepareCart, confirmOrder, cancelOrder } from "./commerce.ts";
-// import { updateUserPreferences } from "./userPreferences.ts";
-// import { generateDailySuggestion, generateWeeklyRefresh } from "./retention.ts";
+import { updateUserPreferences } from "./userPreferences.ts";
+import { generateDailySuggestion, generateWeeklyRefresh } from "./retention.ts";
 
 // Helper function to execute tools with optional streaming
 async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
@@ -38,12 +38,12 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
       return await confirmOrder(params);
     case "commerce.cancelOrder":
       return await cancelOrder(params);
-    // case "user.updatePreferences":
-    //   return await updateUserPreferences(params);
-    // case "retention.dailySuggestion":
-    //   return await generateDailySuggestion(params);
-    // case "retention.weeklyRefresh":
-    //   return await generateWeeklyRefresh(params);
+    case "user.updatePreferences":
+      return await updateUserPreferences(params);
+    case "retention.dailySuggestion":
+      return await generateDailySuggestion(params);
+    case "retention.weeklyRefresh":
+      return await generateWeeklyRefresh(params);
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
@@ -273,12 +273,12 @@ serve(async (req: Request) => {
           result = await confirmOrder(params);
         } else if (toolName === "commerce.cancelOrder") {
           result = await cancelOrder(params);
-        // } else if (toolName === "user.updatePreferences") {
-        //   result = await updateUserPreferences(params);
-        // } else if (toolName === "retention.dailySuggestion") {
-        //   result = await generateDailySuggestion(params);
-        // } else if (toolName === "retention.weeklyRefresh") {
-        //   result = await generateWeeklyRefresh(params);
+        } else if (toolName === "user.updatePreferences") {
+          result = await updateUserPreferences(params);
+        } else if (toolName === "retention.dailySuggestion") {
+          result = await generateDailySuggestion(params);
+        } else if (toolName === "retention.weeklyRefresh") {
+          result = await generateWeeklyRefresh(params);
         } else {
           return new Response(
             JSON.stringify({

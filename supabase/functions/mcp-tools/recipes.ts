@@ -10,6 +10,20 @@ import { categorizeError, logStructuredError, logSuccess, logCtaImpression } fro
 import { getFallbackRecipes } from "./fallbacks.ts";
 import { generateRecipesCtas, addCtasToResponse } from "./ctaSchemas.ts";
 
+// Type for recipe generation input
+export interface RecipesInput {
+  ingredients?: string[];
+  count?: number;
+  locale?: string;
+  dietTags?: string[];
+  cuisines?: string[];
+  caloriesPerServing?: number;
+  dietaryTags?: string[];
+  excludeIngredients?: string[];
+  maxRecipes?: number;
+  difficulty?: string;
+}
+
 // Simple input validation
 function validateRecipesInput(params: any) {
   if (!params.ingredients || !Array.isArray(params.ingredients) || params.ingredients.length === 0) {
@@ -162,13 +176,13 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
         { role: "user", content: userPrompt },
       ],
       response_format: {
-        type: "json_schema",
+        type: "json_schema" as any,
         json_schema: {
           name: "recipe_list",
           strict: true,
           schema: RecipeListJsonSchema,
         },
-      },
+      } as any,
     });
 
     const rawContent = completion.choices[0]?.message?.content;

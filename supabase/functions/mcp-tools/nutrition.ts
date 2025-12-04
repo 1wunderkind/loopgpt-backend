@@ -141,13 +141,13 @@ ${ingredients}`;
         { role: "user", content: userPrompt },
       ],
       response_format: {
-        type: "json_schema",
+        type: "json_schema" as any,
         json_schema: {
           name: "nutrition_analysis",
           strict: true,
           schema: NutritionAnalysisJsonSchema,
         },
-      },
+      } as any,
     });
 
     const rawContent = completion.choices[0]?.message?.content;

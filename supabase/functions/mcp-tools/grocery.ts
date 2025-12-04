@@ -172,13 +172,13 @@ ${sourceText}`;
         { role: "user", content: userPrompt },
       ],
       response_format: {
-        type: "json_schema",
+        type: "json_schema" as any,
         json_schema: {
           name: "grocery_list",
           strict: true,
           schema: GroceryListJsonSchema,
         },
-      },
+      } as any,
     });
 
     const rawContent = completion.choices[0]?.message?.content;

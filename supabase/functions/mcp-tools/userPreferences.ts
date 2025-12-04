@@ -5,7 +5,7 @@
  */
 
 import { getUserProfileStore, type UserProfile } from "./userProfile.ts";
-import { logSuccess, logError } from "./errorTypes.ts";
+import { logSuccess, logStructuredError, categorizeError } from "./errorTypes.ts";
 
 /**
  * Update User Preferences Input
@@ -137,7 +137,8 @@ export async function updateUserPreferences(
     
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    logError("user.updatePreferences", error, duration);
-    throw error;
+    const mcpError = categorizeError(error, "user.updatePreferences");
+    logStructuredError(mcpError, false, duration);
+    throw mcpError;
   }
 }

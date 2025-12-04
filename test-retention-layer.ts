@@ -11,7 +11,7 @@ async function testRetentionLayer() {
   // Test 1: Update user preferences
   console.log("Test 1: Update user preferences");
   try {
-    const response1 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/user.updatePreferences`, {
+    const response1 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/user.updatePreferences`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +38,7 @@ async function testRetentionLayer() {
   // Test 2: Generate daily suggestion (should use profile)
   console.log("Test 2: Generate daily suggestion (with profile)");
   try {
-    const response2 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/retention.dailySuggestion`, {
+    const response2 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/retention.dailySuggestion`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ async function testRetentionLayer() {
   // Test 3: Generate daily suggestion (no profile)
   console.log("Test 3: Generate daily suggestion (no profile)");
   try {
-    const response3 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/retention.dailySuggestion`, {
+    const response3 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/retention.dailySuggestion`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +86,7 @@ async function testRetentionLayer() {
   // Test 4: Generate weekly refresh (should use profile and update lastPlanDate)
   console.log("Test 4: Generate weekly refresh (with profile)");
   try {
-    const response4 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/retention.weeklyRefresh`, {
+    const response4 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/retention.weeklyRefresh`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -110,7 +110,7 @@ async function testRetentionLayer() {
   // Test 5: Verify lastPlanDate was updated
   console.log("Test 5: Verify lastPlanDate was updated");
   try {
-    const response5 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/user.updatePreferences`, {
+    const response5 = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/user.updatePreferences`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

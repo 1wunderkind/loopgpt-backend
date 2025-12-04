@@ -9,6 +9,19 @@ import { categorizeError, logStructuredError, logSuccess, logCtaImpression } fro
 import { getFallbackMealPlan } from "./fallbacks.ts";
 import { generateMealPlanCtas, addCtasToResponse } from "./ctaSchemas.ts";
 
+// Type for meal plan generation input
+export interface MealPlanInput {
+  days?: number;
+  locale?: string;
+  dietTags?: string[];
+  cuisines?: string[];
+  caloriesPerDay?: number;
+  goals?: any;
+  mealsPerDay?: number;
+  dietaryTags?: string[];
+  excludeIngredients?: string[];
+}
+
 // Simple input validation
 function validateMealPlanInput(params: any) {
   if (!params.goals || typeof params.goals !== 'object') {
@@ -211,13 +224,13 @@ Start date: ${new Date().toISOString().split('T')[0]}`;
         { role: "user", content: userPrompt },
       ],
       response_format: {
-        type: "json_schema",
+        type: "json_schema" as any,
         json_schema: {
           name: "meal_plan",
           strict: true,
           schema: MealPlanJsonSchema,
         },
-      },
+      } as any,
     });
 
     const rawContent = completion.choices[0]?.message?.content;
