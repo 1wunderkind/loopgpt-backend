@@ -5,6 +5,8 @@
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { cacheGet, cacheSet } from "./cache.ts";
+import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { getFallbackNutrition } from "./fallbacks.ts";
 
 // Simple input validation
 function validateNutritionInput(params: any) {
@@ -92,8 +94,13 @@ export async function analyzeNutrition(params: any) {
     const cached = await cacheGet(cacheKey);
     if (cached) {
       const duration = Date.now() - startTime;
-      console.log("[nutrition.analyze] Cache hit", { cacheKey, duration });
-      return JSON.parse(cached);
+      const analyses = JSON.parse(cached);
+      logSuccess("nutrition.analyze", duration, {
+        analysisCount: analyses.length,
+        cached: true,
+        fallbackUsed: false,
+      });
+      return analyses;
     }
     
     // Cache miss - analyze nutrition
@@ -154,16 +161,31 @@ ${ingredients}`;
     await cacheSet(cacheKey, JSON.stringify(analyses), 86400);
     
     const duration = Date.now() - startTime;
-    console.log("[nutrition.analyze] Success", { 
-      analysisCount: analyses.length, 
-      duration,
-      cached: false
+    logSuccess("nutrition.analyze", duration, {
+      analysisCount: analyses.length,
+      cached: false,
+      fallbackUsed: false,
     });
     
     return analyses;
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    console.error("[nutrition.analyze] Error", { error: error.message, duration });
-    throw error;
+    const categorized = categorizeError(error, "nutrition.analyze");
+    
+    // Log structured error
+    logStructuredError(categorized, true, duration);
+    
+    // Return fallback nutrition instead of throwing
+    console.warn("[nutrition.analyze] Returning fallback nutrition due to error");
+    const fallbackNutrition = getFallbackNutrition(params.recipes || []);
+    
+    // Log fallback usage
+    logSuccess("nutrition.analyze", duration, {
+      fallbackUsed: true,
+      analysisCount: fallbackNutrition.length,
+      errorType: categorized.type,
+    });
+    
+    return fallbackNutrition;
   }
 }

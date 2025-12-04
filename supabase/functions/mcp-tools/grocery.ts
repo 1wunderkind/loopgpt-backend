@@ -5,6 +5,8 @@
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { cacheGet, cacheSet } from "./cache.ts";
+import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { getFallbackGroceryList } from "./fallbacks.ts";
 
 // Simple input validation
 function validateGroceryInput(params: any) {
@@ -94,8 +96,13 @@ export async function generateGroceryList(params: any) {
     const cached = await cacheGet(cacheKey);
     if (cached) {
       const duration = Date.now() - startTime;
-      console.log("[grocery.list] Cache hit", { cacheKey, duration });
-      return JSON.parse(cached);
+      const list = JSON.parse(cached);
+      logSuccess("grocery.list", duration, {
+        totalItems: list.totalItems,
+        cached: true,
+        fallbackUsed: false,
+      });
+      return list;
     }
     
     // Cache miss - generate grocery list
@@ -182,16 +189,31 @@ ${sourceText}`;
     await cacheSet(cacheKey, JSON.stringify(list), 86400);
     
     const duration = Date.now() - startTime;
-    console.log("[grocery.list] Success", { 
-      totalItems: list.totalItems, 
-      duration,
-      cached: false
+    logSuccess("grocery.list", duration, {
+      totalItems: list.totalItems,
+      cached: false,
+      fallbackUsed: false,
     });
     
     return list;
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    console.error("[grocery.list] Error", { error: error.message, duration });
-    throw error;
+    const categorized = categorizeError(error, "grocery.list");
+    
+    // Log structured error
+    logStructuredError(categorized, true, duration);
+    
+    // Return fallback grocery list instead of throwing
+    console.warn("[grocery.list] Returning fallback grocery list due to error");
+    const fallbackList = getFallbackGroceryList(params.recipes || []);
+    
+    // Log fallback usage
+    logSuccess("grocery.list", duration, {
+      fallbackUsed: true,
+      totalItems: fallbackList.totalItems,
+      errorType: categorized.type,
+    });
+    
+    return fallbackList;
   }
 }

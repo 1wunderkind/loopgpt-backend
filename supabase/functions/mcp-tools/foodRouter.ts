@@ -13,6 +13,8 @@ import { generateRecipes } from "./recipes.ts";
 import { analyzeNutrition } from "./nutrition.ts";
 import { generateMealPlan } from "./mealplan.ts";
 import { generateGroceryList } from "./grocery.ts";
+import { categorizeError, logStructuredError, logSuccess, ValidationError } from "./errorTypes.ts";
+import { getFallbackRecipes } from "./fallbacks.ts";
 
 // Input schema for the router
 export interface FoodRouterInput {
@@ -314,32 +316,69 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
     }
 
     const duration = Date.now() - startTime;
-    console.log("[foodRouter] Success", {
+    logSuccess("food.router", duration, {
       type: result.type,
-      durationMs: duration,
+      confidence: result.confidence,
+      fallbackUsed: result.type === "fallback",
     });
 
     return result;
     
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    console.error("[foodRouter] Error", {
-      error: error.message,
-      stack: error.stack,
-      durationMs: duration,
-    });
-
-    // Never crash - always return a valid response
-    return {
-      type: "fallback",
-      intent: "error",
-      confidence: "low",
-      message: `Sorry, I encountered an error: ${error.message}. Please try rephrasing your request or use one of the specialized tools directly.`,
-      suggestions: [
-        "Try being more specific about what you want",
-        "Use recipes.generate for recipe ideas",
-        "Use mealplan.generate for meal planning",
-      ],
-    };
+    
+    // Categorize and log error
+    const categorized = categorizeError(error, "food.router");
+    logStructuredError(categorized, true, duration);
+    
+    // For validation errors, provide specific guidance
+    if (categorized instanceof ValidationError) {
+      return {
+        type: "fallback",
+        intent: "validation_error",
+        confidence: "low",
+        message: "I couldn't understand your request. Please provide more details about what you'd like to do.",
+        suggestions: [
+          "Try: 'What can I cook with chicken and rice?'",
+          "Try: 'Create a 3-day meal plan for 2000 calories'",
+          "Try: 'How many calories are in a grilled chicken salad?'",
+        ],
+      };
+    }
+    
+    // For any other error, try to provide fallback recipes
+    console.warn("[foodRouter] Attempting fallback recipes due to error");
+    try {
+      const fallbackRecipes = getFallbackRecipes(3);
+      
+      logSuccess("food.router", duration, {
+        type: "recipes",
+        confidence: "low",
+        fallbackUsed: true,
+        errorType: categorized.type,
+      });
+      
+      return {
+        type: "recipes",
+        intent: "fallback",
+        confidence: "low",
+        recipes: fallbackRecipes,
+      };
+    } catch (fallbackError: any) {
+      // Even fallback failed - return helpful message
+      console.error("[foodRouter] Fallback also failed", { error: fallbackError.message });
+      
+      return {
+        type: "fallback",
+        intent: "error",
+        confidence: "low",
+        message: "I'm having trouble processing your request right now. Please try again in a moment or use one of the specialized tools directly.",
+        suggestions: [
+          "Try again in a few moments",
+          "Use recipes.generate for recipe ideas",
+          "Use mealplan.generate for meal planning",
+        ],
+      };
+    }
   }
 }

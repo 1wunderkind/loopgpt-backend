@@ -6,6 +6,8 @@
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { generateRecipesCacheKey } from "./cacheKey.ts";
 import { cacheGet, cacheSet } from "./cache.ts";
+import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { getFallbackRecipes } from "./fallbacks.ts";
 
 // Simple input validation
 function validateRecipesInput(params: any) {
@@ -120,8 +122,13 @@ export async function generateRecipes(params: any) {
     const cached = await cacheGet(cacheKey);
     if (cached) {
       const duration = Date.now() - startTime;
-      console.log("[recipes.generate] Cache hit", { cacheKey, duration });
-      return JSON.parse(cached);
+      const recipes = JSON.parse(cached);
+      logSuccess("recipes.generate", duration, {
+        recipeCount: recipes.length,
+        cached: true,
+        fallbackUsed: false,
+      });
+      return recipes;
     }
     
     // Cache miss - generate recipes
@@ -175,16 +182,31 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
     await cacheSet(cacheKey, JSON.stringify(recipes), 86400);
     
     const duration = Date.now() - startTime;
-    console.log("[recipes.generate] Success", { 
-      recipeCount: recipes.length, 
-      duration, 
-      cached: false 
+    logSuccess("recipes.generate", duration, {
+      recipeCount: recipes.length,
+      cached: false,
+      fallbackUsed: false,
     });
     
     return recipes;
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    console.error("[recipes.generate] Error", { error: error.message, duration });
-    throw error;
+    const categorized = categorizeError(error, "recipes.generate");
+    
+    // Log structured error
+    logStructuredError(categorized, true, duration);
+    
+    // Return fallback recipes instead of throwing
+    console.warn("[recipes.generate] Returning fallback recipes due to error");
+    const fallbackRecipes = getFallbackRecipes(params.maxRecipes || 3);
+    
+    // Log fallback usage
+    logSuccess("recipes.generate", duration, {
+      fallbackUsed: true,
+      recipeCount: fallbackRecipes.length,
+      errorType: categorized.type,
+    });
+    
+    return fallbackRecipes;
   }
 }

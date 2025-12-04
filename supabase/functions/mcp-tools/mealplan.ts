@@ -5,6 +5,8 @@
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { cacheGet, cacheSet } from "./cache.ts";
+import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { getFallbackMealPlan } from "./fallbacks.ts";
 
 // Simple input validation
 function validateMealPlanInput(params: any) {
@@ -153,8 +155,13 @@ export async function generateMealPlan(params: any) {
     const cached = await cacheGet(cacheKey);
     if (cached) {
       const duration = Date.now() - startTime;
-      console.log("[mealplan.generate] Cache hit", { cacheKey, duration });
-      return JSON.parse(cached);
+      const plan = JSON.parse(cached);
+      logSuccess("mealplan.generate", duration, {
+        days: plan.days?.length,
+        cached: true,
+        fallbackUsed: false,
+      });
+      return plan;
     }
     
     // Cache miss - generate meal plan
@@ -224,16 +231,31 @@ Start date: ${new Date().toISOString().split('T')[0]}`;
     await cacheSet(cacheKey, JSON.stringify(plan), 86400);
     
     const duration = Date.now() - startTime;
-    console.log("[mealplan.generate] Success", { 
-      days: plan.days?.length, 
-      duration,
-      cached: false
+    logSuccess("mealplan.generate", duration, {
+      days: plan.days?.length,
+      cached: false,
+      fallbackUsed: false,
     });
     
     return plan;
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    console.error("[mealplan.generate] Error", { error: error.message, duration });
-    throw error;
+    const categorized = categorizeError(error, "mealplan.generate");
+    
+    // Log structured error
+    logStructuredError(categorized, true, duration);
+    
+    // Return fallback meal plan instead of throwing
+    console.warn("[mealplan.generate] Returning fallback meal plan due to error");
+    const fallbackPlan = getFallbackMealPlan(params.days || 1);
+    
+    // Log fallback usage
+    logSuccess("mealplan.generate", duration, {
+      fallbackUsed: true,
+      days: fallbackPlan.days?.length,
+      errorType: categorized.type,
+    });
+    
+    return fallbackPlan;
   }
 }
