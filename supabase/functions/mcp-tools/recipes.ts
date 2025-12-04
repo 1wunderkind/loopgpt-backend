@@ -5,7 +5,7 @@
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
 import { generateRecipesCacheKey } from "./cacheKey.ts";
-import { cacheGet, cacheSet } from "./cache.ts";
+import { getOrCompute } from "./multiLayerCache.ts";
 
 // Simple input validation
 function validateRecipesInput(params: any) {
@@ -114,68 +114,73 @@ export async function generateRecipes(params: any) {
     
     // Validate input
     const input = validateRecipesInput(params);
-    // Check cache first (with smart key generation)
+    
+    // Use multi-layer cache (L1 memory + L2 Postgres)
     const cacheKey = generateRecipesCacheKey(input);
-    const cached = await cacheGet(cacheKey);
-    if (cached) {
-      console.log("[recipes.generate] Cache hit", { cacheKey });
-      return JSON.parse(cached);
-    }
-    
-    // Get OpenAI client
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) {
-      throw new Error("OPENAI_API_KEY not configured");
-    }
-    
-    const client = new OpenAI({ apiKey });
-    
-    // Build prompts
-    const systemPrompt = `Generate ${input.maxRecipes} recipe(s) using: ${input.ingredients.map((i: any) => i.name).join(', ')}. ${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}. ` : ''}Return JSON with recipes array.`;
+    const result = await getOrCompute(
+      cacheKey,
+      3600, // 1 hour TTL
+      async () => {
+        // Cache miss - generate recipes
+        const apiKey = Deno.env.get("OPENAI_API_KEY");
+        if (!apiKey) {
+          throw new Error("OPENAI_API_KEY not configured");
+        }
+        
+        const client = new OpenAI({ apiKey });
+        
+        // Build prompts
+        const systemPrompt = `Generate ${input.maxRecipes} recipe(s) using: ${input.ingredients.map((i: any) => i.name).join(', ')}. ${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}. ` : ''}Return JSON with recipes array.`;
 
-    const userPrompt = `Generate ${input.maxRecipes} recipe(s) using these ingredients:
+        const userPrompt = `Generate ${input.maxRecipes} recipe(s) using these ingredients:
 ${input.ingredients.map((i: any) => `- ${i.name}${i.quantity ? ` (${i.quantity})` : ''}`).join('\n')}
 
 ${input.dietaryTags.length > 0 ? `Dietary requirements: ${input.dietaryTags.join(', ')}` : ''}
 ${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}` : ''}
 ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
 
-    console.log("[recipes.generate] Calling OpenAI...");
-    
-    // Call OpenAI with Structured Outputs
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini-2024-07-18",
-      temperature: 0.8,
-      max_tokens: 2000,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      response_format: {
-        type: "json_schema",
-        json_schema: {
-          name: "recipe_list",
-          strict: true,
-          schema: RecipeListJsonSchema,
-        },
-      },
-    });
+        console.log("[recipes.generate] Calling OpenAI...");
+        
+        // Call OpenAI with Structured Outputs
+        const completion = await client.chat.completions.create({
+          model: "gpt-4o-mini-2024-07-18",
+          temperature: 0.8,
+          max_tokens: 2000,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "recipe_list",
+              strict: true,
+              schema: RecipeListJsonSchema,
+            },
+          },
+        });
 
-    const rawContent = completion.choices[0]?.message?.content;
-    if (!rawContent) {
-      throw new Error("Empty response from OpenAI");
-    }
+        const rawContent = completion.choices[0]?.message?.content;
+        if (!rawContent) {
+          throw new Error("Empty response from OpenAI");
+        }
 
-    const parsed = JSON.parse(rawContent);
-    const recipes = parsed.recipes || parsed;
-    
-    // Cache the result for 1 hour
-    await cacheSet(cacheKey, JSON.stringify(recipes), 3600);
+        const parsed = JSON.parse(rawContent);
+        const recipes = parsed.recipes || parsed;
+        
+        return recipes;
+      }
+    );
     
     const duration = Date.now() - startTime;
-    console.log("[recipes.generate] Success", { recipeCount: recipes.length, duration, cached: false });
+    console.log("[recipes.generate] Success", { 
+      recipeCount: result.value.length, 
+      duration, 
+      source: result.source,
+      durationMs: result.durationMs 
+    });
     
-    return recipes;
+    return result.value;
   } catch (error: any) {
     const duration = Date.now() - startTime;
     console.error("[recipes.generate] Error", { error: error.message, duration });

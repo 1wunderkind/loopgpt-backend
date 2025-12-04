@@ -4,6 +4,7 @@
  */
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
+import { getOrCompute } from "./multiLayerCache.ts";
 
 // Simple input validation
 function validateNutritionInput(params: any) {
@@ -84,64 +85,81 @@ export async function analyzeNutrition(params: any) {
     // Validate input
     const input = validateNutritionInput(params);
     
-    // Get OpenAI client
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) {
-      throw new Error("OPENAI_API_KEY not configured");
-    }
+    // Generate cache key from recipe IDs
+    const cacheKey = `nutrition:${input.recipes.map((r: any) => r.id || r.name).join(',')}`.substring(0, 200);
     
-    const client = new OpenAI({ apiKey });
-    
-    // Build prompts
-    const systemPrompt = `Analyze nutrition for ${input.recipes.length} recipe(s). Return per-serving & total values for: calories, protein, carbs, fat, fiber, sugar, sodium. Add health score (0-100) and tags.`;
+    // Use multi-layer cache
+    const result = await getOrCompute(
+      cacheKey,
+      7200, // 2 hours TTL
+      async () => {
+        // Cache miss - analyze nutrition
+        const apiKey = Deno.env.get("OPENAI_API_KEY");
+        if (!apiKey) {
+          throw new Error("OPENAI_API_KEY not configured");
+        }
+        
+        const client = new OpenAI({ apiKey });
+        
+        // Build prompts
+        const systemPrompt = `Analyze nutrition for ${input.recipes.length} recipe(s). Return per-serving & total values for: calories, protein, carbs, fat, fiber, sugar, sodium. Add health score (0-100) and tags.`;
 
-    const recipesText = input.recipes.map((r: any, i: number) => {
-      const ingredients = r.ingredients?.map((ing: any) => 
-        `- ${ing.quantity || ''} ${ing.name}`.trim()
-      ).join('\n') || 'No ingredients provided';
-      
-      return `Recipe ${i + 1}: ${r.name || 'Unnamed'}
+        const recipesText = input.recipes.map((r: any, i: number) => {
+          const ingredients = r.ingredients?.map((ing: any) => 
+            `- ${ing.quantity || ''} ${ing.name}`.trim()
+          ).join('\n') || 'No ingredients provided';
+          
+          return `Recipe ${i + 1}: ${r.name || 'Unnamed'}
 ID: ${r.id || `recipe_${i}`}
 Servings: ${r.servings || 'unknown'}
 Ingredients:
 ${ingredients}`;
-    }).join('\n\n---\n\n');
+        }).join('\n\n---\n\n');
 
-    const userPrompt = `Analyze the nutritional content of these recipes:\n\n${recipesText}`;
+        const userPrompt = `Analyze the nutritional content of these recipes:\n\n${recipesText}`;
 
-    console.log("[nutrition.analyze] Calling OpenAI...");
-    
-    // Call OpenAI with Structured Outputs
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini-2024-07-18",
-      temperature: 0.3, // Lower temperature for more consistent nutrition data
-      max_tokens: 2000,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      response_format: {
-        type: "json_schema",
-        json_schema: {
-          name: "nutrition_analysis",
-          strict: true,
-          schema: NutritionAnalysisJsonSchema,
-        },
-      },
-    });
+        console.log("[nutrition.analyze] Calling OpenAI...");
+        
+        // Call OpenAI with Structured Outputs
+        const completion = await client.chat.completions.create({
+          model: "gpt-4o-mini-2024-07-18",
+          temperature: 0.3,
+          max_tokens: 2000,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "nutrition_analysis",
+              strict: true,
+              schema: NutritionAnalysisJsonSchema,
+            },
+          },
+        });
 
-    const rawContent = completion.choices[0]?.message?.content;
-    if (!rawContent) {
-      throw new Error("Empty response from OpenAI");
-    }
+        const rawContent = completion.choices[0]?.message?.content;
+        if (!rawContent) {
+          throw new Error("Empty response from OpenAI");
+        }
 
-    const parsed = JSON.parse(rawContent);
-    const analyses = parsed.analyses || parsed;
+        const parsed = JSON.parse(rawContent);
+        const analyses = parsed.analyses || parsed;
+        
+        return analyses;
+      }
+    );
     
     const duration = Date.now() - startTime;
-    console.log("[nutrition.analyze] Success", { analysisCount: analyses.length, duration });
+    console.log("[nutrition.analyze] Success", { 
+      analysisCount: result.value.length, 
+      duration,
+      source: result.source,
+      durationMs: result.durationMs
+    });
     
-    return analyses;
+    return result.value;
   } catch (error: any) {
     const duration = Date.now() - startTime;
     console.error("[nutrition.analyze] Error", { error: error.message, duration });
