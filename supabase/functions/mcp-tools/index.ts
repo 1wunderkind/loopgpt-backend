@@ -9,12 +9,33 @@ import { analyzeNutrition } from "./nutrition.ts";
 import { generateMealPlan, generateMealPlanWithGroceryList } from "./mealplan.ts";
 import { generateGroceryList } from "./grocery.ts";
 import { checkRateLimit } from "./rateLimit.ts";
+import { StreamingResponse, wantsStreaming } from "./streaming.ts";
+
+// Helper function to execute tools with optional streaming
+async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
+  switch (toolName) {
+    case "recipes.generate":
+      return await generateRecipes(params);
+    case "recipes.generateWithNutrition":
+      return await generateRecipesWithNutrition(params);
+    case "nutrition.analyze":
+      return await analyzeNutrition(params);
+    case "mealplan.generate":
+      return await generateMealPlan(params);
+    case "mealplan.generateWithGroceryList":
+      return await generateMealPlanWithGroceryList(params);
+    case "grocery.list":
+      return await generateGroceryList(params);
+    default:
+      throw new Error(`Unknown tool: ${toolName}`);
+  }
+}
 
 const MANIFEST = {
   name: "TheLoopGPT Tools",
-  version: "1.0.0-step6",
+  version: "1.0.0-optimized",
   description: "Ultra-reliable food and meal planning tools powered by AI",
-  status: "Step 6: All 6 tools + caching + rate limiting",
+  status: "Optimized: Postgres caching + streaming + progress events",
   tools: [
     {
       name: "health.check",
@@ -112,7 +133,36 @@ serve(async (req: Request) => {
     if (req.method === "POST" && toolMatch) {
       const toolName = toolMatch[1];
       
-      // Rate limiting
+      // Check if client wants streaming
+      const streaming = wantsStreaming(req);
+      const stream = streaming ? new StreamingResponse() : null;
+      
+      // If streaming, return stream immediately
+      if (streaming && stream) {
+        const response = stream.createStream();
+        
+        // Process in background
+        (async () => {
+          try {
+            stream.sendProgress("Checking rate limit...", 5);
+            const userId = req.headers.get("x-user-id") || "anonymous";
+            await checkRateLimit(userId);
+            
+            stream.sendProgress("Parsing request...", 10);
+            const params = await req.json();
+            
+            stream.sendProgress("Starting tool execution...", 15);
+            const result = await executeTool(toolName, params, stream);
+            stream.sendComplete(result);
+          } catch (error: any) {
+            stream.sendError(error.message || "Unknown error");
+          }
+        })();
+        
+        return response;
+      }
+      
+      // Non-streaming path
       const userId = req.headers.get("x-user-id") || "anonymous";
       try {
         await checkRateLimit(userId);
@@ -121,7 +171,7 @@ serve(async (req: Request) => {
           JSON.stringify({
             error: "Rate limit exceeded",
             message: rateLimitError.message,
-            retryAfter: 3600 // 1 hour in seconds
+            retryAfter: 3600
           }),
           {
             status: 429,
