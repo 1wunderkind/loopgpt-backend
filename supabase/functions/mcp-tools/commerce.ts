@@ -162,35 +162,8 @@ export async function prepareCart(params: any): Promise<OrderRoutingResponse> {
       optimizeFor: input.preferences?.optimizeFor,
     });
     
-    // TEMPORARY: Return mock response for testing
-    // TODO: Uncomment this line once commerce router is verified working
-    // const routingResponse = await callCommerceRouter(routingRequest);
-    
-    const routingResponse: OrderRoutingResponse = {
-      success: true,
-      provider: "Instacart",
-      quote: {
-        subtotal: cartPayload.items.length * 8.99,
-        deliveryFee: 5.99,
-        tax: cartPayload.items.length * 0.72,
-        total: cartPayload.items.length * 9.71 + 5.99,
-        estimatedDelivery: { min: 45, max: 60 },
-      },
-      scoreBreakdown: {
-        priceScore: 72,
-        speedScore: 68,
-        availabilityScore: 100,
-        marginScore: 85,
-        reliabilityScore: 75,
-        weightedTotal: 78.5,
-        explanation: "Instacart was selected due to competitive pricing and all items available.",
-      },
-      alternatives: [
-        { provider: "Walmart", total: cartPayload.items.length * 9.20 + 0, score: 71.2 },
-        { provider: "MealMe", total: cartPayload.items.length * 10.50 + 3.99, score: 65.8 },
-      ],
-      confirmationToken: `conf_mock_${Date.now()}_${Math.random().toString(36).substring(7)}`,
-    };
+    // Call real commerce router
+    const routingResponse = await callCommerceRouter(routingRequest);
     
     const duration = Date.now() - startTime;
     logSuccess("commerce.prepareCart", duration, {
