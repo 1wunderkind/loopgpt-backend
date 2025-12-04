@@ -4,6 +4,7 @@
  */
 
 import OpenAI from "https://esm.sh/openai@4.28.0";
+import { generateRecipesCacheKey } from "./cacheKey.ts";
 import { cacheGet, cacheSet } from "./cache.ts";
 
 // Simple input validation
@@ -113,9 +114,8 @@ export async function generateRecipes(params: any) {
     
     // Validate input
     const input = validateRecipesInput(params);
-    
-    // Check cache
-    const cacheKey = `recipes:${JSON.stringify(input)}`;
+    // Check cache first (with smart key generation)
+    const cacheKey = generateRecipesCacheKey(input);
     const cached = await cacheGet(cacheKey);
     if (cached) {
       console.log("[recipes.generate] Cache hit", { cacheKey });
@@ -131,16 +131,7 @@ export async function generateRecipes(params: any) {
     const client = new OpenAI({ apiKey });
     
     // Build prompts
-    const systemPrompt = `You are TheLoopGPT's recipe generation engine. Generate creative, practical recipes based on the provided ingredients.
-
-Rules:
-- Use as many of the provided ingredients as possible
-- If dietary tags are specified, strictly follow them
-- If exclude ingredients are specified, never use them
-- Generate recipes with clear, step-by-step instructions
-- Include prep time, cook time, and servings when possible
-- Assign appropriate difficulty levels
-- Add relevant tags (e.g., "quick", "healthy", "comfort food")`;
+    const systemPrompt = `Generate ${input.maxRecipes} recipe(s) using: ${input.ingredients.map((i: any) => i.name).join(', ')}. ${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}. ` : ''}Return JSON with recipes array.`;
 
     const userPrompt = `Generate ${input.maxRecipes} recipe(s) using these ingredients:
 ${input.ingredients.map((i: any) => `- ${i.name}${i.quantity ? ` (${i.quantity})` : ''}`).join('\n')}
@@ -153,9 +144,9 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
     
     // Call OpenAI with Structured Outputs
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-2024-08-06",
+      model: "gpt-4o-mini-2024-07-18",
       temperature: 0.8,
-      max_tokens: 4000,
+      max_tokens: 2000,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

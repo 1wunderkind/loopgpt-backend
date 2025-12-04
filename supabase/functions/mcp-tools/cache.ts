@@ -80,7 +80,7 @@ export async function cacheGet(key: string): Promise<string | null> {
  * @param value - Value to cache (string)
  * @param ttlSeconds - Time to live in seconds (default: 1 hour)
  */
-export async function cacheSet(key: string, value: string, ttlSeconds: number = 3600): Promise<void> {
+export async function cacheSet(key: string, value: string, ttlSeconds: number = 86400): Promise<void> { // Default: 24 hours
   try {
     const client = getSupabaseClient();
     if (!client) return;

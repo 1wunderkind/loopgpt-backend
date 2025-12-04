@@ -93,16 +93,7 @@ export async function analyzeNutrition(params: any) {
     const client = new OpenAI({ apiKey });
     
     // Build prompts
-    const systemPrompt = `You are TheLoopGPT's nutrition analysis engine. Analyze the nutritional content of recipes with high accuracy.
-
-Rules:
-- Calculate nutrition per serving AND total
-- Include: calories, protein, carbs, fat, fiber, sugar, sodium
-- Assign a health score (0-100, where 100 is healthiest)
-- Add relevant tags (e.g., "high-protein", "low-carb", "heart-healthy")
-- Include warnings for allergens or health concerns
-- Base calculations on standard USDA nutritional data
-- Be conservative with estimates - round up for calories/fat/sugar, round down for protein/fiber`;
+    const systemPrompt = `Analyze nutrition for ${input.recipes.length} recipe(s). Return per-serving & total values for: calories, protein, carbs, fat, fiber, sugar, sodium. Add health score (0-100) and tags.`;
 
     const recipesText = input.recipes.map((r: any, i: number) => {
       const ingredients = r.ingredients?.map((ing: any) => 
@@ -122,9 +113,9 @@ ${ingredients}`;
     
     // Call OpenAI with Structured Outputs
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-2024-08-06",
+      model: "gpt-4o-mini-2024-07-18",
       temperature: 0.3, // Lower temperature for more consistent nutrition data
-      max_tokens: 4000,
+      max_tokens: 2000,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

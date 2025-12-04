@@ -139,9 +139,9 @@ ${sourceText}`;
     
     // Call OpenAI with Structured Outputs
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-2024-08-06",
+      model: "gpt-4o-mini-2024-07-18",
       temperature: 0.3, // Lower temperature for consistent consolidation
-      max_tokens: 4000,
+      max_tokens: 2000,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

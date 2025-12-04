@@ -183,9 +183,9 @@ Start date: ${new Date().toISOString().split('T')[0]}`;
     
     // Call OpenAI with Structured Outputs
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-2024-08-06",
+      model: "gpt-4o-mini-2024-07-18",
       temperature: 0.7,
-      max_tokens: 8000, // Meal plans can be long
+      max_tokens: 3000, // Meal plans can be long
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
