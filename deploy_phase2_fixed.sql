@@ -33,7 +33,7 @@ BEGIN
       WHEN COUNT(*) > 0 THEN 'success'
       ELSE 'warning'
     END::TEXT
-  FROM ingredient_submissions
+  FROM analytics.ingredient_submissions
   WHERE created_at >= NOW() - INTERVAL '24 hours'
   
   UNION ALL
@@ -50,7 +50,7 @@ BEGIN
       WHEN COUNT(*) > 0 THEN 'success'
       ELSE 'warning'
     END::TEXT
-  FROM recipe_events
+  FROM analytics.recipe_events
   WHERE created_at >= NOW() - INTERVAL '24 hours'
   
   UNION ALL
@@ -67,7 +67,7 @@ BEGIN
       WHEN COUNT(*) > 0 THEN 'success'
       ELSE 'warning'
     END::TEXT
-  FROM session_events
+  FROM analytics.session_events
   WHERE created_at >= NOW() - INTERVAL '24 hours'
   
   UNION ALL
@@ -87,7 +87,7 @@ BEGIN
       WHEN COUNT(*) FILTER (WHERE ingredient_name IS NULL) * 100.0 / COUNT(*) < 1 THEN 'warning'
       ELSE 'error'
     END::TEXT
-  FROM ingredient_submissions
+  FROM analytics.ingredient_submissions
   
   UNION ALL
   
@@ -106,7 +106,7 @@ BEGIN
       WHEN COUNT(DISTINCT user_id) > 0 THEN 'warning'
       ELSE 'error'
     END::TEXT
-  FROM session_events
+  FROM analytics.session_events
   WHERE created_at >= CURRENT_DATE - INTERVAL '1 day'
     AND created_at < CURRENT_DATE
     AND user_id IS NOT NULL
@@ -118,10 +118,10 @@ BEGIN
     'Growth'::TEXT,
     'Total events (all time)'::TEXT,
     (
-      (SELECT COUNT(*) FROM ingredient_submissions) +
-      (SELECT COUNT(*) FROM recipe_events) +
-      (SELECT COUNT(*) FROM meal_logs) +
-      (SELECT COUNT(*) FROM session_events)
+      (SELECT COUNT(*) FROM analytics.ingredient_submissions) +
+      (SELECT COUNT(*) FROM analytics.recipe_events) +
+      (SELECT COUNT(*) FROM analytics.meal_logs) +
+      (SELECT COUNT(*) FROM analytics.session_events)
     )::TEXT,
     'Growing'::TEXT,
     'info'::TEXT;
@@ -150,7 +150,7 @@ BEGIN
     'ingredient_submissions'::TEXT,
     MAX(created_at),
     EXTRACT(EPOCH FROM (NOW() - MAX(created_at))) / 3600
-  FROM ingredient_submissions
+  FROM analytics.ingredient_submissions
   HAVING MAX(created_at) < NOW() - INTERVAL '1 hour'
   
   UNION ALL
@@ -160,7 +160,7 @@ BEGIN
     'session_events'::TEXT,
     MAX(created_at),
     EXTRACT(EPOCH FROM (NOW() - MAX(created_at))) / 3600
-  FROM session_events
+  FROM analytics.session_events
   HAVING MAX(created_at) < NOW() - INTERVAL '1 hour';
   
 END;
@@ -182,7 +182,7 @@ BEGIN
     'ingredient_submissions'::TEXT,
     'ingredient_name'::TEXT,
     ROUND(COUNT(*) FILTER (WHERE ingredient_name IS NULL) * 100.0 / NULLIF(COUNT(*), 0), 2)
-  FROM ingredient_submissions
+  FROM analytics.ingredient_submissions
   HAVING COUNT(*) FILTER (WHERE ingredient_name IS NULL) * 100.0 / COUNT(*) > 1
   
   UNION ALL
@@ -192,7 +192,7 @@ BEGIN
     'recipe_events'::TEXT,
     'recipe_id'::TEXT,
     ROUND(COUNT(*) FILTER (WHERE recipe_id IS NULL) * 100.0 / NULLIF(COUNT(*), 0), 2)
-  FROM recipe_events
+  FROM analytics.recipe_events
   HAVING COUNT(*) FILTER (WHERE recipe_id IS NULL) * 100.0 / COUNT(*) > 1;
   
 END;
@@ -214,7 +214,7 @@ BEGIN
     COUNT(*)
   FROM (
     SELECT session_id, gpt_name, event_type, created_at, COUNT(*) as dup_count
-    FROM session_events
+    FROM analytics.session_events
     GROUP BY session_id, gpt_name, event_type, created_at
     HAVING COUNT(*) > 1
   ) duplicates;
@@ -242,14 +242,14 @@ BEGIN
   SELECT 
     'Engagement'::TEXT,
     'Daily Active Users (avg)'::TEXT,
-    (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::TEXT,
-    (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::TEXT,
+    (SELECT COUNT(DISTINCT user_id) FROM analytics.session_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::TEXT,
+    (SELECT COUNT(DISTINCT user_id) FROM analytics.session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::TEXT,
     CASE 
-      WHEN (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL) > 0 THEN
+      WHEN (SELECT COUNT(DISTINCT user_id) FROM analytics.session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL) > 0 THEN
         ROUND(
-          ((SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC - 
-           (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC) * 100.0 / 
-          (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC, 1
+          ((SELECT COUNT(DISTINCT user_id) FROM analytics.session_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC - 
+           (SELECT COUNT(DISTINCT user_id) FROM analytics.session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC) * 100.0 / 
+          (SELECT COUNT(DISTINCT user_id) FROM analytics.session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC, 1
         )::TEXT || '%'
       ELSE 'N/A'
     END
@@ -260,14 +260,14 @@ BEGIN
   SELECT 
     'Product'::TEXT,
     'Recipe Acceptance Rate'::TEXT,
-    ROUND(COALESCE((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL), 0), 1)::TEXT || '%',
-    ROUND(COALESCE((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL), 0), 1)::TEXT || '%',
+    ROUND(COALESCE((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM analytics.recipe_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL), 0), 1)::TEXT || '%',
+    ROUND(COALESCE((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM analytics.recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL), 0), 1)::TEXT || '%',
     CASE 
-      WHEN (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
+      WHEN (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM analytics.recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
         ROUND(
-          ((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL) - 
-           (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)) * 100.0 / 
-          (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL), 1
+          ((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM analytics.recipe_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL) - 
+           (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM analytics.recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)) * 100.0 / 
+          (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM analytics.recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL), 1
         )::TEXT || '%'
       ELSE 'N/A'
     END
@@ -278,14 +278,14 @@ BEGIN
   SELECT 
     'Usage'::TEXT,
     'Ingredient Submissions'::TEXT,
-    (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
-    (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
+    (SELECT COUNT(*) FROM analytics.ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
+    (SELECT COUNT(*) FROM analytics.ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
     CASE 
-      WHEN (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
+      WHEN (SELECT COUNT(*) FROM analytics.ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
         ROUND(
-          ((SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC - 
-           (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC) * 100.0 / 
-          (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC, 1
+          ((SELECT COUNT(*) FROM analytics.ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC - 
+           (SELECT COUNT(*) FROM analytics.ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC) * 100.0 / 
+          (SELECT COUNT(*) FROM analytics.ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC, 1
         )::TEXT || '%'
       ELSE 'N/A'
     END
@@ -296,14 +296,14 @@ BEGIN
   SELECT 
     'Usage'::TEXT,
     'Meal Plans Generated'::TEXT,
-    (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
-    (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
+    (SELECT COUNT(*) FROM analytics.meal_plans WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
+    (SELECT COUNT(*) FROM analytics.meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
     CASE 
-      WHEN (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
+      WHEN (SELECT COUNT(*) FROM analytics.meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
         ROUND(
-          ((SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC - 
-           (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC) * 100.0 / 
-          (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC, 1
+          ((SELECT COUNT(*) FROM analytics.meal_plans WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC - 
+           (SELECT COUNT(*) FROM analytics.meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC) * 100.0 / 
+          (SELECT COUNT(*) FROM analytics.meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC, 1
         )::TEXT || '%'
       ELSE 'N/A'
     END;
@@ -345,7 +345,7 @@ SELECT
   COUNT(DISTINCT user_id) as dau,
   COUNT(DISTINCT session_id) as sessions,
   COUNT(*) as events
-FROM session_events
+FROM analytics.session_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
   AND user_id IS NOT NULL
 GROUP BY DATE(created_at)
@@ -360,7 +360,7 @@ SELECT
   COUNT(DISTINCT session_id) as unique_sessions,
   source_gpt,
   ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage
-FROM ingredient_submissions
+FROM analytics.ingredient_submissions
 WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
 GROUP BY ingredient_name, source_gpt
 ORDER BY submission_count DESC
@@ -378,7 +378,7 @@ SELECT
     NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0),
     2
   ) as acceptance_rate
-FROM recipe_events
+FROM analytics.recipe_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
 GROUP BY DATE(created_at)
 ORDER BY date DESC;
@@ -392,7 +392,7 @@ SELECT
   COUNT(DISTINCT session_id) as unique_sessions,
   ROUND(AVG(EXTRACT(EPOCH FROM (updated_at - created_at))), 2) as avg_duration_seconds,
   ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage
-FROM session_events
+FROM analytics.session_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
 GROUP BY gpt_name
 ORDER BY total_events DESC;
@@ -407,7 +407,7 @@ WITH first_seen AS (
   SELECT 
     user_id,
     DATE_TRUNC('week', MIN(created_at)) as cohort_week
-  FROM session_events
+  FROM analytics.session_events
   WHERE user_id IS NOT NULL
   GROUP BY user_id
 ),
@@ -415,7 +415,7 @@ activity AS (
   SELECT 
     user_id,
     DATE_TRUNC('week', created_at) as activity_week
-  FROM session_events
+  FROM analytics.session_events
   WHERE user_id IS NOT NULL
   GROUP BY user_id, DATE_TRUNC('week', created_at)
 )
@@ -441,7 +441,7 @@ WITH user_activity AS (
     COUNT(DISTINCT DATE(created_at)) as active_days,
     COUNT(DISTINCT session_id) as sessions,
     COUNT(*) as total_events
-  FROM session_events
+  FROM analytics.session_events
   WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
     AND user_id IS NOT NULL
   GROUP BY user_id
@@ -486,8 +486,8 @@ WITH funnel_steps AS (
     COUNT(DISTINCT CASE WHEN mp.metadata->>'hasGroceryList' = 'true' THEN mp.id END) as with_grocery_list,
     COUNT(DISTINCT ae.id) FILTER (WHERE ae.event_type = 'impression') as affiliate_impressions,
     COUNT(DISTINCT ae.id) FILTER (WHERE ae.event_type = 'click') as affiliate_clicks
-  FROM meal_plans mp
-  LEFT JOIN affiliate_events ae ON ae.session_id = mp.session_id
+  FROM analytics.meal_plans mp
+  LEFT JOIN analytics.affiliate_events ae ON ae.session_id = mp.session_id
   WHERE mp.created_at >= CURRENT_DATE - INTERVAL '30 days'
 )
 SELECT 
@@ -527,7 +527,7 @@ SELECT
     2
   ) as acceptance_rate,
   ROUND(AVG(metadata->>'generationTimeMs')::NUMERIC / 1000, 2) as avg_generation_time_seconds
-FROM recipe_events
+FROM analytics.recipe_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
   AND chaos_rating_shown IS NOT NULL
 GROUP BY chaos_rating_shown
@@ -555,7 +555,7 @@ SELECT
     2
   ) as conversion_rate,
   SUM((metadata->>'estimatedRevenueUsd')::NUMERIC) FILTER (WHERE event_type = 'conversion') as total_revenue_usd
-FROM affiliate_events
+FROM analytics.affiliate_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
 GROUP BY provider_name
 ORDER BY clicks DESC;
@@ -567,7 +567,7 @@ SELECT
   COUNT(*) FILTER (WHERE event_type = 'click') as clicks,
   COUNT(*) FILTER (WHERE event_type = 'conversion') as conversions,
   SUM((metadata->>'estimatedRevenueUsd')::NUMERIC) FILTER (WHERE event_type = 'conversion') as revenue_usd
-FROM affiliate_events
+FROM analytics.affiliate_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
 GROUP BY DATE(created_at)
 ORDER BY date DESC;
@@ -586,7 +586,7 @@ SELECT
   ROUND(AVG(protein_g), 1) as avg_protein_g,
   ROUND(AVG(carbs_g), 1) as avg_carbs_g,
   ROUND(AVG(fat_g), 1) as avg_fat_g
-FROM meal_logs
+FROM analytics.meal_logs
 WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
 GROUP BY DATE(created_at)
 ORDER BY date DESC;
@@ -598,7 +598,7 @@ SELECT
   COUNT(*) as user_count,
   ROUND(AVG(target_calories_per_day), 0) as avg_target_calories,
   ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage
-FROM user_goals
+FROM analytics.user_goals
 WHERE diet_style IS NOT NULL
 GROUP BY diet_style
 ORDER BY user_count DESC;
@@ -615,7 +615,7 @@ WITH weekly_stats AS (
     COUNT(DISTINCT user_id) as active_users,
     COUNT(DISTINCT session_id) as sessions,
     COUNT(*) as events
-  FROM session_events
+  FROM analytics.session_events
   WHERE user_id IS NOT NULL
   GROUP BY DATE_TRUNC('week', created_at)
 )
@@ -763,7 +763,7 @@ BEGIN
       COUNT(DISTINCT DATE(created_at)) as active_days,
       COUNT(DISTINCT session_id) as sessions,
       COUNT(*) as events
-    FROM session_events
+    FROM analytics.session_events
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -787,7 +787,7 @@ BEGIN
       COUNT(DISTINCT DATE(created_at)) as active_days,
       COUNT(DISTINCT session_id) as sessions,
       COUNT(*) as events
-    FROM session_events
+    FROM analytics.session_events
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -811,7 +811,7 @@ BEGIN
       COUNT(DISTINCT DATE(created_at)) as active_days,
       COUNT(DISTINCT session_id) as sessions,
       COUNT(*) as events
-    FROM session_events
+    FROM analytics.session_events
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -835,7 +835,7 @@ BEGIN
       COUNT(DISTINCT DATE(created_at)) as active_days,
       COUNT(DISTINCT session_id) as sessions,
       COUNT(*) as events
-    FROM session_events
+    FROM analytics.session_events
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -857,7 +857,7 @@ BEGIN
       user_id,
       MAX(created_at) as last_active,
       EXTRACT(DAY FROM (NOW() - MAX(created_at))) as days_since_active
-    FROM session_events
+    FROM analytics.session_events
     WHERE user_id IS NOT NULL
     GROUP BY user_id
     HAVING MAX(created_at) BETWEEN CURRENT_DATE - INTERVAL '4 weeks' AND CURRENT_DATE - INTERVAL '2 weeks'
@@ -887,7 +887,7 @@ BEGIN
       'target_calories', target_calories_per_day,
       'restrictions', dietary_restrictions
     )
-  FROM user_goals
+  FROM analytics.user_goals
   WHERE diet_style IS NOT NULL;
   
   GET DIAGNOSTICS rows_affected = ROW_COUNT;
@@ -919,7 +919,7 @@ BEGIN
       user_id,
       COUNT(*) FILTER (WHERE event_type = 'generated') as recipes_generated,
       ROUND(AVG(chaos_rating_shown), 1) as avg_chaos_rating
-    FROM recipe_events
+    FROM analytics.recipe_events
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -941,7 +941,7 @@ BEGIN
       user_id,
       COUNT(*) as meal_plans_generated,
       ROUND(AVG(days_planned), 1) as avg_days_planned
-    FROM meal_plans
+    FROM analytics.meal_plans
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -963,7 +963,7 @@ BEGIN
       user_id,
       COUNT(*) as meals_logged,
       ROUND(AVG(calories_kcal), 0) as avg_calories
-    FROM meal_logs
+    FROM analytics.meal_logs
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -985,7 +985,7 @@ BEGIN
       user_id,
       COUNT(*) FILTER (WHERE event_type = 'click') as affiliate_clicks,
       COUNT(*) FILTER (WHERE event_type = 'conversion') as affiliate_conversions
-    FROM affiliate_events
+    FROM analytics.affiliate_events
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -1022,7 +1022,7 @@ BEGIN
     SELECT 
       user_id,
       COUNT(DISTINCT DATE(created_at)) as active_days
-    FROM session_events
+    FROM analytics.session_events
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -1033,7 +1033,7 @@ BEGIN
       user_id,
       COUNT(*) FILTER (WHERE event_type = 'conversion') as affiliate_conversions,
       SUM((metadata->>'estimatedRevenueUsd')::NUMERIC) as estimated_revenue
-    FROM affiliate_events
+    FROM analytics.affiliate_events
     WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND user_id IS NOT NULL
     GROUP BY user_id
@@ -1058,8 +1058,8 @@ BEGIN
       COUNT(DISTINCT DATE(se.created_at)) as active_days,
       COUNT(DISTINCT se.session_id) as sessions,
       COUNT(*) FILTER (WHERE ae.event_type = 'click') as affiliate_clicks
-    FROM session_events se
-    LEFT JOIN affiliate_events ae ON se.user_id = ae.user_id
+    FROM analytics.session_events se
+    LEFT JOIN analytics.affiliate_events ae ON se.user_id = ae.user_id
     WHERE se.created_at >= CURRENT_DATE - INTERVAL '30 days'
       AND se.user_id IS NOT NULL
     GROUP BY se.user_id
