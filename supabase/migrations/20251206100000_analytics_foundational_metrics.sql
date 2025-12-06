@@ -53,11 +53,11 @@ CREATE TABLE IF NOT EXISTS analytics.ingredient_submissions (
 );
 
 -- Indexes
-CREATE INDEX idx_ingredient_submissions_user_created 
+CREATE INDEX IF NOT EXISTS idx_ingredient_submissions_user_created 
   ON analytics.ingredient_submissions(user_id, created_at DESC);
-CREATE INDEX idx_ingredient_submissions_source 
+CREATE INDEX IF NOT EXISTS idx_ingredient_submissions_source 
   ON analytics.ingredient_submissions(source_gpt, created_at DESC);
-CREATE INDEX idx_ingredient_submissions_ingredients 
+CREATE INDEX IF NOT EXISTS idx_ingredient_submissions_ingredients 
   ON analytics.ingredient_submissions USING GIN (ingredients);
 
 -- Comments
@@ -98,13 +98,13 @@ CREATE TABLE IF NOT EXISTS analytics.recipe_events (
 );
 
 -- Indexes
-CREATE INDEX idx_recipe_events_recipe 
+CREATE INDEX IF NOT EXISTS idx_recipe_events_recipe 
   ON analytics.recipe_events(recipe_id, created_at DESC);
-CREATE INDEX idx_recipe_events_user 
+CREATE INDEX IF NOT EXISTS idx_recipe_events_user 
   ON analytics.recipe_events(user_id, created_at DESC);
-CREATE INDEX idx_recipe_events_type 
+CREATE INDEX IF NOT EXISTS idx_recipe_events_type 
   ON analytics.recipe_events(event_type, created_at DESC);
-CREATE INDEX idx_recipe_events_source 
+CREATE INDEX IF NOT EXISTS idx_recipe_events_source 
   ON analytics.recipe_events(source_gpt, created_at DESC);
 
 -- Comments
@@ -148,11 +148,11 @@ CREATE TABLE IF NOT EXISTS analytics.meal_logs (
 );
 
 -- Indexes
-CREATE INDEX idx_meal_logs_user_logged 
+CREATE INDEX IF NOT EXISTS idx_meal_logs_user_logged 
   ON analytics.meal_logs(user_id, logged_at DESC);
-CREATE INDEX idx_meal_logs_type 
+CREATE INDEX IF NOT EXISTS idx_meal_logs_type 
   ON analytics.meal_logs(meal_type, logged_at DESC);
-CREATE INDEX idx_meal_logs_source 
+CREATE INDEX IF NOT EXISTS idx_meal_logs_source 
   ON analytics.meal_logs(source_gpt, created_at DESC);
 
 -- Comments
@@ -189,13 +189,13 @@ CREATE TABLE IF NOT EXISTS analytics.meal_plans (
 );
 
 -- Indexes
-CREATE INDEX idx_meal_plans_user 
+CREATE INDEX IF NOT EXISTS idx_meal_plans_user 
   ON analytics.meal_plans(user_id, created_at DESC);
-CREATE INDEX idx_meal_plans_days 
+CREATE INDEX IF NOT EXISTS idx_meal_plans_days 
   ON analytics.meal_plans(days_planned, created_at DESC);
-CREATE INDEX idx_meal_plans_vibe 
+CREATE INDEX IF NOT EXISTS idx_meal_plans_vibe 
   ON analytics.meal_plans(vibe, created_at DESC);
-CREATE INDEX idx_meal_plans_source 
+CREATE INDEX IF NOT EXISTS idx_meal_plans_source 
   ON analytics.meal_plans(source_gpt, created_at DESC);
 
 -- Comments
@@ -235,13 +235,13 @@ CREATE TABLE IF NOT EXISTS analytics.affiliate_events (
 );
 
 -- Indexes
-CREATE INDEX idx_affiliate_events_provider 
+CREATE INDEX IF NOT EXISTS idx_affiliate_events_provider 
   ON analytics.affiliate_events(provider, created_at DESC);
-CREATE INDEX idx_affiliate_events_user 
+CREATE INDEX IF NOT EXISTS idx_affiliate_events_user 
   ON analytics.affiliate_events(user_id, created_at DESC);
-CREATE INDEX idx_affiliate_events_type 
+CREATE INDEX IF NOT EXISTS idx_affiliate_events_type 
   ON analytics.affiliate_events(event_type, created_at DESC);
-CREATE INDEX idx_affiliate_events_order 
+CREATE INDEX IF NOT EXISTS idx_affiliate_events_order 
   ON analytics.affiliate_events(grocery_order_id) 
   WHERE grocery_order_id IS NOT NULL;
 
@@ -286,9 +286,9 @@ CREATE TABLE IF NOT EXISTS analytics.user_goals (
 CREATE UNIQUE INDEX idx_user_goals_active 
   ON analytics.user_goals(user_id) 
   WHERE is_active = TRUE; -- Only one active goal per user
-CREATE INDEX idx_user_goals_user_created 
+CREATE INDEX IF NOT EXISTS idx_user_goals_user_created 
   ON analytics.user_goals(user_id, created_at DESC);
-CREATE INDEX idx_user_goals_type 
+CREATE INDEX IF NOT EXISTS idx_user_goals_type 
   ON analytics.user_goals(goal_type, created_at DESC);
 
 -- Comments
@@ -321,13 +321,13 @@ CREATE TABLE IF NOT EXISTS analytics.session_events (
 );
 
 -- Indexes
-CREATE INDEX idx_session_events_session 
+CREATE INDEX IF NOT EXISTS idx_session_events_session 
   ON analytics.session_events(session_id, created_at DESC);
-CREATE INDEX idx_session_events_gpt 
+CREATE INDEX IF NOT EXISTS idx_session_events_gpt 
   ON analytics.session_events(gpt_name, created_at DESC);
-CREATE INDEX idx_session_events_user 
+CREATE INDEX IF NOT EXISTS idx_session_events_user 
   ON analytics.session_events(user_id, created_at DESC);
-CREATE INDEX idx_session_events_type 
+CREATE INDEX IF NOT EXISTS idx_session_events_type 
   ON analytics.session_events(event_type, created_at DESC);
 
 -- Comments
@@ -369,7 +369,7 @@ FROM analytics.recipe_events
 GROUP BY DATE(created_at), source_gpt
 ORDER BY date DESC, source_gpt;
 
-CREATE INDEX idx_recipe_acceptance_date ON analytics.recipe_acceptance_rate(date DESC);
+CREATE INDEX IF NOT EXISTS idx_recipe_acceptance_date ON analytics.recipe_acceptance_rate(date DESC);
 
 -- Affiliate Conversion Rate
 CREATE MATERIALIZED VIEW IF NOT EXISTS analytics.affiliate_conversion_rate AS
@@ -388,7 +388,7 @@ FROM analytics.affiliate_events
 GROUP BY DATE(created_at), provider
 ORDER BY date DESC, provider;
 
-CREATE INDEX idx_affiliate_conversion_date ON analytics.affiliate_conversion_rate(date DESC);
+CREATE INDEX IF NOT EXISTS idx_affiliate_conversion_date ON analytics.affiliate_conversion_rate(date DESC);
 
 -- ============================================================================
 -- Helper Functions
