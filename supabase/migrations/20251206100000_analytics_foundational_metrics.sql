@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS analytics.user_goals (
 );
 
 -- Indexes
-CREATE UNIQUE INDEX idx_user_goals_active 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_goals_active 
   ON analytics.user_goals(user_id) 
   WHERE is_active = TRUE; -- Only one active goal per user
 CREATE INDEX IF NOT EXISTS idx_user_goals_user_created 
@@ -350,7 +350,7 @@ WHERE user_id IS NOT NULL
 GROUP BY DATE(created_at)
 ORDER BY date DESC;
 
-CREATE UNIQUE INDEX idx_dau_date ON analytics.daily_active_users(date);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_dau_date ON analytics.daily_active_users(date);
 
 -- Recipe Acceptance Rate
 CREATE MATERIALIZED VIEW IF NOT EXISTS analytics.recipe_acceptance_rate AS
