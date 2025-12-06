@@ -27,6 +27,13 @@ import type {
   ScoreBreakdown,
   ItemAvailability,
 } from "./types/index.ts";
+import {
+  getMultipleProviderMetrics,
+  calculateReliabilityScore,
+  calculateMarginScore,
+  logProviderMetrics,
+  type ProviderMetrics,
+} from "./providerMetrics.ts";
 
 // ============================================================================
 // Scoring Configuration
@@ -87,11 +94,25 @@ export class ProviderScorer {
     // Adjust weights based on preference
     const weights = this.getWeightsForPreference(preference);
 
-    // Pre-fetch reliability scores for all providers
+    // Pre-fetch provider metrics for all providers in parallel
+    const providerIds = quotes.map(q => q.provider.id);
+    const metricsMap = await getMultipleProviderMetrics(this.db, providerIds);
+
+    // Calculate reliability and margin scores from metrics
     const reliabilityScores = new Map<string, number>();
+    const marginScores = new Map<string, number>();
+    const allMetrics = Array.from(metricsMap.values());
+
     for (const quote of quotes) {
-      const score = await this.calculateReliabilityScore(quote.provider.id);
-      reliabilityScores.set(quote.provider.id, score);
+      const metrics = metricsMap.get(quote.provider.id) || null;
+      const reliabilityScore = calculateReliabilityScore(metrics);
+      const marginScore = calculateMarginScore(metrics, allMetrics);
+      
+      reliabilityScores.set(quote.provider.id, reliabilityScore);
+      marginScores.set(quote.provider.id, marginScore);
+      
+      // Log metrics for debugging
+      logProviderMetrics(quote.provider.id, metrics, reliabilityScore, marginScore);
     }
 
     // Score each provider
@@ -101,6 +122,7 @@ export class ProviderScorer {
         quotes,
         totalItemsRequested,
         reliabilityScores.get(quote.provider.id) || 50,
+        marginScores.get(quote.provider.id) || 50,
         weights
       );
 
@@ -180,6 +202,7 @@ export class ProviderScorer {
     allQuotes: ProviderQuote[],
     totalItemsRequested: number,
     reliabilityScore: number,
+    marginScore: number,
     weights: ScoringWeights
   ): ScoreBreakdown {
     // 1. Base Priority Score (static config bias)
@@ -197,12 +220,10 @@ export class ProviderScorer {
       allQuotes.map(q => q.quote.estimatedDeliveryMinutes || this.config.defaultEtaMinutes)
     );
 
-    // 4. Commission Score (higher commission = higher score)
-    const marginScore = this.calculateCommissionScore(
-      quote.quote.totalCents,
-      quote.config.commissionRate,
-      allQuotes
-    );
+    // 4. Margin Score (from provider metrics)
+    // Note: marginScore is now passed in from provider metrics calculation
+    // We keep the old calculateCommissionScore for backward compatibility
+    // but prefer the metrics-based score when available
 
     // 5. Availability Score (more items found = higher score)
     const availabilityScore = this.calculateAvailabilityScore(

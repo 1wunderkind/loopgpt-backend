@@ -13,6 +13,7 @@ import type {
   ScoringWeights,
   WeightAdjustment,
 } from "./types/index.ts";
+import { logRecordOutcome } from "./commerceLogger.ts";
 
 export class ScoringLearner {
   private db: SupabaseClient;
@@ -46,6 +47,16 @@ export class ScoringLearner {
       }
 
       console.log(`✅ Recorded outcome for order ${outcome.orderId} (provider: ${outcome.providerId})`);
+      
+      // Log outcome recording
+      const outcomeStatus = outcome.wasCancelled ? 'cancelled' : (outcome.wasSuccessful ? 'success' : 'failed');
+      logRecordOutcome(
+        outcome.orderId,
+        outcome.providerId,
+        outcomeStatus,
+        outcome.totalValue || 0,
+        (outcome.totalValue || 0) * (outcome.commissionRate || 0)
+      );
     } catch (error) {
       console.error('Error recording order outcome:', error);
       throw error;
@@ -53,20 +64,40 @@ export class ScoringLearner {
   }
 
   /**
-   * Update provider metrics using the stored procedure
+   * Update provider metrics using the new analytics.upsert_provider_metrics function
+   * This updates the analytics.provider_metrics table with outcome data
    */
   private async updateProviderMetrics(outcome: OrderOutcome): Promise<void> {
-    const today = new Date().toISOString().split('T')[0];
+    // Determine outcome status
+    let outcomeStatus: 'success' | 'failed' | 'cancelled';
+    if (outcome.wasCancelled) {
+      outcomeStatus = 'cancelled';
+    } else if (outcome.wasSuccessful) {
+      outcomeStatus = 'success';
+    } else {
+      outcomeStatus = 'failed';
+    }
 
-    const { error } = await this.db.rpc('update_provider_metrics', {
+    // Calculate order value and commission
+    const orderValue = outcome.totalValue || 0;
+    const commissionRate = outcome.commissionRate || 0;
+    const commission = orderValue * commissionRate;
+
+    // Call the upsert function
+    const { error } = await this.db.rpc('upsert_provider_metrics', {
       p_provider_id: outcome.providerId,
-      p_metric_date: today,
-      p_is_success: outcome.wasSuccessful,
-      p_delivery_time: outcome.actualDeliveryTime || null,
+      p_provider_name: outcome.providerName || outcome.providerId,
+      p_outcome: outcomeStatus,
+      p_order_value: orderValue,
+      p_commission: commission,
     });
 
     if (error) {
-      throw new Error(`Failed to update provider metrics: ${error.message}`);
+      // Log error but don't throw - we don't want to break the caller
+      console.error(`[ScoringLearner] Failed to update provider metrics for ${outcome.providerId}:`, error);
+      console.error('[ScoringLearner] Continuing despite metrics update failure');
+    } else {
+      console.log(`[ScoringLearner] Updated provider metrics for ${outcome.providerId}: ${outcomeStatus}, $${orderValue.toFixed(2)}`);
     }
   }
 

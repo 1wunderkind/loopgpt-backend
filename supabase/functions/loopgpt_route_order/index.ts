@@ -19,6 +19,11 @@ import { getProvider } from "../_shared/commerce/providers/providerRegistry.ts";
 import { getEnabledProvidersSorted } from "../_shared/commerce/providers/providerConfigs.ts";
 import { withTimeout } from "../_shared/commerce/utils/timeout.ts";
 import {
+  logRouteOrderStart,
+  logRouteOrderSuccess,
+  logRouteOrderFailure,
+} from "../_shared/commerce/commerceLogger.ts";
+import {
   logProviderQuoteStart,
   logProviderQuoteSuccess,
   logProviderQuoteError,
@@ -50,10 +55,18 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   const requestId = generateRequestId();
+  const routingStartTime = Date.now();
 
   try {
     // Parse request
     const request: RouteOrderRequest = await req.json();
+    
+    // Log route order start
+    logRouteOrderStart(
+      request.userId,
+      request.items.length,
+      requestId
+    );
 
     // Validate request
     if (!request.userId || !request.items || request.items.length === 0) {
@@ -213,9 +226,17 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Log router decision
     logRouterDecision(selected, quotes.length, requestId);
+    
+    // Log route order success
+    const totalLatencyMs = Date.now() - routingStartTime;
+    logRouteOrderSuccess(
+      requestId,
+      selected.provider.id,
+      totalLatencyMs,
+      selected.score
+    );
 
     // Log latency metrics
-    const totalLatencyMs = Date.now() - routingStartTime;
     logRouterLatency(totalLatencyMs, providerLatencies, requestId);
 
     // Create and send metrics summary
@@ -266,6 +287,14 @@ const handler = async (req: Request): Promise<Response> => {
 
   } catch (error) {
     console.error('[Router] Fatal error:', error);
+    
+    // Log route order failure
+    const totalLatencyMs = Date.now() - routingStartTime;
+    logRouteOrderFailure(
+      requestId,
+      'INTERNAL_ERROR',
+      totalLatencyMs
+    );
     
     return new Response(
       JSON.stringify({

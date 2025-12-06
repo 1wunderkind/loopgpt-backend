@@ -146,10 +146,14 @@ export interface ScoreBreakdown {
 export interface OrderOutcome {
   orderId: string;
   providerId: ProviderId;
+  providerName?: string;        // Human-readable provider name
   wasSuccessful: boolean;
+  wasCancelled?: boolean;       // Whether the order was cancelled
   actualDeliveryTime?: number;  // minutes
   itemsDelivered?: number;
   itemsOrdered: number;
+  totalValue?: number;          // Total order value in dollars
+  commissionRate?: number;      // Commission rate as decimal (e.g., 0.05 for 5%)
   userRating?: number;          // 1-5
   issues?: OrderIssue[];
 }
