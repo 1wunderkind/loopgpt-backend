@@ -17,6 +17,7 @@
  */
 
 import { callModel } from "../_shared/loopkitchen/callModel.ts";
+import { getCached } from "../_shared/loopkitchen/cache.ts";
 import { MEALPLANNERGPT_SYSTEM, MEALPLANNERGPT_USER } from "../_shared/loopkitchen/prompts.ts";
 import type {
   WeekPlanner,
@@ -209,15 +210,24 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
 
     console.log("[loopkitchen.mealplan] Calling MealPlannerGPT...");
 
-    // Call GPT with structured output
-    const result = await callModel<MealPlannerGPTResponse>(
-      MEALPLANNERGPT_SYSTEM,
-      userMessage,
-      {
-        temperature: 0.7, // Slightly higher for variety
-        maxTokens: 3000,
-      }
+    // Call GPT with caching
+    const { value: result, cached } = await getCached(
+      "mealplan.generate",
+      { days, calorieTarget, preferences }, // Cache by key params
+      () => callModel<MealPlannerGPTResponse>(
+        MEALPLANNERGPT_SYSTEM,
+        userMessage,
+        {
+          temperature: 0.7, // Slightly higher for variety
+          maxTokens: 2500,
+        }
+      ),
+      3600000 // 1 hour TTL for meal plans
     );
+
+    if (cached) {
+      console.log("[loopkitchen.mealplan] Cache HIT");
+    }
 
     const duration = Date.now() - startTime;
     console.log("[loopkitchen.mealplan] Meal plan generated", {
@@ -385,7 +395,7 @@ export async function generateGroceryListFromPlan(
       GROCERYGPT_USER(estimatedIngredients),
       {
         temperature: 0.3,
-        maxTokens: 2000,
+        maxTokens: 1500,
       }
     );
 

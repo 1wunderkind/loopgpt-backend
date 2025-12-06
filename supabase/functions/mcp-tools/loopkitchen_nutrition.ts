@@ -16,6 +16,7 @@
 
 import { callModel } from "../_shared/loopkitchen/callModel.ts";
 import { NUTRITIONGPT_SYSTEM, NUTRITIONGPT_USER } from "../_shared/loopkitchen/prompts.ts";
+import { getCached } from "../_shared/loopkitchen/cache.ts";
 import type {
   NutritionSummary,
   InfoMessage,
@@ -235,15 +236,24 @@ ${ingredientsList}`;
 
     console.log("[loopkitchen.nutrition] Calling NutritionGPT...");
 
-    // Call GPT with structured output
-    const result = await callModel<NutritionAnalysisResult>(
-      system,
-      fullUserMessage,
-      {
-        temperature: 0.3,
-        maxTokens: 1500,
-      }
+    // Call GPT with caching
+    const { value: result, cached } = await getCached(
+      "nutrition.analyze",
+      { userMessage }, // Cache by user message content
+      () => callModel<NutritionAnalysisResult>(
+        NUTRITIONGPT_SYSTEM,
+        userMessage,
+        {
+          temperature: 0.3,
+          maxTokens: 1000,
+        }
+      ),
+      86400000 // 24 hour TTL for nutrition data
     );
+
+    if (cached) {
+      console.log("[loopkitchen.nutrition] Cache HIT");
+    }
 
     const duration = Date.now() - startTime;
     console.log("[loopkitchen.nutrition] Analysis complete", {

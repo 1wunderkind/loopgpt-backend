@@ -45,7 +45,7 @@ export async function callModel<T = any>(
   const {
     model = DEFAULT_MODEL,
     temperature = 0.7,
-    maxTokens = 2000,
+    maxTokens = 1500,
   } = options;
 
   const openai = getOpenAIClient();
