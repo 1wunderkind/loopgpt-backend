@@ -4453,27 +4453,97 @@ function log(entry: LogEntry) {
 }
 
 // ============================================================================
-// MCP Response Formatters
+// MCP Response Formatters (Standardized Envelope Pattern)
 // ============================================================================
 
-function successResponse(toolName: string, data: any, duration_ms: number) {
+import type { ToolErrorResponse } from "./lib/reliability.ts";
+
+/**
+ * Standardized success envelope for MCP tool responses
+ * Always returns HTTP 200 with success: true
+ */
+export interface McpToolSuccessEnvelope<T> {
+  success: true;
+  tool: string;
+  data: T;
+  timestamp: string;
+  duration_ms: number;
+}
+
+/**
+ * Standardized error envelope for MCP tool responses
+ * Always returns HTTP 200 with success: false
+ * Error details are in the 'error' field for ChatGPT to parse
+ */
+export interface McpToolErrorEnvelope {
+  success: false;
+  tool: string;
+  error: ToolErrorResponse;
+  timestamp: string;
+  duration_ms: number;
+}
+
+/**
+ * Union type for all MCP tool responses
+ */
+export type McpToolEnvelope<T> =
+  | McpToolSuccessEnvelope<T>
+  | McpToolErrorEnvelope;
+
+/**
+ * Creates a standardized success response envelope
+ */
+function successResponse<T>(toolName: string, data: T, duration_ms: number): McpToolSuccessEnvelope<T> {
   return {
-    type: "mcp_result",
+    success: true,
     tool: toolName,
-    result: data,
+    data,
     timestamp: new Date().toISOString(),
     duration_ms: Math.round(duration_ms * 100) / 100
   };
 }
 
-function errorResponse(toolName: string, message: string, details?: any, duration_ms?: number) {
+/**
+ * Creates a standardized error response envelope
+ * Converts legacy error format to new ToolErrorResponse format
+ */
+function errorResponse(
+  toolName: string,
+  message: string,
+  details?: any,
+  duration_ms?: number
+): McpToolErrorEnvelope {
+  // Convert legacy error format to ToolErrorResponse
+  const error: ToolErrorResponse = {
+    code: "UNKNOWN", // Default for legacy errors
+    message,
+    toolName,
+    retryable: false,
+    details,
+  };
+
   return {
-    type: "mcp_error",
+    success: false,
     tool: toolName,
-    error: message,
-    details: details || undefined,
+    error,
     timestamp: new Date().toISOString(),
-    duration_ms: duration_ms ? Math.round(duration_ms * 100) / 100 : undefined
+    duration_ms: duration_ms ? Math.round(duration_ms * 100) / 100 : 0
+  };
+}
+
+/**
+ * Creates error response from ToolErrorResponse (new reliability layer)
+ */
+function errorResponseFromToolError(
+  error: ToolErrorResponse,
+  duration_ms: number
+): McpToolErrorEnvelope {
+  return {
+    success: false,
+    tool: error.toolName,
+    error,
+    timestamp: new Date().toISOString(),
+    duration_ms: Math.round(duration_ms * 100) / 100
   };
 }
 
@@ -4628,7 +4698,7 @@ serve(async (req: Request) => {
             duration
           )),
           {
-            status: 404,
+            status: 200, // Changed from 404 to 200
             headers: {
               ...corsHeaders,
               "Content-Type": "application/json"
@@ -4651,7 +4721,7 @@ serve(async (req: Request) => {
             duration
           )),
           {
-            status: 400,
+            status: 200, // Changed from 400 to 200
             headers: {
               ...corsHeaders,
               "Content-Type": "application/json"
@@ -4671,7 +4741,7 @@ serve(async (req: Request) => {
             duration
           )),
           {
-            status: 400,
+            status: 200, // Changed from 400 to 200
             headers: {
               ...corsHeaders,
               "Content-Type": "application/json"
@@ -4700,7 +4770,7 @@ serve(async (req: Request) => {
             duration
           )),
           {
-            status: 400,
+            status: 200, // Changed from 400 to 200
             headers: {
               ...corsHeaders,
               "Content-Type": "application/json"
@@ -4756,6 +4826,7 @@ serve(async (req: Request) => {
           error: error.message || 'Invocation failed'
         });
         
+        // Return HTTP 200 with error envelope (ChatGPT can parse the error)
         return new Response(
           JSON.stringify(errorResponse(
             toolName,
@@ -4767,7 +4838,7 @@ serve(async (req: Request) => {
             totalDuration
           )),
           {
-            status: 500,
+            status: 200, // Changed from 500 to 200
             headers: {
               ...corsHeaders,
               "Content-Type": "application/json"
@@ -4818,7 +4889,7 @@ serve(async (req: Request) => {
           duration
         )),
         {
-          status: 500,
+          status: 200, // Changed from 500 to 200
           headers: {
             ...corsHeaders,
             "Content-Type": "application/json"
