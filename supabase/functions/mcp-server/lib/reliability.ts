@@ -7,6 +7,8 @@
  * @module reliability
  */
 
+import { logDebug, logInfo, logWarn, logError } from "./logger.ts";
+
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -219,26 +221,39 @@ async function withRetry<T>(
       
       // Don't retry if this error code is not in retryOnCodes
       if (!options.retryOnCodes.includes(classification.code)) {
-        console.log(
-          `[reliability] ${options.toolName} - Not retrying error code: ${classification.code}`
-        );
+        logDebug("Skipping retry - error code not retryable", {
+          source: "mcp-reliability",
+          toolName: options.toolName,
+          errorCode: classification.code,
+          attemptNumber: attempt + 1,
+        });
         throw error;
       }
 
       // Don't retry if this is the last attempt
       if (attempt === options.maxRetries) {
-        console.log(
-          `[reliability] ${options.toolName} - Max retries (${options.maxRetries}) reached`
-        );
+        logWarn("Max retries exhausted", {
+          source: "mcp-reliability",
+          toolName: options.toolName,
+          errorCode: classification.code,
+          attemptNumber: attempt + 1,
+          maxRetries: options.maxRetries,
+        });
         throw error;
       }
 
       // Calculate exponential backoff delay
       const delay = options.retryDelayMs * Math.pow(2, attempt);
       
-      console.log(
-        `[reliability] ${options.toolName} - Retry ${attempt + 1}/${options.maxRetries} after ${delay}ms (error: ${classification.code})`
-      );
+      logInfo("Retrying after error", {
+        source: "mcp-reliability",
+        toolName: options.toolName,
+        errorCode: classification.code,
+        attemptNumber: attempt + 1,
+        maxRetries: options.maxRetries,
+        delayMs: delay,
+        retryable: true,
+      });
 
       // Wait before retrying
       await new Promise((resolve) => setTimeout(resolve, delay));
@@ -313,15 +328,11 @@ export async function withToolReliability<T>(
     const duration = Date.now() - startTime;
     
     // Log success
-    console.log(
-      JSON.stringify({
-        source: "mcp-tool",
-        level: "info",
-        tool: toolName,
-        status: "success",
-        duration_ms: duration,
-      })
-    );
+    logDebug("Tool execution succeeded", {
+      source: "mcp-reliability",
+      toolName,
+      durationMs: duration,
+    });
 
     return { ok: true, data };
   } catch (error) {
@@ -346,6 +357,16 @@ export async function withToolReliability<T>(
  * Can be piped to external log sinks (Datadog, Sentry, etc.)
  */
 export function logToolError(error: ToolErrorResponse, durationMs?: number): void {
+  logError(error.technicalMessage ?? error.message, {
+    source: "mcp-reliability",
+    toolName: error.toolName,
+    errorCode: error.code,
+    retryable: error.retryable,
+    durationMs,
+    details: error.details ?? {},
+  });
+  
+  // Keep the old JSON.stringify for backward compatibility (can be removed later)
   console.error(
     JSON.stringify({
       source: "mcp-tool",
