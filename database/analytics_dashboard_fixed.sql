@@ -150,9 +150,9 @@ GROUP BY
   END
 ORDER BY 
   CASE 
-    WHEN engagement_level LIKE 'Power%' THEN 1
-    WHEN engagement_level LIKE 'Active%' THEN 2
-    WHEN engagement_level LIKE 'Regular%' THEN 3
+    WHEN active_days >= 20 THEN 1
+    WHEN active_days >= 10 THEN 2
+    WHEN active_days >= 3 THEN 3
     ELSE 4
   END;
 
