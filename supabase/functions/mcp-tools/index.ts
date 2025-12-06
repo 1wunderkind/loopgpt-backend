@@ -15,6 +15,10 @@ import { prepareCart, confirmOrder, cancelOrder } from "./commerce.ts";
 import { updateUserPreferences } from "./userPreferences.ts";
 import { generateDailySuggestion, generateWeeklyRefresh } from "./retention.ts";
 import { recordSentimentFeedback, getUserFavorites, getContentStats } from "./sentiment.ts";
+import { generateRecipes as loopkitchenGenerateRecipes } from "./loopkitchen_recipes.ts";
+import { getRecipeDetails as loopkitchenGetRecipeDetails } from "./loopkitchen_recipe_details.ts";
+import { analyzeNutrition as loopkitchenAnalyzeNutrition, logMeal, getDailyNutrition } from "./loopkitchen_nutrition.ts";
+import { generateMealPlan as loopkitchenGenerateMealPlan, generateMealPlanWithGrocery, prepareMealPlanOrder, generateMealPlanWithCommerce } from "./loopkitchen_mealplan.ts";
 
 // Helper function to execute tools with optional streaming
 async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
@@ -51,6 +55,25 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
       return await getUserFavorites(params);
     case "feedback.getStats":
       return await getContentStats(params);
+    // LoopKitchen Tools
+    case "loopkitchen.recipes.generate":
+      return await loopkitchenGenerateRecipes(params);
+    case "loopkitchen.recipes.details":
+      return await loopkitchenGetRecipeDetails(params);
+    case "loopkitchen.nutrition.analyze":
+      return await loopkitchenAnalyzeNutrition(params);
+    case "loopkitchen.nutrition.logMeal":
+      return await logMeal(params);
+    case "loopkitchen.nutrition.daily":
+      return await getDailyNutrition(params);
+    case "loopkitchen.mealplan.generate":
+      return await loopkitchenGenerateMealPlan(params);
+    case "loopkitchen.mealplan.withGrocery":
+      return await generateMealPlanWithGrocery(params);
+    case "loopkitchen.mealplan.prepareOrder":
+      return await prepareMealPlanOrder(params);
+    case "loopkitchen.mealplan.complete":
+      return await generateMealPlanWithCommerce(params);
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
@@ -58,7 +81,7 @@ async function executeTool(toolName: string, params: any, stream?: StreamingResp
 
 const MANIFEST = {
   name: "TheLoopGPT Tools",
-  version: "1.6.0-sentiment-layer",
+  version: "1.8.0-loopkitchen-phase4",
   description: "Complete food commerce platform: recipes, meal planning, grocery lists, and intelligent order routing",
   status: "Optimized: Postgres caching + streaming + smart routing + intent classification + commerce integration",
   tools: [
@@ -146,6 +169,51 @@ const MANIFEST = {
     {
       name: "feedback.getStats",
       description: "📊 Get aggregated sentiment statistics for content. Returns helpful percentage, average rating, favorite count, etc. Useful for ranking and analytics.",
+      status: "available"
+    },
+    {
+      name: "loopkitchen.recipes.generate",
+      description: "🍳 LoopKitchen: Generate creative recipes with chaos mode (1-10 playfulness rating), soft time/diet constraints, and widget-based UI. Returns RecipeCardCompact widgets with slug IDs, vibe normalization, and constraint flags.",
+      status: "available"
+    },
+    {
+      name: "loopkitchen.recipes.details",
+      description: "📖 LoopKitchen: Get detailed recipe with instructions, ingredient split (have vs need), parallel nutrition analysis, and grocery list. Returns RecipeCardDetailed + NutritionSummary + GroceryList widgets.",
+      status: "available"
+    },
+    {
+      name: "loopkitchen.nutrition.analyze",
+      description: "🥗 LoopKitchen: Standalone nutrition analysis from recipes or raw ingredients. Returns NutritionSummary widget with health score, confidence indicators, insights, and warnings. Supports both recipe-based and ingredient-based analysis.",
+      status: "available"
+    },
+    {
+      name: "loopkitchen.nutrition.logMeal",
+      description: "📝 LoopKitchen: Log meal with nutrition data for daily/weekly tracking (planned for Phase 4 database integration).",
+      status: "planned"
+    },
+    {
+      name: "loopkitchen.nutrition.daily",
+      description: "📊 LoopKitchen: Get daily nutrition summary aggregating all logged meals (planned for Phase 4 database integration).",
+      status: "planned"
+    },
+    {
+      name: "loopkitchen.mealplan.generate",
+      description: "🗓️ LoopKitchen: Generate 7-day meal plan using MealPlannerGPT. Returns WeekPlanner widget with breakfast/lunch/dinner for each day, calorie targets, and weekly summary. Optimizes for ingredient reuse and diet preferences.",
+      status: "available"
+    },
+    {
+      name: "loopkitchen.mealplan.withGrocery",
+      description: "🛍️ LoopKitchen: Generate meal plan with aggregated grocery list. Returns WeekPlanner + GroceryList widgets. Uses GroceryGPT to organize ingredients into categories.",
+      status: "available"
+    },
+    {
+      name: "loopkitchen.mealplan.prepareOrder",
+      description: "📦 LoopKitchen: Prepare grocery order from meal plan. Generates grocery list and gets provider quotes via commerce layer. Requires userId and location.",
+      status: "available"
+    },
+    {
+      name: "loopkitchen.mealplan.complete",
+      description: "✨ LoopKitchen: Complete meal planning flow. Generates meal plan + grocery list + provider quotes in one call. Returns WeekPlanner, GroceryList, and commerce data. Ultimate convenience function.",
       status: "available"
     }
   ]
