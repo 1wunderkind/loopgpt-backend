@@ -210,13 +210,14 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
     console.log("[loopkitchen.mealplan] Calling MealPlannerGPT...");
 
     // Call GPT with structured output
-    const result = await callModel<MealPlannerGPTResponse>({
-      systemPrompt: MEALPLANNERGPT_SYSTEM,
-      userPrompt: userMessage,
-      schema: mealPlannerSchema,
-      schemaName: "meal_planner",
-      temperature: 0.7, // Slightly higher for variety
-    });
+    const result = await callModel<MealPlannerGPTResponse>(
+      MEALPLANNERGPT_SYSTEM,
+      userMessage,
+      {
+        temperature: 0.7, // Slightly higher for variety
+        maxTokens: 3000,
+      }
+    );
 
     const duration = Date.now() - startTime;
     console.log("[loopkitchen.mealplan] Meal plan generated", {
@@ -379,13 +380,14 @@ export async function generateGroceryListFromPlan(
       additionalProperties: false,
     };
 
-    const groceryResult = await callModel<{ categories: GroceryList["data"]["categories"] }>({
-      systemPrompt: GROCERYGPT_SYSTEM,
-      userPrompt: GROCERYGPT_USER(estimatedIngredients),
-      schema: grocerySchema,
-      schemaName: "grocery_list",
-      temperature: 0.3,
-    });
+    const groceryResult = await callModel<{ categories: GroceryList["data"]["categories"] }>(
+      GROCERYGPT_SYSTEM,
+      GROCERYGPT_USER(estimatedIngredients),
+      {
+        temperature: 0.3,
+        maxTokens: 2000,
+      }
+    );
 
     // Filter out pantry ingredients if provided
     let categories = groceryResult.categories;

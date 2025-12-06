@@ -171,23 +171,28 @@ Output:
 
 {
   "servings": number,
-  "totalNutrition": {
+  "total": {
     "calories": number,
-    "protein_g": number,
-    "carbs_g": number,
-    "fat_g": number,
-    "fiber_g": number,
-    "sugar_g": number
+    "protein": number,
+    "carbs": number,
+    "fat": number,
+    "fiber": number,
+    "sugar": number,
+    "sodium": number
   },
   "perServing": {
     "calories": number,
-    "protein_g": number,
-    "carbs_g": number,
-    "fat_g": number,
-    "fiber_g": number,
-    "sugar_g": number
+    "protein": number,
+    "carbs": number,
+    "fat": number,
+    "fiber": number,
+    "sugar": number,
+    "sodium": number
   },
-  "dietTags": ["string", "..."],
+  "healthScore": number (0-100, higher is healthier),
+  "tags": ["high-protein", "low-carb", "vegetarian", "vegan", "gluten-free", etc.],
+  "warnings": ["high-sodium", "high-sugar", "high-calorie", etc.],
+  "insights": ["Good source of protein", "Low in fiber", etc.],
   "confidence": "low" | "medium" | "high"
 }
 
