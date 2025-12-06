@@ -20,6 +20,7 @@ import { callModel } from "../_shared/loopkitchen/callModel.ts";
 import { getCached } from "../_shared/loopkitchen/cache.ts";
 import { logMealPlanGenerated, logAffiliateClick } from "../_shared/analytics/index.ts";
 import { MEALPLANNERGPT_SYSTEM, MEALPLANNERGPT_USER } from "../_shared/loopkitchen/prompts.ts";
+import { getUserIngredientProfile, getUserRecipePreferences } from "../_shared/recommendations/index.ts";
 import type {
   WeekPlanner,
   GroceryList,
@@ -200,14 +201,48 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
     // Validate input
     const input = validateMealPlanInput(params);
 
-    // Build user message using MealPlannerGPT prompt
+    // ========================================================================
+    // RECOMMENDATION ENGINE CONTEXT ENRICHMENT
+    // ========================================================================
+    
+    let userContext = '';
+    
+    if (params.userId) {
+      console.log('[loopkitchen.mealplan] Fetching user preferences...');
+      
+      // Get user's ingredient profile
+      const ingredientProfile = await getUserIngredientProfile(params.userId);
+      if (ingredientProfile && ingredientProfile.length > 0) {
+        const topIngredients = ingredientProfile
+          .slice(0, 10)
+          .map((ing: any) => ing.ingredient_name)
+          .join(', ');
+        userContext += `\n\nUser's frequently used ingredients: ${topIngredients}`;
+      }
+      
+      // Get user's recipe preferences
+      const recipePrefs = await getUserRecipePreferences(params.userId);
+      if (recipePrefs) {
+        userContext += `\n\nUser's recipe preferences:`;
+        if (recipePrefs.acceptance_rate) {
+          userContext += `\n- Acceptance rate: ${recipePrefs.acceptance_rate}%`;
+        }
+        if (recipePrefs.preferred_persona) {
+          userContext += `\n- Preferred style: ${recipePrefs.preferred_persona}`;
+        }
+      }
+      
+      console.log('[loopkitchen.mealplan] User context enriched');
+    }
+
+    // Build user message using MealPlannerGPT prompt (with user context)
     const userMessage = MEALPLANNERGPT_USER(
       input.ingredients!,
       input.caloriesPerDay,
       input.dietNotes!,
       input.days!,
       input.startDate!
-    );
+    ) + userContext;
 
     console.log("[loopkitchen.mealplan] Calling MealPlannerGPT...");
 

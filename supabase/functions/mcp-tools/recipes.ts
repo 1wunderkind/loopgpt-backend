@@ -9,6 +9,8 @@ import { cacheGet, cacheSet } from "./cache.ts";
 import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
 import { getFallbackRecipes } from "./fallbacks.ts";
 import { generateRecipesCtas, addCtasToResponse } from "./ctaSchemas.ts";
+import { scoreRecipes, type CandidateRecipe } from "../_shared/recommendations/index.ts";
+import { logIngredientSubmission, logRecipeEvent } from "../_shared/analytics/index.ts";
 
 // Type for recipe generation input
 export interface RecipesInput {
@@ -134,6 +136,20 @@ export async function generateRecipes(params: any) {
     // Validate input
     const input = validateRecipesInput(params);
     
+    // Log ingredient submission (analytics)
+    if (params.userId) {
+      logIngredientSubmission({
+        userId: params.userId,
+        sessionId: params.sessionId || null,
+        sourceGpt: 'RecipeGPT',
+        ingredients: input.ingredients.map((ing: any) => ({
+          name: typeof ing === 'string' ? ing : ing.name,
+          raw: typeof ing === 'string' ? ing : ing.name,
+        })),
+        locale: params.locale || null,
+      }).catch(err => console.error('[Analytics] Failed to log ingredient submission:', err));
+    }
+    
     // Check cache first (with smart key generation)
     const cacheKey = generateRecipesCacheKey(input);
     const cached = await cacheGet(cacheKey);
@@ -223,7 +239,53 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
     }
 
     const parsed = JSON.parse(rawContent);
-    const recipes = parsed.recipes || parsed;
+    let recipes = parsed.recipes || parsed;
+    
+    // ========================================================================
+    // RECOMMENDATION ENGINE INTEGRATION
+    // ========================================================================
+    
+    if (params.userId && recipes.length > 0) {
+      console.log('[recipes.generate] Scoring recipes with recommendation engine...');
+      
+      // Prepare candidate recipes for scoring
+      const candidateRecipes: CandidateRecipe[] = recipes.map((recipe: any) => ({
+        recipe_id: recipe.id,
+        title: recipe.name,
+        ingredients: recipe.ingredients.map((ing: any) => ing.name),
+        calories: 500, // Default estimate
+        protein_g: 25,
+        carbs_g: 50,
+        fat_g: 15,
+      }));
+      
+      // Score recipes
+      const scoredRecipes = await scoreRecipes({
+        userId: params.userId,
+        recipes: candidateRecipes,
+        limit: recipes.length,
+      });
+      
+      // Create score map
+      const scoreMap = new Map(scoredRecipes.map(sr => [sr.recipe_id, sr]));
+      
+      // Add scores to recipes and sort by score
+      recipes = recipes.map((recipe: any) => {
+        const scoreData = scoreMap.get(recipe.id);
+        return {
+          ...recipe,
+          recommendationScore: scoreData?.total_score,
+          matchReason: scoreData?.match_reason,
+          confidence: scoreData?.confidence,
+        };
+      }).sort((a: any, b: any) => {
+        const scoreA = a.recommendationScore || 50;
+        const scoreB = b.recommendationScore || 50;
+        return scoreB - scoreA;
+      });
+      
+      console.log('[recipes.generate] Recipes scored and sorted');
+    }
     
     // Cache the result for 24 hours
     await cacheSet(cacheKey, JSON.stringify(recipes), 86400);
@@ -234,6 +296,21 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
       cached: false,
       fallbackUsed: false,
     });
+    
+    // Log recipe generation events (analytics)
+    if (params.userId) {
+      for (const recipe of recipes) {
+        logRecipeEvent({
+          userId: params.userId,
+          sessionId: params.sessionId || null,
+          recipeId: recipe.id,
+          recipeTitle: recipe.name,
+          eventType: 'generated',
+          sourceGpt: 'RecipeGPT',
+          responseTimeMs: duration,
+        }).catch(err => console.error('[Analytics] Failed to log recipe event:', err));
+      }
+    }
     
     // Add CTAs to successful response
     const ctas = generateRecipesCtas(recipes, input);

@@ -20,6 +20,7 @@ import { generateRecipesCacheKey } from "./cacheKey.ts";
 import { cacheGet, cacheSet } from "./cache.ts";
 import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
 import { logIngredientSubmission, logRecipeEvent } from "../_shared/analytics/index.ts";
+import { scoreRecipes, type CandidateRecipe } from "../_shared/recommendations/index.ts";
 
 // ============================================================================
 // Types
@@ -165,7 +166,33 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
       return { widgets: [infoMessage] };
     }
     
-    // Map to RecipeCardCompact widgets with soft constraint flags
+    // ========================================================================
+    // RECOMMENDATION ENGINE INTEGRATION
+    // ========================================================================
+    
+    // Prepare candidate recipes for scoring
+    const candidateRecipes: CandidateRecipe[] = response.recipes.map((recipe, index) => ({
+      recipe_id: recipe.id || generateSlugId(recipe.title, index),
+      title: recipe.title,
+      ingredients: recipe.primaryIngredients || input.ingredients,
+      calories: 500, // Default estimate (could be improved with nutrition API)
+      protein_g: 25,
+      carbs_g: 50,
+      fat_g: 15,
+    }));
+    
+    // Score recipes using recommendation engine
+    console.log('[loopkitchen_recipes.generate] Scoring recipes with recommendation engine...');
+    const scoredRecipes = await scoreRecipes({
+      userId: params.userId || null,
+      recipes: candidateRecipes,
+      limit: input.count,
+    });
+    
+    // Create a map of recipe_id -> score data for quick lookup
+    const scoreMap = new Map(scoredRecipes.map(sr => [sr.recipe_id, sr]));
+    
+    // Map to RecipeCardCompact widgets with soft constraint flags AND recommendation scores
     const widgets: RecipeCardCompact[] = response.recipes.map((recipe, index) => {
       const id = recipe.id || generateSlugId(recipe.title, index);
       
@@ -177,6 +204,9 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
             tag.toLowerCase().includes(constraint.toLowerCase())
           )
         );
+      
+      // Get recommendation score data
+      const scoreData = scoreMap.get(id);
       
       return {
         type: 'RecipeCardCompact',
@@ -194,8 +224,21 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
         requestedTimeLimit: overTimeLimit ? input.timeLimit : undefined,
         matchesDiet: input.dietConstraints.length > 0 ? matchesDiet : undefined,
         requestedDiet: input.dietConstraints.length > 0 ? input.dietConstraints.join(', ') : undefined,
+        // Recommendation engine scores (optional metadata)
+        recommendationScore: scoreData?.total_score,
+        matchReason: scoreData?.match_reason,
+        confidence: scoreData?.confidence,
       };
     });
+    
+    // Sort widgets by recommendation score (highest first)
+    widgets.sort((a, b) => {
+      const scoreA = a.recommendationScore || 50;
+      const scoreB = b.recommendationScore || 50;
+      return scoreB - scoreA;
+    });
+    
+    console.log('[loopkitchen_recipes.generate] Recipes sorted by recommendation score');
     
     // Cache the result for 24 hours
     await cacheSet(cacheKey, JSON.stringify(widgets), 86400);
