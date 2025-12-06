@@ -19,6 +19,7 @@ import { generateRecipes as loopkitchenGenerateRecipes } from "./loopkitchen_rec
 import { getRecipeDetails as loopkitchenGetRecipeDetails } from "./loopkitchen_recipe_details.ts";
 import { analyzeNutrition as loopkitchenAnalyzeNutrition, logMeal, getDailyNutrition } from "./loopkitchen_nutrition.ts";
 import { generateMealPlan as loopkitchenGenerateMealPlan, generateMealPlanWithGrocery, prepareMealPlanOrder, generateMealPlanWithCommerce } from "./loopkitchen_mealplan.ts";
+import { logSessionEvent } from "../_shared/analytics/index.ts";
 
 // Helper function to execute tools with optional streaming
 async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
@@ -340,6 +341,20 @@ serve(async (req: Request) => {
             }
           );
         }
+        
+        // Log session event (analytics)
+        const sessionId = params.sessionId || req.headers.get("x-session-id") || `session-${Date.now()}`;
+        const userAgent = req.headers.get("user-agent") || null;
+        const startTime = Date.now();
+        
+        logSessionEvent({
+          userId: userId !== "anonymous" ? userId : null,
+          sessionId,
+          gptName: toolName.split('.')[0], // e.g., "loopkitchen" from "loopkitchen.recipes.generate"
+          eventType: 'tool_call',
+          userAgent,
+          metadata: { tool: toolName },
+        }).catch(err => console.error('[Analytics] Failed to log session event:', err));
         
         let result: any;
         

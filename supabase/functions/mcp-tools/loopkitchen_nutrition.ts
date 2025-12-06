@@ -17,6 +17,7 @@
 import { callModel } from "../_shared/loopkitchen/callModel.ts";
 import { NUTRITIONGPT_SYSTEM, NUTRITIONGPT_USER } from "../_shared/loopkitchen/prompts.ts";
 import { getCached } from "../_shared/loopkitchen/cache.ts";
+import { logMealLog } from "../_shared/analytics/index.ts";
 import type {
   NutritionSummary,
   InfoMessage,
@@ -422,6 +423,22 @@ export async function logMeal(params: any): Promise<InfoMessage> {
     
     return widget;
     */
+    
+    // Log to analytics (Phase 1)
+    logMealLog({
+      userId: params.userId,
+      sessionId: params.sessionId || null,
+      sourceGpt: 'KCalGPT',
+      loggedAt: params.mealDate || new Date().toISOString(),
+      mealType: params.mealType,
+      description: params.recipeTitle,
+      caloriesKcal: params.nutrition.calories * (params.servings || 1),
+      proteinG: params.nutrition.protein * (params.servings || 1),
+      carbsG: params.nutrition.carbs * (params.servings || 1),
+      fatG: params.nutrition.fat * (params.servings || 1),
+      fiberG: params.nutrition.fiber * (params.servings || 1),
+      rawPayload: params,
+    }).catch(err => console.error('[Analytics] Failed to log meal:', err));
 
     // Placeholder response for Phase 3
     const duration = Date.now() - startTime;

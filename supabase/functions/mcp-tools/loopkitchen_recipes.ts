@@ -19,6 +19,7 @@ import {
 import { generateRecipesCacheKey } from "./cacheKey.ts";
 import { cacheGet, cacheSet } from "./cache.ts";
 import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import { logIngredientSubmission, logRecipeEvent } from "../_shared/analytics/index.ts";
 
 // ============================================================================
 // Types
@@ -84,6 +85,15 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
     
     // Validate input
     const input = validateInput(params);
+    
+    // Log ingredient submission (analytics)
+    logIngredientSubmission({
+      userId: params.userId || null,
+      sessionId: params.sessionId || null,
+      sourceGpt: 'LeftoverGPT',
+      ingredients: input.ingredients.map(ing => ({ name: ing, raw: ing })),
+      locale: params.locale || null,
+    }).catch(err => console.error('[Analytics] Failed to log ingredient submission:', err));
     
     // Check cache first
     const cacheKey = generateRecipesCacheKey(input);
@@ -195,6 +205,22 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
       widgetCount: widgets.length,
       cached: false,
     });
+    
+    // Log recipe generation events (analytics)
+    for (const widget of widgets) {
+      if (widget.type === 'RecipeCardCompact') {
+        logRecipeEvent({
+          userId: params.userId || null,
+          sessionId: params.sessionId || null,
+          recipeId: widget.data.id,
+          recipeTitle: widget.data.title,
+          eventType: 'generated',
+          chaosRatingShown: widget.data.chaosRating,
+          sourceGpt: 'LeftoverGPT',
+          responseTimeMs: duration,
+        }).catch(err => console.error('[Analytics] Failed to log recipe event:', err));
+      }
+    }
     
     return { widgets };
   } catch (error: any) {

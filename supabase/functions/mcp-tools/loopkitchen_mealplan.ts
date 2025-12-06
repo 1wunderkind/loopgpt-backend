@@ -18,6 +18,7 @@
 
 import { callModel } from "../_shared/loopkitchen/callModel.ts";
 import { getCached } from "../_shared/loopkitchen/cache.ts";
+import { logMealPlanGenerated, logAffiliateClick } from "../_shared/analytics/index.ts";
 import { MEALPLANNERGPT_SYSTEM, MEALPLANNERGPT_USER } from "../_shared/loopkitchen/prompts.ts";
 import type {
   WeekPlanner,
@@ -236,6 +237,22 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
       avgCalories: result.weeklySummary.avgDailyCalories,
     });
 
+    // Log meal plan generation (analytics)
+    logMealPlanGenerated({
+      userId: params.userId || null,
+      sessionId: params.sessionId || null,
+      sourceGpt: 'MealPlannerGPT',
+      title: `${input.days}-day ${input.dietNotes} plan`,
+      description: `Meal plan for ${input.days} days starting ${input.startDate}`,
+      daysPlanned: input.days!,
+      vibe: input.dietNotes,
+      targetCaloriesPerDay: input.caloriesPerDay,
+      metadata: {
+        avgDailyCalories: result.weeklySummary.avgDailyCalories,
+        totalCalories: result.weeklySummary.totalCalories,
+      },
+    }).catch(err => console.error('[Analytics] Failed to log meal plan:', err));
+    
     // Build WeekPlanner widget
     const widget: WeekPlanner = {
       type: "WeekPlanner",
@@ -659,6 +676,20 @@ export async function prepareMealPlanOrder(params: any): Promise<any> {
       duration,
       providers: commerceResult.providers?.length || 0,
     });
+    
+    // Log affiliate event (analytics) - when user selects a provider
+    if (commerceResult.providers && commerceResult.providers.length > 0) {
+      // Log impression for all providers
+      commerceResult.providers.forEach((provider: any) => {
+        logAffiliateClick({
+          userId: params.userId || null,
+          sessionId: params.sessionId || null,
+          eventType: 'impression',
+          provider: provider.name,
+          url: provider.url || null,
+        }).catch(err => console.error('[Analytics] Failed to log affiliate impression:', err));
+      });
+    }
 
     // Return commerce result with grocery list attached
     return {
