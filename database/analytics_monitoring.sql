@@ -239,106 +239,72 @@ BEGIN
   RETURN QUERY
   
   -- Daily Active Users
-  WITH dau_current AS (
-    SELECT COUNT(DISTINCT user_id) as value
-    FROM session_events
-    WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL
-      AND user_id IS NOT NULL
-  ),
-  dau_previous AS (
-    SELECT COUNT(DISTINCT user_id) as value
-    FROM session_events
-    WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL
-      AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL
-      AND user_id IS NOT NULL
-  )
   SELECT 
     'Engagement'::TEXT,
     'Daily Active Users (avg)'::TEXT,
-    (SELECT value FROM dau_current)::TEXT,
-    (SELECT value FROM dau_previous)::TEXT,
+    (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::TEXT,
+    (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::TEXT,
     CASE 
-      WHEN (SELECT value FROM dau_previous) > 0 THEN
-        ROUND(((SELECT value FROM dau_current)::NUMERIC - (SELECT value FROM dau_previous)::NUMERIC) * 100.0 / (SELECT value FROM dau_previous)::NUMERIC, 1)::TEXT || '%'
+      WHEN (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL) > 0 THEN
+        ROUND(
+          ((SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC - 
+           (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC) * 100.0 / 
+          (SELECT COUNT(DISTINCT user_id) FROM session_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL AND user_id IS NOT NULL)::NUMERIC, 1
+        )::TEXT || '%'
       ELSE 'N/A'
     END
   
   UNION ALL
   
   -- Recipe Acceptance Rate
-  WITH acceptance_current AS (
-    SELECT 
-      COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / 
-      NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) as rate
-    FROM recipe_events
-    WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL
-  ),
-  acceptance_previous AS (
-    SELECT 
-      COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / 
-      NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) as rate
-    FROM recipe_events
-    WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL
-      AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL
-  )
   SELECT 
     'Product'::TEXT,
     'Recipe Acceptance Rate'::TEXT,
-    ROUND((SELECT rate FROM acceptance_current), 1)::TEXT || '%',
-    ROUND((SELECT rate FROM acceptance_previous), 1)::TEXT || '%',
+    ROUND(COALESCE((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL), 0), 1)::TEXT || '%',
+    ROUND(COALESCE((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL), 0), 1)::TEXT || '%',
     CASE 
-      WHEN (SELECT rate FROM acceptance_previous) > 0 THEN
-        ROUND(((SELECT rate FROM acceptance_current) - (SELECT rate FROM acceptance_previous)) * 100.0 / (SELECT rate FROM acceptance_previous), 1)::TEXT || '%'
+      WHEN (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
+        ROUND(
+          ((SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL) - 
+           (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)) * 100.0 / 
+          (SELECT COUNT(*) FILTER (WHERE event_type = 'accepted') * 100.0 / NULLIF(COUNT(*) FILTER (WHERE event_type IN ('accepted', 'rejected')), 0) FROM recipe_events WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL), 1
+        )::TEXT || '%'
       ELSE 'N/A'
     END
   
   UNION ALL
   
   -- Total Ingredient Submissions
-  WITH ingredients_current AS (
-    SELECT COUNT(*) as value
-    FROM ingredient_submissions
-    WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL
-  ),
-  ingredients_previous AS (
-    SELECT COUNT(*) as value
-    FROM ingredient_submissions
-    WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL
-      AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL
-  )
   SELECT 
     'Usage'::TEXT,
     'Ingredient Submissions'::TEXT,
-    (SELECT value FROM ingredients_current)::TEXT,
-    (SELECT value FROM ingredients_previous)::TEXT,
+    (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
+    (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
     CASE 
-      WHEN (SELECT value FROM ingredients_previous) > 0 THEN
-        ROUND(((SELECT value FROM ingredients_current)::NUMERIC - (SELECT value FROM ingredients_previous)::NUMERIC) * 100.0 / (SELECT value FROM ingredients_previous)::NUMERIC, 1)::TEXT || '%'
+      WHEN (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
+        ROUND(
+          ((SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC - 
+           (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC) * 100.0 / 
+          (SELECT COUNT(*) FROM ingredient_submissions WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC, 1
+        )::TEXT || '%'
       ELSE 'N/A'
     END
   
   UNION ALL
   
   -- Meal Plans Generated
-  WITH plans_current AS (
-    SELECT COUNT(*) as value
-    FROM meal_plans
-    WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL
-  ),
-  plans_previous AS (
-    SELECT COUNT(*) as value
-    FROM meal_plans
-    WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL
-      AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL
-  )
   SELECT 
     'Usage'::TEXT,
     'Meal Plans Generated'::TEXT,
-    (SELECT value FROM plans_current)::TEXT,
-    (SELECT value FROM plans_previous)::TEXT,
+    (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
+    (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::TEXT,
     CASE 
-      WHEN (SELECT value FROM plans_previous) > 0 THEN
-        ROUND(((SELECT value FROM plans_current)::NUMERIC - (SELECT value FROM plans_previous)::NUMERIC) * 100.0 / (SELECT value FROM plans_previous)::NUMERIC, 1)::TEXT || '%'
+      WHEN (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL) > 0 THEN
+        ROUND(
+          ((SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC - 
+           (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC) * 100.0 / 
+          (SELECT COUNT(*) FROM meal_plans WHERE created_at >= CURRENT_DATE - (days_back * 2 || ' days')::INTERVAL AND created_at < CURRENT_DATE - (days_back || ' days')::INTERVAL)::NUMERIC, 1
+        )::TEXT || '%'
       ELSE 'N/A'
     END;
     
