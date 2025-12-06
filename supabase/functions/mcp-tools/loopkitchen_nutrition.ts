@@ -15,7 +15,7 @@
  */
 
 import { callModel } from "../_shared/loopkitchen/callModel.ts";
-import { getNutritionPrompt } from "../_shared/loopkitchen/prompts.ts";
+import { NUTRITIONGPT_SYSTEM, NUTRITIONGPT_USER } from "../_shared/loopkitchen/prompts.ts";
 import type {
   NutritionSummary,
   InfoMessage,
@@ -230,19 +230,20 @@ ${ingredientsList}`;
     }
 
     // Get NutritionGPT prompt
-    const { system, user } = getNutritionPrompt();
-    const fullUserMessage = user.replace("{{RECIPE_DATA}}", userMessage);
+    const system = NUTRITIONGPT_SYSTEM;
+    const fullUserMessage = userMessage;
 
     console.log("[loopkitchen.nutrition] Calling NutritionGPT...");
 
     // Call GPT with structured output
-    const result = await callModel<NutritionAnalysisResult>({
-      systemPrompt: system,
-      userPrompt: fullUserMessage,
-      schema: nutritionAnalysisSchema,
-      schemaName: "nutrition_analysis",
-      temperature: 0.3,
-    });
+    const result = await callModel<NutritionAnalysisResult>(
+      system,
+      fullUserMessage,
+      {
+        temperature: 0.3,
+        maxTokens: 1500,
+      }
+    );
 
     const duration = Date.now() - startTime;
     console.log("[loopkitchen.nutrition] Analysis complete", {

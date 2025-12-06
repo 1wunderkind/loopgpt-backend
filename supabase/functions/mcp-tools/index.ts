@@ -375,6 +375,24 @@ serve(async (req: Request) => {
           result = await getUserFavorites(params);
         } else if (toolName === "feedback.getStats") {
           result = await getContentStats(params);
+        } else if (toolName === "loopkitchen.recipes.generate") {
+          result = await loopkitchenGenerateRecipes(params);
+        } else if (toolName === "loopkitchen.recipes.details") {
+          result = await loopkitchenGetRecipeDetails(params);
+        } else if (toolName === "loopkitchen.nutrition.analyze") {
+          result = await loopkitchenAnalyzeNutrition(params);
+        } else if (toolName === "loopkitchen.nutrition.logMeal") {
+          result = await logMeal(params);
+        } else if (toolName === "loopkitchen.nutrition.daily") {
+          result = await getDailyNutrition(params);
+        } else if (toolName === "loopkitchen.mealplan.generate") {
+          result = await loopkitchenGenerateMealPlan(params);
+        } else if (toolName === "loopkitchen.mealplan.withGrocery") {
+          result = await generateMealPlanWithGrocery(params);
+        } else if (toolName === "loopkitchen.mealplan.prepareOrder") {
+          result = await prepareMealPlanOrder(params);
+        } else if (toolName === "loopkitchen.mealplan.complete") {
+          result = await generateMealPlanWithCommerce(params);
         } else {
           return new Response(
             JSON.stringify({

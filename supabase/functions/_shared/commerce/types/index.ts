@@ -1,10 +1,124 @@
 /**
  * LoopGPT Commerce Router - Type Definitions
- * Phase 3: Provider Comparison Scoring Algorithm
+ * Production-grade multi-provider commerce layer
  */
 
 // ============================================================================
-// Core Types
+// Provider Types
+// ============================================================================
+
+export type ProviderId = 'MEALME' | 'INSTACART' | 'KROGER_API' | 'WALMART_API';
+
+export interface ProviderMeta {
+  id: ProviderId;
+  name: string;
+  priority: number; // base priority before scoring
+}
+
+export interface ProviderConfig {
+  id: ProviderId;
+  name: string;
+  enabled: boolean;
+  priority: number;          // config bias
+  commissionRate: number;    // % as decimal
+  regions: string[];         // e.g. ['US', 'US-CA', 'DE'] for future
+  timeout?: number;          // ms, optional per-provider timeout
+  retries?: number;          // optional retry count
+}
+
+// ============================================================================
+// Cart and Item Types
+// ============================================================================
+
+export interface CartItem {
+  clientItemId: string;      // LoopGPT-side ID
+  providerSku?: string;      // Provider's product ID
+  name: string;
+  quantity: number;
+  unit?: string;             // 'pcs', 'kg', 'lb', etc.
+  priceCents: number;        // price in cents
+  substituted?: boolean;
+  substitutionReason?: string;
+}
+
+export interface RequestedItem {
+  id: string;                // Client-side ID
+  name: string;
+  quantity: number;
+  unit?: string;
+  preferences?: Record<string, any>;
+}
+
+// ============================================================================
+// Quote Types
+// ============================================================================
+
+export interface Quote {
+  subtotalCents: number;
+  feesCents: number;
+  taxCents: number;
+  totalCents: number;
+  currency: 'USD' | 'EUR' | string;
+  estimatedDeliveryMinutes?: number;
+  // Legacy fields for backward compatibility
+  subtotal?: number;
+  deliveryFee?: number;
+  tax?: number;
+  total?: number;
+  estimatedDelivery?: {
+    min: number;
+    max: number;
+  };
+}
+
+export interface ItemAvailability {
+  clientItemId: string;
+  requestedItem: string;
+  status: 'found' | 'substituted' | 'unavailable';
+  inStock?: boolean;         // Simplified flag
+  providerSku?: string;
+  foundProduct?: {
+    id: string;
+    name: string;
+    priceCents: number;
+  };
+  substitutedProduct?: {
+    id: string;
+    name: string;
+    priceCents: number;
+    reason: string;
+  };
+}
+
+// ============================================================================
+// Provider Quote Types
+// ============================================================================
+
+export interface ProviderQuote {
+  provider: ProviderMeta;
+  config: ProviderConfig;
+  store?: Store;
+  cart: CartItem[];
+  quote: Quote;
+  itemAvailability: ItemAvailability[];
+  affiliateUrl?: string;
+  raw?: unknown;             // raw provider payload for debugging/logging
+}
+
+export interface ScoredQuote extends ProviderQuote {
+  score: number;
+  scoreBreakdown: ScoreBreakdown;
+}
+
+export interface Store {
+  id: string;
+  name: string;
+  address: string;
+  distance?: number;
+}
+
+// ============================================================================
+// Scoring Types
 // ============================================================================
 
 export interface ScoringWeights {
@@ -25,83 +139,13 @@ export interface ScoreBreakdown {
   explanation: string;
 }
 
-export interface ProviderQuote {
-  provider: {
-    id: string;
-    name: string;
-    priority: number;
-  };
-  config: ProviderConfig;
-  store?: Store;
-  cart: CartItem[];
-  quote: Quote;
-  itemAvailability: ItemAvailability[];
-}
-
-export interface ScoredQuote extends ProviderQuote {
-  score: number;
-  scoreBreakdown: ScoreBreakdown;
-}
-
-export interface ProviderConfig {
-  id: string;
-  name: string;
-  enabled: boolean;
-  priority: number;
-  commissionRate: number;
-  regions: string[];
-}
-
-export interface Store {
-  id: string;
-  name: string;
-  address: string;
-  distance?: number;
-}
-
-export interface CartItem {
-  productId: string;
-  name: string;
-  quantity: number;
-  price: number;
-  substituted?: boolean;
-  substitutionReason?: string;
-}
-
-export interface Quote {
-  subtotal: number;
-  deliveryFee: number;
-  tax: number;
-  total: number;
-  estimatedDelivery: {
-    min: number;  // minutes
-    max: number;  // minutes
-  };
-}
-
-export interface ItemAvailability {
-  requestedItem: string;
-  status: 'found' | 'substituted' | 'unavailable';
-  foundProduct?: {
-    id: string;
-    name: string;
-    price: number;
-  };
-  substitutedProduct?: {
-    id: string;
-    name: string;
-    price: number;
-    reason: string;
-  };
-}
-
 // ============================================================================
 // Learning System Types
 // ============================================================================
 
 export interface OrderOutcome {
   orderId: string;
-  providerId: string;
+  providerId: ProviderId;
   wasSuccessful: boolean;
   actualDeliveryTime?: number;  // minutes
   itemsDelivered?: number;
@@ -120,7 +164,7 @@ export type OrderIssue =
   | 'other';
 
 export interface ProviderMetrics {
-  providerId: string;
+  providerId: ProviderId;
   metricDate: string;
   totalOrders: number;
   successfulOrders: number;
@@ -143,14 +187,8 @@ export interface RouteOrderRequest {
   preferences?: OrderPreferences;
 }
 
-export interface RequestedItem {
-  name: string;
-  quantity: number;
-  preferences?: Record<string, any>;
-}
-
 export interface DeliveryLocation {
-  street: string;
+  street?: string;
   city: string;
   state: string;
   zip: string;
@@ -161,7 +199,7 @@ export interface OrderPreferences {
   optimizeFor?: 'price' | 'speed' | 'margin' | 'balanced';
   maxDeliveryTimeMinutes?: number;
   maxDeliveryFee?: number;
-  preferredProviders?: string[];
+  preferredProviders?: ProviderId[];
   allowSplitOrders?: boolean;
   splitStrategy?: 'cost' | 'speed' | 'providers';
 }
@@ -169,6 +207,7 @@ export interface OrderPreferences {
 export interface RouteOrderResponse {
   success: boolean;
   provider: string;
+  providerId: ProviderId;
   store?: Store;
   cart: CartItem[];
   quote: Quote;
@@ -176,14 +215,19 @@ export interface RouteOrderResponse {
   scoreBreakdown: ScoreBreakdown;
   alternatives: AlternativeProvider[];
   confirmationToken: string;
+  affiliateUrl?: string;
   message?: string;
 }
 
 export interface AlternativeProvider {
   provider: string;
-  total: number;
+  providerId: ProviderId;
+  totalCents: number;
   score: number;
-  estimatedDelivery: number;
+  estimatedDeliveryMinutes: number;
+  // Legacy fields
+  total?: number;
+  estimatedDelivery?: number;
 }
 
 // ============================================================================
@@ -193,7 +237,7 @@ export interface AlternativeProvider {
 export interface ScoreCalculation {
   id: string;
   routeId: string;
-  providerId: string;
+  providerId: ProviderId;
   priceScore: number;
   speedScore: number;
   availabilityScore: number;
@@ -271,5 +315,35 @@ export function getWeightsForPreference(
     case 'balanced':
     default:
       return DEFAULT_WEIGHTS;
+  }
+}
+
+// ============================================================================
+// Provider Error Types
+// ============================================================================
+
+export class ProviderError extends Error {
+  constructor(
+    public providerId: ProviderId,
+    message: string,
+    public code?: string,
+    public retryable: boolean = false
+  ) {
+    super(message);
+    this.name = 'ProviderError';
+  }
+}
+
+export class ProviderTimeoutError extends ProviderError {
+  constructor(providerId: ProviderId, timeoutMs: number) {
+    super(providerId, `Provider ${providerId} timed out after ${timeoutMs}ms`, 'TIMEOUT', true);
+    this.name = 'ProviderTimeoutError';
+  }
+}
+
+export class ProviderUnavailableError extends ProviderError {
+  constructor(providerId: ProviderId, reason?: string) {
+    super(providerId, `Provider ${providerId} is unavailable${reason ? `: ${reason}` : ''}`, 'UNAVAILABLE', true);
+    this.name = 'ProviderUnavailableError';
   }
 }

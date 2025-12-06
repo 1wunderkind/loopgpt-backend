@@ -1,13 +1,22 @@
 /**
  * LoopGPT Commerce Router - Provider Scorer
- * Phase 3: Intelligent scoring with explanation generation
+ * Production-grade scoring with configurable weights
  * 
- * Scores providers based on 5 factors:
- * 1. Price - Total cost to user
- * 2. Speed - Estimated delivery time
- * 3. Availability - % of items fulfilled
- * 4. Margin - Our commission revenue
- * 5. Reliability - Historical performance
+ * Scores providers based on:
+ * 1. Base Priority - Static config bias
+ * 2. Price - Total cost to user (totalCents)
+ * 3. Speed - Estimated delivery time (estimatedDeliveryMinutes)
+ * 4. Commission - Our revenue (commissionRate)
+ * 5. Availability - % of items fulfilled
+ * 6. Reliability - Historical performance
+ * 
+ * Configurable via environment variables:
+ * - LOOPGPT_SCORE_PRIORITY_WEIGHT (default: 1.0)
+ * - LOOPGPT_SCORE_PRICE_WEIGHT (default: 0.30)
+ * - LOOPGPT_SCORE_SPEED_WEIGHT (default: 0.15)
+ * - LOOPGPT_SCORE_COMMISSION_WEIGHT (default: 0.20)
+ * - LOOPGPT_SCORE_AVAILABILITY_WEIGHT (default: 0.25)
+ * - LOOPGPT_SCORE_RELIABILITY_WEIGHT (default: 0.10)
  */
 
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -16,17 +25,46 @@ import type {
   ScoredQuote,
   ScoringWeights,
   ScoreBreakdown,
-  Quote,
   ItemAvailability,
-  ProviderConfig,
 } from "./types/index.ts";
-import { getWeightsForPreference } from "./types/index.ts";
+
+// ============================================================================
+// Scoring Configuration
+// ============================================================================
+
+interface ScoringConfig {
+  priorityWeight: number;
+  priceWeight: number;
+  speedWeight: number;
+  commissionWeight: number;
+  availabilityWeight: number;
+  reliabilityWeight: number;
+  defaultEtaMinutes: number;
+}
+
+function getScoringConfig(): ScoringConfig {
+  return {
+    priorityWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_PRIORITY_WEIGHT') || '1.0'),
+    priceWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_PRICE_WEIGHT') || '0.30'),
+    speedWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_SPEED_WEIGHT') || '0.15'),
+    commissionWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_COMMISSION_WEIGHT') || '0.20'),
+    availabilityWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_AVAILABILITY_WEIGHT') || '0.25'),
+    reliabilityWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_RELIABILITY_WEIGHT') || '0.10'),
+    defaultEtaMinutes: 60, // Default ETA if not provided
+  };
+}
+
+// ============================================================================
+// Provider Scorer
+// ============================================================================
 
 export class ProviderScorer {
   private db: SupabaseClient;
+  private config: ScoringConfig;
 
   constructor(db: SupabaseClient) {
     this.db = db;
+    this.config = getScoringConfig();
   }
 
   /**
@@ -46,8 +84,8 @@ export class ProviderScorer {
       return [];
     }
 
-    // Get weights based on preference
-    const weights = getWeightsForPreference(preference);
+    // Adjust weights based on preference
+    const weights = this.getWeightsForPreference(preference);
 
     // Pre-fetch reliability scores for all providers
     const reliabilityScores = new Map<string, number>();
@@ -78,7 +116,64 @@ export class ProviderScorer {
   }
 
   /**
+   * Get weights adjusted for user preference
+   */
+  private getWeightsForPreference(
+    preference: 'price' | 'speed' | 'margin' | 'balanced'
+  ): ScoringWeights {
+    const base = this.config;
+
+    switch (preference) {
+      case 'price':
+        return {
+          price: base.priceWeight * 2.0,
+          speed: base.speedWeight * 0.5,
+          availability: base.availabilityWeight,
+          margin: base.commissionWeight * 0.5,
+          reliability: base.reliabilityWeight,
+        };
+      
+      case 'speed':
+        return {
+          price: base.priceWeight * 0.5,
+          speed: base.speedWeight * 2.5,
+          availability: base.availabilityWeight,
+          margin: base.commissionWeight * 0.5,
+          reliability: base.reliabilityWeight,
+        };
+      
+      case 'margin':
+        return {
+          price: base.priceWeight * 0.7,
+          speed: base.speedWeight * 0.7,
+          availability: base.availabilityWeight,
+          margin: base.commissionWeight * 2.0,
+          reliability: base.reliabilityWeight,
+        };
+      
+      case 'balanced':
+      default:
+        return {
+          price: base.priceWeight,
+          speed: base.speedWeight,
+          availability: base.availabilityWeight,
+          margin: base.commissionWeight,
+          reliability: base.reliabilityWeight,
+        };
+    }
+  }
+
+  /**
    * Calculate complete score breakdown for a provider
+   * 
+   * Formula:
+   * score = 
+   *   priorityWeight * config.priority
+   *   - priceWeight * (totalCents / 100)  // Normalize cents to dollars
+   *   - speedWeight * estimatedDeliveryMinutes
+   *   + commissionWeight * (totalCents * commissionRate / 100)
+   *   + availabilityWeight * availabilityScore
+   *   + reliabilityWeight * reliabilityScore
    */
   private calculateScoreBreakdown(
     quote: ProviderQuote,
@@ -87,41 +182,55 @@ export class ProviderScorer {
     reliabilityScore: number,
     weights: ScoringWeights
   ): ScoreBreakdown {
-    // Calculate individual component scores
+    // 1. Base Priority Score (static config bias)
+    const priorityScore = quote.config.priority;
+
+    // 2. Price Score (lower price = higher score)
     const priceScore = this.calculatePriceScore(
-      quote.quote,
-      allQuotes.map(q => q.quote)
+      quote.quote.totalCents,
+      allQuotes.map(q => q.quote.totalCents)
     );
-    
+
+    // 3. Speed Score (faster delivery = higher score)
     const speedScore = this.calculateSpeedScore(
-      quote.quote,
-      allQuotes.map(q => q.quote)
+      quote.quote.estimatedDeliveryMinutes || this.config.defaultEtaMinutes,
+      allQuotes.map(q => q.quote.estimatedDeliveryMinutes || this.config.defaultEtaMinutes)
     );
-    
+
+    // 4. Commission Score (higher commission = higher score)
+    const marginScore = this.calculateCommissionScore(
+      quote.quote.totalCents,
+      quote.config.commissionRate,
+      allQuotes
+    );
+
+    // 5. Availability Score (more items found = higher score)
     const availabilityScore = this.calculateAvailabilityScore(
       quote.itemAvailability,
       totalItemsRequested
     );
-    
-    const marginScore = this.calculateMarginScore(
-      quote.quote,
-      quote.config,
-      allQuotes
-    );
 
-    // Calculate weighted total
+    // 6. Calculate weighted total
     const weightedTotal =
+      (this.config.priorityWeight * priorityScore) +
       (weights.price * priceScore) +
       (weights.speed * speedScore) +
-      (weights.availability * availabilityScore) +
       (weights.margin * marginScore) +
+      (weights.availability * availabilityScore) +
       (weights.reliability * reliabilityScore);
 
-    // Generate human-readable explanation
+    // 7. Generate human-readable explanation
     const explanation = this.generateExplanation(
       quote.provider.name,
-      { priceScore, speedScore, availabilityScore, marginScore, reliabilityScore },
-      weights
+      {
+        priceScore,
+        speedScore,
+        availabilityScore,
+        marginScore,
+        reliabilityScore,
+      },
+      weights,
+      quote.config.priority
     );
 
     return {
@@ -139,16 +248,15 @@ export class ProviderScorer {
    * Calculate price score (lower price = higher score)
    * Normalized to 0-100 scale
    */
-  private calculatePriceScore(quote: Quote, allQuotes: Quote[]): number {
-    const prices = allQuotes.map(q => q.total);
-    const minPrice = Math.min(...prices);
-    const maxPrice = Math.max(...prices);
+  private calculatePriceScore(totalCents: number, allTotalCents: number[]): number {
+    const minPrice = Math.min(...allTotalCents);
+    const maxPrice = Math.max(...allTotalCents);
 
     // All same price
     if (maxPrice === minPrice) return 100;
 
     // Inverse scale: lowest price = 100, highest = 0
-    const normalized = 1 - (quote.total - minPrice) / (maxPrice - minPrice);
+    const normalized = 1 - (totalCents - minPrice) / (maxPrice - minPrice);
     return Math.round(normalized * 100);
   }
 
@@ -156,16 +264,39 @@ export class ProviderScorer {
    * Calculate speed score (faster delivery = higher score)
    * Normalized to 0-100 scale
    */
-  private calculateSpeedScore(quote: Quote, allQuotes: Quote[]): number {
-    const times = allQuotes.map(q => q.estimatedDelivery.max);
-    const minTime = Math.min(...times);
-    const maxTime = Math.max(...times);
+  private calculateSpeedScore(etaMinutes: number, allEtaMinutes: number[]): number {
+    const minTime = Math.min(...allEtaMinutes);
+    const maxTime = Math.max(...allEtaMinutes);
 
     // All same delivery time
     if (maxTime === minTime) return 100;
 
     // Inverse scale: fastest = 100
-    const normalized = 1 - (quote.estimatedDelivery.max - minTime) / (maxTime - minTime);
+    const normalized = 1 - (etaMinutes - minTime) / (maxTime - minTime);
+    return Math.round(normalized * 100);
+  }
+
+  /**
+   * Calculate commission score (higher commission = higher score)
+   * Normalized to 0-100 scale
+   */
+  private calculateCommissionScore(
+    totalCents: number,
+    commissionRate: number,
+    allQuotes: ProviderQuote[]
+  ): number {
+    // Our revenue from this order (in cents)
+    const ourRevenueCents = totalCents * commissionRate;
+
+    const allRevenues = allQuotes.map(q => q.quote.totalCents * q.config.commissionRate);
+    const minRevenue = Math.min(...allRevenues);
+    const maxRevenue = Math.max(...allRevenues);
+
+    // All same revenue
+    if (maxRevenue === minRevenue) return 100;
+
+    // Higher revenue = higher score
+    const normalized = (ourRevenueCents - minRevenue) / (maxRevenue - minRevenue);
     return Math.round(normalized * 100);
   }
 
@@ -186,30 +317,6 @@ export class ProviderScorer {
     const effectiveFulfillment = found + (substituted * 0.8);
 
     return Math.round((effectiveFulfillment / totalRequested) * 100);
-  }
-
-  /**
-   * Calculate margin score (higher commission = higher score)
-   * Normalized to 0-100 scale
-   */
-  private calculateMarginScore(
-    quote: Quote,
-    config: ProviderConfig,
-    allQuotes: ProviderQuote[]
-  ): number {
-    // Our revenue from this order
-    const ourRevenue = quote.total * config.commissionRate;
-
-    const allRevenues = allQuotes.map(q => q.quote.total * q.config.commissionRate);
-    const minRevenue = Math.min(...allRevenues);
-    const maxRevenue = Math.max(...allRevenues);
-
-    // All same revenue
-    if (maxRevenue === minRevenue) return 100;
-
-    // Higher revenue = higher score
-    const normalized = (ourRevenue - minRevenue) / (maxRevenue - minRevenue);
-    return Math.round(normalized * 100);
   }
 
   /**
@@ -244,12 +351,11 @@ export class ProviderScorer {
       const successRate = successfulOrders / totalOrders;
 
       // Weight recent performance more heavily (exponential decay)
-      // Most recent day has weight 1.0, oldest day has weight ~0.5
       let weightedSuccesses = 0;
       let totalWeight = 0;
 
       metrics.forEach((metric, index) => {
-        const dayAge = index; // 0 = most recent
+        const dayAge = index;
         const weight = Math.exp(-dayAge / 15); // Decay factor
         
         const daySuccessRate = metric.total_orders > 0
@@ -283,9 +389,15 @@ export class ProviderScorer {
       marginScore: number;
       reliabilityScore: number;
     },
-    weights: ScoringWeights
+    weights: ScoringWeights,
+    priority: number
   ): string {
     const factors: string[] = [];
+
+    // Priority bias
+    if (priority >= 60) {
+      factors.push('preferred provider');
+    }
 
     // Identify strong factors (score > 80)
     if (scores.priceScore > 80) {
@@ -299,78 +411,23 @@ export class ProviderScorer {
     } else if (scores.availabilityScore > 80) {
       factors.push('most items available');
     }
-    if (scores.reliabilityScore > 80) {
-      factors.push('highly reliable');
+    if (scores.marginScore > 80) {
+      factors.push('good commission');
     }
-
-    // If no strong factors, mention the highest weighted component
-    if (factors.length === 0) {
-      const weightedScores = {
-        price: scores.priceScore * weights.price,
-        speed: scores.speedScore * weights.speed,
-        availability: scores.availabilityScore * weights.availability,
-        margin: scores.marginScore * weights.margin,
-        reliability: scores.reliabilityScore * weights.reliability,
-      };
-
-      const maxFactor = Object.entries(weightedScores).reduce((max, [key, value]) =>
-        value > max.value ? { key, value } : max,
-        { key: 'price', value: 0 }
-      );
-
-      const factorNames: Record<string, string> = {
-        price: 'reasonable pricing',
-        speed: 'acceptable delivery time',
-        availability: 'good item availability',
-        margin: 'favorable terms',
-        reliability: 'consistent performance',
-      };
-
-      factors.push(factorNames[maxFactor.key]);
+    if (scores.reliabilityScore > 80) {
+      factors.push('reliable service');
     }
 
     // Build explanation
-    if (factors.length === 1) {
-      return `${providerName} was selected due to ${factors[0]}.`;
+    if (factors.length === 0) {
+      return `${providerName} selected as best available option.`;
+    } else if (factors.length === 1) {
+      return `${providerName} selected for ${factors[0]}.`;
     } else if (factors.length === 2) {
-      return `${providerName} was selected due to ${factors[0]} and ${factors[1]}.`;
+      return `${providerName} selected for ${factors[0]} and ${factors[1]}.`;
     } else {
       const lastFactor = factors.pop();
-      return `${providerName} was selected due to ${factors.join(', ')}, and ${lastFactor}.`;
-    }
-  }
-
-  /**
-   * Log score calculation to database for analytics
-   */
-  async logScoreCalculation(
-    routeId: string,
-    scoredQuotes: ScoredQuote[],
-    selectedProviderId: string
-  ): Promise<void> {
-    try {
-      const calculations = scoredQuotes.map(sq => ({
-        route_id: routeId,
-        provider_id: sq.provider.id,
-        price_score: sq.scoreBreakdown.priceScore,
-        speed_score: sq.scoreBreakdown.speedScore,
-        availability_score: sq.scoreBreakdown.availabilityScore,
-        margin_score: sq.scoreBreakdown.marginScore,
-        reliability_score: sq.scoreBreakdown.reliabilityScore,
-        weighted_total: sq.scoreBreakdown.weightedTotal,
-        weights_used: {
-          // Extract weights from the calculation
-          // This would be passed in from the scoring call
-        },
-        was_selected: sq.provider.id === selectedProviderId,
-      }));
-
-      await this.db
-        .from('score_calculations')
-        .insert(calculations);
-    } catch (error) {
-      console.error('Error logging score calculations:', error);
-      // Don't throw - logging failure shouldn't break the order flow
+      return `${providerName} selected for ${factors.join(', ')}, and ${lastFactor}.`;
     }
   }
 }
