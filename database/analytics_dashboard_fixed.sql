@@ -216,7 +216,7 @@ ORDER BY chaos_rating_shown;
 -- Affiliate Performance (Last 30 Days)
 CREATE OR REPLACE VIEW affiliate_performance_30d AS
 SELECT 
-  provider_name,
+  provider,
   COUNT(*) FILTER (WHERE event_type = 'impression') as impressions,
   COUNT(*) FILTER (WHERE event_type = 'click') as clicks,
   COUNT(*) FILTER (WHERE event_type = 'conversion') as conversions,
@@ -233,7 +233,7 @@ SELECT
   SUM((metadata->>'estimatedRevenueUsd')::NUMERIC) FILTER (WHERE event_type = 'conversion') as total_revenue_usd
 FROM analytics.affiliate_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
-GROUP BY provider_name
+GROUP BY provider
 ORDER BY clicks DESC;
 
 -- Daily Affiliate Revenue (Last 30 Days)
