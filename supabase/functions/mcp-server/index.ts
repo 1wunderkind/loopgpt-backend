@@ -15,7 +15,8 @@
 // ============================================================================
 
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { logToolInvocationToDb, inferGptNameFromTool, inferProviderFromTool, extractUserIdFromRequest } from "./lib/tool-metrics.ts";
 import { MANIFEST } from "./manifest_embedded.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 
@@ -4808,11 +4809,14 @@ serve(async (req: Request) => {
       // ====================================================================
       console.log(`[MCP] Invoking tool: ${toolName}`);
       
+      // Track timing for observability
       const invocationStart = performance.now();
+      const startedAt = new Date();
       const { data, error } = await supabase.functions.invoke(toolName, {
         body,
       });
       const invocationDuration = performance.now() - invocationStart;
+      const finishedAt = new Date();
       
       if (error) {
         const totalDuration = performance.now() - startTime;
@@ -4825,6 +4829,19 @@ serve(async (req: Request) => {
           status: 'error',
           error: error.message || 'Invocation failed'
         });
+        
+        // Log to analytics.tool_invocations (async, non-blocking)
+        logToolInvocationToDb({
+          toolName,
+          startedAt,
+          finishedAt,
+          success: false,
+          errorCode: "UNKNOWN", // Could be enhanced with error classification
+          userId: extractUserIdFromRequest(req),
+          gptName: inferGptNameFromTool(toolName),
+          provider: inferProviderFromTool(toolName),
+          metadata: { error: error.message || 'Invocation failed' },
+        }).catch(e => console.error("Failed to log tool invocation:", e));
         
         // Return HTTP 200 with error envelope (ChatGPT can parse the error)
         return new Response(
@@ -4858,6 +4875,17 @@ serve(async (req: Request) => {
         status: 'success'
       });
       
+      // Log to analytics.tool_invocations (async, non-blocking)
+      logToolInvocationToDb({
+        toolName,
+        startedAt,
+        finishedAt,
+        success: true,
+        userId: extractUserIdFromRequest(req),
+        gptName: inferGptNameFromTool(toolName),
+        provider: inferProviderFromTool(toolName),
+      }).catch(e => console.error("Failed to log tool invocation:", e));
+      
       return new Response(
         JSON.stringify(successResponse(toolName, data, totalDuration)),
         {
@@ -4880,6 +4908,20 @@ serve(async (req: Request) => {
         status: 'error',
         error: err instanceof Error ? err.message : 'Unknown error'
       });
+      
+      // Log to analytics.tool_invocations (async, non-blocking)
+      const catchFinishedAt = new Date();
+      logToolInvocationToDb({
+        toolName,
+        startedAt,
+        finishedAt: catchFinishedAt,
+        success: false,
+        errorCode: "UNKNOWN",
+        userId: extractUserIdFromRequest(req),
+        gptName: inferGptNameFromTool(toolName),
+        provider: inferProviderFromTool(toolName),
+        metadata: { error: err instanceof Error ? err.message : String(err) },
+      }).catch(e => console.error("Failed to log tool invocation:", e));
       
       return new Response(
         JSON.stringify(errorResponse(
