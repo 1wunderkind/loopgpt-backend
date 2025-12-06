@@ -600,14 +600,14 @@ ORDER BY date DESC;
 -- User Dietary Preferences Distribution
 CREATE OR REPLACE VIEW dietary_preferences_distribution AS
 SELECT 
-  diet_style,
+  goal_type,
   COUNT(*) as user_count,
-  ROUND(AVG(target_calories_per_day), 0) as avg_target_calories,
+  ROUND(AVG(calorie_target), 0) as avg_calorie_target,
   ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage
 FROM analytics.user_goals
-WHERE diet_style IS NOT NULL
+WHERE goal_type IS NOT NULL
   AND is_active = true
-GROUP BY diet_style
+GROUP BY goal_type
 ORDER BY user_count DESC;
 
 -- ============================================================================
