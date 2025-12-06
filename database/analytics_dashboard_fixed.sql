@@ -73,7 +73,6 @@ SELECT
   COUNT(*) as total_events,
   COUNT(DISTINCT user_id) as unique_users,
   COUNT(DISTINCT session_id) as unique_sessions,
-  ROUND(AVG(EXTRACT(EPOCH FROM (updated_at - created_at))), 2) as avg_duration_seconds,
   ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage
 FROM analytics.session_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
