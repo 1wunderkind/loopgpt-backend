@@ -478,13 +478,7 @@ GROUP BY
     WHEN active_days >= 3 THEN 'Regular User (3-9 days)'
     ELSE 'Casual User (1-2 days)'
   END
-ORDER BY 
-  CASE 
-    WHEN active_days >= 20 THEN 1
-    WHEN active_days >= 10 THEN 2
-    WHEN active_days >= 3 THEN 3
-    ELSE 4
-  END;
+ORDER BY user_count DESC;
 
 -- ============================================================================
 -- PRODUCT METRICS
