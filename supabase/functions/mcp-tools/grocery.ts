@@ -10,6 +10,7 @@ import { getFallbackGroceryList } from "./fallbacks.ts";
 import { generateGroceryCtas, addCtasToResponse } from "./ctaSchemas.ts";
 import { validatePantry, type Pantry } from "./commerceSchemas.ts";
 import { detectMissingIngredients, annotateGroceryListWithMissing, getMissingSummary } from "./ingredientMatcher.ts";
+import { withTimeout } from "../mcp-server/lib/reliability.ts";
 
 // Simple input validation
 function validateGroceryInput(params: any) {
@@ -162,8 +163,9 @@ ${sourceText}`;
 
     console.log("[grocery.list] Calling OpenAI...");
     
-    // Call OpenAI with Structured Outputs
-    const completion = await client.chat.completions.create({
+    // Call OpenAI with Structured Outputs (with 15s timeout)
+    const completion = await withTimeout(
+      client.chat.completions.create({
       model: "gpt-4o-mini-2024-07-18",
       temperature: 0.3,
       max_tokens: 2000,
@@ -179,7 +181,10 @@ ${sourceText}`;
           schema: GroceryListJsonSchema,
         },
       } as any,
-    });
+    }),
+    15000, // 15 second timeout
+    "OpenAI grocery list generation"
+  );
 
     const rawContent = completion.choices[0]?.message?.content;
     if (!rawContent) {

@@ -3,11 +3,18 @@
  * 
  * Searches for stores, restaurants, or products via MealMe API
  * based on user location and query.
+ * 
+ * RELIABILITY: Wrapped with timeout and retry logic
  */
 
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
+import { 
+  withToolReliability, 
+  fetchWithTimeout,
+  type ToolResult 
+} from "../mcp-server/lib/reliability.ts";
 
 const MEALME_API = Deno.env.get("MEALME_API_BASE") || "https://api.mealme.ai";
 const API_KEY = Deno.env.get("MEALME_API_KEY");
@@ -26,7 +33,10 @@ interface SearchResponse {
   count: number;
 }
 
-async function searchMealMe(req: SearchRequest): Promise<SearchResponse> {
+/**
+ * Core search implementation (extracted for reliability wrapping)
+ */
+async function implSearchMealMe(req: SearchRequest): Promise<SearchResponse> {
   if (!API_KEY) {
     throw new Error("MEALME_API_KEY environment variable is not set");
   }
@@ -57,25 +67,33 @@ async function searchMealMe(req: SearchRequest): Promise<SearchResponse> {
 
   console.log(`[MealMe Search] Searching ${mode} near (${latitude}, ${longitude}) for "${query}"`);
 
-  // Call MealMe API
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${API_KEY}`,
+  // Call MealMe API with timeout
+  const response = await fetchWithTimeout(
+    endpoint,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        latitude,
+        longitude,
+        query,
+        limit,
+      }),
     },
-    body: JSON.stringify({
-      latitude,
-      longitude,
-      query,
-      limit,
-    }),
-  });
+    8000 // 8 second timeout
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
     console.error(`[MealMe Search] API error: ${response.status} - ${errorText}`);
-    throw new Error(`MealMe API error: ${response.status} - ${errorText}`);
+    
+    // Create error with status code for proper classification
+    const error: any = new Error(`MealMe API error: ${response.status} - ${errorText}`);
+    error.status = response.status;
+    throw error;
   }
 
   const data = await response.json();
@@ -89,18 +107,52 @@ async function searchMealMe(req: SearchRequest): Promise<SearchResponse> {
   };
 }
 
+/**
+ * Wrapped search function with reliability features
+ */
+async function searchMealMe(req: SearchRequest): Promise<ToolResult<SearchResponse>> {
+  return withToolReliability(
+    () => implSearchMealMe(req),
+    {
+      toolName: "delivery_search_restaurants",
+      timeoutMs: 8000,           // 8 second timeout
+      maxRetries: 2,             // Retry up to 2 times (3 total attempts)
+      retryDelayMs: 400,         // Start with 400ms, exponential backoff
+      retryOnCodes: ["NETWORK_ERROR", "UPSTREAM_5XX", "TIMEOUT"], // Only retry on safe errors
+    }
+  );
+}
+
 const handler = async (req: Request): Promise<Response> => {
   try {
     // Parse request body
     const body = await req.json() as SearchRequest;
 
-    // Search MealMe
+    // Search MealMe with reliability wrapper
     const result = await searchMealMe(body);
 
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    // Handle success/failure from reliability layer
+    if (result.ok) {
+      return new Response(JSON.stringify(result.data), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else {
+      // Return error in response body (not as HTTP error)
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: result.error.message,
+          code: result.error.code,
+          retryable: result.error.retryable,
+          details: result.error.details,
+        }),
+        {
+          status: 200, // Return 200 even for errors
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
   } catch (error) {
     return handleError(error);
   }
@@ -108,4 +160,3 @@ const handler = async (req: Request): Promise<Response> => {
 
 // Export with logging middleware
 export default withSearchAPI(withLogging(handler, "mealme_search"));
-

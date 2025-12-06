@@ -3,11 +3,18 @@
  * 
  * Orchestrates the full flow: normalize ingredients → create cart → get quotes → checkout URL
  * This is the main entry point for MealPlannerGPT to order a meal plan.
+ * 
+ * RELIABILITY: Wrapped with timeout but NO retries (write operation)
  */
 
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
+import { 
+  withToolReliability, 
+  fetchWithTimeout,
+  type ToolResult 
+} from "../mcp-server/lib/reliability.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -31,7 +38,11 @@ interface OrderPlanResponse {
   checkoutUrl: string;
 }
 
-async function orderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> {
+/**
+ * Core order implementation (extracted for reliability wrapping)
+ * NOTE: This is a WRITE operation, so we do NOT retry to avoid duplicate orders
+ */
+async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> {
   const { chatgpt_user_id, latitude, longitude, ingredients, mode = "groceries" } = req;
 
   console.log(`[MealMe Order] Starting order flow for user ${chatgpt_user_id} with ${ingredients.length} ingredients`);
@@ -39,17 +50,23 @@ async function orderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> {
   // Step 1: Normalize ingredients
   console.log("[MealMe Order] Step 1: Normalizing ingredients...");
   
-  const normalizeResponse = await fetch(`${SUPABASE_URL}/functions/v1/normalize_ingredients`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${SUPABASE_KEY}`,
+  const normalizeResponse = await fetchWithTimeout(
+    `${SUPABASE_URL}/functions/v1/normalize_ingredients`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+      },
+      body: JSON.stringify({ ingredients }),
     },
-    body: JSON.stringify({ ingredients }),
-  });
+    10000 // 10 second timeout for normalization
+  );
 
   if (!normalizeResponse.ok) {
-    throw new Error(`Failed to normalize ingredients: ${normalizeResponse.statusText}`);
+    const error: any = new Error(`Failed to normalize ingredients: ${normalizeResponse.statusText}`);
+    error.status = normalizeResponse.status;
+    throw error;
   }
 
   const { normalized, cartItems } = await normalizeResponse.json();
@@ -58,23 +75,29 @@ async function orderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> {
   // Step 2: Create cart
   console.log("[MealMe Order] Step 2: Creating cart...");
   
-  const cartResponse = await fetch(`${SUPABASE_URL}/functions/v1/mealme_create_cart`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${SUPABASE_KEY}`,
+  const cartResponse = await fetchWithTimeout(
+    `${SUPABASE_URL}/functions/v1/mealme_create_cart`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+      },
+      body: JSON.stringify({
+        chatgpt_user_id,
+        latitude,
+        longitude,
+        items: cartItems,
+        mode,
+      }),
     },
-    body: JSON.stringify({
-      chatgpt_user_id,
-      latitude,
-      longitude,
-      items: cartItems,
-      mode,
-    }),
-  });
+    10000 // 10 second timeout
+  );
 
   if (!cartResponse.ok) {
-    throw new Error(`Failed to create cart: ${cartResponse.statusText}`);
+    const error: any = new Error(`Failed to create cart: ${cartResponse.statusText}`);
+    error.status = cartResponse.status;
+    throw error;
   }
 
   const { cart, order_id } = await cartResponse.json();
@@ -83,21 +106,27 @@ async function orderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> {
   // Step 3: Get delivery quotes
   console.log("[MealMe Order] Step 3: Getting delivery quotes...");
   
-  const quotesResponse = await fetch(`${SUPABASE_URL}/functions/v1/mealme_get_quotes`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${SUPABASE_KEY}`,
+  const quotesResponse = await fetchWithTimeout(
+    `${SUPABASE_URL}/functions/v1/mealme_get_quotes`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+      },
+      body: JSON.stringify({
+        cartId: cart.cartId,
+        mode,
+        order_id,
+      }),
     },
-    body: JSON.stringify({
-      cartId: cart.cartId,
-      mode,
-      order_id,
-    }),
-  });
+    10000 // 10 second timeout
+  );
 
   if (!quotesResponse.ok) {
-    throw new Error(`Failed to get quotes: ${quotesResponse.statusText}`);
+    const error: any = new Error(`Failed to get quotes: ${quotesResponse.statusText}`);
+    error.status = quotesResponse.status;
+    throw error;
   }
 
   const { quotes, cheapest, fastest } = await quotesResponse.json();
@@ -106,20 +135,26 @@ async function orderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> {
   // Step 4: Generate checkout URL
   console.log("[MealMe Order] Step 4: Generating checkout URL...");
   
-  const checkoutResponse = await fetch(`${SUPABASE_URL}/functions/v1/mealme_checkout_url`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${SUPABASE_KEY}`,
+  const checkoutResponse = await fetchWithTimeout(
+    `${SUPABASE_URL}/functions/v1/mealme_checkout_url`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+      },
+      body: JSON.stringify({
+        cartId: cart.cartId,
+        useConnect: true,
+      }),
     },
-    body: JSON.stringify({
-      cartId: cart.cartId,
-      useConnect: true,
-    }),
-  });
+    10000 // 10 second timeout
+  );
 
   if (!checkoutResponse.ok) {
-    throw new Error(`Failed to generate checkout URL: ${checkoutResponse.statusText}`);
+    const error: any = new Error(`Failed to generate checkout URL: ${checkoutResponse.statusText}`);
+    error.status = checkoutResponse.status;
+    throw error;
   }
 
   const { checkoutUrl } = await checkoutResponse.json();
@@ -134,6 +169,23 @@ async function orderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> {
     fastest,
     checkoutUrl,
   };
+}
+
+/**
+ * Wrapped order function with reliability features
+ * NOTE: NO RETRIES for write operations to avoid duplicate orders
+ */
+async function orderPlan(req: OrderPlanRequest): Promise<ToolResult<OrderPlanResponse>> {
+  return withToolReliability(
+    () => implOrderPlan(req),
+    {
+      toolName: "delivery_place_order",
+      timeoutMs: 45000,          // 45 second total timeout (4 steps × ~10s each)
+      maxRetries: 0,             // NO RETRIES for write operations
+      retryDelayMs: 0,           // Not used (no retries)
+      retryOnCodes: [],          // Do not retry any errors
+    }
+  );
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -154,13 +206,31 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("ingredients array is required and must not be empty");
     }
 
-    // Order plan
+    // Order plan with reliability wrapper
     const result = await orderPlan(body);
 
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    // Handle success/failure from reliability layer
+    if (result.ok) {
+      return new Response(JSON.stringify(result.data), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else {
+      // Return error in response body (not as HTTP error)
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: result.error.message,
+          code: result.error.code,
+          retryable: result.error.retryable,
+          details: result.error.details,
+        }),
+        {
+          status: 200, // Return 200 even for errors
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
   } catch (error) {
     return handleError(error);
   }
@@ -168,4 +238,3 @@ const handler = async (req: Request): Promise<Response> => {
 
 // Export with logging and security middleware
 export default withOrderAPI(withLogging(handler, "mealme_order_plan"));
-
