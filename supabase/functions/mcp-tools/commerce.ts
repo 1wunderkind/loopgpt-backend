@@ -20,6 +20,7 @@ import {
 } from "./commerceSchemas.ts";
 import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
 import { createCartSession, getCartSession, updateCartSession, getLatestActiveSession } from "../_shared/commerce/cartSession.ts";
+import { FaultInjection } from "../_shared/testing/faultInjection.ts";
 
 // Commerce Router endpoints (Supabase Edge Functions)
 const COMMERCE_ROUTER_BASE_URL = Deno.env.get("COMMERCE_ROUTER_URL") || 
@@ -361,6 +362,10 @@ export async function confirmOrder(params: any): Promise<OrderConfirmationRespon
           paymentMethod: params.paymentMethod,
         };
         
+        // Fault Injection Hook
+        await FaultInjection.injectLatency("confirm_order");
+        FaultInjection.injectFailure(currentProvider || "unknown", "confirm_order");
+
         const response = await fetch(CONFIRM_ORDER_URL, {
           method: "POST",
           headers: {
