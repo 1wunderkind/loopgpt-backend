@@ -207,6 +207,12 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
     const widgets: Widget[] = [];
     
     // 1. RecipeCardDetailed
+    const allIngredients = [...recipeDetail.ingredientsHave, ...recipeDetail.ingredientsNeed];
+    const ingredientsList = allIngredients.slice(0, 3).map(i => i.name).join(", ");
+    const shareTitle = `Check out this recipe: "${recipeDetail.title}"`;
+    const shareDescription = `${recipeDetail.description}. Ingredients: ${ingredientsList}${allIngredients.length > 3 ? ", and more" : ""}`;
+    const suggestedCaption = `Just got the full recipe for "${recipeDetail.title}" from LoopKitchen! 🍽️ #LoopGPT #Recipe`;
+    
     const recipeWidget: RecipeCardDetailed = {
       type: 'RecipeCardDetailed',
       id: input.recipeId,
@@ -220,6 +226,13 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
       ingredientsNeed: recipeDetail.ingredientsNeed,
       instructions: recipeDetail.instructions,
       proTip: recipeDetail.proTip,
+      dietTags: nutritionResponse.dietTags,
+      share: {
+        enabled: true,
+        title: shareTitle,
+        description: shareDescription,
+        suggestedCaptions: [suggestedCaption],
+      },
     };
     widgets.push(recipeWidget);
     

@@ -289,11 +289,16 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
     }).catch(err => console.error('[Analytics] Failed to log meal plan:', err));
     
     // Build WeekPlanner widget
+    const widgetId = `week-planner-${result.startDate}`;
+    const shareTitle = `My ${input.days}-day meal plan from LoopKitchen`;
+    const shareDescription = `${input.dietNotes ? input.dietNotes + ' ' : ''}Meal plan for ${input.days} days. Avg ${Math.round(result.weeklySummary.avgDailyCalories)} cal/day.`;
+    const suggestedCaption = `Just got my ${input.days}-day meal plan from LoopKitchen! 📅 ${Math.round(result.weeklySummary.avgDailyCalories)} cal/day. #LoopGPT #MealPlan`;
+    
     const widget: WeekPlanner = {
       type: "WeekPlanner",
-      data: {
-        startDate: result.startDate,
-        days: result.days.map((day) => ({
+      id: widgetId,
+      startDate: result.startDate,
+      days: result.days.map((day) => ({
           date: day.date,
           dayName: day.dayName,
           meals: {
@@ -315,16 +320,16 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
           },
           dayTotalCalories: day.dayTotalCalories,
         })),
-        weeklySummary: {
-          avgDailyCalories: result.weeklySummary.avgDailyCalories,
-          totalCalories: result.weeklySummary.totalCalories,
-          notes: result.weeklySummary.notes,
-        },
+      weeklySummary: {
+        avgDailyCalories: result.weeklySummary.avgDailyCalories,
+        totalCalories: result.weeklySummary.totalCalories,
+        notes: result.weeklySummary.notes,
       },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-        model: "gpt-4o-mini",
+      share: {
+        enabled: true,
+        title: shareTitle,
+        description: shareDescription,
+        suggestedCaptions: [suggestedCaption],
       },
     };
 

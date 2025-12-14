@@ -208,6 +208,12 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
       // Get recommendation score data
       const scoreData = scoreMap.get(id);
       
+      // Build share metadata
+      const ingredientsList = (recipe.primaryIngredients || input.ingredients).slice(0, 3).join(", ");
+      const shareTitle = `I just discovered "${recipe.title}" in LoopKitchen`;
+      const shareDescription = `Made from: ${ingredientsList}${(recipe.primaryIngredients || input.ingredients).length > 3 ? ", and more" : ""}`;
+      const suggestedCaption = `LoopKitchen turned my leftovers into "${recipe.title}" 🤯 #LoopGPT #LeftoverGPT`;
+      
       return {
         type: 'RecipeCardCompact',
         id,
@@ -228,6 +234,13 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
         recommendationScore: scoreData?.total_score,
         matchReason: scoreData?.match_reason,
         confidence: scoreData?.confidence,
+        // Share metadata
+        share: {
+          enabled: true,
+          title: shareTitle,
+          description: shareDescription,
+          suggestedCaptions: [suggestedCaption],
+        },
       };
     });
     

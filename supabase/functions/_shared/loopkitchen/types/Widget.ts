@@ -6,6 +6,32 @@
  */
 
 /**
+ * ShareMeta - Social sharing metadata for widgets
+ * 
+ * Enables widgets to be shared on social media with rich previews.
+ * Used by the ShareButton component and create_share_snapshot tool.
+ */
+export interface ShareMeta {
+  /** Whether sharing is enabled for this widget */
+  enabled: boolean;
+
+  /** Share title (e.g., "I just discovered 'Spicy Thai Basil Chicken' in LoopKitchen") */
+  title: string;
+
+  /** Share description (e.g., "Made from: chicken, basil, rice") */
+  description: string;
+
+  /** Canonical URL for this widget (e.g., "https://loopgpt.app/recipes/spicy-thai-basil-chicken") */
+  canonicalUrl?: string;
+
+  /** Preview image URL for social cards */
+  previewImageUrl?: string;
+
+  /** Suggested captions for social sharing */
+  suggestedCaptions?: string[];
+}
+
+/**
  * WidgetBase - Base interface for all widgets
  */
 export interface WidgetBase {
@@ -14,6 +40,9 @@ export interface WidgetBase {
 
   /** Widget type discriminator (used for type narrowing) */
   type: string;
+
+  /** Social sharing metadata (optional) */
+  share?: ShareMeta;
 }
 
 /**
@@ -256,6 +285,89 @@ export interface InfoMessage extends WidgetBase {
   body: string;
 }
 
+export interface CheckoutHandoffWidget extends WidgetBase {
+  type: "CheckoutHandoffWidget";
+
+  provider: {
+    id: string;
+    name: string;
+    badgeText: string; // "Fulfilled by {providerName}"
+  };
+
+  summary: {
+    itemCount: number;
+    currency: string;
+    subtotal?: number;
+    deliveryFee?: number;
+    tax?: number;
+    total?: number;
+  };
+
+  cartPreview: Array<{
+    name: string;
+    quantity: number;
+    unit?: string;
+  }>;
+
+  disclaimerText: string;
+
+  actions: {
+    reviewRequired: true;
+    openConfirmationAction: {
+      tool: "open_checkout_confirmation";
+      args: { receiptId: string };
+    };
+  };
+
+  support: {
+    providerSupportUrl?: string;
+    providerSupportText: string;
+    loopSupportEmail: string;
+    loopSupportText: string;
+  };
+}
+
+export interface CheckoutConfirmationModalWidget extends WidgetBase {
+  type: "CheckoutConfirmationModalWidget";
+
+  provider: {
+    id: string;
+    name: string;
+    badgeText: string; // "Fulfilled by {providerName}"
+  };
+
+  title: string; // "You’re being redirected to {providerName}"
+  body: string;  // "You will complete checkout on {providerName} in a new tab."
+
+  disclaimerText: string;
+
+  receipt: {
+    receiptId: string;
+    itemCount: number;
+    currency: string;
+    total?: number;
+  };
+
+  actions: {
+    cancel: { label: "Cancel" };
+    proceedExternal: {
+      label: "Continue to checkout";
+      externalUrl: string;
+      onProceedTool: {
+        tool: "mark_handoff_opened";
+        args: { receiptId: string };
+      };
+    };
+  };
+
+  support: {
+    providerSupportUrl?: string;
+    providerSupportText: string;
+    loopSupportEmail: string;
+    loopSupportText: string;
+  };
+}
+
 /**
  * Widget - Union type of all widget types
  * 
@@ -268,7 +380,9 @@ export type Widget =
   | WeekPlanner
   | NutritionSummary
   | GroceryList
-  | InfoMessage;
+  | InfoMessage
+  | CheckoutHandoffWidget
+  | CheckoutConfirmationModalWidget;
 
 /**
  * Type guards for widget type checking
