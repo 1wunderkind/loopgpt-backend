@@ -29,6 +29,8 @@ export type ToolErrorCode =
   | "UPSTREAM_4XX"      // Client error from external API (400-499)
   | "UPSTREAM_5XX"      // Server error from external API (500-599)
   | "VALIDATION_ERROR"  // Input validation failed
+  | "RATE_LIMITED"      // Rate limit exceeded (Step 5)
+  | "UNAUTHORIZED"      // Authentication required (Step 5)
   | "UNKNOWN";          // Unexpected error
 
 /**
@@ -69,6 +71,8 @@ const DEFAULT_USER_MESSAGES: Record<ToolErrorCode, string> = {
   UPSTREAM_4XX: "There was a problem with the request for this service.",
   UPSTREAM_5XX: "The partner service is having an issue right now. Please try again later.",
   VALIDATION_ERROR: "The input data for this tool was invalid.",
+  RATE_LIMITED: "You're doing that too often. Please try again in a bit.",
+  UNAUTHORIZED: "Please sign in to use this feature.",
   UNKNOWN: "Something unexpected went wrong while running this tool.",
 };
 
