@@ -4443,7 +4443,7 @@ function log(entry: LogEntry) {
     service: 'mcp-server',
     version: '1.0.0'
   });
-  console.log(logLine);
+  // console.log(logLine);
 }
 
 // ============================================================================
@@ -4565,7 +4565,7 @@ serve(async (req: Request) => {
   }
   
   // Debug logging
-  console.log(`[MCP] ${req.method} ${url.pathname} -> ${pathname}`);
+  // console.log(`[MCP] ${req.method} ${url.pathname} -> ${pathname}`);
   
   // Update url.pathname for route matching
   Object.defineProperty(url, 'pathname', { value: pathname, writable: true });
@@ -4623,7 +4623,7 @@ serve(async (req: Request) => {
       );
     }
     
-    console.log(`[MCP] Authenticated user: ${user.id} (${user.email})`);
+    // console.log(`[MCP] Authenticated user: ${user.id} (${user.email})`);
   }
   
   // ========================================================================
@@ -4800,7 +4800,7 @@ serve(async (req: Request) => {
       // ====================================================================
       // DELEGATION: Invoke the specialized Edge Function
       // ====================================================================
-      console.log(`[MCP] Invoking tool: ${toolName}`);
+      // console.log(`[MCP] Invoking tool: ${toolName}`);
       
       // Track timing for observability
       const invocationStart = performance.now();
@@ -4859,7 +4859,7 @@ serve(async (req: Request) => {
       
       // Success!
       const totalDuration = performance.now() - startTime;
-      console.log(`[MCP] ${toolName} succeeded in ${invocationDuration.toFixed(2)}ms`);
+      // console.log(`[MCP] ${toolName} succeeded in ${invocationDuration.toFixed(2)}ms`);
       
       log({
         timestamp: new Date().toISOString(),
