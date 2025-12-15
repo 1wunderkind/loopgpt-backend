@@ -4,7 +4,7 @@
  * Validates LoopKitchen recipe generation tools.
  */
 
-import { assertEquals, assertExists } from 'https://deno.land/std@0.208.0/assert/mod.ts';
+import { assertEquals, assertExists } from 'std/assert/mod.ts';
 import { generateRecipes } from '../../mcp-tools/loopkitchen_recipes.ts';
 import { getRecipeDetails } from '../../mcp-tools/loopkitchen_recipe_details.ts';
 

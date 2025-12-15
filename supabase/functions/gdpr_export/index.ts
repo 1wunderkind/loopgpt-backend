@@ -13,11 +13,11 @@ interface ExportRequest {
 }
 
 interface UserData {
-  user_profile: any;
-  weight_entries: any[];
-  meal_logs: any[];
-  orders: any[];
-  preferences: any;
+  user_profile: Record<string, unknown>;
+  weight_entries: Record<string, unknown>[];
+  meal_logs: Record<string, unknown>[];
+  orders: Record<string, unknown>[];
+  preferences: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -89,46 +89,46 @@ async function handler(req: Request, logger: Logger): Promise<Response> {
 /**
  * Get user profile data
  */
-async function getUserProfile(userId: string): Promise<any> {
+function getUserProfile(userId: string): Promise<Record<string, unknown>> {
   // TODO: Implement actual database query
-  return {
+  return Promise.resolve({
     id: userId,
     email: 'user@example.com',
     name: 'User Name',
     created_at: '2024-01-01T00:00:00Z',
-  };
+  });
 }
 
 /**
  * Get weight entries
  */
-async function getWeightEntries(userId: string): Promise<any[]> {
+function getWeightEntries(userId: string): Promise<Record<string, unknown>[]> {
   // TODO: Implement actual database query
-  return [];
+  return Promise.resolve([]);
 }
 
 /**
  * Get meal logs
  */
-async function getMealLogs(userId: string): Promise<any[]> {
+function getMealLogs(userId: string): Promise<Record<string, unknown>[]> {
   // TODO: Implement actual database query
-  return [];
+  return Promise.resolve([]);
 }
 
 /**
  * Get orders
  */
-async function getOrders(userId: string): Promise<any[]> {
+function getOrders(userId: string): Promise<Record<string, unknown>[]> {
   // TODO: Implement actual database query
-  return [];
+  return Promise.resolve([]);
 }
 
 /**
  * Get user preferences
  */
-async function getUserPreferences(userId: string): Promise<any> {
+function getUserPreferences(userId: string): Promise<Record<string, unknown>> {
   // TODO: Implement actual database query
-  return {};
+  return Promise.resolve({});
 }
 
 /**

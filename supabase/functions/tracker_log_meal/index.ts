@@ -6,7 +6,7 @@
 // Updated: Integrated with 1,000-food resolver (Nov 2025)
 // =====================================================
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from '@supabase/supabase-js'
 import { lookupFoodForTracker, convertToGrams } from '../../lib/tracker_food_integration.ts'
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";

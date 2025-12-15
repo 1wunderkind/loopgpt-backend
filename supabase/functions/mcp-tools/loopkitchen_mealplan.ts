@@ -86,7 +86,7 @@ interface MealPlannerGPTResponse {
 // Validation
 // ============================================================================
 
-function validateMealPlanInput(params: any): MealPlanInput {
+function validateMealPlanInput(params: Record<string, unknown>): MealPlanInput {
   // Ingredients default to common pantry items if not provided
   const defaultIngredients = [
     "chicken breast",
@@ -100,13 +100,13 @@ function validateMealPlanInput(params: any): MealPlanInput {
   ];
 
   return {
-    ingredients: params.ingredients && params.ingredients.length > 0
-      ? params.ingredients
+    ingredients: Array.isArray(params.ingredients) && params.ingredients.length > 0
+      ? params.ingredients as string[]
       : defaultIngredients,
-    caloriesPerDay: params.caloriesPerDay || null,
-    dietNotes: params.dietNotes || "balanced, home-cooked meals",
-    days: Math.min(Math.max(params.days || 7, 1), 14), // 1-14 days
-    startDate: params.startDate || new Date().toISOString().split('T')[0],
+    caloriesPerDay: (params.caloriesPerDay as number) || null,
+    dietNotes: (params.dietNotes as string) || "balanced, home-cooked meals",
+    days: Math.min(Math.max((params.days as number) || 7, 1), 14), // 1-14 days
+    startDate: (params.startDate as string) || new Date().toISOString().split('T')[0],
     includeGroceryList: params.includeGroceryList !== false, // Default true
   };
 }
@@ -188,7 +188,7 @@ const mealPlannerSchema = {
 // Main Function
 // ============================================================================
 
-export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoMessage> {
+export async function generateMealPlan(params: Record<string, unknown>): Promise<WeekPlanner | InfoMessage> {
   const startTime = Date.now();
 
   try {
@@ -211,17 +211,17 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
       console.log('[loopkitchen.mealplan] Fetching user preferences...');
       
       // Get user's ingredient profile
-      const ingredientProfile = await getUserIngredientProfile(params.userId);
+      const ingredientProfile = await getUserIngredientProfile(params.userId as string);
       if (ingredientProfile && ingredientProfile.length > 0) {
         const topIngredients = ingredientProfile
           .slice(0, 10)
-          .map((ing: any) => ing.ingredient_name)
+          .map((ing: { ingredient_name: string }) => ing.ingredient_name)
           .join(', ');
         userContext += `\n\nUser's frequently used ingredients: ${topIngredients}`;
       }
       
       // Get user's recipe preferences
-      const recipePrefs = await getUserRecipePreferences(params.userId);
+      const recipePrefs = await getUserRecipePreferences(params.userId as string);
       if (recipePrefs) {
         userContext += `\n\nUser's recipe preferences:`;
         if (recipePrefs.acceptance_rate) {
@@ -238,7 +238,7 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
     // Build user message using MealPlannerGPT prompt (with user context)
     const userMessage = MEALPLANNERGPT_USER(
       input.ingredients!,
-      input.caloriesPerDay,
+      input.caloriesPerDay || null,
       input.dietNotes!,
       input.days!,
       input.startDate!
@@ -249,7 +249,7 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
     // Call GPT with caching
     const { value: result, cached } = await getCached(
       "mealplan.generate",
-      { days, calorieTarget, preferences }, // Cache by key params
+      { days: input.days, calorieTarget: input.caloriesPerDay, preferences: input.dietNotes }, // Cache by key params
       () => callModel<MealPlannerGPTResponse>(
         MEALPLANNERGPT_SYSTEM,
         userMessage,
@@ -274,8 +274,8 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
 
     // Log meal plan generation (analytics)
     logMealPlanGenerated({
-      userId: params.userId || null,
-      sessionId: params.sessionId || null,
+      userId: (params.userId as string) || null,
+      sessionId: (params.sessionId as string) || null,
       sourceGpt: 'MealPlannerGPT',
       title: `${input.days}-day ${input.dietNotes} plan`,
       description: `Meal plan for ${input.days} days starting ${input.startDate}`,
@@ -334,23 +334,18 @@ export async function generateMealPlan(params: any): Promise<WeekPlanner | InfoM
     };
 
     return widget;
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
-    console.error("[loopkitchen.mealplan] Error:", error.message);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("[loopkitchen.mealplan] Error:", errorMessage);
 
     // Return InfoMessage widget for errors
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Meal Plan Generation Error",
-        message: `Unable to generate meal plan: ${error.message}`,
-        severity: "error",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `error-${Date.now()}`,
+      severity: "error",
+      title: "Meal Plan Generation Error",
+      message: `Unable to generate meal plan: ${errorMessage}`,
     };
 
     return errorWidget;
@@ -385,7 +380,7 @@ export async function generateGroceryListFromPlan(
     // Extract all recipes from meal plan (with count for duplicates)
     const recipeCount = new Map<string, number>();
 
-    mealPlan.data.days.forEach((day) => {
+    mealPlan.days.forEach((day) => {
       const meals = [day.meals.breakfast, day.meals.lunch, day.meals.dinner];
       meals.forEach((meal) => {
         const count = recipeCount.get(meal.title) || 0;
@@ -447,9 +442,9 @@ export async function generateGroceryListFromPlan(
       additionalProperties: false,
     };
 
-    const groceryResult = await callModel<{ categories: GroceryList["data"]["categories"] }>(
+    const groceryResult = await callModel<{ categories: GroceryList["categories"] }>(
       GROCERYGPT_SYSTEM,
-      GROCERYGPT_USER(estimatedIngredients),
+      GROCERYGPT_USER("Weekly Meal Plan", estimatedIngredients),
       {
         temperature: 0.3,
         maxTokens: 1500,
@@ -460,15 +455,15 @@ export async function generateGroceryListFromPlan(
     let categories = groceryResult.categories;
     if (pantryIngredients && pantryIngredients.length > 0) {
       const pantrySet = new Set(pantryIngredients.map((i) => i.toLowerCase()));
-      categories = categories.map((cat) => ({
+      categories = categories.map((cat: any) => ({
         ...cat,
         items: cat.items.filter(
-          (item) => !pantrySet.has(item.name.toLowerCase())
+          (item: any) => !pantrySet.has(item.name.toLowerCase())
         ),
-      })).filter((cat) => cat.items.length > 0);
+      })).filter((cat: any) => cat.items.length > 0);
     }
 
-    const totalItems = categories.reduce((sum, cat) => sum + cat.items.length, 0);
+    const totalItems = categories.reduce((sum: number, cat: any) => sum + cat.items.length, 0);
     const duration = Date.now() - startTime;
 
     console.log("[loopkitchen.mealplan] Grocery list generated", {
@@ -479,16 +474,8 @@ export async function generateGroceryListFromPlan(
 
     const widget: GroceryList = {
       type: "GroceryList",
-      data: {
-        categories,
-        totalItems,
-        estimatedCost: null, // TODO: Add cost estimation from commerce layer
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-        model: "gpt-4o-mini",
-      },
+      id: `grocery-${Date.now()}`,
+      categories,
     };
 
     return widget;
@@ -498,16 +485,10 @@ export async function generateGroceryListFromPlan(
 
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Grocery List Generation Error",
-        message: `Unable to generate grocery list: ${error.message}`,
-        severity: "error",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `error-${Date.now()}`,
+      severity: "error",
+      title: "Grocery List Generation Error",
+      message: `Unable to generate grocery list: ${error.message}`,
     };
 
     return errorWidget;
@@ -633,16 +614,10 @@ export async function generateMealPlanWithGrocery(
 
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Meal Plan Generation Error",
-        message: `Unable to generate meal plan with grocery list: ${error.message}`,
-        severity: "error",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `error-${Date.now()}`,
+      severity: "error",
+      title: "Meal Plan Generation Error",
+      message: `Unable to generate meal plan with grocery list: ${error.message}`,
     };
 
     return {
@@ -669,7 +644,7 @@ export async function generateMealPlanWithGrocery(
  * 
  * Phase 4: Commerce integration ready
  */
-export async function prepareMealPlanOrder(params: any): Promise<any> {
+export async function prepareMealPlanOrder(params: Record<string, unknown>): Promise<unknown> {
   const startTime = Date.now();
 
   try {
@@ -685,14 +660,15 @@ export async function prepareMealPlanOrder(params: any): Promise<any> {
     if (!params.location) {
       throw new Error("location is required for order routing");
     }
-    if (!params.mealPlan || params.mealPlan.type !== "WeekPlanner") {
+    const mealPlan = params.mealPlan as WeekPlanner;
+    if (!mealPlan || mealPlan.type !== "WeekPlanner") {
       throw new Error("mealPlan (WeekPlanner widget) is required");
     }
 
     // Generate grocery list from meal plan
     const groceryList = await generateGroceryListFromPlan(
-      params.mealPlan,
-      params.pantryIngredients
+      mealPlan,
+      params.pantryIngredients as string[]
     );
 
     // If grocery list generation failed, return error
@@ -706,7 +682,7 @@ export async function prepareMealPlanOrder(params: any): Promise<any> {
 
     const commerceResult = await prepareCart({
       userId: params.userId,
-      groceryList: groceryList.data,
+      groceryList: groceryList.categories,
       location: params.location,
       preferences: params.preferences || {},
     });
@@ -714,21 +690,19 @@ export async function prepareMealPlanOrder(params: any): Promise<any> {
     const duration = Date.now() - startTime;
     console.log("[loopkitchen.mealplan] Meal plan order prepared", {
       duration,
-      providers: commerceResult.providers?.length || 0,
+      providers: commerceResult.provider ? 1 : 0,
     });
     
     // Log affiliate event (analytics) - when user selects a provider
-    if (commerceResult.providers && commerceResult.providers.length > 0) {
-      // Log impression for all providers
-      commerceResult.providers.forEach((provider: any) => {
-        logAffiliateClick({
-          userId: params.userId || null,
-          sessionId: params.sessionId || null,
-          eventType: 'impression',
-          provider: provider.name,
-          url: provider.url || null,
-        }).catch(err => console.error('[Analytics] Failed to log affiliate impression:', err));
-      });
+    if (commerceResult.provider) {
+      // Log impression for provider
+      logAffiliateClick({
+        userId: params.userId || null,
+        sessionId: params.sessionId || null,
+        eventType: 'impression',
+        provider: commerceResult.provider,
+        url: commerceResult.checkoutUrl || null,
+      }).catch(err => console.error('[Analytics] Failed to log affiliate impression:', err));
     }
 
     // Return commerce result with grocery list attached
@@ -737,22 +711,17 @@ export async function prepareMealPlanOrder(params: any): Promise<any> {
       groceryList,
       mealPlan: params.mealPlan,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
-    console.error("[loopkitchen.mealplan] Order preparation error:", error.message);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("[loopkitchen.mealplan] Order preparation error:", errorMessage);
 
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Order Preparation Error",
-        message: `Unable to prepare meal plan order: ${error.message}`,
-        severity: "error",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `error-${Date.now()}`,
+      severity: "error",
+      title: "Order Preparation Error",
+      message: `Unable to prepare meal plan order: ${errorMessage}`,
     };
 
     return errorWidget;
@@ -769,7 +738,7 @@ export async function prepareMealPlanOrder(params: any): Promise<any> {
  * 
  * Returns everything needed for a complete meal planning + ordering experience.
  */
-export async function generateMealPlanWithCommerce(params: any): Promise<any> {
+export async function generateMealPlanWithCommerce(params: Record<string, any>): Promise<unknown> {
   const startTime = Date.now();
 
   try {
@@ -805,7 +774,7 @@ export async function generateMealPlanWithCommerce(params: any): Promise<any> {
 
     const commerceResult = await prepareCart({
       userId: params.userId,
-      groceryList: groceryList.data,
+      groceryList: groceryList.categories,
       location: params.location,
       preferences: params.preferences || {},
     });
@@ -813,7 +782,7 @@ export async function generateMealPlanWithCommerce(params: any): Promise<any> {
     const duration = Date.now() - startTime;
     console.log("[loopkitchen.mealplan] Complete flow finished", {
       duration,
-      providers: commerceResult.providers?.length || 0,
+      providers: commerceResult.provider ? 1 : 0,
     });
 
     return {
@@ -826,22 +795,17 @@ export async function generateMealPlanWithCommerce(params: any): Promise<any> {
         flow: "complete",
       },
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
-    console.error("[loopkitchen.mealplan] Complete flow error:", error.message);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("[loopkitchen.mealplan] Complete flow error:", errorMessage);
 
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Meal Planning Flow Error",
-        message: `Unable to complete meal planning flow: ${error.message}`,
-        severity: "error",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `error-${Date.now()}`,
+      severity: "error",
+      title: "Meal Plan Flow Error",
+      message: `Unable to complete meal plan flow: ${errorMessage}`,
     };
 
     return { error: errorWidget };

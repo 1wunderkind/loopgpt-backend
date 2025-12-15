@@ -8,7 +8,8 @@
  * Access: Public (read-only)
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std@0.168.0/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
 
 
@@ -33,7 +34,7 @@ interface MetricsResponse {
   };
 }
 
-const handler = async (req) => {
+const handler = async (req: Request) => {
   try {
     // CORS headers
     if (req.method === "OPTIONS") {
@@ -79,7 +80,7 @@ const handler = async (req) => {
       throw new Error(`Failed to get error count: ${errorCountError.message}`);
     }
 
-    const errorRate = totalQueries > 0 ? errorCount / totalQueries : 0;
+    const errorRate = (totalQueries || 0) > 0 ? (errorCount || 0) / (totalQueries || 1) : 0;
 
     // Get cache hit rate (queries with result_count > 0)
     const { count: hitCount, error: hitCountError } = await supabase
@@ -91,7 +92,7 @@ const handler = async (req) => {
       throw new Error(`Failed to get hit count: ${hitCountError.message}`);
     }
 
-    const cacheHitRate = totalQueries > 0 ? hitCount / totalQueries : 0;
+    const cacheHitRate = (totalQueries || 0) > 0 ? (hitCount || 0) / (totalQueries || 1) : 0;
 
     // Get queries in last hour
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
@@ -178,7 +179,7 @@ const handler = async (req) => {
     console.error("Error in metrics_food_resolver:", error);
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString(),
       }),
       {

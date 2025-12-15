@@ -21,12 +21,13 @@ loopgpt-backend/
 │   ├── migrations/          # Database schema migrations
 │   ├── seed/                # Seed data
 │   └── functions/
-│       ├── meal-planner/    # Meal planning functions
-│       ├── weight-tracker/  # Weight tracking functions
-│       ├── delivery/        # Delivery affiliate functions
-│       ├── mealme/          # MealMe integration functions
-│       ├── geolocation/     # Location detection functions
-│       └── shared/          # Shared utilities
+│       ├── me- `mcp-server/`      # MCP Server implementation
+    - `mcp-tools/`       # MCP Tools (Commerce, Grocery, MealPlan, Nutrition, Recipes)
+    - `_shared/`         # Shared utilities and types
+    - `loopgpt_route_order/` # Commerce Router
+    - `loopgpt_confirm_order/` # Order Confirmation
+    - `loopgpt_cancel_order/` # Order Cancellation
+    - `loopgpt_record_outcome/` # Outcome Recordingared utilities
 └── scripts/                 # Deployment and testing scripts
 ```
 
@@ -86,57 +87,37 @@ This creates:
 ### **4. Deploy Edge Functions**
 
 ```bash
-./scripts/deploy-all.sh
+supabase functions deploy
 ```
-
-This deploys all 20+ Edge Functions to Supabase.
 
 ### **5. Test**
 
 ```bash
-./scripts/test-functions.sh
+deno test
 ```
 
 ---
 
 ## 📦 Edge Functions
 
-### **Meal Planning** (4 functions)
+### **MCP Server**
 
-- `generate_week_plan` - Generate 7-day meal plan
-- `get_plan` - Retrieve meal plan
-- `adjust_plan` - Update specific day
-- `build_affiliate_links` - Generate shopping links
+- `mcp-server` - Main MCP server entry point
 
-### **Weight Tracking** (6 functions)
+### **MCP Tools**
 
-- `log_weight` - Log daily weight
-- `weekly_trend` - Calculate EWMA trend
-- `evaluate_plan_outcome` - Compare plan vs. result
-- `push_plan_feedback` - Apply recommendation
-- `get_weight_prefs` - Get user preferences
-- `update_weight_prefs` - Update preferences
+- `commerce` - Commerce integration (Cart, Order Routing)
+- `grocery` - Grocery list generation
+- `mealplan` - Meal planning
+- `nutrition` - Nutrition analysis
+- `recipes` - Recipe management
 
-### **Delivery Affiliates** (1 function)
+### **Commerce Router**
 
-- `get_delivery_recommendations` - Get delivery options by location
-
-### **MealMe Integration** (7 functions)
-
-- `mealme_search` - Search local stores
-- `mealme_create_cart` - Build cart from ingredients
-- `mealme_get_quotes` - Get delivery quotes
-- `mealme_checkout_url` - Generate checkout URL
-- `mealme_webhook` - Handle order updates
-- `mealme_order_plan` - Main orchestrator
-- `normalize_ingredients` - Normalize ingredient names
-
-### **Geolocation** (4 functions)
-
-- `get_user_location` - Get user's confirmed location
-- `update_user_location` - Update location
-- `get_affiliate_by_country` - Get affiliates for country
-- `change_location` - Change location (travelers)
+- `loopgpt_route_order` - Route orders to best provider
+- `loopgpt_confirm_order` - Confirm orders
+- `loopgpt_cancel_order` - Cancel orders
+- `loopgpt_record_outcome` - Record order outcomes
 
 ---
 

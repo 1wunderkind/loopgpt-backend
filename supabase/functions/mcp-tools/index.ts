@@ -3,7 +3,7 @@
  * Testing deployment first, then adding features incrementally
  */
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std@0.168.0/http/server.ts";
 import { generateRecipes, generateRecipesWithNutrition } from "./recipes.ts";
 import { analyzeNutrition } from "./nutrition.ts";
 import { generateMealPlan, generateMealPlanWithGroceryList } from "./mealplan.ts";
@@ -22,7 +22,7 @@ import { generateMealPlan as loopkitchenGenerateMealPlan, generateMealPlanWithGr
 import { logSessionEvent } from "../_shared/analytics/index.ts";
 
 // Helper function to execute tools with optional streaming
-async function executeTool(toolName: string, params: any, stream?: StreamingResponse): Promise<any> {
+async function executeTool(toolName: string, params: unknown, stream?: StreamingResponse): Promise<unknown> {
   switch (toolName) {
     case "food.router":
       return await routeFood(params);
@@ -300,7 +300,7 @@ serve(async (req: Request) => {
             const result = await executeTool(toolName, params, stream);
             stream.sendComplete(result);
           } catch (error: any) {
-            stream.sendError(error.message || "Unknown error");
+            stream.sendError(error?.message || "Unknown error");
           }
         })();
         
@@ -329,7 +329,7 @@ serve(async (req: Request) => {
         let params: any;
         try {
           params = await req.json();
-        } catch (err) {
+        } catch (_err) {
           return new Response(
             JSON.stringify({
               error: "Invalid JSON",
@@ -345,7 +345,7 @@ serve(async (req: Request) => {
         // Log session event (analytics)
         const sessionId = params.sessionId || req.headers.get("x-session-id") || `session-${Date.now()}`;
         const userAgent = req.headers.get("user-agent") || null;
-        const startTime = Date.now();
+        const _startTime = Date.now();
         
         logSessionEvent({
           userId: userId !== "anonymous" ? userId : null,
@@ -356,7 +356,7 @@ serve(async (req: Request) => {
           metadata: { tool: toolName },
         }).catch(err => console.error('[Analytics] Failed to log session event:', err));
         
-        let result: any;
+        let result: unknown;
         
         if (toolName === "food.router") {
           result = await routeFood(params);
@@ -470,13 +470,15 @@ serve(async (req: Request) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error:", err);
+    
+    const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
     
     return new Response(
       JSON.stringify({
         error: "Internal server error",
-        message: err.message || "An unexpected error occurred"
+        message: errorMessage
       }),
       {
         status: 500,

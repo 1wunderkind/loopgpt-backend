@@ -14,8 +14,8 @@
 // - Formats responses in MCP-compliant format
 // ============================================================================
 
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { serve } from "std@0.177.0/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 import { logToolInvocationToDb, inferGptNameFromTool, inferProviderFromTool, extractUserIdFromRequest } from "./lib/tool-metrics.ts";
 import { MANIFEST } from "./manifest_embedded.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
@@ -2611,8 +2611,7 @@ export const TOOL_MEALME_GET_QUOTES: ToolDescription = {
   requiredParams: [{ name: "cart_id", type: "string", description: "Cart identifier", example: '"cart_123"' }],
   optionalParams: [],
   returnFormat: { description: "Quote details", fields: ["quote_id", "total", "delivery_time"], example: '{}' },
-  chainsWith: ["mealme_checkout_url"],
-  category: "delivery"
+  chainsWith: ["mealme_checkout_url"]
 };
 
 export const TOOL_MEALME_CHECKOUT_URL: ToolDescription = {
@@ -2629,8 +2628,7 @@ export const TOOL_MEALME_CHECKOUT_URL: ToolDescription = {
   requiredParams: [{ name: "quote_id", type: "string", description: "Quote identifier", example: '"quote_123"' }],
   optionalParams: [],
   returnFormat: { description: "Checkout URL", fields: ["checkout_url"], example: '{"checkout_url": "https://..."}' },
-  chainsWith: [],
-  category: "delivery"
+  chainsWith: []
 };
 
 // ============================================================================
@@ -2858,8 +2856,7 @@ export const TOOL_GET_AFFILIATE_LINKS: ToolDescription = {
   requiredParams: [{ name: "products", type: "string[]", description: "Product names", example: '["protein powder"]' }],
   optionalParams: [],
   returnFormat: { description: "Affiliate links", fields: ["links"], example: '{"links": [...]}' },
-  chainsWith: [],
-  category: "affiliate"
+  chainsWith: []
 };
 
 export const TOOL_GET_AFFILIATE_BY_COUNTRY: ToolDescription = {
@@ -2876,8 +2873,7 @@ export const TOOL_GET_AFFILIATE_BY_COUNTRY: ToolDescription = {
   requiredParams: [{ name: "country", type: "string", description: "Country code", example: '"US"' }],
   optionalParams: [],
   returnFormat: { description: "Affiliate data", fields: ["affiliate_id"], example: '{}' },
-  chainsWith: [],
-  category: "affiliate"
+  chainsWith: []
 };
 
 export const TOOL_GET_USER_LOCATION: ToolDescription = {
@@ -2894,8 +2890,7 @@ export const TOOL_GET_USER_LOCATION: ToolDescription = {
   requiredParams: [{ name: "user_id", type: "string", description: "User ID", example: '"user_123"' }],
   optionalParams: [],
   returnFormat: { description: "Location data", fields: ["latitude", "longitude", "address"], example: '{}' },
-  chainsWith: ["delivery_search_restaurants"],
-  category: "location"
+  chainsWith: ["delivery_search_restaurants"]
 };
 
 export const TOOL_UPDATE_USER_LOCATION: ToolDescription = {
@@ -2912,8 +2907,7 @@ export const TOOL_UPDATE_USER_LOCATION: ToolDescription = {
   requiredParams: [{ name: "user_id", type: "string", description: "User ID", example: '"user_123"' }, { name: "location", type: "string", description: "New location", example: '"New York, NY"' }],
   optionalParams: [],
   returnFormat: { description: "Update confirmation", fields: ["success"], example: '{"success": true}' },
-  chainsWith: [],
-  category: "location"
+  chainsWith: []
 };
 
 export const TOOL_CHANGE_LOCATION: ToolDescription = {
@@ -2930,8 +2924,7 @@ export const TOOL_CHANGE_LOCATION: ToolDescription = {
   requiredParams: [{ name: "new_location", type: "string", description: "New address", example: '"456 Oak St, Brooklyn, NY"' }],
   optionalParams: [],
   returnFormat: { description: "Location update", fields: ["location", "updated_at"], example: '{}' },
-  chainsWith: ["delivery_search_restaurants"],
-  category: "location"
+  chainsWith: ["delivery_search_restaurants"]
 };
 
 // Continue with remaining tool descriptions in next append...
@@ -4390,7 +4383,7 @@ function validateToolName(toolName: string, manifest: any): boolean {
  * Validates request body against tool's input schema
  * Returns { valid: boolean, errors: string[] }
  */
-function validateInput(toolName: string, body: any, manifest: any): { valid: boolean; errors: string[] } {
+function validateInput(toolName: string, body: Record<string, any>, manifest: any): { valid: boolean; errors: string[] } {
   const tool = manifest.tools.find((t: any) => t.name === toolName);
   
   if (!tool) {
@@ -4511,7 +4504,7 @@ function successResponse<T>(toolName: string, data: T, duration_ms: number): Mcp
 function errorResponse(
   toolName: string,
   message: string,
-  details?: any,
+  details?: Record<string, unknown>,
   duration_ms?: number
 ): McpToolErrorEnvelope {
   // Convert legacy error format to ToolErrorResponse
@@ -4709,7 +4702,7 @@ serve(async (req: Request) => {
       }
       
       // Parse request body
-      let body: any;
+      let body: Record<string, unknown>;
       try {
         body = await req.json();
       } catch (error) {
@@ -4732,7 +4725,7 @@ serve(async (req: Request) => {
       }
       
       // Validate empty body
-      if (!body || Object.keys(body).length === 0) {
+      if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
         const duration = performance.now() - startTime;
         return new Response(
           JSON.stringify(errorResponse(
@@ -4911,6 +4904,9 @@ serve(async (req: Request) => {
       
       // Log to analytics.tool_invocations (async, non-blocking)
       const catchFinishedAt = new Date();
+      const startedAt = new Date(); // Fallback if not defined in scope
+      // deno-lint-ignore no-unused-vars
+      const _unused = req; // Keep req reference for future use if needed
       logToolInvocationToDb({
         toolName,
         startedAt,
@@ -5016,8 +5012,8 @@ serve(async (req: Request) => {
   // POST /metadata/recommend - Get recommended tool for query
   if (req.method === "POST" && url.pathname === "/metadata/recommend") {
     try {
-      const body = await req.json();
-      const query = body.query || body.user_query || "";
+      const body = await req.json() as Record<string, unknown>;
+      const query = (body.query as string) || (body.user_query as string) || "";
       
       if (!query) {
         return new Response(

@@ -274,7 +274,7 @@ class WalmartProvider extends BaseCommerceProvider {
     };
   }
 
-  async healthCheck(config: ProviderConfig): Promise<boolean> {
+  override async healthCheck(config: ProviderConfig): Promise<boolean> {
     // Check if mock mode
     if (Deno.env.get('LOOPGPT_WALMART_MOCK') === 'true') {
       return config.enabled;
@@ -296,7 +296,7 @@ class WalmartProvider extends BaseCommerceProvider {
     }
   }
 
-  getName(): string {
+  override getName(): string {
     return 'Walmart Direct';
   }
 }

@@ -142,7 +142,7 @@ Rules:
 - perServing * servings ≈ total
 - Lower confidence if data incomplete`;
 
-export const NUTRITIONGPT_USER = (recipeTitle: string, ingredients: Array<{ name: string; quantity: string }>, servings: number) => `Recipe to analyze:
+export const NUTRITIONGPT_USER = (recipeTitle: string, servings: number, ingredients: Array<{ name: string; quantity: string }>) => `Recipe to analyze:
 
 Title: ${recipeTitle}
 
@@ -179,7 +179,9 @@ Rules:
 - Clear quantities
 - All unchecked`;
 
-export const GROCERYGPT_USER = (ingredients: Array<{ name: string; quantity: string }>) => `
+export const GROCERYGPT_USER = (recipeTitle: string, ingredients: Array<{ name: string; quantity: string }>) => `
+Recipe: ${recipeTitle}
+
 Needed ingredients:
 ${ingredients.map(i => `- ${i.quantity} ${i.name}`).join('\n')}
 

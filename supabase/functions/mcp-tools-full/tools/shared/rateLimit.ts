@@ -3,7 +3,7 @@
  * Uses Supabase Postgres for distributed rate limiting
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 import { RateLimitError } from "./errors.ts";
 import { logWarn } from "./logging.ts";
 

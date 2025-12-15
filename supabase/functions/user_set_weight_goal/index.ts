@@ -6,8 +6,8 @@ import { createAuthenticatedClient } from "../_lib/auth.ts";
 // Function: Set or update user nutrition goals and profile
 // =====================================================
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
+import { createClient } from '@supabase/supabase-js'
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 interface SetGoalsRequest {
   chatgpt_user_id: string
   

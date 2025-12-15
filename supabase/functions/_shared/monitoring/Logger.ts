@@ -16,7 +16,13 @@ export interface LogContext {
   requestId?: string;
   functionName?: string;
   duration?: number;
-  [key: string]: any;
+  toolName?: string;
+  provider?: string;
+  stage?: string;
+  ok?: boolean;
+  errorCategory?: string;
+  statusCode?: number;
+  [key: string]: unknown;
 }
 
 export interface LogEntry {
@@ -255,6 +261,7 @@ export class Logger {
 
       this.info(`${operation} completed`, {
         duration,
+        ok: true,
         ...context,
       });
 
@@ -267,6 +274,7 @@ export class Logger {
         error instanceof Error ? error : undefined,
         {
           duration,
+          ok: false,
           ...context,
         }
       );
@@ -299,7 +307,8 @@ export class Logger {
    * Create logger from request
    */
   static fromRequest(req: Request, functionName: string): Logger {
-    const requestId = Logger.generateRequestId();
+    // Use existing x-request-id if present, otherwise generate new one
+    const requestId = req.headers.get('x-request-id') || Logger.generateRequestId();
     const userId = Logger.extractUserId(req);
 
     return new Logger({

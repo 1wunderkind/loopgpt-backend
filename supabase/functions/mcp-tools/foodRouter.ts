@@ -35,25 +35,25 @@ export type FoodRouterResult =
       type: "recipes";
       intent: string;
       confidence: "low" | "medium" | "high";
-      recipes: any; // RecipeList from recipes.ts
+      recipes: Record<string, unknown>; // RecipeList from recipes.ts
     }
   | {
       type: "nutrition";
       intent: string;
       confidence: "low" | "medium" | "high";
-      analysis: any; // NutritionAnalysis from nutrition.ts
+      analysis: Record<string, unknown>; // NutritionAnalysis from nutrition.ts
     }
   | {
       type: "mealplan";
       intent: string;
       confidence: "low" | "medium" | "high";
-      mealPlan: any; // MealPlan from mealplan.ts
+      mealPlan: Record<string, unknown>; // MealPlan from mealplan.ts
     }
   | {
       type: "grocery";
       intent: string;
       confidence: "low" | "medium" | "high";
-      groceryList: any; // GroceryList from grocery.ts
+      groceryList: Record<string, unknown>; // GroceryList from grocery.ts
     }
   | {
       type: "fallback";
@@ -66,7 +66,7 @@ export type FoodRouterResult =
 /**
  * Validate router input
  */
-function validateRouterInput(params: any): FoodRouterInput {
+function validateRouterInput(params: Record<string, unknown>): FoodRouterInput {
   if (!params || typeof params !== "object") {
     throw new Error("Invalid input: expected object");
   }
@@ -75,10 +75,19 @@ function validateRouterInput(params: any): FoodRouterInput {
     throw new Error("Invalid input: query is required and must be a non-empty string");
   }
 
+  const userGoals = params.userGoals as Record<string, unknown> | undefined;
+
   return {
     query: params.query.trim(),
-    locale: params.locale || "en",
-    userGoals: params.userGoals || {},
+    locale: typeof params.locale === "string" ? params.locale : "en",
+    userId: typeof params.userId === "string" ? params.userId : undefined,
+    userGoals: userGoals ? {
+      caloriesPerDay: typeof userGoals.caloriesPerDay === "number" ? userGoals.caloriesPerDay : undefined,
+      goal: typeof userGoals.goal === "string" && ["weight_loss", "muscle_gain", "general_health"].includes(userGoals.goal) 
+        ? userGoals.goal as "weight_loss" | "muscle_gain" | "general_health" 
+        : undefined,
+      dietTags: Array.isArray(userGoals.dietTags) ? userGoals.dietTags.map(String) : undefined,
+    } : {},
   };
 }
 
@@ -130,7 +139,7 @@ function extractIngredientsFromQuery(query: string): string[] {
 /**
  * Main router function
  */
-export async function routeFood(params: any): Promise<FoodRouterResult> {
+export async function routeFood(params: Record<string, unknown>): Promise<FoodRouterResult> {
   const startTime = Date.now();
   
   try {
@@ -152,8 +161,8 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
           hasCuisines: !!userProfile?.cuisines?.length,
           hasCalories: !!userProfile?.caloriesPerDay,
         });
-      } catch (error: any) {
-        console.warn("[foodRouter] Failed to load user profile", { userId, error: error.message });
+      } catch (error: unknown) {
+        console.warn("[foodRouter] Failed to load user profile", { userId, error: error instanceof Error ? error.message : String(error) });
       }
     }
 
@@ -197,7 +206,7 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
         const ingredients = extractIngredientsFromQuery(query);
         
         // Build params for recipes tool
-        const recipeParams: any = {
+        const recipeParams: Record<string, unknown> = {
           count: 3,
           dietary_restrictions: mergedGoals.dietTags,
           cuisines: mergedGoals.cuisines, // Use profile cuisines for vague queries
@@ -223,13 +232,13 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
           recipeParams.ingredients = ingredients;
         }
 
-        const recipes = await generateRecipes(recipeParams);
+        const recipes = await generateRecipes(recipeParams as any); // Cast to any for now as generateRecipes expects specific type
         
         result = {
           type: "recipes",
           intent: intent.primaryIntent,
           confidence: intent.confidence,
-          recipes,
+          recipes: recipes as Record<string, unknown>,
         };
         break;
       }
@@ -282,7 +291,7 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
         }
         
         // Extract goals from query or use userGoals
-        const mealPlanParams: any = {
+        const mealPlanParams: Record<string, unknown> = {
           goals: {
             dailyCalories,
             proteinGrams: Math.round(dailyCalories * 0.3 / 4), // 30% protein
@@ -298,13 +307,13 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
           mealPlanParams.days = parseInt(daysMatch[1]);
         }
 
-        const mealPlan = await generateMealPlan(mealPlanParams);
+        const mealPlan = await generateMealPlan(mealPlanParams as any); // Cast to any for now
         
         result = {
           type: "mealplan",
           intent: intent.primaryIntent,
           confidence: intent.confidence,
-          mealPlan,
+          mealPlan: mealPlan as Record<string, unknown>,
         };
         break;
       }
@@ -312,7 +321,6 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
       case "grocery": {
         console.log("[foodRouter] Routing to grocery.list");
         
-        // For grocery lists, we need recipes or a meal plan
         // For now, return a helpful message
         // TODO: Enhance grocery.list to accept free-form queries
         
@@ -348,7 +356,7 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
               type: "recipes",
               intent: "recipes",
               confidence: "low",
-              recipes,
+              recipes: recipes as Record<string, unknown>,
             };
           } else {
             // No ingredients found, return helpful fallback
@@ -365,8 +373,8 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
               ],
             };
           }
-        } catch (error: any) {
-          console.error("[foodRouter] Fallback to recipes failed", { error: error.message });
+        } catch (error: unknown) {
+          console.error("[foodRouter] Fallback to recipes failed", { error: error instanceof Error ? error.message : String(error) });
           
           result = {
             type: "fallback",
@@ -393,7 +401,7 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
 
     return result;
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     
     // Categorize and log error
@@ -431,11 +439,12 @@ export async function routeFood(params: any): Promise<FoodRouterResult> {
         type: "recipes",
         intent: "fallback",
         confidence: "low",
-        recipes: fallbackRecipes,
+        recipes: fallbackRecipes as unknown as Record<string, unknown>,
       };
-    } catch (fallbackError: any) {
+    } catch (fallbackError: unknown) {
       // Even fallback failed - return helpful message
-      console.error("[foodRouter] Fallback also failed", { error: fallbackError.message });
+      const message = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+      console.error("[foodRouter] Fallback also failed", { error: message });
       
       return {
         type: "fallback",

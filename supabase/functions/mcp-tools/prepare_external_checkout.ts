@@ -1,7 +1,7 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std@0.168.0/http/server.ts";
 import { ReceiptManager } from "../_shared/loopkitchen/receipts.ts";
 import { CheckoutHandoffWidget } from "../_shared/loopkitchen/types/Widget.ts";
-import { createHash } from "https://deno.land/std@0.168.0/hash/mod.ts";
+import { createHash } from "std@0.168.0/hash/mod.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

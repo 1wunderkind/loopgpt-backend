@@ -3,8 +3,8 @@
  * Tests for multi-provider routing logic
  */
 
-import { assertEquals, assertExists } from "https://deno.land/std@0.208.0/assert/mod.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { assertEquals, assertExists } from "std/assert/mod.ts";
+import { createClient } from "@supabase/supabase-js";
 import { ProviderScorer } from "../../../_shared/commerce/ProviderScorer.ts";
 import { getEnabledProvidersSorted } from "../../../_shared/commerce/providers/providerConfigs.ts";
 import {

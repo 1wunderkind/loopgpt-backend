@@ -3,7 +3,7 @@
  * Generate recipes from ingredients using OpenAI
  */
 
-import OpenAI from "https://esm.sh/openai@4.28.0";
+import OpenAI from "openai";
 import { generateRecipesCacheKey } from "./cacheKey.ts";
 import { cacheGet, cacheSet } from "./cache.ts";
 import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
@@ -29,7 +29,7 @@ export interface RecipesInput {
 }
 
 // Simple input validation
-function validateRecipesInput(params: any) {
+function validateRecipesInput(params: Record<string, any>) {
   if (!params.ingredients || !Array.isArray(params.ingredients) || params.ingredients.length === 0) {
     throw new Error("ingredients array is required and must not be empty");
   }
@@ -94,7 +94,7 @@ const RecipeListJsonSchema = {
 /**
  * Composite tool: Generate recipes WITH nutrition analysis
  */
-export async function generateRecipesWithNutrition(params: any) {
+export async function generateRecipesWithNutrition(params: Record<string, unknown>) {
   const startTime = Date.now();
   
   try {
@@ -108,8 +108,8 @@ export async function generateRecipesWithNutrition(params: any) {
     const analyses = await analyzeNutrition({ recipes });
     
     // Step 3: Merge nutrition data into recipes
-    const recipesWithNutrition = recipes.map((recipe: any) => {
-      const analysis = analyses.find((a: any) => a.recipeId === recipe.id);
+    const recipesWithNutrition = recipes.map((recipe: { id: string; [key: string]: unknown }) => {
+      const analysis = analyses.find((a: { recipeId: string }) => a.recipeId === recipe.id);
       return {
         ...recipe,
         nutrition: analysis || null
@@ -120,14 +120,14 @@ export async function generateRecipesWithNutrition(params: any) {
     console.log("[recipes.generateWithNutrition] Success", { recipeCount: recipesWithNutrition.length, duration });
     
     return recipesWithNutrition;
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
-    console.error("[recipes.generateWithNutrition] Error", { error: error.message, duration });
+    console.error("[recipes.generateWithNutrition] Error", { error: error instanceof Error ? error.message : String(error), duration });
     throw error;
   }
 }
 
-export async function generateRecipes(params: any) {
+export async function generateRecipes(params: Record<string, any>) {
   const startTime = Date.now();
   
   try {
@@ -142,7 +142,7 @@ export async function generateRecipes(params: any) {
         userId: params.userId,
         sessionId: params.sessionId || null,
         sourceGpt: 'RecipeGPT',
-        ingredients: input.ingredients.map((ing: any) => ({
+        ingredients: input.ingredients.map((ing: string | { name: string }) => ({
           name: typeof ing === 'string' ? ing : ing.name,
           raw: typeof ing === 'string' ? ing : ing.name,
         })),
@@ -190,7 +190,7 @@ ${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}
 
       userPrompt = `Generate ${input.maxRecipes} quick and easy recipe(s) for someone who is tired or wants minimal effort.
 
-Suggested ingredients (use what makes sense): ${input.ingredients.map((i: any) => typeof i === 'string' ? i : i.name).join(', ')}
+Suggested ingredients (use what makes sense): ${input.ingredients.map((i: string | { name: string }) => typeof i === 'string' ? i : i.name).join(', ')}
 
 Requirements:
 - Total time (prep + cook): under ${maxPrepTime} minutes
@@ -202,10 +202,10 @@ ${input.dietaryTags.length > 0 ? `Dietary requirements: ${input.dietaryTags.join
 Examples: scrambled eggs, pasta with butter and cheese, rice bowl, quesadilla, instant ramen upgrade`;
     } else {
       // Normal mode
-      systemPrompt = `Generate ${input.maxRecipes} recipe(s) using: ${input.ingredients.map((i: any) => typeof i === 'string' ? i : i.name).join(', ')}. ${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}. ` : ''}Return JSON with recipes array.`;
+      systemPrompt = `Generate ${input.maxRecipes} recipe(s) using: ${input.ingredients.map((i: string | { name: string }) => typeof i === 'string' ? i : i.name).join(', ')}. ${input.dietaryTags.length > 0 ? `Diet: ${input.dietaryTags.join(', ')}. ` : ''}${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}. ` : ''}Return JSON with recipes array.`;
 
       userPrompt = `Generate ${input.maxRecipes} recipe(s) using these ingredients:
-${input.ingredients.map((i: any) => `- ${typeof i === 'string' ? i : i.name}${i.quantity ? ` (${i.quantity})` : ''}`).join('\n')}
+${input.ingredients.map((i: string | { name: string; quantity?: string }) => `- ${typeof i === 'string' ? i : i.name}${(typeof i !== 'string' && i.quantity) ? ` (${i.quantity})` : ''}`).join('\n')}
 
 ${input.dietaryTags.length > 0 ? `Dietary requirements: ${input.dietaryTags.join(', ')}` : ''}
 ${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.join(', ')}` : ''}
@@ -249,10 +249,10 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
       console.log('[recipes.generate] Scoring recipes with recommendation engine...');
       
       // Prepare candidate recipes for scoring
-      const candidateRecipes: CandidateRecipe[] = recipes.map((recipe: any) => ({
+      const candidateRecipes: CandidateRecipe[] = recipes.map((recipe: { id: string; name: string; ingredients: { name: string }[] }) => ({
         recipe_id: recipe.id,
         title: recipe.name,
-        ingredients: recipe.ingredients.map((ing: any) => ing.name),
+        ingredients: recipe.ingredients.map((ing) => ing.name),
         calories: 500, // Default estimate
         protein_g: 25,
         carbs_g: 50,
@@ -270,7 +270,7 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
       const scoreMap = new Map(scoredRecipes.map(sr => [sr.recipe_id, sr]));
       
       // Add scores to recipes and sort by score
-      recipes = recipes.map((recipe: any) => {
+      recipes = recipes.map((recipe: { id: string; [key: string]: unknown }) => {
         const scoreData = scoreMap.get(recipe.id);
         return {
           ...recipe,
@@ -278,7 +278,7 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
           matchReason: scoreData?.match_reason,
           confidence: scoreData?.confidence,
         };
-      }).sort((a: any, b: any) => {
+      }).sort((a: { recommendationScore?: number }, b: { recommendationScore?: number }) => {
         const scoreA = a.recommendationScore || 50;
         const scoreB = b.recommendationScore || 50;
         return scoreB - scoreA;
@@ -326,7 +326,7 @@ ${input.difficulty !== 'any' ? `Difficulty level: ${input.difficulty}` : ''}`;
       recipes,
       suggestedActions: ctas,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "recipes.generate");
     

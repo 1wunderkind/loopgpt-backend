@@ -3,7 +3,7 @@
  * Ultra-reliable food and meal planning tools
  */
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std@0.168.0/http/server.ts";
 import { MCP_MANIFEST } from "./manifest.ts";
 import { ENV, validateEnv } from "./config/env.ts";
 import { toUserSafeError } from "./tools/shared/errors.ts";

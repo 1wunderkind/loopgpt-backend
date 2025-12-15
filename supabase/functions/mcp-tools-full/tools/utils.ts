@@ -42,7 +42,7 @@ export async function healthCheck(): Promise<HealthCheck> {
   // Check Supabase (via cache test)
   try {
     const start = Date.now();
-    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const { createClient } = await import("@supabase/supabase-js");
     const supabase = createClient(ENV.SUPABASE_URL, ENV.SERVICE_ROLE_KEY);
     await supabase.from("tool_cache").select("key").limit(1);
     services.supabase = {

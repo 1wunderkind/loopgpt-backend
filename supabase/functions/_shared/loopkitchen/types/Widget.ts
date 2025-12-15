@@ -92,6 +92,15 @@ export interface RecipeCardCompact extends WidgetBase {
 
   /** User's requested dietary constraints (if any) */
   requestedDiet?: string | string[];
+
+  /** Recommendation score (0-100) */
+  recommendationScore?: number;
+
+  /** Reason for recommendation match */
+  matchReason?: string;
+
+  /** Confidence of recommendation */
+  confidence?: number;
 }
 
 /**
@@ -282,7 +291,10 @@ export interface InfoMessage extends WidgetBase {
   title: string;
 
   /** Message body text */
-  body: string;
+  message: string;
+
+  /** Optional action label */
+  actionLabel?: string;
 }
 
 export interface CheckoutHandoffWidget extends WidgetBase {

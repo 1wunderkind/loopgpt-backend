@@ -164,7 +164,7 @@ LOOPGPT_SCORE_RELIABILITY_WEIGHT=0.10
 ### 1. Create Test File
 ```typescript
 // _tests/commerce/providers/newprovider.test.ts
-import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals } from "std/assert/mod.ts";
 import { newProvider } from "../../../_shared/commerce/providers/newProvider.ts";
 import { createSampleQuoteRequest, assertValidProviderQuote } from "../testUtils.ts";
 

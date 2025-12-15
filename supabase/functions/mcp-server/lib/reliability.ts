@@ -43,7 +43,7 @@ export interface ToolErrorResponse {
   technicalMessage?: string;    // Internal debug string (not shown to user)
   toolName: string;
   retryable: boolean;           // Whether ChatGPT should suggest retrying
-  details?: Record<string, any>; // Additional context (statusCode, provider, etc.)
+  details?: Record<string, unknown>; // Additional context (statusCode, provider, etc.)
 }
 
 /**
@@ -106,7 +106,7 @@ function classifyError(error: unknown): {
 
   // Handle HTTP response errors
   if (error && typeof error === "object" && "status" in error) {
-    const status = (error as any).status;
+    const status = (error as { status: number }).status;
     
     if (status >= 400 && status < 500) {
       return { code: "UPSTREAM_4XX", retryable: false, statusCode: status };
@@ -140,7 +140,7 @@ function createErrorResponse(
     ? error.message 
     : String(error);
 
-  const details: Record<string, any> = {};
+  const details: Record<string, unknown> = {};
   
   if (classification.statusCode) {
     details.statusCode = classification.statusCode;
@@ -169,7 +169,7 @@ function createErrorResponse(
  * Wraps a promise with a timeout
  * Rejects with TimeoutError if promise doesn't resolve within timeoutMs
  */
-function withTimeout<T>(
+export function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
   abortController?: AbortController

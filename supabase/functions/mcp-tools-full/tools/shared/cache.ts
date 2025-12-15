@@ -3,10 +3,10 @@
  * Uses Supabase Postgres for persistent caching
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 import { CacheError } from "./errors.ts";
 import { logWarn, logDebug } from "./logging.ts";
-import { createHash } from "https://deno.land/std@0.208.0/crypto/mod.ts";
+import { createHash } from "std/crypto/mod.ts";
 
 let supabase: any = null;
 

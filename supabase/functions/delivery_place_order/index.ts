@@ -7,8 +7,8 @@
  * RELIABILITY: Wrapped with timeout but NO retries (write operation)
  */
 
-import { withLogging } from "../../middleware/logging.ts";
-import { handleError } from "../../middleware/errorHandler.ts";
+import { withLogging, Logger } from "../../middleware/logging.ts";
+import { ErrorHandler, ValidationError, ExternalServiceError } from "../../middleware/errorHandler.ts";
 import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
 import { 
   withToolReliability, 
@@ -16,7 +16,6 @@ import {
   type ToolResult 
 } from "../mcp-server/lib/reliability.ts";
 
-import { createAuthenticatedClient } from "../_lib/auth.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -31,10 +30,33 @@ interface OrderPlanRequest {
 interface OrderPlanResponse {
   success: boolean;
   order_id: string;
-  cart: any;
-  quotes: any[];
-  cheapest?: any;
-  fastest?: any;
+  cart: Record<string, unknown>;
+  quotes: Record<string, unknown>[];
+  cheapest?: Record<string, unknown>;
+  fastest?: Record<string, unknown>;
+  checkoutUrl: string;
+}
+
+interface NormalizeResponse {
+  normalized: unknown[];
+  cartItems: unknown[];
+}
+
+interface CreateCartResponse {
+  cart: {
+    cartId: string;
+    [key: string]: unknown;
+  };
+  order_id: string;
+}
+
+interface GetQuotesResponse {
+  quotes: Record<string, unknown>[];
+  cheapest?: Record<string, unknown>;
+  fastest?: Record<string, unknown>;
+}
+
+interface CheckoutUrlResponse {
   checkoutUrl: string;
 }
 
@@ -42,13 +64,13 @@ interface OrderPlanResponse {
  * Core order implementation (extracted for reliability wrapping)
  * NOTE: This is a WRITE operation, so we do NOT retry to avoid duplicate orders
  */
-async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> {
+async function implOrderPlan(req: OrderPlanRequest, logger: Logger): Promise<OrderPlanResponse> {
   const { chatgpt_user_id, latitude, longitude, ingredients, mode = "groceries" } = req;
 
-  console.log(`[MealMe Order] Starting order flow for user ${chatgpt_user_id} with ${ingredients.length} ingredients`);
+  logger.info(`Starting order flow`, { userId: chatgpt_user_id, ingredientCount: ingredients.length });
 
   // Step 1: Normalize ingredients
-  console.log("[MealMe Order] Step 1: Normalizing ingredients...");
+  logger.info("Step 1: Normalizing ingredients");
   
   const normalizeResponse = await fetchWithTimeout(
     `${SUPABASE_URL}/functions/v1/normalize_ingredients`,
@@ -57,6 +79,7 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "x-request-id": logger['context'].requestId || crypto.randomUUID()
       },
       body: JSON.stringify({ ingredients }),
     },
@@ -64,16 +87,15 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
   );
 
   if (!normalizeResponse.ok) {
-    const error: any = new Error(`Failed to normalize ingredients: ${normalizeResponse.statusText}`);
-    error.status = normalizeResponse.status;
-    throw error;
+    throw new ExternalServiceError("NormalizeIngredients", `Failed to normalize ingredients: ${normalizeResponse.statusText}`, normalizeResponse.status >= 500);
   }
 
-  const { normalized, cartItems } = await normalizeResponse.json();
-  console.log(`[MealMe Order] Normalized ${ingredients.length} ingredients to ${cartItems.length} cart items`);
+  const normalizeData = await normalizeResponse.json() as NormalizeResponse;
+  const { cartItems } = normalizeData;
+  logger.info(`Normalized ingredients`, { originalCount: ingredients.length, cartItemCount: cartItems.length });
 
   // Step 2: Create cart
-  console.log("[MealMe Order] Step 2: Creating cart...");
+  logger.info("Step 2: Creating cart");
   
   const cartResponse = await fetchWithTimeout(
     `${SUPABASE_URL}/functions/v1/mealme_create_cart`,
@@ -82,6 +104,7 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "x-request-id": logger['context'].requestId || crypto.randomUUID()
       },
       body: JSON.stringify({
         chatgpt_user_id,
@@ -95,16 +118,15 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
   );
 
   if (!cartResponse.ok) {
-    const error: any = new Error(`Failed to create cart: ${cartResponse.statusText}`);
-    error.status = cartResponse.status;
-    throw error;
+    throw new ExternalServiceError("CreateCart", `Failed to create cart: ${cartResponse.statusText}`, cartResponse.status >= 500);
   }
 
-  const { cart, order_id } = await cartResponse.json();
-  console.log(`[MealMe Order] Cart created: ${cart.cartId}, order: ${order_id}`);
+  const cartData = await cartResponse.json() as CreateCartResponse;
+  const { cart, order_id } = cartData;
+  logger.info(`Cart created`, { cartId: cart.cartId, orderId: order_id });
 
   // Step 3: Get delivery quotes
-  console.log("[MealMe Order] Step 3: Getting delivery quotes...");
+  logger.info("Step 3: Getting delivery quotes");
   
   const quotesResponse = await fetchWithTimeout(
     `${SUPABASE_URL}/functions/v1/mealme_get_quotes`,
@@ -113,6 +135,7 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "x-request-id": logger['context'].requestId || crypto.randomUUID()
       },
       body: JSON.stringify({
         cartId: cart.cartId,
@@ -124,16 +147,15 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
   );
 
   if (!quotesResponse.ok) {
-    const error: any = new Error(`Failed to get quotes: ${quotesResponse.statusText}`);
-    error.status = quotesResponse.status;
-    throw error;
+    throw new ExternalServiceError("GetQuotes", `Failed to get quotes: ${quotesResponse.statusText}`, quotesResponse.status >= 500);
   }
 
-  const { quotes, cheapest, fastest } = await quotesResponse.json();
-  console.log(`[MealMe Order] Found ${quotes.length} delivery quotes`);
+  const quotesData = await quotesResponse.json() as GetQuotesResponse;
+  const { quotes, cheapest, fastest } = quotesData;
+  logger.info(`Found delivery quotes`, { count: quotes.length });
 
   // Step 4: Generate checkout URL
-  console.log("[MealMe Order] Step 4: Generating checkout URL...");
+  logger.info("Step 4: Generating checkout URL");
   
   const checkoutResponse = await fetchWithTimeout(
     `${SUPABASE_URL}/functions/v1/mealme_checkout_url`,
@@ -142,6 +164,7 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "x-request-id": logger['context'].requestId || crypto.randomUUID()
       },
       body: JSON.stringify({
         cartId: cart.cartId,
@@ -152,13 +175,12 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
   );
 
   if (!checkoutResponse.ok) {
-    const error: any = new Error(`Failed to generate checkout URL: ${checkoutResponse.statusText}`);
-    error.status = checkoutResponse.status;
-    throw error;
+    throw new ExternalServiceError("CheckoutUrl", `Failed to generate checkout URL: ${checkoutResponse.statusText}`, checkoutResponse.status >= 500);
   }
 
-  const { checkoutUrl } = await checkoutResponse.json();
-  console.log(`[MealMe Order] Checkout URL generated: ${checkoutUrl}`);
+  const checkoutData = await checkoutResponse.json() as CheckoutUrlResponse;
+  const { checkoutUrl } = checkoutData;
+  logger.info(`Checkout URL generated`);
 
   return {
     success: true,
@@ -175,9 +197,9 @@ async function implOrderPlan(req: OrderPlanRequest): Promise<OrderPlanResponse> 
  * Wrapped order function with reliability features
  * NOTE: NO RETRIES for write operations to avoid duplicate orders
  */
-async function orderPlan(req: OrderPlanRequest): Promise<ToolResult<OrderPlanResponse>> {
+async function orderPlan(req: OrderPlanRequest, logger: Logger): Promise<ToolResult<OrderPlanResponse>> {
   return withToolReliability(
-    () => implOrderPlan(req),
+    () => implOrderPlan(req, logger),
     {
       toolName: "delivery_place_order",
       timeoutMs: 45000,          // 45 second total timeout (4 steps × ~10s each)
@@ -188,26 +210,57 @@ async function orderPlan(req: OrderPlanRequest): Promise<ToolResult<OrderPlanRes
   );
 }
 
-const handler = async (req: Request): Promise<Response> => {
+const handler = async (req: Request, logger: Logger): Promise<Response> => {
   try {
+    // Kill Switch Check
+    if (Deno.env.get("DISABLE_ORDERING") === "true") {
+      logger.warn("Ordering is disabled via kill switch");
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Ordering is temporarily disabled for maintenance.",
+          code: "ORDERING_DISABLED",
+          retryable: true, // Client can try again later
+        }),
+        {
+          status: 503, // Service Unavailable
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     // Parse request body
-    const body = await req.json() as OrderPlanRequest;
+    const body = await req.json() as unknown;
+    
+    if (!body || typeof body !== 'object') {
+      throw new ValidationError("Invalid request body");
+    }
+    
+    const typedBody = body as Record<string, unknown>;
 
     // Validate required fields
-    if (!body.chatgpt_user_id) {
-      throw new Error("chatgpt_user_id is required");
+    if (typeof typedBody.chatgpt_user_id !== 'string') {
+      throw new ValidationError("chatgpt_user_id is required");
     }
 
-    if (!body.latitude || !body.longitude) {
-      throw new Error("latitude and longitude are required");
+    if (typeof typedBody.latitude !== 'number' || typeof typedBody.longitude !== 'number') {
+      throw new ValidationError("latitude and longitude are required");
     }
 
-    if (!body.ingredients || body.ingredients.length === 0) {
-      throw new Error("ingredients array is required and must not be empty");
+    if (!Array.isArray(typedBody.ingredients) || typedBody.ingredients.length === 0) {
+      throw new ValidationError("ingredients array is required and must not be empty");
     }
+    
+    const request: OrderPlanRequest = {
+      chatgpt_user_id: typedBody.chatgpt_user_id,
+      latitude: typedBody.latitude,
+      longitude: typedBody.longitude,
+      ingredients: typedBody.ingredients.map(String),
+      mode: (typedBody.mode === 'restaurants' || typedBody.mode === 'groceries') ? typedBody.mode : undefined
+    };
 
     // Order plan with reliability wrapper
-    const result = await orderPlan(body);
+    const result = await orderPlan(request, logger);
 
     // Handle success/failure from reliability layer
     if (result.ok) {
@@ -232,7 +285,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
   } catch (error) {
-    return handleError(error);
+    return ErrorHandler.handleError(error);
   }
 };
 

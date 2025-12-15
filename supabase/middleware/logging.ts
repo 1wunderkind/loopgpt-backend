@@ -49,3 +49,37 @@ export function logDebug(message: string, context?: LogContext) {
   }
 }
 
+
+export const withLogging = (handler: (req: Request) => Promise<Response>) => {
+  return async (req: Request): Promise<Response> => {
+    const start = performance.now();
+    const requestId = crypto.randomUUID();
+    const url = new URL(req.url);
+    
+    logInfo(`Request started: ${req.method} ${url.pathname}`, {
+      requestId,
+      method: req.method,
+      path: url.pathname,
+    });
+
+    try {
+      const response = await handler(req);
+      const duration = performance.now() - start;
+      
+      logInfo(`Request completed: ${response.status}`, {
+        requestId,
+        status: response.status,
+        durationMs: duration,
+      });
+      
+      return response;
+    } catch (error) {
+      const duration = performance.now() - start;
+      logError(`Request failed`, error, {
+        requestId,
+        durationMs: duration,
+      });
+      throw error;
+    }
+  };
+};

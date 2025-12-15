@@ -151,6 +151,7 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
     if (!response.recipes || response.recipes.length === 0) {
       const infoMessage: InfoMessage = {
         type: 'InfoMessage',
+        id: `warning-${Date.now()}`,
         severity: 'warning',
         title: 'No Recipes Generated',
         message: 'The ingredients provided cannot be safely combined into recipes. Please try different ingredients.',
@@ -198,8 +199,9 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
       
       // Check soft constraints
       const overTimeLimit = input.timeLimit && recipe.timeMinutes > input.timeLimit;
-      const matchesDiet = input.dietConstraints.length === 0 || 
-        input.dietConstraints.some(constraint => 
+      const dietConstraints = input.dietConstraints || [];
+      const matchesDiet = dietConstraints.length === 0 || 
+        dietConstraints.some(constraint => 
           recipe.dietTags.some(tag => 
             tag.toLowerCase().includes(constraint.toLowerCase())
           )
@@ -228,12 +230,12 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
         // Soft constraint flags
         overTimeLimit: overTimeLimit || undefined,
         requestedTimeLimit: overTimeLimit ? input.timeLimit : undefined,
-        matchesDiet: input.dietConstraints.length > 0 ? matchesDiet : undefined,
-        requestedDiet: input.dietConstraints.length > 0 ? input.dietConstraints.join(', ') : undefined,
+        matchesDiet: (input.dietConstraints || []).length > 0 ? matchesDiet : undefined,
+        requestedDiet: (input.dietConstraints || []).length > 0 ? (input.dietConstraints || []).join(', ') : undefined,
         // Recommendation engine scores (optional metadata)
         recommendationScore: scoreData?.total_score,
         matchReason: scoreData?.match_reason,
-        confidence: scoreData?.confidence,
+        // confidence: scoreData?.confidence, // Removed due to type mismatch (string vs number)
         // Share metadata
         share: {
           enabled: true,
@@ -268,10 +270,10 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
         logRecipeEvent({
           userId: params.userId || null,
           sessionId: params.sessionId || null,
-          recipeId: widget.data.id,
-          recipeTitle: widget.data.title,
+          recipeId: widget.id,
+          recipeTitle: widget.title,
           eventType: 'generated',
-          chaosRatingShown: widget.data.chaosRating,
+          chaosRatingShown: widget.chaosRating,
           sourceGpt: 'LeftoverGPT',
           responseTimeMs: duration,
         }).catch(err => console.error('[Analytics] Failed to log recipe event:', err));
@@ -289,9 +291,10 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
     // Return InfoMessage widget for errors
     const errorMessage: InfoMessage = {
       type: 'InfoMessage',
+      id: `error-${Date.now()}`,
       severity: 'error',
       title: 'Recipe Generation Failed',
-      message: `Unable to generate recipes: ${categorized.userMessage}`,
+      message: `Unable to generate recipes: ${categorized.message}`,
       actionLabel: 'Try Again',
     };
     

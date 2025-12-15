@@ -7,7 +7,7 @@
  * Part of: Step 3 - Provider Arbitrage Hardening & Failover
  */
 
-import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SupabaseClient } from "@supabase/supabase-js";
 
 export interface ProviderMetrics {
   providerId: string;

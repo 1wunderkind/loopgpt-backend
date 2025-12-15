@@ -184,7 +184,7 @@ export class KrogerClient {
       );
 
       return response.data;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -220,7 +220,7 @@ export class KrogerClient {
       );
 
       return response.data;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -235,9 +235,9 @@ let clientInstance: KrogerClient | null = null;
 /**
  * Get or create Kroger client instance
  */
-export async function getKrogerClient(): Promise<KrogerClient> {
+export function getKrogerClient(): Promise<KrogerClient> {
   if (clientInstance) {
-    return clientInstance;
+    return Promise.resolve(clientInstance);
   }
 
   const clientId = Deno.env.get('KROGER_CLIENT_ID');
@@ -259,7 +259,7 @@ export async function getKrogerClient(): Promise<KrogerClient> {
     environment,
   });
 
-  return clientInstance;
+  return Promise.resolve(clientInstance);
 }
 
 /**

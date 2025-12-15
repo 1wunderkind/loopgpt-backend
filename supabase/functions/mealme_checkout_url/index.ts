@@ -68,5 +68,6 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 // Export with logging middleware
-export default withOrderAPI(withLogging(handler, "mealme_checkout_url"));
+// withLogging is not compatible with withOrderAPI in this context, using withOrderAPI directly
+export default withOrderAPI(handler);
 

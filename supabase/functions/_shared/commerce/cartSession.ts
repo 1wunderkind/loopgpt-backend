@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 
 export interface CartSession {
   id: string;
@@ -6,16 +6,16 @@ export interface CartSession {
   session_id?: string;
   selected_provider?: string;
   selected_provider_id?: string;
-  alternatives?: any;
-  cart: any;
-  quote: any;
-  score_breakdown?: any;
+  alternatives?: Record<string, unknown>;
+  cart: Record<string, unknown>;
+  quote: Record<string, unknown>;
+  score_breakdown?: Record<string, unknown>;
   affiliate_url?: string;
   confirmation_token?: string;
   allow_failover: boolean;
   allow_auto_confirm: boolean;
   status: 'draft' | 'awaiting_consent' | 'confirmed_pending_execution' | 'confirmed' | 'failed' | 'cancelled' | 'expired';
-  last_error?: any;
+  last_error?: Record<string, unknown>;
   expires_at: string;
   created_at: string;
   updated_at: string;
@@ -34,11 +34,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 export async function createCartSession(input: CreateCartSessionInput): Promise<CartSession> {
   const { data, error } = await supabase
+    .schema('commerce')
     .from('cart_sessions')
     .insert({
       ...input,
       updated_at: new Date().toISOString(),
-    }, { schema: 'commerce' })
+    })
     .select()
     .single();
 
@@ -48,11 +49,12 @@ export async function createCartSession(input: CreateCartSessionInput): Promise<
 
 export async function updateCartSession(id: string, patch: Partial<CartSession>): Promise<void> {
   const { error } = await supabase
+    .schema('commerce')
     .from('cart_sessions')
     .update({
       ...patch,
       updated_at: new Date().toISOString(),
-    }, { schema: 'commerce' })
+    })
     .eq('id', id);
 
   if (error) {
@@ -76,11 +78,12 @@ export async function expireCartSessions(): Promise<void> {
   const now = new Date().toISOString();
   
   const { error } = await supabase
+    .schema('commerce')
     .from('cart_sessions')
     .update({ 
       status: 'expired',
       updated_at: now
-    }, { schema: 'commerce' })
+    })
     .lt('expires_at', now)
     .in('status', ['draft', 'awaiting_consent', 'confirmed_pending_execution']);
 

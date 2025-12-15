@@ -144,7 +144,7 @@ export class WalmartClient {
       );
 
       return response;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -165,7 +165,7 @@ export class WalmartClient {
       );
 
       return response.items || [];
-    } catch (error) {
+    } catch (_error) {
       return [];
     }
   }
@@ -230,7 +230,7 @@ export class WalmartClient {
       );
 
       return response;
-    } catch (error) {
+    } catch (_error) {
       // Default to available if API fails
       return { available: true };
     }
@@ -246,9 +246,9 @@ let clientInstance: WalmartClient | null = null;
 /**
  * Get or create Walmart client instance
  */
-export async function getWalmartClient(): Promise<WalmartClient> {
+export function getWalmartClient(): Promise<WalmartClient> {
   if (clientInstance) {
-    return clientInstance;
+    return Promise.resolve(clientInstance);
   }
 
   const apiKey = Deno.env.get('WALMART_API_KEY');
@@ -270,7 +270,7 @@ export async function getWalmartClient(): Promise<WalmartClient> {
     environment,
   });
 
-  return clientInstance;
+  return Promise.resolve(clientInstance);
 }
 
 /**

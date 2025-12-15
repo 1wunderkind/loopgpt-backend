@@ -5,7 +5,7 @@
  * Returns top N matching foods with nutrition data.
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 import { getFoodSuggestions } from "../../lib/food_lookup_helper.ts";
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
 

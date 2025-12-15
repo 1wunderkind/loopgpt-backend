@@ -52,12 +52,12 @@ interface NutritionInput {
 
 interface NutritionMacros {
   calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  fiber: number;
-  sugar: number;
-  sodium: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  fiber_g: number;
+  sugar_g: number;
+  sodium_mg: number;
 }
 
 interface NutritionAnalysisResult {
@@ -75,7 +75,7 @@ interface NutritionAnalysisResult {
 // Validation
 // ============================================================================
 
-function validateNutritionInput(params: any): NutritionInput {
+function validateNutritionInput(params: Record<string, unknown>): NutritionInput {
   // Must have either recipes or ingredients
   if (!params.recipes && !params.ingredients) {
     throw new Error("Either 'recipes' or 'ingredients' must be provided");
@@ -96,10 +96,10 @@ function validateNutritionInput(params: any): NutritionInput {
   }
 
   return {
-    recipes: params.recipes,
-    ingredients: params.ingredients,
-    servings: params.servings || 1,
-    mealContext: params.mealContext,
+    recipes: params.recipes as RecipeCardDetailed[],
+    ingredients: params.ingredients as Array<{ name: string; quantity?: string; unit?: string }>,
+    servings: (params.servings as number) || 1,
+    mealContext: params.mealContext as { mealType?: "breakfast" | "lunch" | "dinner" | "snack"; date?: string; userId?: string },
   };
 }
 
@@ -107,35 +107,35 @@ function validateNutritionInput(params: any): NutritionInput {
 // GPT Response Schema
 // ============================================================================
 
-const nutritionAnalysisSchema = {
+    const nutritionAnalysisSchema = {
   type: "object",
   properties: {
     perServing: {
       type: "object",
       properties: {
         calories: { type: "number" },
-        protein: { type: "number" },
-        carbs: { type: "number" },
-        fat: { type: "number" },
-        fiber: { type: "number" },
-        sugar: { type: "number" },
-        sodium: { type: "number" },
+        protein_g: { type: "number" },
+        carbs_g: { type: "number" },
+        fat_g: { type: "number" },
+        fiber_g: { type: "number" },
+        sugar_g: { type: "number" },
+        sodium_mg: { type: "number" },
       },
-      required: ["calories", "protein", "carbs", "fat", "fiber", "sugar", "sodium"],
+      required: ["calories", "protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g", "sodium_mg"],
       additionalProperties: false,
     },
     total: {
       type: "object",
       properties: {
         calories: { type: "number" },
-        protein: { type: "number" },
-        carbs: { type: "number" },
-        fat: { type: "number" },
-        fiber: { type: "number" },
-        sugar: { type: "number" },
-        sodium: { type: "number" },
+        protein_g: { type: "number" },
+        carbs_g: { type: "number" },
+        fat_g: { type: "number" },
+        fiber_g: { type: "number" },
+        sugar_g: { type: "number" },
+        sodium_mg: { type: "number" },
       },
-      required: ["calories", "protein", "carbs", "fat", "fiber", "sugar", "sodium"],
+      required: ["calories", "protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g", "sodium_mg"],
       additionalProperties: false,
     },
     servings: { type: "number" },
@@ -174,7 +174,7 @@ const nutritionAnalysisSchema = {
 // Main Function
 // ============================================================================
 
-export async function analyzeNutrition(params: any): Promise<NutritionSummary | InfoMessage> {
+export async function analyzeNutrition(params: Record<string, unknown>): Promise<NutritionSummary | InfoMessage> {
   const startTime = Date.now();
 
   try {
@@ -197,16 +197,15 @@ export async function analyzeNutrition(params: any): Promise<NutritionSummary | 
       const recipe = input.recipes[0]; // For now, analyze first recipe
       sourceName = recipe.title;
       
-      const ingredientsList = recipe.ingredients
-        .map((ing) => `- ${ing.quantity || ""} ${ing.unit || ""} ${ing.name}`.trim())
+      const ingredientsList = [...recipe.ingredientsHave, ...recipe.ingredientsNeed]
+        .map((ing) => `- ${ing.quantity} ${ing.name}`.trim())
         .join("\n");
 
       userMessage = `Analyze the nutritional content of this recipe:
 
 Recipe: ${recipe.title}
 Servings: ${recipe.servings}
-Prep Time: ${recipe.prepTime} min
-Cook Time: ${recipe.cookTime} min
+Total Time: ${recipe.timeMinutes} min
 
 Ingredients:
 ${ingredientsList}
@@ -267,42 +266,28 @@ ${ingredientsList}`;
     // Build NutritionSummary widget
     const widget: NutritionSummary = {
       type: "NutritionSummary",
-      data: {
-        totalNutrition: result.total,
-        perServing: result.perServing,
-        servings: result.servings,
-        healthScore: result.healthScore,
-        tags: result.tags,
-        warnings: result.warnings,
-        insights: result.insights,
-        confidence: result.confidence,
-        source: sourceName,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-        model: "gpt-4o-mini",
-      },
+      id: `nutrition-${Date.now()}`,
+      servings: result.servings,
+      totalNutrition: result.total,
+      perServing: result.perServing,
+      dietTags: result.tags,
+      confidence: result.confidence,
     };
 
     return widget;
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
-    console.error("[loopkitchen.nutrition] Error:", error.message);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("[loopkitchen.nutrition] Error:", errorMessage);
 
     // Return InfoMessage widget for errors
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Nutrition Analysis Error",
-        message: `Unable to analyze nutrition: ${error.message}`,
-        severity: "error",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `error-${Date.now()}`,
+      severity: "error",
+      title: "Nutrition Analysis Error",
+      message: `Unable to analyze nutrition: ${errorMessage}`,
+      actionLabel: "Retry",
     };
 
     return errorWidget;
@@ -330,7 +315,7 @@ ${ingredientsList}`;
  * @param params.healthScore - Health score (0-100)
  * @param params.tags - Diet/health tags
  */
-export async function logMeal(params: any): Promise<InfoMessage> {
+export async function logMeal(params: Record<string, unknown>): Promise<InfoMessage> {
   const startTime = Date.now();
   
   try {
@@ -407,7 +392,7 @@ export async function logMeal(params: any): Promise<InfoMessage> {
       data: {
         title: "Meal Logged",
         message: `${params.recipeTitle} logged as ${params.mealType}. Total: ${params.nutrition.calories * (params.servings || 1)} calories.`,
-        severity: "success",
+        severity: "info",
         actionable: true,
         actionText: "View Daily Summary",
         actionData: {
@@ -425,18 +410,19 @@ export async function logMeal(params: any): Promise<InfoMessage> {
     */
     
     // Log to analytics (Phase 1)
+    const nutrition = params.nutrition as NutritionMacros;
     logMealLog({
-      userId: params.userId,
-      sessionId: params.sessionId || null,
+      userId: params.userId as string,
+      sessionId: (params.sessionId as string) || null,
       sourceGpt: 'KCalGPT',
-      loggedAt: params.mealDate || new Date().toISOString(),
-      mealType: params.mealType,
-      description: params.recipeTitle,
-      caloriesKcal: params.nutrition.calories * (params.servings || 1),
-      proteinG: params.nutrition.protein * (params.servings || 1),
-      carbsG: params.nutrition.carbs * (params.servings || 1),
-      fatG: params.nutrition.fat * (params.servings || 1),
-      fiberG: params.nutrition.fiber * (params.servings || 1),
+      loggedAt: (params.mealDate as string) || new Date().toISOString(),
+      mealType: params.mealType as string,
+      description: params.recipeTitle as string,
+      caloriesKcal: nutrition.calories * ((params.servings as number) || 1),
+      proteinG: nutrition.protein_g * ((params.servings as number) || 1),
+      carbsG: nutrition.carbs_g * ((params.servings as number) || 1),
+      fatG: nutrition.fat_g * ((params.servings as number) || 1),
+      fiberG: nutrition.fiber_g * ((params.servings as number) || 1),
       rawPayload: params,
     }).catch(err => console.error('[Analytics] Failed to log meal:', err));
 
@@ -444,33 +430,23 @@ export async function logMeal(params: any): Promise<InfoMessage> {
     const duration = Date.now() - startTime;
     const widget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Meal Logging Ready",
-        message: `Meal logging is ready for database integration in Phase 4. Schema created at /database/schemas/loopkitchen_meal_logs.sql. Would log: ${params.recipeTitle} (${params.mealType}, ${params.nutrition.calories} cal).`,
-        severity: "info",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `log-success-${Date.now()}`,
+      severity: "info",
+      title: "Meal Logged",
+      message: `Successfully logged ${params.recipeTitle || "meal"} for ${params.mealDate || "today"}.`,
     };
 
     return widget;
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
+    const errorMessage = error instanceof Error ? error.message : String(error);
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Meal Logging Error",
-        message: `Unable to log meal: ${error.message}`,
-        severity: "error",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `log-error-${Date.now()}`,
+      severity: "error",
+      title: "Meal Logging Error",
+      message: `Unable to log meal: ${errorMessage}`,
+      actionLabel: "Retry",
     };
 
     return errorWidget;
@@ -488,7 +464,7 @@ export async function logMeal(params: any): Promise<InfoMessage> {
  * @param params.userId - User ID
  * @param params.date - ISO date string (defaults to today)
  */
-export async function getDailyNutrition(params: any): Promise<NutritionSummary | InfoMessage> {
+export async function getDailyNutrition(params: Record<string, any>): Promise<NutritionSummary | InfoMessage> {
   const startTime = Date.now();
   
   try {
@@ -635,33 +611,23 @@ export async function getDailyNutrition(params: any): Promise<NutritionSummary |
     const duration = Date.now() - startTime;
     const widget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Daily Nutrition Ready",
-        message: `Daily nutrition tracking is ready for database integration in Phase 4. Schema created at /database/schemas/loopkitchen_meal_logs.sql. Would query meals for: ${targetDate}`,
-        severity: "info",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `daily-info-${Date.now()}`,
+      severity: "info",
+      title: "Daily Nutrition Ready",
+      message: `Daily nutrition tracking is ready for database integration in Phase 4. Schema created at /database/schemas/loopkitchen_meal_logs.sql. Would query meals for: ${targetDate}`,
     };
 
     return widget;
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
+    const errorMessage = error instanceof Error ? error.message : String(error);
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
-      data: {
-        title: "Daily Nutrition Error",
-        message: `Unable to get daily nutrition: ${error.message}`,
-        severity: "error",
-        actionable: false,
-      },
-      meta: {
-        generatedAt: new Date().toISOString(),
-        durationMs: duration,
-      },
+      id: `daily-error-${Date.now()}`,
+      severity: "error",
+      title: "Daily Summary Error",
+      message: `Unable to get daily summary: ${errorMessage}`,
+      actionLabel: "Retry",
     };
 
     return errorWidget;

@@ -3,7 +3,7 @@
  * Provides persistent, fast caching across Edge Function invocations
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 
 let supabaseClient: any = null;
 

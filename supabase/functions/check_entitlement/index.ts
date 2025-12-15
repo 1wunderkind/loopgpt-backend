@@ -17,9 +17,9 @@
  * - upgrade_url: URL to upgrade (if no access)
  */
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std@0.168.0/http/server.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient } from "@supabase/supabase-js";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
 

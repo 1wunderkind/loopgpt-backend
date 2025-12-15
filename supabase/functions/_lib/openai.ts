@@ -7,7 +7,7 @@
  * Pattern from: LeftoverGPT Ecosystem MCP Server Playbook
  */
 
-import { OpenAI } from "https://esm.sh/openai@4.20.1";
+import { OpenAI } from "openai";
 
 let openaiClient: OpenAI | null = null;
 

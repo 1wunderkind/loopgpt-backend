@@ -11,8 +11,8 @@
  * Security: Rate limited (10 req/min), request size limit (10MB), security headers
  */
 
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std@0.177.0/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 import { ProviderScorer } from "../_shared/commerce/ProviderScorer.ts";
 import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
 import { getProvider } from "../_shared/commerce/providers/providerRegistry.ts";
@@ -193,7 +193,7 @@ const handler = async (req: Request): Promise<Response> => {
       const attemptedProviders = candidateConfigs.map(c => c.id);
       const errorMessages = errors.map(e => `${e.providerId}: ${e.error}`);
       
-      logRouterFailure(attemptedProviders, errorMessages, requestId);
+      logRouterFailure(attemptedProviders, errors, requestId);
 
       return new Response(
         JSON.stringify({

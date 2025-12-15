@@ -31,7 +31,7 @@ export interface AnalyticsRecipeEvent {
   persona_used: string | null;
   source_gpt: string;
   response_time_ms: number | null;
-  metadata: Record<string, any> | null;
+  metadata: Record<string, unknown> | null;
   created_at: string;
 }
 
@@ -49,7 +49,7 @@ export interface AnalyticsMealLog {
   carbs_g: number | null;
   fat_g: number | null;
   fiber_g: number | null;
-  raw_payload: any | null;
+  raw_payload: Record<string, unknown> | null;
   total_macros_g?: number; // Generated column
 }
 
@@ -64,7 +64,7 @@ export interface AnalyticsMealPlan {
   vibe: string | null;
   target_calories_per_day: number | null;
   created_at: string;
-  metadata: Record<string, any> | null;
+  metadata: Record<string, unknown> | null;
 }
 
 export interface AnalyticsAffiliateEvent {
@@ -80,7 +80,7 @@ export interface AnalyticsAffiliateEvent {
   currency: string | null;
   created_at: string;
   converted_at: string | null;
-  metadata: Record<string, any> | null;
+  metadata: Record<string, unknown> | null;
 }
 
 export interface AnalyticsUserGoal {
@@ -104,7 +104,7 @@ export interface AnalyticsSessionEvent {
   event_type: SessionEventType;
   user_agent: string | null;
   created_at: string;
-  metadata: Record<string, any> | null;
+  metadata: Record<string, unknown> | null;
 }
 
 // ============================================================================
@@ -181,14 +181,15 @@ export interface LogRecipeEventParams {
   personaUsed?: string | null;
   sourceGpt: string;
   responseTimeMs?: number | null;
-  metadata?: Record<string, any> | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface LogMealLogParams {
   userId?: string | null;
   sessionId?: string | null;
   sourceGpt: string;
-  loggedAt: Date | string;
+  loggedAt?: Date | string;
+  log_date?: string; // Alias for loggedAt
   mealType?: MealType | null;
   description: string;
   caloriesKcal?: number | null;
@@ -196,7 +197,7 @@ export interface LogMealLogParams {
   carbsG?: number | null;
   fatG?: number | null;
   fiberG?: number | null;
-  rawPayload?: any | null;
+  rawPayload?: Record<string, unknown> | null;
 }
 
 export interface LogMealPlanParams {
@@ -208,7 +209,7 @@ export interface LogMealPlanParams {
   daysPlanned: number;
   vibe?: string | null;
   targetCaloriesPerDay?: number | null;
-  metadata?: Record<string, any> | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface LogAffiliateEventParams {
@@ -221,7 +222,7 @@ export interface LogAffiliateEventParams {
   groceryOrderId?: string | null;
   conversionValue?: number | null;
   currency?: string | null;
-  metadata?: Record<string, any> | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface UpsertUserGoalParams {
@@ -238,7 +239,7 @@ export interface LogSessionEventParams {
   gptName: string;
   eventType: SessionEventType;
   userAgent?: string | null;
-  metadata?: Record<string, any> | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 // ============================================================================

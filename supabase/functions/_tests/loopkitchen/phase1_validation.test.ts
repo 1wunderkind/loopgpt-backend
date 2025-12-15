@@ -4,7 +4,7 @@
  * Validates that all LoopKitchen components are properly imported and functional.
  */
 
-import { assertEquals, assertExists } from 'https://deno.land/std@0.208.0/assert/mod.ts';
+import { assertEquals, assertExists } from 'std/assert/mod.ts';
 
 // Test imports
 import {

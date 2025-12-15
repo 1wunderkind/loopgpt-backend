@@ -8,7 +8,7 @@
  * =====================================================
  */
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from '@supabase/supabase-js'
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL" )!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -23,13 +23,15 @@ export interface FoodItem {
   group?: string;
   category?: string;
   measures?: Array<{ label: string; grams: number }>;
-  kcal: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  fiber: number;
-  sugar: number;
-  sodium?: number;
+  nutrition: {
+    calories: number;
+    protein_g: number;
+    carbs_g: number;
+    fat_g: number;
+    fiber_g: number;
+    sugar_g: number;
+    sodium_mg?: number;
+  };
 }
 
 /**
@@ -84,13 +86,15 @@ export class FoodResolver {
         group: food.category,
         category: food.category,
         measures: food.common_servings || [{ label: 'g', grams: 1 }],
-        kcal: food.calories_per_100g,
-        protein: food.protein_per_100g,
-        carbs: food.carbs_per_100g,
-        fat: food.fat_per_100g,
-        fiber: food.fiber_per_100g || 0,
-        sugar: food.sugar_per_100g || 0,
-        sodium: 0
+        nutrition: {
+          calories: food.calories_per_100g,
+          protein_g: food.protein_per_100g,
+          carbs_g: food.carbs_per_100g,
+          fat_g: food.fat_per_100g,
+          fiber_g: food.fiber_per_100g || 0,
+          sugar_g: food.sugar_per_100g || 0,
+          sodium_mg: 0
+        }
       }));
 
       this.loaded = true;

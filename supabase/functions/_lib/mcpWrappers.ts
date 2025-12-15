@@ -181,6 +181,16 @@ export async function getRecipeFromLeftover(
  * Get multiple recipes from LeftoverGPT
  */
 export async function getRecipesFromLeftover(
+  request: LeftoverRecipeRequest
+): Promise<LeftoverRecipeResponse> {
+  const recipe = await getRecipeFromLeftover(request);
+  if (!recipe) {
+    throw new Error("Failed to generate recipe");
+  }
+  return recipe;
+}
+
+export async function getMultipleRecipesFromLeftover(
   chatgptUserId: string,
   count: number,
   vibe?: string,

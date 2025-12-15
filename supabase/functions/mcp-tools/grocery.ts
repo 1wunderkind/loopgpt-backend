@@ -3,7 +3,7 @@
  * Generate organized shopping lists from recipes or meal plans using OpenAI
  */
 
-import OpenAI from "https://esm.sh/openai@4.28.0";
+import OpenAI from "openai";
 import { cacheGet, cacheSet } from "./cache.ts";
 import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
 import { getFallbackGroceryList } from "./fallbacks.ts";
@@ -13,7 +13,7 @@ import { detectMissingIngredients, annotateGroceryListWithMissing, getMissingSum
 import { withTimeout } from "../mcp-server/lib/reliability.ts";
 
 // Simple input validation
-function validateGroceryInput(params: any) {
+function validateGroceryInput(params: Record<string, any>) {
   const hasRecipes = params.recipes && Array.isArray(params.recipes) && params.recipes.length > 0;
   const hasMealPlan = params.mealPlan && typeof params.mealPlan === 'object';
   
@@ -83,7 +83,7 @@ const GroceryListJsonSchema = {
   additionalProperties: false
 };
 
-export async function generateGroceryList(params: any) {
+export async function generateGroceryList(params: Record<string, any>) {
   const startTime = Date.now();
   
   try {
@@ -93,7 +93,7 @@ export async function generateGroceryList(params: any) {
     const input = validateGroceryInput(params);
     
     // Generate cache key from recipes/mealplan
-    const recipeIds = input.recipes.map((r: any) => r.id || r.name).join(',');
+    const recipeIds = input.recipes.map((r: { id?: string; name?: string }) => r.id || r.name).join(',');
     const mealPlanId = input.mealPlan?.id || input.mealPlan?.name || '';
     const cacheKey = `grocery:${recipeIds}:${mealPlanId}:${input.servings}`.substring(0, 200);
     
@@ -133,8 +133,8 @@ Rules:
     let sourceText = "";
     
     if (input.recipes.length > 0) {
-      sourceText = `Recipes:\n${input.recipes.map((r: any, i: number) => {
-        const ingredients = r.ingredients?.map((ing: any) => 
+      sourceText = `Recipes:\n${input.recipes.map((r: { name?: string; ingredients?: { name: string; quantity?: string }[] }, i: number) => {
+        const ingredients = r.ingredients?.map((ing) => 
           `- ${ing.quantity || ''} ${ing.name}`.trim()
         ).join('\n') || 'No ingredients';
         
@@ -145,10 +145,10 @@ Rules:
     if (input.mealPlan) {
       const days = input.mealPlan.days || [];
       sourceText += `\n\nMeal Plan: ${input.mealPlan.name || 'Unnamed Plan'}\n`;
-      sourceText += days.map((day: any) => {
+      sourceText += days.map((day: { dayNumber: number; meals?: { mealType: string; recipeName: string; ingredients?: { name: string; quantity?: string }[] }[] }) => {
         const meals = day.meals || [];
-        return `Day ${day.dayNumber}:\n${meals.map((m: any) => {
-          const ingredients = m.ingredients?.map((ing: any) => 
+        return `Day ${day.dayNumber}:\n${meals.map((m) => {
+          const ingredients = m.ingredients?.map((ing) => 
             `  - ${ing.quantity || ''} ${ing.name}`.trim()
           ).join('\n') || '';
           return `${m.mealType}: ${m.recipeName}\n${ingredients}`;
@@ -182,8 +182,7 @@ ${sourceText}`;
         },
       } as any,
     }),
-    15000, // 15 second timeout
-    "OpenAI grocery list generation"
+    15000 // 15 second timeout
   );
 
     const rawContent = completion.choices[0]?.message?.content;
@@ -197,7 +196,7 @@ ${sourceText}`;
     // Detect missing ingredients if pantry provided
     if (input.pantry && input.pantry.length > 0) {
       // Flatten all items from categories
-      const allItems = list.categories?.flatMap((cat: any) => cat.items) || [];
+      const allItems = list.categories?.flatMap((cat: { items: unknown[] }) => cat.items) || [];
       
       // Annotate with missing status
       const annotatedItems = annotateGroceryListWithMissing(allItems, input.pantry);
@@ -212,10 +211,10 @@ ${sourceText}`;
         missingCount: missingResult.totalMissing,
         availableCount: missingResult.totalAvailable,
         // Update categories with annotated items
-        categories: list.categories?.map((cat: any) => ({
+        categories: list.categories?.map((cat: { items: { name: string }[] }) => ({
           ...cat,
-          items: cat.items.map((item: any) => {
-            const annotated = annotatedItems.find((a: any) => a.name === item.name);
+          items: cat.items.map((item) => {
+            const annotated = annotatedItems.find((a: { name: string }) => a.name === item.name);
             return annotated || item;
           }),
         })),
@@ -242,7 +241,7 @@ ${sourceText}`;
     });
     
     return addCtasToResponse(list, ctas);
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "grocery.list");
     

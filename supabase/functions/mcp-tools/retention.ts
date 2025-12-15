@@ -61,11 +61,11 @@ export interface WeeklyRefreshOutput {
       date: string;
       meals: Array<{
         type: string;
-        recipe: any;
+        recipe: Record<string, unknown>;
       }>;
-      nutrition: any;
+      nutrition: Record<string, unknown>;
     }>;
-    totalNutrition: any;
+    totalNutrition: Record<string, unknown>;
   };
   message: string;
   suggestedActions: Cta[];
@@ -74,49 +74,53 @@ export interface WeeklyRefreshOutput {
 /**
  * Validate daily suggestion input
  */
-function validateDailySuggestionInput(input: any): DailySuggestionInput {
+function validateDailySuggestionInput(input: unknown): DailySuggestionInput {
   if (!input || typeof input !== "object") {
     throw new Error("Input must be an object");
   }
   
-  if (!input.userId || typeof input.userId !== "string") {
+  const typedInput = input as Record<string, unknown>;
+
+  if (!typedInput.userId || typeof typedInput.userId !== "string") {
     throw new Error("userId is required and must be a string");
   }
   
   return {
-    userId: input.userId,
-    locale: input.locale || "en",
+    userId: typedInput.userId,
+    locale: typeof typedInput.locale === "string" ? typedInput.locale : "en",
   };
 }
 
 /**
  * Validate weekly refresh input
  */
-function validateWeeklyRefreshInput(input: any): WeeklyRefreshInput {
+function validateWeeklyRefreshInput(input: unknown): WeeklyRefreshInput {
   if (!input || typeof input !== "object") {
     throw new Error("Input must be an object");
   }
   
-  if (!input.userId || typeof input.userId !== "string") {
+  const typedInput = input as Record<string, unknown>;
+
+  if (!typedInput.userId || typeof typedInput.userId !== "string") {
     throw new Error("userId is required and must be a string");
   }
   
-  const days = input.days || 7;
-  if (typeof days !== "number" || days < 1 || days > 14) {
+  const days = typeof typedInput.days === "number" ? typedInput.days : 7;
+  if (days < 1 || days > 14) {
     throw new Error("days must be a number between 1 and 14");
   }
   
   return {
-    userId: input.userId,
+    userId: typedInput.userId,
     days,
-    locale: input.locale || "en",
+    locale: typeof typedInput.locale === "string" ? typedInput.locale : "en",
   };
 }
 
 /**
  * Generate personalized message based on profile
  */
-function generatePersonalizedMessage(profile: any, type: "daily" | "weekly"): string {
+function generatePersonalizedMessage(profile: Record<string, unknown>, type: "daily" | "weekly"): string {
   const parts: string[] = [];
   
   if (type === "daily") {
@@ -125,15 +129,17 @@ function generatePersonalizedMessage(profile: any, type: "daily" | "weekly"): st
     parts.push("Here's your weekly meal plan");
   }
   
-  if (profile.dietTags && profile.dietTags.length > 0) {
-    parts.push(`tailored for your ${profile.dietTags.join(", ")} diet`);
+  const dietTags = Array.isArray(profile.dietTags) ? profile.dietTags : [];
+  if (dietTags.length > 0) {
+    parts.push(`tailored for your ${dietTags.join(", ")} diet`);
   }
   
-  if (profile.cuisines && profile.cuisines.length > 0) {
-    parts.push(`featuring ${profile.cuisines.join(", ")} cuisine`);
+  const cuisines = Array.isArray(profile.cuisines) ? profile.cuisines : [];
+  if (cuisines.length > 0) {
+    parts.push(`featuring ${cuisines.join(", ")} cuisine`);
   }
   
-  if (profile.caloriesPerDay) {
+  if (typeof profile.caloriesPerDay === "number") {
     parts.push(`targeting ${profile.caloriesPerDay} calories per day`);
   }
   
@@ -147,7 +153,7 @@ function generatePersonalizedMessage(profile: any, type: "daily" | "weekly"): st
  * Returns card-friendly format with CTAs.
  */
 export async function generateDailySuggestion(
-  input: any
+  input: unknown
 ): Promise<DailySuggestionOutput> {
   const startTime = Date.now();
   
@@ -171,20 +177,20 @@ export async function generateDailySuggestion(
     const recipesResult = await generateRecipes(recipesInput);
     
     // Transform to card-friendly format
-    const suggestions = recipesResult.recipes.map((recipe: any) => ({
-      id: recipe.id,
-      name: recipe.name,
-      description: recipe.description,
-      prepTime: recipe.prepTime,
-      cookTime: recipe.cookTime,
-      servings: recipe.servings,
-      difficulty: recipe.difficulty,
-      tags: recipe.tags,
-      image: recipe.image,
+    const suggestions = recipesResult.recipes.map((recipe: Record<string, unknown>) => ({
+      id: String(recipe.id || ""),
+      name: String(recipe.name || ""),
+      description: String(recipe.description || ""),
+      prepTime: Number(recipe.prepTime || 0),
+      cookTime: Number(recipe.cookTime || 0),
+      servings: Number(recipe.servings || 0),
+      difficulty: String(recipe.difficulty || "medium"),
+      tags: Array.isArray(recipe.tags) ? recipe.tags.map(String) : [],
+      image: typeof recipe.image === "string" ? recipe.image : undefined,
     }));
     
     // Generate personalized message
-    const message = generatePersonalizedMessage(profile, "daily");
+    const message = generatePersonalizedMessage(profile as unknown as Record<string, unknown>, "daily");
     
     // Generate CTAs
     const suggestedActions: Cta[] = [
@@ -251,7 +257,7 @@ export async function generateDailySuggestion(
       suggestedActions,
     };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const mcpError = categorizeError(error, "retention.dailySuggestion");
     logStructuredError(mcpError, false, duration);
@@ -265,7 +271,7 @@ export async function generateDailySuggestion(
  * Generates a personalized weekly meal plan and updates lastPlanDate.
  */
 export async function generateWeeklyRefresh(
-  input: any
+  input: unknown
 ): Promise<WeeklyRefreshOutput> {
   const startTime = Date.now();
   
@@ -293,7 +299,7 @@ export async function generateWeeklyRefresh(
     await store.upsertProfile(profile);
     
     // Generate personalized message
-    const message = generatePersonalizedMessage(profile, "weekly");
+    const message = generatePersonalizedMessage(profile as unknown as Record<string, unknown>, "weekly");
     
     // Generate CTAs
     const suggestedActions: Cta[] = [
@@ -347,13 +353,31 @@ export async function generateWeeklyRefresh(
       hasProfile: !!profile.dietTags || !!profile.cuisines,
     });
     
+    // Cast mealPlanResult to expected structure since generateMealPlan returns a specific type
+    // but WeeklyRefreshOutput expects a slightly different structure or generic Record
+    // We'll assume generateMealPlan returns compatible structure or cast it
+    const typedMealPlanResult = mealPlanResult as unknown as {
+      id: string;
+      name: string;
+      days: Array<{
+        dayNumber: number;
+        date: string;
+        meals: Array<{
+          type: string;
+          recipe: Record<string, unknown>;
+        }>;
+        nutrition: Record<string, unknown>;
+      }>;
+      totalNutrition: Record<string, unknown>;
+    };
+
     return {
-      mealPlan: mealPlanResult,
+      mealPlan: typedMealPlanResult,
       message,
       suggestedActions,
     };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const mcpError = categorizeError(error, "retention.weeklyRefresh");
     logStructuredError(mcpError, false, duration);

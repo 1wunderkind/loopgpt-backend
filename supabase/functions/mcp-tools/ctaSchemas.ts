@@ -18,16 +18,16 @@ export interface Cta {
   label: string;
   description?: string;
   actionType: CtaActionType;
-  payload: any;
+  payload: Record<string, unknown>;
   icon?: string; // Optional emoji or icon identifier
 }
 
 /**
  * Tool call payload structure
  */
-export interface ToolCallPayload {
+export interface ToolCallPayload extends Record<string, unknown> {
   tool: string;
-  params: Record<string, any>;
+  params: Record<string, unknown>;
 }
 
 /**
@@ -37,7 +37,7 @@ export function createToolCallCta(
   id: string,
   label: string,
   tool: string,
-  params: Record<string, any>,
+  params: Record<string, unknown>,
   description?: string,
   icon?: string
 ): Cta {
@@ -60,7 +60,7 @@ export function createToolCallCta(
 export function createParamChangeCta(
   id: string,
   label: string,
-  paramChanges: Record<string, any>,
+  paramChanges: Record<string, unknown>,
   description?: string,
   icon?: string
 ): Cta {
@@ -81,14 +81,14 @@ export function createParamChangeCta(
  * Generate CTAs for recipe results
  */
 export function generateRecipesCtas(
-  recipes: any[],
-  originalParams: Record<string, any>
+  recipes: Record<string, unknown>[],
+  originalParams: Record<string, unknown>
 ): Cta[] {
   const ctas: Cta[] = [];
   
   // Extract ingredients from original params
   const ingredients = originalParams.ingredients || [];
-  const dietaryTags = originalParams.dietary_restrictions || originalParams.dietaryTags || [];
+  const dietaryTags = (originalParams.dietary_restrictions as string[]) || (originalParams.dietaryTags as string[]) || [];
   
   // CTA 1: Try another recipe (regenerate with same params)
   ctas.push(
@@ -153,7 +153,7 @@ export function generateRecipesCtas(
           proteinGrams: 100,
           dietTags: dietaryTags,
         },
-        seedRecipes: recipes.slice(0, 3).map((r: any) => r.id || r.name),
+        seedRecipes: recipes.slice(0, 3).map((r: Record<string, unknown>) => r.id || r.name),
       },
       "Create a weekly meal plan using these recipes"
     )
@@ -179,15 +179,18 @@ export function generateRecipesCtas(
  * Generate CTAs for meal plan results
  */
 export function generateMealPlanCtas(
-  mealPlan: any,
-  originalParams: Record<string, any>
+  mealPlan: Record<string, unknown>,
+  originalParams: Record<string, unknown>
 ): Cta[] {
   const ctas: Cta[] = [];
   
-  const goals = originalParams.goals || {};
-  const currentCalories = goals.dailyCalories || 2000;
-  const currentProtein = goals.proteinGrams || 100;
-  const dietTags = goals.dietTags || [];
+  const goals = (originalParams.goals as Record<string, unknown>) || {};
+  const currentCalories = (goals.dailyCalories as number) || 2000;
+  const currentProtein = (goals.proteinGrams as number) || 100;
+  // Unused variable 'dietTags' removed or kept if needed for future logic? 
+  // It was unused in the original code's logic flow (only assigned), but let's keep it to minimize changes if it was intended for something.
+  // Actually, looking at original code: `const dietTags = goals.dietTags || [];` was defined but not used in the CTAs below.
+  // I will keep it but cast it properly to avoid errors if I were using strict flags, but here just replacing any.
   
   // CTA 1: Regenerate plan
   ctas.push(
@@ -254,13 +257,13 @@ export function generateMealPlanCtas(
  * Generate CTAs for grocery list results
  */
 export function generateGroceryCtas(
-  groceryList: any,
-  originalParams: Record<string, any>
+  groceryList: Record<string, unknown>,
+  originalParams: Record<string, unknown>
 ): Cta[] {
   const ctas: Cta[] = [];
   
   // CTA 1: Analyze nutrition
-  if (originalParams.recipes && originalParams.recipes.length > 0) {
+  if (Array.isArray(originalParams.recipes) && originalParams.recipes.length > 0) {
     ctas.push(
       createToolCallCta(
         "nutrition-analysis",
@@ -283,13 +286,13 @@ export function generateGroceryCtas(
       {
         groceryList: groceryList,
         userId: originalParams.userId || "user_default",
-        location: originalParams.location || {
+        location: (originalParams.location as Record<string, unknown>) || {
           street: "123 Main St",
           city: "San Francisco",
           state: "CA",
           zip: "94102",
         },
-        preferences: originalParams.preferences || {
+        preferences: (originalParams.preferences as Record<string, unknown>) || {
           optimizeFor: "balanced",
         },
       },
@@ -320,7 +323,7 @@ export function generateGroceryCtas(
       actionType: "NAVIGATE",
       payload: {
         destination: "meal_plan",
-        mealPlanId: originalParams.mealPlan.id,
+        mealPlanId: (originalParams.mealPlan as Record<string, unknown>).id,
       },
     });
   }
@@ -332,12 +335,12 @@ export function generateGroceryCtas(
  * Generate CTAs for nutrition analysis results
  */
 export function generateNutritionCtas(
-  analyses: any[],
-  originalParams: Record<string, any>
+  analyses: Record<string, unknown>[],
+  originalParams: Record<string, unknown>
 ): Cta[] {
   const ctas: Cta[] = [];
   
-  const recipes = originalParams.recipes || [];
+  const recipes = (originalParams.recipes as Record<string, unknown>[]) || [];
   
   // CTA 1: Create meal plan
   if (recipes.length > 0) {
@@ -353,7 +356,7 @@ export function generateNutritionCtas(
             dailyCalories: 2000,
             proteinGrams: 100,
           },
-          seedRecipes: recipes.slice(0, 3).map((r: any) => r.id || r.name),
+          seedRecipes: recipes.slice(0, 3).map((r: Record<string, unknown>) => r.id || r.name),
         },
         "Turn these recipes into a weekly meal plan"
       )

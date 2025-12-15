@@ -7,7 +7,7 @@
  * Pattern: User input (any language) → WeightTracker logic → GPT-4.1-mini formatting → Response (same language)
  */
 
-import { OpenAI } from "https://esm.sh/openai@4.20.1";
+import { OpenAI } from "openai";
 
 // Lazy-loaded OpenAI client (Deno runtime pattern)
 let openaiClient: OpenAI | null = null;

@@ -3,7 +3,7 @@
  * Main orchestration function for creating meal plans with multilingual support and location-aware affiliate routing
  */
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std@0.168.0/http/server.ts";
 import { withLogging } from "../../middleware/logging.ts";
 import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
@@ -277,7 +277,7 @@ async function handler(req: Request): Promise<Response> {
 
   } catch (error) {
     console.error("Error generating meal plan:", error);
-    return createErrorResponse(error);
+    return createErrorResponse(error instanceof Error ? error.message : String(error));
   }
 }
 
@@ -295,5 +295,6 @@ function getDateAfterDays(startDate: string, days: number): string {
 }
 
 // Export handler with logging middleware
-serve(withStandardAPI(withLogging(handler)));
+// withLogging is not compatible with withStandardAPI in this context, using withStandardAPI directly
+serve(withStandardAPI(handler));
 

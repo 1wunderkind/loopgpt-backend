@@ -6,7 +6,7 @@ import { createAuthenticatedClient } from "../_lib/auth.ts";
 // Function: Get daily nutrition summary with progress tracking
 // =====================================================
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from '@supabase/supabase-js'
 
 interface GetSummaryRequest {
   chatgpt_user_id: string

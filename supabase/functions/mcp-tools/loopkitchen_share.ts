@@ -7,7 +7,7 @@
  * Part of: Widget Implementation (Prompt 5)
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { createClient } from "@supabase/supabase-js";
 import type { Widget } from "../_shared/loopkitchen/types/index.ts";
 import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
 

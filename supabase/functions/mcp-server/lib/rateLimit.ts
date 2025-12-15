@@ -13,7 +13,7 @@
  * Part of: Step 5 - Security Hardening
  */
 
-import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 // ============================================================================
 // Types

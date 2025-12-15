@@ -197,6 +197,7 @@ export interface GenerateWeekPlanRequest {
   recipes_per_day?: number;
   dietary_restrictions?: string[];
   language?: string; // ISO language code (en, es, zh, fr, etc.) - optional, auto-detected if not provided
+  confirmed_country?: string; // User-confirmed country code
 }
 
 export interface GenerateWeekPlanResponse {
@@ -207,6 +208,8 @@ export interface GenerateWeekPlanResponse {
     total_ingredients: number;
     platforms: string[];
   };
+  delivery_affiliates?: any[]; // Delivery affiliates for user's country
+  user_country?: string; // User's confirmed country
 }
 
 // ============================================================================

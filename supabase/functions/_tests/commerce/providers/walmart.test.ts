@@ -3,7 +3,7 @@
  * Tests for Walmart API integration (mock and real modes)
  */
 
-import { assertEquals, assertExists } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertExists } from "std/assert/mod.ts";
 import { walmartProvider } from "../../../_shared/commerce/providers/walmartProvider.ts";
 import {
   createSampleQuoteRequest,

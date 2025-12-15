@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std@0.168.0/http/server.ts";
 import { ReceiptManager } from "../_shared/loopkitchen/receipts.ts";
 import { InfoMessage } from "../_shared/loopkitchen/types/Widget.ts";
 

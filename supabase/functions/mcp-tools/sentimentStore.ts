@@ -5,7 +5,7 @@
  * Supports Supabase Postgres backend.
  */
 
-import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * Sentiment Event Type
@@ -17,7 +17,7 @@ export interface SentimentEvent {
   contentId?: string;
   eventType: "HELPFUL" | "NOT_HELPFUL" | "RATED" | "FAVORITED" | "UNFAVORITED";
   rating?: number; // 1-5 if applicable
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   timestamp?: string;
 }
 
@@ -29,7 +29,7 @@ export interface FavoriteItem {
   contentType: "recipe" | "mealplan" | "grocery" | "other";
   contentId: string;
   contentName?: string;
-  contentData?: Record<string, any>;
+  contentData?: Record<string, unknown>;
   createdAt?: string;
 }
 
@@ -100,8 +100,9 @@ export class SupabaseSentimentStore implements ISentimentStore {
         }
         throw new Error(`Failed to record sentiment event: ${error.message}`);
       }
-    } catch (err: any) {
-      console.warn("[SentimentStore] Error recording event:", err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn("[SentimentStore] Error recording event:", message);
       // Don't throw - allow graceful degradation
     }
   }
@@ -131,16 +132,17 @@ export class SupabaseSentimentStore implements ISentimentStore {
         throw new Error(`Failed to get favorites: ${error.message}`);
       }
 
-      return (data || []).map((row: any) => ({
-        userId: row.user_id,
-        contentType: row.content_type,
-        contentId: row.content_id,
-        contentName: row.content_name,
-        contentData: row.content_data,
-        createdAt: row.created_at,
+      return (data || []).map((row: Record<string, unknown>) => ({
+        userId: row.user_id as string,
+        contentType: row.content_type as "recipe" | "mealplan" | "grocery" | "other",
+        contentId: row.content_id as string,
+        contentName: row.content_name as string | undefined,
+        contentData: row.content_data as Record<string, unknown> | undefined,
+        createdAt: row.created_at as string | undefined,
       }));
-    } catch (err: any) {
-      console.warn("[SentimentStore] Error getting favorites:", err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn("[SentimentStore] Error getting favorites:", message);
       return [];
     }
   }
@@ -170,8 +172,9 @@ export class SupabaseSentimentStore implements ISentimentStore {
         }
         throw new Error(`Failed to add favorite: ${error.message}`);
       }
-    } catch (err: any) {
-      console.warn("[SentimentStore] Error adding favorite:", err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn("[SentimentStore] Error adding favorite:", message);
     }
   }
 
@@ -194,8 +197,9 @@ export class SupabaseSentimentStore implements ISentimentStore {
         }
         throw new Error(`Failed to remove favorite: ${error.message}`);
       }
-    } catch (err: any) {
-      console.warn("[SentimentStore] Error removing favorite:", err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn("[SentimentStore] Error removing favorite:", message);
     }
   }
 
@@ -229,8 +233,9 @@ export class SupabaseSentimentStore implements ISentimentStore {
         favoriteCount: data.favorite_count,
         lastUpdated: data.last_updated,
       };
-    } catch (err: any) {
-      console.warn("[SentimentStore] Error getting stats:", err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn("[SentimentStore] Error getting stats:", message);
       return null;
     }
   }

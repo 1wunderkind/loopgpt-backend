@@ -3,7 +3,7 @@
  * Zod schema validation with user-friendly error messages
  */
 
-import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { z } from "zod";
 import { ValidationError } from "./errors.ts";
 
 /**

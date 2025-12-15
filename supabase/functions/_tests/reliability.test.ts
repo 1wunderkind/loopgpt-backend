@@ -5,7 +5,7 @@
  * Run with: deno test --allow-net --allow-env reliability.test.ts
  */
 
-import { assertEquals, assertRejects } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertRejects } from "std/assert/mod.ts";
 import {
   withTimeout,
   withRetry,

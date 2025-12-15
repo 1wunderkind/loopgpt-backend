@@ -3,6 +3,15 @@
  * Comprehensive error handling utilities for edge functions
  */
 
+export type ErrorCategory = 
+  | "VALIDATION" 
+  | "PROVIDER" 
+  | "NETWORK" 
+  | "RATE_LIMIT" 
+  | "OPENAI" 
+  | "AUTH" 
+  | "INTERNAL";
+
 /**
  * Custom error types for better error handling
  */
@@ -11,7 +20,8 @@ export class AppError extends Error {
     message: string,
     public code: string,
     public statusCode: number = 500,
-    public details?: any
+    public category: ErrorCategory = "INTERNAL",
+    public details?: unknown
   ) {
     super(message);
     this.name = 'AppError';
@@ -19,8 +29,8 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, details?: any) {
-    super(message, 'VALIDATION_ERROR', 400, details);
+  constructor(message: string, details?: unknown) {
+    super(message, 'VALIDATION_ERROR', 400, "VALIDATION", details);
     this.name = 'ValidationError';
   }
 }
@@ -30,7 +40,8 @@ export class NotFoundError extends AppError {
     super(
       `${resource}${id ? ` with id ${id}` : ''} not found`,
       'NOT_FOUND',
-      404
+      404,
+      "VALIDATION"
     );
     this.name = 'NotFoundError';
   }
@@ -38,34 +49,48 @@ export class NotFoundError extends AppError {
 
 export class AuthenticationError extends AppError {
   constructor(message: string = 'Authentication required') {
-    super(message, 'AUTHENTICATION_ERROR', 401);
+    super(message, 'AUTHENTICATION_ERROR', 401, "AUTH");
     this.name = 'AuthenticationError';
   }
 }
 
 export class AuthorizationError extends AppError {
   constructor(message: string = 'Insufficient permissions') {
-    super(message, 'AUTHORIZATION_ERROR', 403);
+    super(message, 'AUTHORIZATION_ERROR', 403, "AUTH");
     this.name = 'AuthorizationError';
   }
 }
 
 export class RateLimitError extends AppError {
-  constructor(message: string = 'Rate limit exceeded') {
-    super(message, 'RATE_LIMIT_ERROR', 429);
+  constructor(message: string = 'Rate limit exceeded', source: 'INTERNAL' | 'PROVIDER' | 'OPENAI' = 'INTERNAL') {
+    super(message, 'RATE_LIMIT_ERROR', 429, "RATE_LIMIT", { source });
     this.name = 'RateLimitError';
   }
 }
 
 export class ExternalServiceError extends AppError {
-  constructor(service: string, originalError?: any) {
+  constructor(service: string, originalError?: unknown, isNetworkError: boolean = false) {
     super(
       `External service error: ${service}`,
       'EXTERNAL_SERVICE_ERROR',
       502,
+      isNetworkError ? "NETWORK" : "PROVIDER",
       originalError
     );
     this.name = 'ExternalServiceError';
+  }
+}
+
+export class OpenAiError extends AppError {
+  constructor(message: string, originalError?: unknown) {
+    super(
+      `OpenAI error: ${message}`,
+      'OPENAI_ERROR',
+      502,
+      "OPENAI",
+      originalError
+    );
+    this.name = 'OpenAiError';
   }
 }
 
@@ -74,7 +99,8 @@ export class TimeoutError extends AppError {
     super(
       `Operation '${operation}' timed out after ${timeoutMs}ms`,
       'TIMEOUT_ERROR',
-      504
+      504,
+      "NETWORK"
     );
     this.name = 'TimeoutError';
   }
@@ -96,6 +122,7 @@ export class ErrorHandler {
         JSON.stringify({
           error: error.code,
           message: error.message,
+          category: error.category,
           details: error.details,
         }),
         {
@@ -111,6 +138,7 @@ export class ErrorHandler {
         JSON.stringify({
           error: 'INTERNAL_ERROR',
           message: error.message,
+          category: "INTERNAL"
         }),
         {
           status: 500,
@@ -124,6 +152,7 @@ export class ErrorHandler {
       JSON.stringify({
         error: 'UNKNOWN_ERROR',
         message: 'An unknown error occurred',
+        category: "INTERNAL"
       }),
       {
         status: 500,
@@ -168,6 +197,7 @@ export class ErrorHandler {
 
   /**
    * Retry with exponential backoff
+   * Only retries NETWORK, RATE_LIMIT, and explicitly idempotent PROVIDER errors
    */
   static async withRetry<T>(
     fn: () => Promise<T>,
@@ -176,7 +206,7 @@ export class ErrorHandler {
       initialDelayMs?: number;
       maxDelayMs?: number;
       backoffMultiplier?: number;
-      retryableErrors?: string[];
+      retryableCategories?: ErrorCategory[];
     } = {}
   ): Promise<T> {
     const {
@@ -184,7 +214,7 @@ export class ErrorHandler {
       initialDelayMs = 1000,
       maxDelayMs = 10000,
       backoffMultiplier = 2,
-      retryableErrors = ['TIMEOUT_ERROR', 'EXTERNAL_SERVICE_ERROR'],
+      retryableCategories = ['NETWORK', 'RATE_LIMIT'],
     } = options;
 
     let lastError: unknown;
@@ -197,9 +227,15 @@ export class ErrorHandler {
         lastError = error;
 
         // Check if error is retryable
-        const isRetryable =
-          error instanceof AppError &&
-          retryableErrors.includes(error.code);
+        let isRetryable = false;
+        
+        if (error instanceof AppError) {
+          isRetryable = retryableCategories.includes(error.category);
+        } else if (error instanceof Error) {
+          // Assume standard errors might be transient network issues if they look like it
+          // But safer to default to false unless we know
+          isRetryable = false; 
+        }
 
         // Don't retry if not retryable or max retries reached
         if (!isRetryable || attempt === maxRetries) {
@@ -256,7 +292,8 @@ export class ErrorHandler {
         throw new AppError(
           'Circuit breaker is OPEN',
           'CIRCUIT_BREAKER_OPEN',
-          503
+          503,
+          "INTERNAL"
         );
       }
 
@@ -308,7 +345,7 @@ export class ErrorHandler {
    * Validate request body
    */
   static validateRequired(
-    data: any,
+    data: Record<string, unknown>,
     requiredFields: string[]
   ): void {
     const missingFields = requiredFields.filter(
@@ -365,13 +402,13 @@ export class ErrorHandler {
  * Decorator for error handling (for use with class methods)
  */
 export function handleErrors(
-  target: any,
+  target: unknown,
   propertyKey: string,
   descriptor: PropertyDescriptor
 ) {
   const originalMethod = descriptor.value;
 
-  descriptor.value = async function (...args: any[]) {
+  descriptor.value = async function (...args: unknown[]) {
     try {
       return await originalMethod.apply(this, args);
     } catch (error) {

@@ -6,8 +6,8 @@ import { createAuthenticatedClient } from "../_lib/auth.ts";
 // Function: Quickly log calories without detailed food info
 // =====================================================
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
+import { createClient } from '@supabase/supabase-js'
+import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 interface QuickAddRequest {
   chatgpt_user_id: string
   calories: number

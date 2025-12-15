@@ -21,7 +21,7 @@
  * - Supabase client integration
  */
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from '@supabase/supabase-js';
 import type {
   LogIngredientSubmissionParams,
   LogRecipeEventParams,
@@ -193,10 +193,10 @@ export async function logRecipeEvent(
 export async function logMealLog(
   params: LogMealLogParams
 ): Promise<void> {
-  const loggedAt = typeof params.loggedAt === 'string' 
-    ? params.loggedAt 
-    : params.loggedAt.toISOString();
-  
+  const loggedAt = params.loggedAt instanceof Date 
+    ? params.loggedAt.toISOString() 
+    : (params.loggedAt || params.log_date || new Date().toISOString());
+
   const payload = {
     user_id: params.userId || null,
     session_id: params.sessionId || null,
@@ -501,25 +501,4 @@ export async function refreshAnalyticsViews(): Promise<void> {
   }
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  // Core logging functions
-  logIngredientSubmission,
-  logRecipeEvent,
-  logMealLog,
-  logMealPlanGenerated,
-  logAffiliateClick,
-  logAffiliateConversion,
-  upsertUserGoal,
-  logSessionEvent,
-  
-  // Batch helpers
-  batchLog,
-  
-  // Query helpers
-  getUserSummary,
-  refreshAnalyticsViews,
-};
+// Exports are handled inline with function definitions

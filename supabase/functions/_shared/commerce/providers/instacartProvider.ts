@@ -99,12 +99,12 @@ class InstacartProvider extends BaseCommerceProvider {
     };
   }
 
-  async healthCheck(config: ProviderConfig): Promise<boolean> {
+  override async healthCheck(config: ProviderConfig): Promise<boolean> {
     // TODO: Ping Instacart API health endpoint
     return config.enabled;
   }
 
-  getName(): string {
+  override getName(): string {
     return 'Instacart';
   }
 }

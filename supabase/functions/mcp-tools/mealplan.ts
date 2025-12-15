@@ -3,37 +3,61 @@
  * Generate structured meal plans based on dietary goals using OpenAI
  */
 
-import OpenAI from "https://esm.sh/openai@4.28.0";
+import OpenAI from "openai";
 import { cacheGet, cacheSet } from "./cache.ts";
 import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
 import { getFallbackMealPlan } from "./fallbacks.ts";
 import { generateMealPlanCtas, addCtasToResponse } from "./ctaSchemas.ts";
+import { Logger } from "../_shared/monitoring/Logger.ts";
 
 // Type for meal plan generation input
 export interface MealPlanInput {
-  days?: number;
+  days: number;
   locale?: string;
-  dietTags?: string[];
+  dietTags: string[];
   cuisines?: string[];
   caloriesPerDay?: number;
-  goals?: any;
-  mealsPerDay?: number;
-  dietaryTags?: string[];
-  excludeIngredients?: string[];
+  goals: Record<string, unknown>;
+  mealsPerDay: number;
+  dietaryTags: string[];
+  excludeIngredients: string[];
+  servings?: number;
+  groupBy?: string;
+}
+
+interface MealPlan {
+  id: string;
+  name: string;
+  description: string;
+  days: unknown[];
+  summary: unknown;
+  [key: string]: unknown;
 }
 
 // Simple input validation
-function validateMealPlanInput(params: any) {
-  if (!params.goals || typeof params.goals !== 'object') {
+export function validateMealPlanInput(params: unknown): MealPlanInput {
+  if (!params || typeof params !== 'object') {
+    throw new Error("Invalid input: expected object");
+  }
+  
+  const typedParams = params as Record<string, unknown>;
+  
+  if (!typedParams.goals || typeof typedParams.goals !== 'object') {
     throw new Error("goals object is required");
   }
   
   return {
-    goals: params.goals,
-    days: Math.min(params.days || 7, 30), // Max 30 days
-    mealsPerDay: Math.min(params.mealsPerDay || 3, 6), // Max 6 meals
-    dietaryTags: params.dietaryTags || [],
-    excludeIngredients: params.excludeIngredients || []
+    goals: typedParams.goals as Record<string, unknown>,
+    days: Math.min(Number(typedParams.days) || 7, 30), // Max 30 days
+    mealsPerDay: Math.min(Number(typedParams.mealsPerDay) || 3, 6), // Max 6 meals
+    dietaryTags: Array.isArray(typedParams.dietaryTags) ? typedParams.dietaryTags.map(String) : [],
+    dietTags: Array.isArray(typedParams.dietTags) ? typedParams.dietTags.map(String) : [],
+    excludeIngredients: Array.isArray(typedParams.excludeIngredients) ? typedParams.excludeIngredients.map(String) : [],
+    locale: typeof typedParams.locale === 'string' ? typedParams.locale : undefined,
+    cuisines: Array.isArray(typedParams.cuisines) ? typedParams.cuisines.map(String) : undefined,
+    caloriesPerDay: typeof typedParams.caloriesPerDay === 'number' ? typedParams.caloriesPerDay : undefined,
+    servings: typeof typedParams.servings === 'number' ? typedParams.servings : undefined,
+    groupBy: typeof typedParams.groupBy === 'string' ? typedParams.groupBy : undefined
   };
 }
 
@@ -119,21 +143,28 @@ const MealPlanJsonSchema = {
 /**
  * Composite tool: Generate meal plan WITH grocery list
  */
-export async function generateMealPlanWithGroceryList(params: any) {
+export async function generateMealPlanWithGroceryList(params: unknown, requestId?: string) {
   const startTime = Date.now();
+  const logger = new Logger({ 
+    requestId: requestId || Logger.generateRequestId(),
+    toolName: "mealplan.generateWithGroceryList"
+  });
   
   try {
-    console.log("[mealplan.generateWithGroceryList] Starting composite operation...");
+    logger.info("Starting composite operation");
     
+    // Validate input first to ensure we have typed params
+    const input = validateMealPlanInput(params);
+
     // Step 1: Generate meal plan
-    const mealPlan = await generateMealPlan(params);
+    const mealPlan = await generateMealPlan(input, logger['context'].requestId);
     
     // Step 2: Generate grocery list from meal plan
     const { generateGroceryList } = await import("./grocery.ts");
     const groceryList = await generateGroceryList({ 
       mealPlan,
-      servings: params.servings || 1,
-      groupBy: params.groupBy || "category"
+      servings: input.servings || 1,
+      groupBy: input.groupBy || "category"
     });
     
     // Step 3: Combine into single response
@@ -143,24 +174,32 @@ export async function generateMealPlanWithGroceryList(params: any) {
     };
     
     const duration = Date.now() - startTime;
-    console.log("[mealplan.generateWithGroceryList] Success", { days: mealPlan.days?.length, groceryItems: groceryList.totalItems, duration });
+    logger.info("Success", { 
+      days: (mealPlan as MealPlan).days?.length, 
+      groceryItems: (groceryList as Record<string, unknown>).totalItems, 
+      duration 
+    });
     
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
-    console.error("[mealplan.generateWithGroceryList] Error", { error: error.message, duration });
+    logger.error("Composite operation failed", error instanceof Error ? error : undefined, { duration });
     throw error;
   }
 }
 
-export async function generateMealPlan(params: any) {
+export async function generateMealPlan(params: unknown, requestId?: string) {
   const startTime = Date.now();
+  const logger = new Logger({ 
+    requestId: requestId || Logger.generateRequestId(),
+    toolName: "mealplan.generate"
+  });
   
   try {
-    console.log("[mealplan.generate] Starting...", { params });
-    
     // Validate input
     const input = validateMealPlanInput(params);
+    
+    logger.info("Starting meal plan generation", { days: input.days, mealsPerDay: input.mealsPerDay });
     
     // Generate cache key from goals and parameters
     const cacheKey = `mealplan:${input.days}d:${JSON.stringify(input.goals)}:${input.dietaryTags.join(',')}`.substring(0, 200);
@@ -169,11 +208,15 @@ export async function generateMealPlan(params: any) {
     const cached = await cacheGet(cacheKey);
     if (cached) {
       const duration = Date.now() - startTime;
-      const plan = JSON.parse(cached);
+      const plan = JSON.parse(cached) as MealPlan;
+      
+      logger.info("Cache hit", { duration, days: plan.days?.length });
+      
       logSuccess("mealplan.generate", duration, {
         days: plan.days?.length,
         cached: true,
         fallbackUsed: false,
+        requestId: logger['context'].requestId
       });
       return plan;
     }
@@ -212,7 +255,8 @@ ${input.excludeIngredients.length > 0 ? `Exclude: ${input.excludeIngredients.joi
 
 Start date: ${new Date().toISOString().split('T')[0]}`;
 
-    console.log("[mealplan.generate] Calling OpenAI...");
+    logger.info("Calling OpenAI");
+    const openAiStartTime = Date.now();
     
     // Call OpenAI with Structured Outputs
     const completion = await client.chat.completions.create({
@@ -232,6 +276,9 @@ Start date: ${new Date().toISOString().split('T')[0]}`;
         },
       } as any,
     });
+    
+    const openAiDuration = Date.now() - openAiStartTime;
+    logger.info("OpenAI call completed", { duration: openAiDuration });
 
     const rawContent = completion.choices[0]?.message?.content;
     if (!rawContent) {
@@ -239,48 +286,60 @@ Start date: ${new Date().toISOString().split('T')[0]}`;
     }
 
     const parsed = JSON.parse(rawContent);
-    const plan = parsed.plan || parsed;
+    const plan = (parsed.plan || parsed) as MealPlan;
     
     // Cache the result for 24 hours
     await cacheSet(cacheKey, JSON.stringify(plan), 86400);
     
     const duration = Date.now() - startTime;
+    
     logSuccess("mealplan.generate", duration, {
       days: plan.days?.length,
       cached: false,
       fallbackUsed: false,
+      requestId: logger['context'].requestId
     });
     
     // Add CTAs to successful response
-    const ctas = generateMealPlanCtas(plan, input);
+    const ctas = generateMealPlanCtas(plan as unknown as Record<string, unknown>, input as unknown as Record<string, unknown>);
     
     // Log CTA impression
     logCtaImpression("mealplan", ctas.map(c => c.id), {
       days: plan.days?.length,
       cached: false,
+      requestId: logger['context'].requestId
     });
     
     return addCtasToResponse(plan, ctas);
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "mealplan.generate");
+    
+    logger.error("Meal plan generation failed", error instanceof Error ? error : undefined, { 
+      duration, 
+      errorCategory: categorized.type 
+    });
     
     // Log structured error
     logStructuredError(categorized, true, duration);
     
     // Return fallback meal plan instead of throwing
-    console.warn("[mealplan.generate] Returning fallback meal plan due to error");
-    const fallbackPlan = getFallbackMealPlan(params.days || 1);
+    logger.warn("Returning fallback meal plan due to error");
+    
+    // Safely access days for fallback
+    const days = (params as Record<string, unknown>)?.days;
+    const fallbackPlan = getFallbackMealPlan(Number(days) || 1) as unknown as MealPlan;
     
     // Log fallback usage
     logSuccess("mealplan.generate", duration, {
       fallbackUsed: true,
       days: fallbackPlan.days?.length,
       errorType: categorized.type,
+      requestId: logger['context'].requestId
     });
     
     // Add CTAs to fallback response
-    const ctasForFallback = generateMealPlanCtas(fallbackPlan, params);
+    const ctasForFallback = generateMealPlanCtas(fallbackPlan as unknown as Record<string, unknown>, params as Record<string, unknown>);
     return addCtasToResponse(fallbackPlan, ctasForFallback);
   }
 }

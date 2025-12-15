@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std@0.168.0/http/server.ts";
 import { withSystemAPI } from "../_shared/security/applyMiddleware.ts";
 
 // Hardcoded tool categories and examples

@@ -153,10 +153,16 @@ export interface AlternativeProvider {
 export interface OrderRoutingResponse {
   success: boolean;
   provider: string;
+  providerId?: string;
   quote: ProviderQuote;
   scoreBreakdown: ScoreBreakdown;
   alternatives: AlternativeProvider[];
   confirmationToken: string;
+  affiliateUrl?: string;
+  cartSessionId?: string;
+  checkoutUrl?: string;
+  status?: string;
+  message?: string;
 }
 
 /**
@@ -182,6 +188,9 @@ export interface OrderConfirmationResponse {
     min: number;
     max: number;
   };
+  status?: string;
+  totalCharged?: number;
+  currency?: string;
 }
 
 // ============================================================================

@@ -24,9 +24,16 @@ export function handleError(error: unknown): Response {
   );
 }
 
-export function createErrorResponse(message: string, status: number = 400): Response {
+export function createErrorResponse(code: string, details?: any, status: number = 400): Response {
+  // Handle legacy calls where first arg is message and second is status
+  if (typeof details === 'number') {
+    status = details;
+    details = undefined;
+  }
+
   const errorResponse: ErrorResponse = {
-    error: message,
+    error: code,
+    details: details,
     timestamp: new Date().toISOString(),
   };
 
@@ -37,5 +44,24 @@ export function createErrorResponse(message: string, status: number = 400): Resp
       headers: { 'Content-Type': 'application/json' },
     }
   );
+}
+
+export function createSuccessResponse(data: any, status: number = 200): Response {
+  return new Response(
+    JSON.stringify(data),
+    {
+      status,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+}
+
+export function validateRequired(body: any, fields: string[]): string | null {
+  for (const field of fields) {
+    if (body[field] === undefined || body[field] === null) {
+      return `Missing required field: ${field}`;
+    }
+  }
+  return null;
 }
 

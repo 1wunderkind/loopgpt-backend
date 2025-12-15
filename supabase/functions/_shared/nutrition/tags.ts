@@ -76,16 +76,16 @@ export function getIngredientBasedTags(canonicalNames: string[]): DietTag[] {
   const tags: DietTag[] = [];
   
   // Check for animal products
-  const hasAnimalProduct = hasIngredientFlag(canonicalNames, "animalProduct");
-  const hasMeat = hasIngredientFlag(canonicalNames, "meat");
-  const hasFish = hasIngredientFlag(canonicalNames, "fish");
-  const hasDairy = hasIngredientFlag(canonicalNames, "dairy");
-  const hasEgg = hasIngredientFlag(canonicalNames, "egg");
-  const hasGluten = hasIngredientFlag(canonicalNames, "gluten");
-  const hasNut = hasIngredientFlag(canonicalNames, "nut");
-  const hasSoy = hasIngredientFlag(canonicalNames, "soy");
-  const hasLegume = hasIngredientFlag(canonicalNames, "legume");
-  const hasGrain = hasIngredientFlag(canonicalNames, "grain");
+  const hasAnimalProduct = hasIngredientFlag(canonicalNames, "isAnimalProduct");
+  const hasMeat = hasIngredientFlag(canonicalNames, "isMeat");
+  const hasFish = hasIngredientFlag(canonicalNames, "isFish");
+  const hasDairy = hasIngredientFlag(canonicalNames, "isDairy");
+  const hasEgg = hasIngredientFlag(canonicalNames, "isEgg");
+  const hasGluten = hasIngredientFlag(canonicalNames, "isGluten");
+  const hasNut = hasIngredientFlag(canonicalNames, "isNut");
+  const hasSoy = hasIngredientFlag(canonicalNames, "isSoy");
+  const hasLegume = hasIngredientFlag(canonicalNames, "isLegume");
+  const hasGrain = hasIngredientFlag(canonicalNames, "isGrain");
   
   // Vegan: No animal products at all
   if (!hasAnimalProduct) {

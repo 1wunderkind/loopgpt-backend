@@ -6,7 +6,7 @@
  * based on actual performance vs. predicted performance.
  */
 
-import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SupabaseClient } from "@supabase/supabase-js";
 import type {
   OrderOutcome,
   OrderIssue,
@@ -129,7 +129,7 @@ export class ScoringLearner {
    */
   private async recordIssues(providerId: string, issues: OrderIssue[]): Promise<void> {
     // Count issue frequency
-    const issueCounts: Record<OrderIssue, number> = {} as any;
+    const issueCounts: Record<OrderIssue, number> = {} as Record<OrderIssue, number>;
     issues.forEach(issue => {
       issueCounts[issue] = (issueCounts[issue] || 0) + 1;
     });
@@ -193,7 +193,7 @@ export class ScoringLearner {
         successRate: 0,
         avgDeliveryTime: 0,
         avgRating: 0,
-        commonIssues: {} as any,
+        commonIssues: {} as Record<OrderIssue, number>,
       };
     }
 
@@ -217,7 +217,7 @@ export class ScoringLearner {
       : 0;
 
     // Count issues
-    const commonIssues: Record<OrderIssue, number> = {} as any;
+    const commonIssues: Record<OrderIssue, number> = {} as Record<OrderIssue, number>;
     outcomes.forEach(outcome => {
       if (outcome.issues) {
         outcome.issues.forEach((issue: OrderIssue) => {

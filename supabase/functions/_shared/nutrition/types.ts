@@ -216,40 +216,52 @@ export interface FoodEntry {
  */
 export interface IngredientFlags {
   /** Is this an animal product? (meat, fish, eggs, dairy, honey) */
-  animalProduct?: boolean;
+  isAnimalProduct?: boolean;
   
   /** Is this meat? (beef, pork, chicken, lamb, etc.) */
-  meat?: boolean;
+  isMeat?: boolean;
   
   /** Is this fish/seafood? */
-  fish?: boolean;
+  isFish?: boolean;
   
   /** Is this dairy? (milk, cheese, yogurt, butter, cream) */
-  dairy?: boolean;
+  isDairy?: boolean;
   
   /** Is this an egg? */
-  egg?: boolean;
+  isEgg?: boolean;
   
   /** Contains gluten? (wheat, barley, rye, spelt) */
-  gluten?: boolean;
+  isGluten?: boolean;
+
+  /** Is this gluten free? */
+  isGlutenFree?: boolean;
   
   /** Is this a tree nut or peanut? */
-  nut?: boolean;
+  isNut?: boolean;
   
   /** Contains soy? */
-  soy?: boolean;
+  isSoy?: boolean;
   
   /** Is this a legume? (beans, lentils, peanuts) */
-  legume?: boolean;
+  isLegume?: boolean;
   
   /** Is this a grain? (rice, wheat, oats, quinoa) */
-  grain?: boolean;
+  isGrain?: boolean;
   
   /** Is this a processed/refined food? */
-  processed?: boolean;
+  isProcessed?: boolean;
   
   /** Contains added sugar? */
-  addedSugar?: boolean;
+  hasAddedSugar?: boolean;
+
+  /** Is this vegan? */
+  isVegan?: boolean;
+
+  /** Is this vegetarian? */
+  isVegetarian?: boolean;
+  
+  /** Is this alcohol? */
+  isAlcohol?: boolean;
 }
 
 /**

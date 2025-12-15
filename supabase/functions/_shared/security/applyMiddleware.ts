@@ -123,7 +123,7 @@ export function withMiddleware(
                 status: 429,
                 headers: {
                   'Content-Type': 'application/json',
-                  'X-RateLimit-Limit': rateLimiter.config.maxRequests.toString(),
+                  'X-RateLimit-Limit': rateLimiter.getConfig().maxRequests.toString(),
                   'X-RateLimit-Remaining': result.remaining.toString(),
                   'X-RateLimit-Reset': new Date(result.resetTime).toISOString(),
                   'Retry-After': Math.ceil((result.resetTime - Date.now()) / 1000).toString(),

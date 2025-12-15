@@ -20,7 +20,7 @@ export interface SentimentFeedbackInput {
   eventType: "HELPFUL" | "NOT_HELPFUL" | "RATED" | "FAVORITED" | "UNFAVORITED";
   rating?: number; // 1-5 for RATED events
   contentName?: string; // For favorites
-  contentData?: Record<string, any>; // Additional data to store with favorites
+  contentData?: Record<string, unknown>; // Additional data to store with favorites
 }
 
 /**
@@ -40,51 +40,55 @@ export interface SentimentFeedbackOutput {
 /**
  * Validate sentiment feedback input
  */
-function validateSentimentInput(input: any): SentimentFeedbackInput {
+function validateSentimentInput(input: unknown): SentimentFeedbackInput {
   if (!input || typeof input !== "object") {
     throw new Error("Input must be an object");
   }
 
+  const typedInput = input as Record<string, unknown>;
+
   // Validate contentType
   const validContentTypes = ["recipe", "mealplan", "grocery", "other"];
-  if (!input.contentType || !validContentTypes.includes(input.contentType)) {
+  const contentType = typedInput.contentType as string;
+  if (!contentType || !validContentTypes.includes(contentType)) {
     throw new Error(`contentType must be one of: ${validContentTypes.join(", ")}`);
   }
 
   // Validate eventType
   const validEventTypes = ["HELPFUL", "NOT_HELPFUL", "RATED", "FAVORITED", "UNFAVORITED"];
-  if (!input.eventType || !validEventTypes.includes(input.eventType)) {
+  const eventType = typedInput.eventType as string;
+  if (!eventType || !validEventTypes.includes(eventType)) {
     throw new Error(`eventType must be one of: ${validEventTypes.join(", ")}`);
   }
 
   // Validate rating for RATED events
-  if (input.eventType === "RATED") {
-    if (typeof input.rating !== "number") {
+  if (eventType === "RATED") {
+    if (typeof typedInput.rating !== "number") {
       throw new Error("rating is required for RATED events");
     }
-    if (input.rating < 1 || input.rating > 5) {
+    if (typedInput.rating < 1 || typedInput.rating > 5) {
       throw new Error("rating must be between 1 and 5");
     }
   }
 
   // Validate userId if provided
-  if (input.userId !== undefined && typeof input.userId !== "string") {
+  if (typedInput.userId !== undefined && typeof typedInput.userId !== "string") {
     throw new Error("userId must be a string");
   }
 
   // Validate contentId if provided
-  if (input.contentId !== undefined && typeof input.contentId !== "string") {
+  if (typedInput.contentId !== undefined && typeof typedInput.contentId !== "string") {
     throw new Error("contentId must be a string");
   }
 
   return {
-    userId: input.userId,
-    contentType: input.contentType,
-    contentId: input.contentId,
-    eventType: input.eventType,
-    rating: input.rating,
-    contentName: input.contentName,
-    contentData: input.contentData,
+    userId: typedInput.userId as string | undefined,
+    contentType: contentType as "recipe" | "mealplan" | "grocery" | "other",
+    contentId: typedInput.contentId as string | undefined,
+    eventType: eventType as "HELPFUL" | "NOT_HELPFUL" | "RATED" | "FAVORITED" | "UNFAVORITED",
+    rating: typedInput.rating as number | undefined,
+    contentName: typedInput.contentName as string | undefined,
+    contentData: typedInput.contentData as Record<string, unknown> | undefined,
   };
 }
 
@@ -94,7 +98,7 @@ function validateSentimentInput(input: any): SentimentFeedbackInput {
  * Main entry point for recording user feedback.
  */
 export async function recordSentimentFeedback(
-  input: any
+  input: unknown
 ): Promise<SentimentFeedbackOutput> {
   const startTime = Date.now();
 
@@ -154,7 +158,7 @@ export async function recordSentimentFeedback(
       },
     };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const mcpError = categorizeError(error, "feedback.sentiment");
     logStructuredError(mcpError, false, duration);
@@ -177,14 +181,14 @@ export interface GetFavoritesOutput {
     contentType: string;
     contentId: string;
     contentName?: string;
-    contentData?: Record<string, any>;
+    contentData?: Record<string, unknown>;
     createdAt: string;
   }>;
   count: number;
 }
 
 export async function getUserFavorites(
-  input: any
+  input: unknown
 ): Promise<GetFavoritesOutput> {
   const startTime = Date.now();
 
@@ -193,12 +197,14 @@ export async function getUserFavorites(
     if (!input || typeof input !== "object") {
       throw new Error("Input must be an object");
     }
-    if (!input.userId || typeof input.userId !== "string") {
+    const typedInput = input as Record<string, unknown>;
+
+    if (!typedInput.userId || typeof typedInput.userId !== "string") {
       throw new Error("userId is required and must be a string");
     }
 
     const validContentTypes = ["recipe", "mealplan", "grocery", "other"];
-    if (input.contentType && !validContentTypes.includes(input.contentType)) {
+    if (typedInput.contentType && (typeof typedInput.contentType !== "string" || !validContentTypes.includes(typedInput.contentType))) {
       throw new Error(`contentType must be one of: ${validContentTypes.join(", ")}`);
     }
 
@@ -206,12 +212,15 @@ export async function getUserFavorites(
     const store = getSentimentStore();
 
     // Retrieve favorites
-    const favorites = await store.getFavorites(input.userId, input.contentType);
+    const favorites = await store.getFavorites(
+      typedInput.userId, 
+      typedInput.contentType as "recipe" | "mealplan" | "grocery" | "other" | undefined
+    );
 
     const duration = Date.now() - startTime;
     logSuccess("feedback.getFavorites", duration, {
-      userId: input.userId,
-      contentType: input.contentType,
+      userId: typedInput.userId,
+      contentType: typedInput.contentType,
       count: favorites.length,
     });
 
@@ -226,7 +235,7 @@ export async function getUserFavorites(
       count: favorites.length,
     };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const mcpError = categorizeError(error, "feedback.getFavorites");
     logStructuredError(mcpError, false, duration);
@@ -259,7 +268,7 @@ export interface GetStatsOutput {
 }
 
 export async function getContentStats(
-  input: any
+  input: unknown
 ): Promise<GetStatsOutput> {
   const startTime = Date.now();
 
@@ -268,13 +277,14 @@ export async function getContentStats(
     if (!input || typeof input !== "object") {
       throw new Error("Input must be an object");
     }
+    const typedInput = input as Record<string, unknown>;
 
     const validContentTypes = ["recipe", "mealplan", "grocery", "other"];
-    if (!input.contentType || !validContentTypes.includes(input.contentType)) {
+    if (!typedInput.contentType || typeof typedInput.contentType !== "string" || !validContentTypes.includes(typedInput.contentType)) {
       throw new Error(`contentType must be one of: ${validContentTypes.join(", ")}`);
     }
 
-    if (!input.contentId || typeof input.contentId !== "string") {
+    if (!typedInput.contentId || typeof typedInput.contentId !== "string") {
       throw new Error("contentId is required and must be a string");
     }
 
@@ -282,13 +292,16 @@ export async function getContentStats(
     const store = getSentimentStore();
 
     // Retrieve stats
-    const stats = await store.getStats(input.contentType, input.contentId);
+    const stats = await store.getStats(
+      typedInput.contentType as "recipe" | "mealplan" | "grocery" | "other", 
+      typedInput.contentId
+    );
 
     if (!stats) {
       // No stats yet - return zeros
       return {
-        contentType: input.contentType,
-        contentId: input.contentId,
+        contentType: typedInput.contentType as string,
+        contentId: typedInput.contentId,
         stats: {
           helpfulCount: 0,
           notHelpfulCount: 0,
@@ -308,8 +321,8 @@ export async function getContentStats(
 
     const duration = Date.now() - startTime;
     logSuccess("feedback.getStats", duration, {
-      contentType: input.contentType,
-      contentId: input.contentId,
+      contentType: typedInput.contentType,
+      contentId: typedInput.contentId,
     });
 
     return {
@@ -326,7 +339,7 @@ export async function getContentStats(
       lastUpdated: stats.lastUpdated,
     };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const mcpError = categorizeError(error, "feedback.getStats");
     logStructuredError(mcpError, false, duration);

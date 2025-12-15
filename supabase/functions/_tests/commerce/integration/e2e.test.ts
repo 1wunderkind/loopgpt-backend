@@ -6,8 +6,8 @@
  * Set LOOPGPT_ENV=staging to enable
  */
 
-import { assertEquals, assertExists } from "https://deno.land/std@0.208.0/assert/mod.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { assertEquals, assertExists } from "std/assert/mod.ts";
+import { createClient } from "@supabase/supabase-js";
 import { withTestEnv, SAMPLE_ITEMS, SAMPLE_ADDRESS } from "../testUtils.ts";
 import type { RouteOrderRequest, RouteOrderResponse } from "../../../_shared/commerce/types/index.ts";
 

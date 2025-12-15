@@ -37,7 +37,7 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 /**
  * Validate prepareCart input
  */
-function validatePrepareCartInput(params: any) {
+function validatePrepareCartInput(params: Record<string, unknown>) {
   if (!params.userId || typeof params.userId !== "string") {
     throw new Error("userId is required (string)");
   }
@@ -97,7 +97,7 @@ async function callCommerceRouter(request: OrderRoutingRequest): Promise<OrderRo
  * 2. Calls the commerce router to get provider quotes
  * 3. Returns the best provider with quote and confirmation token
  */
-export async function prepareCart(params: any): Promise<OrderRoutingResponse> {
+export async function prepareCart(params: Record<string, unknown>): Promise<OrderRoutingResponse> {
   const startTime = Date.now();
   
   try {
@@ -109,26 +109,37 @@ export async function prepareCart(params: any): Promise<OrderRoutingResponse> {
     
     if (input.groceryList) {
       // Use existing grocery list
-      const items = input.groceryList.categories?.flatMap((cat: any) => cat.items) || [];
+      const items = input.groceryList.categories?.flatMap((cat: { items: unknown[] }) => cat.items) || [];
       cartPayload = buildCartPayload(items, {
         missingItemsCount: input.groceryList.missingCount,
       });
     } else if (input.recipes) {
       // Extract ingredients from recipes
-      const items = input.recipes.flatMap((recipe: any) =>
-        recipe.ingredients?.map((ing: any) => ({
+      const items = input.recipes.flatMap((recipe: { ingredients?: { name: string; quantity?: string }[]; id: string }) =>
+        recipe.ingredients?.map((ing) => ({
           name: ing.name,
           quantity: ing.quantity || "1",
           category: "Uncategorized",
         })) || []
       );
       cartPayload = buildCartPayload(items, {
-        recipeIds: input.recipes.map((r: any) => r.id),
+        recipeIds: input.recipes.map((r: { id: string }) => r.id),
       });
     } else if (input.mealPlan) {
       // Extract ingredients from meal plan
-      const items: any[] = [];
-      for (const day of input.mealPlan.days || []) {
+      const items: { name: string; quantity: string; category: string }[] = [];
+      const mealPlan = input.mealPlan as { 
+        id: string; 
+        days?: { 
+          meals?: { 
+            recipes?: { 
+              ingredients?: { name: string; quantity?: string }[] 
+            }[] 
+          }[] 
+        }[] 
+      };
+      
+      for (const day of mealPlan.days || []) {
         for (const meal of day.meals || []) {
           for (const recipe of meal.recipes || []) {
             for (const ing of recipe.ingredients || []) {
@@ -142,7 +153,7 @@ export async function prepareCart(params: any): Promise<OrderRoutingResponse> {
         }
       }
       cartPayload = buildCartPayload(items, {
-        mealPlanId: input.mealPlan.id,
+        mealPlanId: mealPlan.id,
       });
     } else {
       throw new Error("No valid input provided");
@@ -213,7 +224,7 @@ export async function prepareCart(params: any): Promise<OrderRoutingResponse> {
       message: `I found the best option via ${routingResponse.provider}. Would you like me to place this order? I can switch providers automatically if something fails.`,
     };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.prepareCart");
     
@@ -228,7 +239,7 @@ export async function prepareCart(params: any): Promise<OrderRoutingResponse> {
 /**
  * Confirm user consent for a cart session
  */
-export async function confirmConsent(params: any): Promise<{ success: boolean; message: string }> {
+export async function confirmConsent(params: Record<string, unknown>): Promise<{ success: boolean; message: string }> {
   const startTime = Date.now();
   
   try {
@@ -287,7 +298,7 @@ export async function confirmConsent(params: any): Promise<{ success: boolean; m
       message: "Got it — I’ll place the order and switch providers automatically if needed.",
     };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.confirmConsent");
     logStructuredError(categorized, false, duration);
@@ -298,7 +309,7 @@ export async function confirmConsent(params: any): Promise<{ success: boolean; m
 /**
  * Confirm order through commerce router (Idempotent & Session-Aware)
  */
-export async function confirmOrder(params: any): Promise<OrderConfirmationResponse> {
+export async function confirmOrder(params: Record<string, unknown>): Promise<OrderConfirmationResponse> {
   const startTime = Date.now();
   
   try {
@@ -325,12 +336,13 @@ export async function confirmOrder(params: any): Promise<OrderConfirmationRespon
     if (session.status === "confirmed") {
       console.log(`[commerce.confirmOrder] Session ${session.id} already confirmed. Returning success.`);
       return {
+        success: true,
         orderId: "idempotent-replay", // In real world, store orderId in session
         provider: session.selected_provider || "unknown",
         status: "confirmed",
         totalCharged: session.quote.total,
         currency: session.quote.currency,
-        estimatedDelivery: "See original confirmation",
+        estimatedDelivery: { min: 0, max: 0 }, // Placeholder for "See original confirmation"
       };
     }
 
@@ -408,7 +420,7 @@ export async function confirmOrder(params: any): Promise<OrderConfirmationRespon
         
         return result;
 
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error(`[commerce.confirmOrder] Attempt ${attempts} failed:`, error);
         
         // Record failure
@@ -448,7 +460,7 @@ export async function confirmOrder(params: any): Promise<OrderConfirmationRespon
     
     throw new Error("Max confirmation attempts reached");
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.confirmOrder");
     logStructuredError(categorized, false, duration);
@@ -506,7 +518,7 @@ export async function resumeCart(params: any): Promise<any> {
       message,
     };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.resumeCart");
     logStructuredError(categorized, false, duration);
@@ -553,7 +565,7 @@ export async function cancelOrder(params: any): Promise<{ success: boolean; mess
     
     return result;
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.cancelOrder");
     

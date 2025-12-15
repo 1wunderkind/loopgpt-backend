@@ -225,10 +225,10 @@ export async function analyzeNutrition(params: any): Promise<NutritionAnalysisRe
         recipeId: recipe.id,
         recipeName: recipe.title,
         servings: recipe.servings || input.servings || 1,
-        ingredients: recipe.ingredients.map(ing => ({
+        ingredients: (recipe.ingredientsHave || []).concat(recipe.ingredientsNeed || []).map(ing => ({
           name: ing.name,
           quantity: parseFloat(String(ing.quantity || 1)),
-          unit: ing.unit || "piece",
+          unit: "piece", // Default unit as it's not strictly typed in RecipeCardDetailed
         })),
       };
     } else if (input.ingredients && input.ingredients.length > 0) {
@@ -292,13 +292,16 @@ export async function analyzeNutrition(params: any): Promise<NutritionAnalysisRe
       try {
         await logMealLog({
           userId: input.mealContext.userId,
+          sessionId: "unknown", // Required by type but not available in context
+          sourceGpt: "NutritionDeterministic",
+          description: recipeName, // Use recipeName as description
           mealType: input.mealContext.mealType || "snack",
-          date: input.mealContext.date || new Date().toISOString().split('T')[0],
-          recipeName,
-          calories: perServing.calories,
-          protein_g: perServing.protein,
-          carbs_g: perServing.carbs,
-          fat_g: perServing.fat,
+          log_date: input.mealContext.date || new Date().toISOString().split('T')[0],
+          caloriesKcal: perServing.calories,
+          proteinG: perServing.protein,
+          carbsG: perServing.carbs,
+          fatG: perServing.fat,
+
         });
         console.log("[nutrition_deterministic] Meal logged successfully");
       } catch (error) {

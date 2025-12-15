@@ -7,7 +7,7 @@
  * Part of: Step 5 - Security Hardening
  */
 
-import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { z } from "zod";
 
 /**
  * Schema for search_restaurants tool input

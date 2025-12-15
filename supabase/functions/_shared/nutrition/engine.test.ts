@@ -14,7 +14,7 @@
  * Part of: Step 4 - Deterministic Nutrition Engine
  */
 
-import { assertEquals, assertExists } from "https://deno.land/std@0.177.0/testing/asserts.ts";
+import { assertEquals, assertExists } from "std@0.177.0/testing/asserts.ts";
 import {
   estimateRecipeNutrition,
   lookupIngredient,

@@ -92,11 +92,11 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
     // Build prompts for recipe detail
     const detailSystemPrompt = LEFTOVERGPT_DETAIL_SYSTEM;
     const detailUserPrompt = LEFTOVERGPT_DETAIL_USER(
-      input.recipeTitle,
-      input.ingredients,
-      input.vibes,
-      input.chaosTarget,
-      input.timeLimit
+      input.recipeTitle || '',
+      input.ingredients || [],
+      input.vibes || [],
+      input.chaosTarget || 5,
+      input.timeLimit || 30
     );
     
     console.log("[loopkitchen_recipe_details.get] Calling OpenAI for recipe details...");
@@ -131,7 +131,7 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
     const nutritionUserPrompt = NUTRITIONGPT_USER(
       recipeDetail.title,
       recipeDetail.servings,
-      [...recipeDetail.ingredientsHave, ...recipeDetail.ingredientsNeed]
+      [...recipeDetail.ingredientsHave, ...recipeDetail.ingredientsNeed].map(i => ({ name: i.name, quantity: i.quantity }))
     );
     
     console.log("[loopkitchen_recipe_details.get] Calling OpenAI for nutrition...");
@@ -178,7 +178,7 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
         const grocerySystemPrompt = GROCERYGPT_SYSTEM;
         const groceryUserPrompt = GROCERYGPT_USER(
           recipeDetail.title,
-          recipeDetail.ingredientsNeed
+          recipeDetail.ingredientsNeed.map(i => ({ name: i.name, quantity: i.quantity }))
         );
         
         return await callModelWithRetry<{
@@ -239,6 +239,7 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
     // 2. NutritionSummary
     const nutritionWidget: NutritionSummary = {
       type: 'NutritionSummary',
+      id: `nutrition-${input.recipeId}`,
       servings: nutritionResponse.servings,
       totalNutrition: nutritionResponse.totalNutrition,
       perServing: nutritionResponse.perServing,
@@ -251,6 +252,7 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
     if (groceryResponse) {
       const groceryWidget: GroceryList = {
         type: 'GroceryList',
+        id: `grocery-${input.recipeId}`,
         categories: groceryResponse.categories,
       };
       widgets.push(groceryWidget);
@@ -272,9 +274,10 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
     // Return InfoMessage widget for errors
     const errorMessage: InfoMessage = {
       type: 'InfoMessage',
+      id: `error-${Date.now()}`,
       severity: 'error',
       title: 'Recipe Details Failed',
-      message: `Unable to load recipe details: ${categorized.userMessage}`,
+      message: `Unable to load recipe details: ${categorized.message}`,
       actionLabel: 'Back to Recipes',
     };
     

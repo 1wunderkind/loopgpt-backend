@@ -13,8 +13,8 @@
  * ============================================================================
  */
 
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std@0.177.0/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
 import { estimateRecipeNutrition, type RecipeNutritionInput } from "../_shared/nutrition/index.ts";
 

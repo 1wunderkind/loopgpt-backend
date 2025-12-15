@@ -14,7 +14,7 @@ export interface Event {
   timestamp: number;
   userId?: string;
   sessionId?: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   metadata: EventMetadata;
 }
 
@@ -61,7 +61,7 @@ export class EventTracker {
    */
   track(
     name: string,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
     options?: {
       category?: EventCategory;
       userId?: string;
@@ -112,7 +112,7 @@ export class EventTracker {
   trackUser(
     name: string,
     userId: string,
-    properties: Record<string, any> = {}
+    properties: Record<string, unknown> = {}
   ): Event {
     return this.track(name, properties, {
       category: EventCategory.USER,
@@ -125,7 +125,7 @@ export class EventTracker {
    */
   trackBusiness(
     name: string,
-    properties: Record<string, any> = {}
+    properties: Record<string, unknown> = {}
   ): Event {
     return this.track(name, properties, {
       category: EventCategory.BUSINESS,
@@ -138,7 +138,7 @@ export class EventTracker {
   trackPerformance(
     name: string,
     duration: number,
-    properties: Record<string, any> = {}
+    properties: Record<string, unknown> = {}
   ): Event {
     return this.track(name, { duration, ...properties }, {
       category: EventCategory.PERFORMANCE,
@@ -151,7 +151,7 @@ export class EventTracker {
   trackError(
     name: string,
     error: Error,
-    properties: Record<string, any> = {}
+    properties: Record<string, unknown> = {}
   ): Event {
     return this.track(name, {
       error: error.message,
@@ -318,25 +318,25 @@ export const Events = {
 export const trackUserAction = (
   action: string,
   userId: string,
-  properties?: Record<string, any>
+  properties?: Record<string, unknown>
 ) => eventTracker.trackUser(action, userId, properties);
 
 export const trackOrderEvent = (
   event: string,
   orderId: string,
-  properties?: Record<string, any>
+  properties?: Record<string, unknown>
 ) => eventTracker.trackBusiness(event, { orderId, ...properties });
 
 export const trackProviderEvent = (
   event: string,
   provider: string,
-  properties?: Record<string, any>
+  properties?: Record<string, unknown>
 ) => eventTracker.trackBusiness(event, { provider, ...properties });
 
 export const trackCacheEvent = (
   hit: boolean,
   key: string,
-  properties?: Record<string, any>
+  properties?: Record<string, unknown>
 ) => eventTracker.trackPerformance(
   hit ? Events.CACHE_HIT : Events.CACHE_MISS,
   0,

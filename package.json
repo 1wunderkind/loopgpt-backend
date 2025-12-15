@@ -4,9 +4,20 @@
   "description": "TheLoopGPT.ai Supabase Backend - Unified backend for MealPlanner, WeightTracker, and future GPT integrations",
   "private": true,
   "scripts": {
-    "deploy": "./scripts/deploy-all.sh",
-    "test": "./scripts/test-functions.sh",
-    "generate-types": "./scripts/generate-types.sh"
+    "lint": "deno lint",
+    "lint:prod": "./scripts/lint-prod.sh",
+    "fmt": "deno fmt --check",
+    "fmt:fix": "deno fmt",
+    "test": "deno test --allow-all --no-check",
+    "typecheck": "deno check supabase/functions/**/*.ts",
+    "ci": "npm run lint:prod && npm run fmt && npm run typecheck && npm run test && npm run db:check",
+    "deploy:staging": "./scripts/deploy-safe.sh staging",
+    "deploy:prod": "./scripts/deploy-safe.sh production",
+    "generate-types": "./scripts/generate-types.sh",
+    "db:check": "./scripts/db-check.sh",
+    "db:migrate": "supabase db push",
+    "db:seed": "supabase db reset",
+    "db:types": "supabase gen types typescript --local > supabase/functions/_shared/database.types.ts"
   },
   "keywords": [
     "supabase",
@@ -20,4 +31,3 @@
   "author": "TheLoopGPT.ai",
   "license": "UNLICENSED"
 }
-

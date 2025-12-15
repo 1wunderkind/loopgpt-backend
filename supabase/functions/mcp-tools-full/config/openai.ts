@@ -3,7 +3,7 @@
  * Singleton pattern to avoid repeated initialization
  */
 
-import OpenAI from "https://esm.sh/openai@4.28.0";
+import OpenAI from "openai";
 
 let client: OpenAI | null = null;
 

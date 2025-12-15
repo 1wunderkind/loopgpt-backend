@@ -3,8 +3,8 @@
  * Returns food delivery affiliate options based on cuisine, diet, and user's confirmed location
  */
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std@0.168.0/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 import { withLogging } from "../../middleware/logging.ts";
 import {
   createErrorResponse,

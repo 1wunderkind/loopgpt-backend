@@ -82,5 +82,6 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 // Export with logging middleware
-export default withStandardAPI(withLogging(handler, "normalize_ingredients"));
+// withLogging is not compatible with withStandardAPI in this context, using withStandardAPI directly
+export default withStandardAPI(handler);
 

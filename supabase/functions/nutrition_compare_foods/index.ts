@@ -1,9 +1,9 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std@0.168.0/http/server.ts";
 import { FoodResolver } from "../_lib/food_resolver.ts";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
 
-const handler = async (req) => {
+const handler = async (req: Request) => {
   try {
     const { food_a, food_b } = await req.json();
     
@@ -41,31 +41,31 @@ const handler = async (req) => {
     const comparison = {
       food_a: {
         name: foodA.name,
-        calories: foodA.calories,
-        protein: foodA.protein,
-        carbs: foodA.carbs,
-        fat: foodA.fat,
-        fiber: foodA.fiber
+        calories: foodA.nutrition.calories,
+        protein: foodA.nutrition.protein_g,
+        carbs: foodA.nutrition.carbs_g,
+        fat: foodA.nutrition.fat_g,
+        fiber: foodA.nutrition.fiber_g
       },
       food_b: {
         name: foodB.name,
-        calories: foodB.calories,
-        protein: foodB.protein,
-        carbs: foodB.carbs,
-        fat: foodB.fat,
-        fiber: foodB.fiber
+        calories: foodB.nutrition.calories,
+        protein: foodB.nutrition.protein_g,
+        carbs: foodB.nutrition.carbs_g,
+        fat: foodB.nutrition.fat_g,
+        fiber: foodB.nutrition.fiber_g
       },
       differences: {
-        calories: foodA.calories - foodB.calories,
-        protein: foodA.protein - foodB.protein,
-        carbs: foodA.carbs - foodB.carbs,
-        fat: foodA.fat - foodB.fat,
-        fiber: (foodA.fiber || 0) - (foodB.fiber || 0)
+        calories: foodA.nutrition.calories - foodB.nutrition.calories,
+        protein: foodA.nutrition.protein_g - foodB.nutrition.protein_g,
+        carbs: foodA.nutrition.carbs_g - foodB.nutrition.carbs_g,
+        fat: foodA.nutrition.fat_g - foodB.nutrition.fat_g,
+        fiber: (foodA.nutrition.fiber_g || 0) - (foodB.nutrition.fiber_g || 0)
       },
       winner: {
-        higher_protein: foodA.protein > foodB.protein ? food_a : food_b,
-        lower_calories: foodA.calories < foodB.calories ? food_a : food_b,
-        higher_fiber: (foodA.fiber || 0) > (foodB.fiber || 0) ? food_a : food_b
+        higher_protein: foodA.nutrition.protein_g > foodB.nutrition.protein_g ? food_a : food_b,
+        lower_calories: foodA.nutrition.calories < foodB.nutrition.calories ? food_a : food_b,
+        higher_fiber: (foodA.nutrition.fiber_g || 0) > (foodB.nutrition.fiber_g || 0) ? food_a : food_b
       }
     };
     
@@ -81,7 +81,7 @@ const handler = async (req) => {
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: error instanceof Error ? error.message : String(error) }),
       {
         headers: { "Content-Type": "application/json" },
         status: 500,

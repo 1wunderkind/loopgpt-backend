@@ -5,7 +5,7 @@
 
 import { Logger } from '../monitoring/Logger.ts';
 
-const logger = new Logger('RateLimiter');
+const logger = new Logger({ context: 'RateLimiter' });
 
 export interface RateLimitConfig {
   maxRequests: number;
@@ -115,6 +115,13 @@ export class RateLimiter {
     return requests.filter(
       time => now - time < this.config.windowMs
     ).length;
+  }
+
+  /**
+   * Get configuration
+   */
+  getConfig(): RateLimitConfig {
+    return this.config;
   }
 }
 

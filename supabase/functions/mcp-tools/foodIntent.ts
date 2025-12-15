@@ -9,7 +9,7 @@
  * - other: non-food queries
  */
 
-import OpenAI from "https://esm.sh/openai@4.28.0";
+import OpenAI from "openai";
 import { cacheGet, cacheSet } from "./cache.ts";
 
 export interface FoodIntent {

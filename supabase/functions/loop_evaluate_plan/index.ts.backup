@@ -13,7 +13,7 @@
  * @returns {object} { ok: true, observed_delta_kg, prediction_error_kg, recommendation }
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 

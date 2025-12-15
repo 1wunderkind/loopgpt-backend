@@ -10,8 +10,8 @@
  * 5. Returns order confirmation or clear failure message
  */
 
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std@0.177.0/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
 import { getProvider } from "../_shared/commerce/providers/providerRegistry.ts";
 import type { ProviderId, AlternativeProvider } from "../_shared/commerce/types/index.ts";

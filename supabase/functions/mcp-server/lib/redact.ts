@@ -128,7 +128,7 @@ function partialRedact(value: string): string {
 /**
  * Redact a single value
  */
-function redactValue(key: string, value: any): any {
+function redactValue(key: string, value: unknown): unknown {
   // Full redaction
   if (shouldRedact(key)) {
     return REDACTED;
@@ -150,7 +150,7 @@ function redactValue(key: string, value: any): any {
  * @param maxDepth - Maximum recursion depth (prevents infinite loops)
  * @returns Redacted copy of the object
  */
-export function redact(obj: any, maxDepth: number = 10): any {
+export function redact(obj: unknown, maxDepth: number = 10): unknown {
   // Base cases
   if (maxDepth <= 0) {
     return "[MAX_DEPTH_EXCEEDED]";
@@ -170,7 +170,7 @@ export function redact(obj: any, maxDepth: number = 10): any {
   }
   
   // Handle objects
-  const redacted: Record<string, any> = {};
+  const redacted: Record<string, unknown> = {};
   
   for (const [key, value] of Object.entries(obj)) {
     // Check if this key should be redacted
@@ -251,7 +251,7 @@ export function redactUrl(url: string): string {
  * 
  * Ensures error messages don't leak sensitive data
  */
-export function redactError(error: Error | any): any {
+export function redactError(error: Error | unknown): unknown {
   if (error instanceof Error) {
     return {
       name: error.name,
@@ -268,7 +268,7 @@ export function redactError(error: Error | any): any {
  * 
  * Converts object to JSON string with sensitive data redacted
  */
-export function safeStringify(obj: any, space?: number): string {
+export function safeStringify(obj: unknown, space?: number): string {
   const redacted = redact(obj);
   return JSON.stringify(redacted, null, space);
 }
