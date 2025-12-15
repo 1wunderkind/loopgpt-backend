@@ -17,6 +17,7 @@
 import { serve } from "std@0.177.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
 import { logToolInvocationToDb, inferGptNameFromTool, inferProviderFromTool, extractUserIdFromRequest } from "./lib/tool-metrics.ts";
+import { createToolErrorResponse } from "./lib/error-responses.ts";
 import { MANIFEST } from "./manifest_embedded.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 
@@ -4584,42 +4585,37 @@ serve(async (req: Request) => {
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       console.error('[MCP] Missing or invalid Authorization header');
-      return new Response(
-        JSON.stringify({
-          error: 'UNAUTHORIZED',
-          message: 'Valid OAuth token required for tool execution',
-          hint: 'Include Authorization: Bearer <token> header'
-        }),
-        {
-          status: 401,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
+      // Extract tool name from URL if possible, otherwise default to 'unknown'
+      const toolMatch = url.pathname.match(/\/tools\/([\w_]+)$/);
+      const toolName = toolMatch ? toolMatch[1] : 'unknown';
+      
+      return createToolErrorResponse(
+        toolName,
+        'UNAUTHORIZED',
+        'Please sign in to use this feature.',
+        false,
+        { reason: 'missing_or_invalid_token' }
       );
     }
     
-    const token = authHeader.replace('Bearer ', '');
+    // We know authHeader is not null here because of the check above
+    const token = (authHeader as string).replace('Bearer ', '');
     
     // Verify token with Supabase Auth
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     
     if (authError || !user) {
       console.error('[MCP] Token verification failed:', authError?.message);
-      return new Response(
-        JSON.stringify({
-          error: 'INVALID_TOKEN',
-          message: authError?.message || 'Invalid or expired OAuth token',
-          hint: 'Token must be issued by Supabase Auth'
-        }),
-        {
-          status: 401,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
+      // Extract tool name from URL if possible, otherwise default to 'unknown'
+      const toolMatch = url.pathname.match(/\/tools\/([\w_]+)$/);
+      const toolName = toolMatch ? toolMatch[1] : 'unknown';
+
+      return createToolErrorResponse(
+        toolName,
+        'UNAUTHORIZED',
+        'Please sign in to use this feature.',
+        false,
+        { reason: 'invalid_token', originalError: authError?.message }
       );
     }
     
