@@ -10,6 +10,8 @@ import { serve } from "std@0.177.0/http/server.ts";
 import { getOpenAIClient } from "../../shared/openai.ts";
 import { LEFTOVERGPT_TOOLS } from "./tools.ts";
 import { CommerceGuard } from "./guards.ts";
+import { createCheckoutSession } from "./session.ts";
+import { sanitizeResponse, createErrorResponse } from "./utils.ts";
 import { 
   LEFTOVERGPT_LIST_SYSTEM, 
   LEFTOVERGPT_LIST_USER,
@@ -57,7 +59,7 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
       });
 
       const result = JSON.parse(completion.choices[0].message.content || "{}");
-      return new Response(JSON.stringify(result), { headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(sanitizeResponse(result)), { headers: { "Content-Type": "application/json" } });
     }
 
     // 2. Adjust Recipe
@@ -79,7 +81,7 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
       });
 
       const result = JSON.parse(completion.choices[0].message.content || "{}");
-      return new Response(JSON.stringify(result), { headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(sanitizeResponse(result)), { headers: { "Content-Type": "application/json" } });
     }
 
     // 3. Estimate Nutrition
@@ -105,36 +107,38 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
       });
 
       const result = JSON.parse(completion.choices[0].message.content || "{}");
-      return new Response(JSON.stringify(result), { headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(sanitizeResponse(result)), { headers: { "Content-Type": "application/json" } });
     }
 
     // 4. Create Grocery Order Link
     if (tool === "create_external_grocery_order_link") {
-      const { ingredients, zip_code } = parameters;
+      // Input schema says { recipe_id }, but we accept ingredients if passed (from UI)
+      const { recipe_id, ingredients } = parameters; 
       
-      // Guard: Ensure explicit intent (though the tool definition itself implies it)
+      if (!ingredients || !Array.isArray(ingredients) || ingredients.length === 0) {
+         return createErrorResponse("No ingredients provided for checkout.");
+      }
+
+      // Guard: Ensure explicit intent
       CommerceGuard.validateOrderRequest(ingredients);
 
-      // Generate a link to the frontend which handles the actual cart creation
-      // This keeps the backend simple and avoids PII/Location issues in the chat
-      const params = new URLSearchParams();
-      params.set("ingredients", ingredients.join(","));
-      if (zip_code) params.set("zip", zip_code);
-      params.set("source", "leftovergpt_chat");
+      // Create secure session
+      const token = await createCheckoutSession(recipe_id || "unknown", ingredients);
+      
+      const projectRef = Deno.env.get("SUPABASE_URL")?.split("//")[1].split(".")[0] || "qmagnwxeijctkksqbcqz";
+      const orderUrl = `https://${projectRef}.supabase.co/functions/v1/checkout_redirect?token=${token}`;
 
-      const checkoutUrl = `${FRONTEND_URL}/checkout?${params.toString()}`;
-
-      return new Response(JSON.stringify({
-        checkout_url: checkoutUrl,
-        store_name: "Grocery Partners (via LoopKitchen)",
-        expires_in: "24 hours"
-      }), { headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(sanitizeResponse({
+        missing_items: ingredients.map((i: string) => ({ name: i, quantity: "1" })),
+        order_url: orderUrl,
+        expires_in_seconds: 1800
+      })), { headers: { "Content-Type": "application/json" } });
     }
 
     return new Response(JSON.stringify({ error: "Tool not found" }), { status: 404 });
 
   } catch (error) {
     console.error("Adapter Error:", error);
-    return new Response(JSON.stringify({ error: "Internal processing error" }), { status: 500 });
+    return createErrorResponse("An unexpected error occurred.");
   }
 }

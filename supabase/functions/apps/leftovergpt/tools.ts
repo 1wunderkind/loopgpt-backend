@@ -1,4 +1,3 @@
-
 /**
  * LeftoverGPT Tool Definitions
  * 
@@ -33,7 +32,9 @@ export const LEFTOVERGPT_TOOLS = [
         }
       },
       required: ["ingredients"]
-    }
+    },
+    // Annotation: Read-only (no side effects)
+    readOnlyHint: true
   },
   {
     name: "adjust_recipe",
@@ -51,7 +52,9 @@ export const LEFTOVERGPT_TOOLS = [
         }
       },
       required: ["original_recipe_name", "adjustment_request"]
-    }
+    },
+    // Annotation: Read-only
+    readOnlyHint: true
   },
   {
     name: "estimate_recipe_nutrition",
@@ -70,25 +73,30 @@ export const LEFTOVERGPT_TOOLS = [
         }
       },
       required: ["recipe_description"]
-    }
+    },
+    // Annotation: Read-only
+    readOnlyHint: true
   },
   {
     name: "create_external_grocery_order_link",
-    description: "Create a checkout link to order missing ingredients from a grocery store. ONLY use this when the user EXPLICITLY asks to buy/order ingredients.",
+    description: "Creates an external checkout link to purchase ingredients missing from a recipe. This tool should ONLY be triggered by explicit user action (button click).",
     input_schema: {
       type: "object",
       properties: {
-        ingredients: {
-          type: "array",
-          items: { type: "string" },
-          description: "List of ingredients to order"
-        },
-        zip_code: {
+        recipe_id: {
           type: "string",
-          description: "Optional zip code for store localization"
-        }
+          description: "ID of the recipe to order ingredients for"
+        },
+        // Note: We allow ingredients to be passed if recipe_id is not sufficient, 
+        // but the primary schema emphasizes recipe_id to keep it minimal.
+        // However, to make it functional without DB state for recipes, we might need ingredients.
+        // But per strict requirements, we'll stick to the requested schema.
+        // The implementation will handle the actual data passed by the UI.
       },
-      required: ["ingredients"]
-    }
+      required: ["recipe_id"]
+    },
+    // Annotation: Open World (External Link) + Side Effect
+    openWorldHint: true,
+    readOnlyHint: false
   }
 ];
