@@ -3024,11 +3024,11 @@ Object.assign(ALL_TOOL_DESCRIPTIONS, {
   gdpr_delete: TOOL_GDPR_DELETE,
   ccpa_opt_out: TOOL_CCPA_OPT_OUT,
 
-  // Stripe Integration
-  create_checkout_session: TOOL_CREATE_CHECKOUT_SESSION,
-  create_customer_portal: TOOL_CREATE_CUSTOMER_PORTAL,
-  check_entitlement: TOOL_CHECK_ENTITLEMENT,
-  upgrade_to_premium: TOOL_UPGRADE_TO_PREMIUM,
+  // Stripe Integration (DISABLED FOR SLEEP MODE)
+  // create_checkout_session: TOOL_CREATE_CHECKOUT_SESSION,
+  // create_customer_portal: TOOL_CREATE_CUSTOMER_PORTAL,
+  // check_entitlement: TOOL_CHECK_ENTITLEMENT,
+  // upgrade_to_premium: TOOL_UPGRADE_TO_PREMIUM,
 
   // System & Monitoring
   health: TOOL_HEALTH,
@@ -3093,7 +3093,7 @@ export const TOOL_SUMMARY = {
     affiliate: 2,
     location: 3,
     compliance: 3,
-    payments: 4,
+    payments: 0,
     system: 6,
     webhooks: 2,
   },
