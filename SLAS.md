@@ -1,6 +1,6 @@
 # Service Level Agreements (SLAs)
 
-These targets define the expected performance and reliability of the LoopGPT
+These targets define the expected performance and reliability of the LooptOS
 backend.
 
 ## 1. Availability

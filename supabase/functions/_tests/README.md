@@ -1,4 +1,4 @@
-# LoopGPT Commerce Layer Tests
+# LooptOS Commerce Layer Tests
 
 Comprehensive test suite for the multi-provider commerce routing system.
 

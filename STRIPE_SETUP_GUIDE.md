@@ -1,6 +1,6 @@
-# Stripe Setup Guide for LoopGPT Premium
+# Stripe Setup Guide for LooptOS Premium
 
-This guide will help you set up Stripe for LoopGPT Premium subscriptions.
+This guide will help you set up Stripe for LooptOS Premium subscriptions.
 
 ---
 
@@ -25,7 +25,7 @@ This guide will help you set up Stripe for LoopGPT Premium subscriptions.
 ### Option A: Using Stripe Dashboard
 
 1. Go to **Products** → **Add Product**
-2. Create **LoopGPT Premium** product
+2. Create **LooptOS Premium** product
 
 3. Add **Monthly Price**:
    - Price: $4.99 USD
@@ -83,7 +83,7 @@ stripe prices create \
   --unit-amount 499 \
   --currency usd \
   --recurring interval=month \
-  --product "LoopGPT Premium" \
+  --product "LooptOS Premium" \
   --metadata '{"sku":"loop_premium_monthly_v1","tier":"premium","launch_phase":"intro_499"}'
 
 # Create annual price
@@ -91,7 +91,7 @@ stripe prices create \
   --unit-amount 4900 \
   --currency usd \
   --recurring interval=year \
-  --product "LoopGPT Premium" \
+  --product "LooptOS Premium" \
   --metadata '{"sku":"loop_premium_annual_v1","tier":"premium","launch_phase":"intro_499","discount_months":"2"}'
 
 # Create family price
@@ -99,7 +99,7 @@ stripe prices create \
   --unit-amount 1499 \
   --currency usd \
   --recurring interval=month \
-  --product "LoopGPT Premium" \
+  --product "LooptOS Premium" \
   --metadata '{"sku":"loop_family_monthly_v1","tier":"family","launch_phase":"intro_499"}'
 ```
 

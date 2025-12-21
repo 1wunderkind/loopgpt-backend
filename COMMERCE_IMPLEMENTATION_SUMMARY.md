@@ -1,4 +1,4 @@
-# LoopGPT Commerce Layer - Implementation Summary
+# LooptOS Commerce Layer - Implementation Summary
 
 Complete overview of the production-grade multi-provider commerce routing
 system.
@@ -42,7 +42,7 @@ Instacart, Kroger, Walmart) to optimize for price, speed, and commission.
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│                       LoopGPT Frontend                          │
+│                       LooptOS Frontend                          │
 │                  (React + TypeScript)                           │
 └───────────────────────────┬────────────────────────────────────┘
                             │
@@ -692,7 +692,7 @@ LOOPGPT_WALMART_ALLOW_MOCK_FALLBACK=true
 
 - Supabase team for excellent Edge Functions platform
 - Kroger & Walmart for API access
-- LoopGPT team for product vision
+- LooptOS team for product vision
 
 ---
 

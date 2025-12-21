@@ -2,14 +2,14 @@
 
 **Status:** ✅ Complete\
 **Date:** December 7, 2025\
-**Part of:** LoopGPT Commerce Router Enhancement Series
+**Part of:** LooptOS Commerce Router Enhancement Series
 
 ---
 
 ## Executive Summary
 
 Successfully implemented **Provider Arbitrage Hardening & Failover** for the
-LoopGPT commerce router. The system now learns from provider performance over
+LooptOS commerce router. The system now learns from provider performance over
 time, uses historical data for dynamic scoring, and automatically fails over to
 alternative providers when confirmation attempts fail.
 

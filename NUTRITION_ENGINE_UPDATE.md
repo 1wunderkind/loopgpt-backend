@@ -8,7 +8,7 @@
 
 ## Summary
 
-Successfully updated the LoopGPT nutrition engine to use the existing
+Successfully updated the LooptOS nutrition engine to use the existing
 **1,000-food USDA database** (`data/foods@v1.json`) instead of the small
 hardcoded dictionary. This dramatically improves ingredient matching and
 nutrition accuracy.

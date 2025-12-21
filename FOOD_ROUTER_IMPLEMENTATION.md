@@ -1,7 +1,7 @@
 # Food Router Implementation Guide
 
 **Date:** December 4, 2025\
-**Project:** TheLoopGPT MCP Tools Server\
+**Project:** LooptOS MCP Tools Server\
 **Feature:** Hybrid Food Router with AI-Powered Intent Classification
 
 ---

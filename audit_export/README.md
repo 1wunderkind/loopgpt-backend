@@ -1,6 +1,6 @@
-# TheLoopGPT Security & Production Readiness Audit Export
+# LooptOS Security & Production Readiness Audit Export
 
-This directory contains a comprehensive export of the LoopGPT codebase,
+This directory contains a comprehensive export of the LooptOS codebase,
 configuration, and security diagnostics for audit purposes.
 
 ## Contents

@@ -9,7 +9,7 @@
 
 ## What Was Built
 
-Implemented **Provider Arbitrage Hardening & Failover** for the LoopGPT commerce
+Implemented **Provider Arbitrage Hardening & Failover** for the LooptOS commerce
 router. The system now:
 
 1. **Learns from provider performance** over time using persistent metrics
@@ -137,7 +137,7 @@ router. The system now:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     LoopGPT Commerce Router                      │
+│                     LooptOS Commerce Router                      │
 │                  (Provider Arbitrage & Failover)                 │
 └─────────────────────────────────────────────────────────────────┘
 
@@ -357,7 +357,7 @@ Result: Instacart selected as primary
 
 ## Conclusion
 
-**Step 3 is complete and ready for deployment.** The LoopGPT commerce router now
+**Step 3 is complete and ready for deployment.** The LooptOS commerce router now
 has:
 
 - ✅ **Self-improving intelligence** - Learns from every order

@@ -1,4 +1,4 @@
-# LoopGPT Tool Catalog
+# LooptOS Tool Catalog
 
 **Complete Reference for All 28 MCP Tools**
 

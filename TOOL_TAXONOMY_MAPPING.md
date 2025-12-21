@@ -1,4 +1,4 @@
-# TheLoopGPT Tool Taxonomy Mapping (v1 → v2)
+# LooptOS Tool Taxonomy Mapping (v1 → v2)
 
 This document maps the existing 27 tools to the new 7-cluster taxonomy with
 intent-based naming.

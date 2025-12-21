@@ -1,6 +1,6 @@
 # Incident Response Plan
 
-**Project:** LoopGPT\
+**Project:** LooptOS\
 **Version:** 1.0\
 **Last Updated:** December 2, 2024\
 **Owner:** Security Team
@@ -483,7 +483,7 @@ Your security is our top priority.
 
 If you have questions, please contact: security@loopgpt.ai
 
-The LoopGPT Security Team
+The LooptOS Security Team
 ```
 
 ---

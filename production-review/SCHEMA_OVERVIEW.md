@@ -1,4 +1,4 @@
-# LoopGPT Database Schema Overview
+# LooptOS Database Schema Overview
 
 **Complete Database Structure for Production Review**
 

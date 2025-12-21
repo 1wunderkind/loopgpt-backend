@@ -9,7 +9,7 @@
 ## Overview
 
 This document describes the implementation of **Step 5: Rate Limiting & Security
-Hardening** for the LoopGPT backend. This step adds production-grade security
+Hardening** for the LooptOS backend. This step adds production-grade security
 features to protect against abuse, ensure fair usage, and maintain audit trails
 for sensitive operations.
 
@@ -725,7 +725,7 @@ SELECT cron.schedule(
 ## Conclusion
 
 Step 5 successfully implements production-grade security hardening for the
-LoopGPT backend. The implementation:
+LooptOS backend. The implementation:
 
 - ✅ Protects against abuse with multi-scope rate limiting
 - ✅ Ensures data integrity with input validation

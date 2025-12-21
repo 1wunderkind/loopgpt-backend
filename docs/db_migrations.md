@@ -1,7 +1,7 @@
 # Database Migration Playbook
 
 This guide outlines the workflow for managing database schema changes in
-LoopGPT.
+LooptOS.
 
 ## Core Principles
 

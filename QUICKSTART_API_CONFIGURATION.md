@@ -1,13 +1,13 @@
-# 🚀 Quick-Start Guide: API Configuration for TheLoopGPT Backend
+# 🚀 Quick-Start Guide: API Configuration for LooptOS Backend
 
 This guide will walk you through configuring all external API keys needed for
-TheLoopGPT backend to unlock its full functionality.
+LooptOS backend to unlock its full functionality.
 
 ---
 
 ## 📋 Overview
 
-TheLoopGPT backend integrates with several external services to provide
+LooptOS backend integrates with several external services to provide
 comprehensive food, nutrition, and commerce features. While the system is
 functional without these keys, configuring them unlocks advanced capabilities.
 
@@ -71,7 +71,7 @@ analysis, and natural language processing.
 2. **Generate API Key:**
    - Go to: https://platform.openai.com/api-keys
    - Click **+ Create new secret key**
-   - Name it: `TheLoopGPT Backend`
+   - Name it: `LooptOS Backend`
    - Copy the key immediately (you won't see it again!)
 
 3. **Set up billing:**
@@ -281,7 +281,7 @@ optional enhancements.
 2. **Create New Project:**
    - Click **Create Project**
    - Select **Deno** as platform
-   - Name it: `TheLoopGPT Backend`
+   - Name it: `LooptOS Backend`
    - Click **Create Project**
 
 3. **Get DSN:**

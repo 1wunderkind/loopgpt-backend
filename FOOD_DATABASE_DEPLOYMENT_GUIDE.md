@@ -3,7 +3,7 @@
 ## Overview
 
 This guide explains how to deploy and use the expanded 1,000-food database
-system in TheLoopGPT.ai.
+system in LooptOS.ai.
 
 ---
 

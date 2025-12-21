@@ -1,10 +1,10 @@
-# TheLoopGPT Metadata Optimization - Deployment Guide
+# LooptOS Metadata Optimization - Deployment Guide
 
 ## 📋 Overview
 
 This guide covers deploying the comprehensive metadata optimization pack that
 will **maximize ChatGPT tool invocation rates** and improve App Store discovery
-for TheLoopGPT.
+for LooptOS.
 
 **What's Been Implemented:**
 
@@ -82,7 +82,7 @@ curl -s "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server/metada
 # Test 5: App metadata
 curl -s "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server/metadata/app" | jq '.name'
 
-# Expected output: "TheLoopGPT"
+# Expected output: "LooptOS"
 ```
 
 ### Step 4: Deploy Remaining Edge Functions (Optional)
@@ -125,7 +125,7 @@ After deployment, verify the following:
 - [ ] Tool metadata endpoint returns detailed descriptions
 - [ ] Recommendation endpoint suggests correct tools
 - [ ] Routing hints endpoint returns 19 categories
-- [ ] App metadata endpoint returns TheLoopGPT info
+- [ ] App metadata endpoint returns LooptOS info
 
 ### Metadata Quality
 

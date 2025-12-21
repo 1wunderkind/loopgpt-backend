@@ -23,7 +23,7 @@
 ## Overview
 
 LoopKitchen is a comprehensive recipe generation, nutrition analysis, and meal
-planning system integrated into the LoopGPT backend. This guide covers
+planning system integrated into the LooptOS backend. This guide covers
 deployment to Supabase Edge Functions.
 
 **Components**:

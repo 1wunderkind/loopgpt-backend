@@ -1,4 +1,4 @@
-# LoopGPT Conversation Flow Guide
+# LooptOS Conversation Flow Guide
 
 **User Journey Patterns and Tool Orchestration**
 
@@ -7,7 +7,7 @@
 ## 🎯 Overview
 
 This document describes the typical conversation flows and tool orchestration
-patterns for LoopGPT. It helps ChatGPT understand when to use which tools and
+patterns for LooptOS. It helps ChatGPT understand when to use which tools and
 how to chain them together for optimal user experience.
 
 ---

@@ -6,7 +6,7 @@
 
 ## Summary
 
-The LoopGPT Sentiment Layer has been successfully implemented and deployed!
+The LooptOS Sentiment Layer has been successfully implemented and deployed!
 Users can now provide feedback on recipes, meal plans, and grocery lists
 through:
 

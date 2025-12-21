@@ -1,7 +1,7 @@
 {
   "name": "loopgpt-backend",
   "version": "1.0.0",
-  "description": "TheLoopGPT.ai Supabase Backend - Unified backend for MealPlanner, WeightTracker, and future GPT integrations",
+  "description": "LooptOS Supabase Backend - Unified backend for MealPlanner, WeightTracker, and future GPT integrations",
   "private": true,
   "scripts": {
     "lint": "deno lint",
@@ -28,6 +28,6 @@
     "gpt",
     "ai"
   ],
-  "author": "TheLoopGPT.ai",
+  "author": "LooptOS",
   "license": "UNLICENSED"
 }

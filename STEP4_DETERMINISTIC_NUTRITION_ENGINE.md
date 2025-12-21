@@ -8,7 +8,7 @@
 
 ## 📋 Overview
 
-Implemented a fully deterministic, rule-based nutrition engine for the LoopGPT
+Implemented a fully deterministic, rule-based nutrition engine for the LooptOS
 backend that replaces LLM-based nutrition estimation with pure computation.
 
 ### Key Guarantees

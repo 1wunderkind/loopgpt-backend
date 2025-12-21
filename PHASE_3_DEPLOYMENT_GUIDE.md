@@ -1,6 +1,6 @@
 # Phase 3 Deployment Guide
 
-**LoopGPT Commerce Router - Provider Comparison Scoring Algorithm**
+**LooptOS Commerce Router - Provider Comparison Scoring Algorithm**
 
 This guide walks you through deploying Phase 3 to production.
 

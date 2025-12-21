@@ -2,7 +2,7 @@
 
 ## Tenant Definition
 
-In LoopGPT, a **Tenant** is equivalent to a **User**.
+In LooptOS, a **Tenant** is equivalent to a **User**.
 
 - `TenantId` = `UserId` (UUID)
 - This simplifies the model for B2C use cases while allowing future expansion to

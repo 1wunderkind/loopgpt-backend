@@ -1,4 +1,4 @@
-# TheLoopGPT MCP Tools
+# LooptOS MCP Tools
 
 Ultra-reliable food and meal planning tools powered by OpenAI Structured
 Outputs.
@@ -375,9 +375,9 @@ HTTP Status Codes:
 
 ## 🤝 Contributing
 
-This is a production deployment for TheLoopGPT. For issues or feature requests,
+This is a production deployment for LooptOS. For issues or feature requests,
 contact the development team.
 
 ## 📄 License
 
-Proprietary - TheLoopGPT © 2025
+Proprietary - LooptOS © 2025

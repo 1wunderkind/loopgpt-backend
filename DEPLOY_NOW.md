@@ -1,4 +1,4 @@
-# 🚀 Deploy TheLoopGPT.ai Backend - Quick Start
+# 🚀 Deploy LooptOS.ai Backend - Quick Start
 
 **Time Required:** 5-10 minutes\
 **Difficulty:** Easy (just 3 commands!)
@@ -92,7 +92,7 @@ You should see your Supabase URL, keys, and OpenAI API key.
 **Expected output:**
 
 ```
-🚀 TheLoopGPT.ai Backend Deployment
+🚀 LooptOS.ai Backend Deployment
 ====================================
 
 📋 Configuration:

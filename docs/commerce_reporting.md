@@ -1,6 +1,6 @@
 # Commerce & Flywheel Reporting
 
-These SQL queries provide insights into the economic performance of the LoopGPT
+These SQL queries provide insights into the economic performance of the LooptOS
 agent.
 
 ## 1. GMV by Provider (Daily)

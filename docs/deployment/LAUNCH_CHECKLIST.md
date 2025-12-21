@@ -1,6 +1,6 @@
 # Production Launch Checklist
 
-**Project:** LoopGPT\
+**Project:** LooptOS\
 **Version:** 1.0\
 **Launch Date:** [TBD]\
 **Status:** Pre-Launch
@@ -380,11 +380,11 @@
 **Email:**
 
 ```
-Subject: 🎉 LoopGPT is Live!
+Subject: 🎉 LooptOS is Live!
 
-We're excited to announce that LoopGPT is now live!
+We're excited to announce that LooptOS is now live!
 
-LoopGPT is your AI-powered food and grocery ordering assistant. 
+LooptOS is your AI-powered food and grocery ordering assistant. 
 Order from your favorite restaurants and grocery stores with a 
 simple conversation.
 
@@ -398,13 +398,13 @@ Features:
 
 We'd love to hear your feedback!
 
-The LoopGPT Team
+The LooptOS Team
 ```
 
 **Social Media:**
 
 ```
-🎉 LoopGPT is live!
+🎉 LooptOS is live!
 
 Your AI-powered food & grocery ordering assistant.
 Order from Instacart, Shipt, DoorDash & more with a simple conversation.
@@ -419,7 +419,7 @@ Try it now: https://loopgpt.ai
 **Email:**
 
 ```
-Subject: LoopGPT Service Issue - [DATE]
+Subject: LooptOS Service Issue - [DATE]
 
 We are currently experiencing technical difficulties. 
 Our team is actively working to resolve the issue.

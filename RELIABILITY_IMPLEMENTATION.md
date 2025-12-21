@@ -9,7 +9,7 @@
 ## 📋 Executive Summary
 
 This document describes the implementation of a robust reliability and
-error-handling layer for all LoopGPT MCP tools. The implementation ensures:
+error-handling layer for all LooptOS MCP tools. The implementation ensures:
 
 - ✅ **Timeout enforcement** on all external API calls
 - ✅ **Automatic retries** for idempotent operations

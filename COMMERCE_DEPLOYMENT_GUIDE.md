@@ -1,4 +1,4 @@
-# LoopGPT Commerce Layer - Deployment Guide
+# LooptOS Commerce Layer - Deployment Guide
 
 Complete guide for deploying the production-grade multi-provider commerce
 routing system.

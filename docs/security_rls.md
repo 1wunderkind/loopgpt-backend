@@ -1,6 +1,6 @@
 # Row Level Security (RLS) Contract
 
-This document defines the security model for the LoopGPT database. All tables
+This document defines the security model for the LooptOS database. All tables
 containing user data MUST have RLS enabled.
 
 ## Security Model

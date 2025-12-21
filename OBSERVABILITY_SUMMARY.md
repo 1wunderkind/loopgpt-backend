@@ -3,7 +3,7 @@
 **Step 2 of Production Readiness**
 
 This document summarizes the observability and monitoring layer implementation
-for LoopGPT MCP tools.
+for LooptOS MCP tools.
 
 ---
 

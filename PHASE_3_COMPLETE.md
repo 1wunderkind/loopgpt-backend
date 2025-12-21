@@ -1,4 +1,4 @@
-# LoopGPT Commerce Router - Phase 3 Complete
+# LooptOS Commerce Router - Phase 3 Complete
 
 **Provider Comparison Scoring Algorithm**\
 **Date:** December 2, 2025\

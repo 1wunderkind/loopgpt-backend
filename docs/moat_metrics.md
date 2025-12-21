@@ -1,6 +1,6 @@
 # Moat Metrics & Provider Intelligence
 
-These metrics quantify LoopGPT's economic leverage and competitive advantage.
+These metrics quantify LooptOS's economic leverage and competitive advantage.
 
 ## 1. Provider Intelligence Dossier
 

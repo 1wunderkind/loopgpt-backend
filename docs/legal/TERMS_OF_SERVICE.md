@@ -4,13 +4,13 @@
 
 ## 1. Acceptance of Terms
 
-By accessing or using LoopGPT ("Service"), you agree to be bound by these Terms
+By accessing or using LooptOS ("Service"), you agree to be bound by these Terms
 of Service ("Terms"). If you do not agree to these Terms, do not use the
 Service.
 
 ## 2. Description of Service
 
-LoopGPT is an AI-powered food and nutrition platform that provides:
+LooptOS is an AI-powered food and nutrition platform that provides:
 
 - Food search and nutrition tracking
 - Meal planning and recommendations
@@ -114,7 +114,7 @@ We integrate with third-party delivery services:
 
 ### 9.1 Our Rights
 
-- The Service and content are owned by LoopGPT
+- The Service and content are owned by LooptOS
 - Trademarks, logos, and branding are protected
 - You may not use our IP without permission
 - All rights not granted are reserved
@@ -193,7 +193,7 @@ may not apply to you.
 
 ## 13. Indemnification
 
-You agree to indemnify and hold harmless LoopGPT, its officers, directors,
+You agree to indemnify and hold harmless LooptOS, its officers, directors,
 employees, and agents from any claims, damages, losses, or expenses (including
 legal fees) arising from:
 
@@ -249,7 +249,7 @@ Continued use after changes constitutes acceptance of modified Terms.
 
 ### 16.1 Entire Agreement
 
-These Terms constitute the entire agreement between you and LoopGPT.
+These Terms constitute the entire agreement between you and LooptOS.
 
 ### 16.2 Severability
 
@@ -282,21 +282,21 @@ For questions about these Terms:
 
 ## Appendix: Definitions
 
-**"Service"** means the LoopGPT platform, including website, mobile apps, and
+**"Service"** means the LooptOS platform, including website, mobile apps, and
 APIs.
 
 **"User"** means any person who accesses or uses the Service.
 
 **"Content"** means text, images, data, and other materials on the Service.
 
-**"Third-Party Services"** means external services integrated with LoopGPT.
+**"Third-Party Services"** means external services integrated with LooptOS.
 
 **"Personal Data"** means information relating to an identified or identifiable
 person.
 
 ---
 
-**By using LoopGPT, you acknowledge that you have read, understood, and agree to
+**By using LooptOS, you acknowledge that you have read, understood, and agree to
 be bound by these Terms of Service.**
 
 **Effective Date:** December 2, 2024

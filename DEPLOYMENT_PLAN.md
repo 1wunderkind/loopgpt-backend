@@ -1,6 +1,6 @@
-# LoopGPT Backend Deployment Plan
+# LooptOS Backend Deployment Plan
 
-This document outlines the step-by-step process to deploy the LoopGPT backend to
+This document outlines the step-by-step process to deploy the LooptOS backend to
 Supabase.
 
 ## 1. Prerequisites

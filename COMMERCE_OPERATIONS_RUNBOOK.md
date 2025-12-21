@@ -1,4 +1,4 @@
-# LoopGPT Commerce Layer - Operations Runbook
+# LooptOS Commerce Layer - Operations Runbook
 
 Complete guide for operating, monitoring, and troubleshooting the production
 commerce routing system.
@@ -23,7 +23,7 @@ commerce routing system.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     LoopGPT Frontend                         │
+│                     LooptOS Frontend                         │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼

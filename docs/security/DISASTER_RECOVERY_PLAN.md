@@ -1,6 +1,6 @@
 # Disaster Recovery Plan
 
-**Project:** LoopGPT\
+**Project:** LooptOS\
 **Version:** 1.0\
 **Last Updated:** December 2, 2024\
 **Owner:** Operations Team
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
+This Disaster Recovery (DR) Plan outlines procedures to restore LooptOS services
 in the event of a disaster. The plan defines recovery objectives, procedures,
 and responsibilities.
 
@@ -107,7 +107,7 @@ unavailable
 
 ### 4. Complete Service Outage
 
-**Scenario:** All LoopGPT services become unavailable
+**Scenario:** All LooptOS services become unavailable
 
 **Impact:**
 
@@ -338,9 +338,9 @@ supabase functions deploy --project-ref xxx
 **Incident Notification:**
 
 ```
-Subject: LoopGPT Service Issue - [DATE]
+Subject: LooptOS Service Issue - [DATE]
 
-Dear LoopGPT User,
+Dear LooptOS User,
 
 We are currently experiencing technical difficulties with our service. Our team is actively working to resolve the issue.
 
@@ -352,15 +352,15 @@ We apologize for any inconvenience and will provide updates as we work to restor
 
 Thank you for your patience.
 
-The LoopGPT Team
+The LooptOS Team
 ```
 
 **Resolution Notification:**
 
 ```
-Subject: LoopGPT Service Restored - [DATE]
+Subject: LooptOS Service Restored - [DATE]
 
-Dear LoopGPT User,
+Dear LooptOS User,
 
 We are pleased to inform you that the service issue has been resolved. All systems are now operating normally.
 
@@ -372,7 +372,7 @@ We sincerely apologize for any inconvenience this may have caused.
 
 Thank you for your patience and continued support.
 
-The LoopGPT Team
+The LooptOS Team
 ```
 
 ---

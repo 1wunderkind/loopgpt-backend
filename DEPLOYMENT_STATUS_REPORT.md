@@ -1,7 +1,7 @@
 # 🚀 Deployment Status Report
 
 **Date:** December 3, 2024\
-**Project:** LoopGPT Backend\
+**Project:** LooptOS Backend\
 **Repository:** https://github.com/1wunderkind/loopgpt-backend
 
 ---
