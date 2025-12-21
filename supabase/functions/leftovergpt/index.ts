@@ -13,7 +13,7 @@
 import { serve } from "std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { crypto } from "std@0.177.0/crypto/mod.ts";
-import { getOpenAIClient } from "../../shared/openai.ts";
+import { getOpenAIClient } from "../../_lib/openai.ts";
 import { LEFTOVERGPT_TOOLS } from "./tools.ts";
 import { createCheckoutSession } from "./session.ts";
 import { sanitizeResponse, createErrorResponse } from "./utils.ts";
