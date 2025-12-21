@@ -15,6 +15,7 @@ import { z } from "zod";
 
 export interface ValidationResult {
   success: boolean;
+  // deno-lint-ignore no-explicit-any
   data?: any;
   errors?: ValidationError[];
 }
@@ -58,6 +59,7 @@ export async function isPayloadTooLarge(req: Request): Promise<boolean> {
  * @param req - HTTP request
  * @returns Parsed JSON body or null if too large
  */
+// deno-lint-ignore no-explicit-any
 export async function readRequestBody(req: Request): Promise<any | null> {
   try {
     const text = await req.text();

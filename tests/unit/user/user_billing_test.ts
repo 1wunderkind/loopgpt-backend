@@ -6,7 +6,7 @@
 import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 // Profile Operations Tests (10 tests)
-Deno.test("profile: creates user profile", async () => {
+Deno.test("profile: creates user profile", () => {
   const userId = testData.userId();
   const mockProfile = {
     id: userId,
@@ -18,7 +18,7 @@ Deno.test("profile: creates user profile", async () => {
   assertExists(mockProfile.email);
 });
 
-Deno.test("profile: updates user information", async () => {
+Deno.test("profile: updates user information", () => {
   const updates = {
     name: "Updated Name",
     phone: "+1234567890",
@@ -26,20 +26,20 @@ Deno.test("profile: updates user information", async () => {
   assertExists(updates.name);
 });
 
-Deno.test("profile: validates email format", async () => {
+Deno.test("profile: validates email format", () => {
   const validEmail = "user@example.com";
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   assert(emailRegex.test(validEmail));
 });
 
-Deno.test("profile: handles avatar upload", async () => {
+Deno.test("profile: handles avatar upload", () => {
   const mockProfile = {
     avatar_url: "https://example.com/avatar.jpg",
   };
   assertExists(mockProfile.avatar_url);
 });
 
-Deno.test("profile: stores user preferences", async () => {
+Deno.test("profile: stores user preferences", () => {
   const preferences = {
     theme: "dark",
     notifications: true,
@@ -48,13 +48,13 @@ Deno.test("profile: stores user preferences", async () => {
   assertExists(preferences.theme);
 });
 
-Deno.test("profile: validates phone number", async () => {
+Deno.test("profile: validates phone number", () => {
   const phone = "+1234567890";
   const phoneRegex = /^\+?[1-9]\d{1,14}$/;
   assert(phoneRegex.test(phone));
 });
 
-Deno.test("profile: handles profile deletion", async () => {
+Deno.test("profile: handles profile deletion", () => {
   const mockDeletion = {
     user_id: testData.userId(),
     deleted_at: new Date().toISOString(),
@@ -63,14 +63,14 @@ Deno.test("profile: handles profile deletion", async () => {
   assertEquals(mockDeletion.status, "deleted");
 });
 
-Deno.test("profile: tracks last login", async () => {
+Deno.test("profile: tracks last login", () => {
   const mockProfile = {
     last_login_at: new Date().toISOString(),
   };
   assertExists(mockProfile.last_login_at);
 });
 
-Deno.test("profile: validates required fields", async () => {
+Deno.test("profile: validates required fields", () => {
   const requiredFields = ["email", "name"];
   const profile = {
     email: "user@example.com",
@@ -79,7 +79,7 @@ Deno.test("profile: validates required fields", async () => {
   assert(requiredFields.every((field) => field in profile));
 });
 
-Deno.test("profile: handles timezone settings", async () => {
+Deno.test("profile: handles timezone settings", () => {
   const mockProfile = {
     timezone: "America/Los_Angeles",
   };
@@ -87,7 +87,7 @@ Deno.test("profile: handles timezone settings", async () => {
 });
 
 // Location Management Tests (5 tests)
-Deno.test("location: adds delivery address", async () => {
+Deno.test("location: adds delivery address", () => {
   const address = testData.location();
   assertExists(address.street);
   assertExists(address.city);
@@ -95,7 +95,7 @@ Deno.test("location: adds delivery address", async () => {
   assertExists(address.zip);
 });
 
-Deno.test("location: sets default address", async () => {
+Deno.test("location: sets default address", () => {
   const mockAddress = {
     ...testData.location(),
     is_default: true,
@@ -103,12 +103,12 @@ Deno.test("location: sets default address", async () => {
   assertEquals(mockAddress.is_default, true);
 });
 
-Deno.test("location: validates address format", async () => {
+Deno.test("location: validates address format", () => {
   const address = testData.location();
   assert(address.zip.length === 5 || address.zip.length === 10);
 });
 
-Deno.test("location: handles multiple addresses", async () => {
+Deno.test("location: handles multiple addresses", () => {
   const addresses = [
     { ...testData.location(), label: "Home" },
     { ...testData.location(), label: "Work" },
@@ -116,7 +116,7 @@ Deno.test("location: handles multiple addresses", async () => {
   assertEquals(addresses.length, 2);
 });
 
-Deno.test("location: geocodes address", async () => {
+Deno.test("location: geocodes address", () => {
   const mockAddress = {
     ...testData.location(),
     lat: 37.7749,
@@ -127,12 +127,12 @@ Deno.test("location: geocodes address", async () => {
 });
 
 // Preferences Tests (5 tests)
-Deno.test("preferences: sets dietary restrictions", async () => {
+Deno.test("preferences: sets dietary restrictions", () => {
   const restrictions = ["vegetarian", "gluten-free"];
   assert(restrictions.length > 0);
 });
 
-Deno.test("preferences: configures notifications", async () => {
+Deno.test("preferences: configures notifications", () => {
   const notificationPrefs = {
     email: true,
     push: true,
@@ -141,7 +141,7 @@ Deno.test("preferences: configures notifications", async () => {
   assertExists(notificationPrefs.email);
 });
 
-Deno.test("preferences: sets calorie goals", async () => {
+Deno.test("preferences: sets calorie goals", () => {
   const goals = {
     daily_calories: 2000,
     protein_g: 150,
@@ -151,7 +151,7 @@ Deno.test("preferences: sets calorie goals", async () => {
   assert(goals.daily_calories > 0);
 });
 
-Deno.test("preferences: configures privacy settings", async () => {
+Deno.test("preferences: configures privacy settings", () => {
   const privacy = {
     profile_public: false,
     share_progress: true,
@@ -159,7 +159,7 @@ Deno.test("preferences: configures privacy settings", async () => {
   assertExists(privacy.profile_public);
 });
 
-Deno.test("preferences: sets meal reminders", async () => {
+Deno.test("preferences: sets meal reminders", () => {
   const reminders = {
     breakfast: "07:00",
     lunch: "12:00",
@@ -169,7 +169,7 @@ Deno.test("preferences: sets meal reminders", async () => {
 });
 
 // Checkout Flow Tests (8 tests)
-Deno.test("checkout: creates checkout session", async () => {
+Deno.test("checkout: creates checkout session", () => {
   const mockSession = {
     id: crypto.randomUUID(),
     user_id: testData.userId(),
@@ -179,20 +179,20 @@ Deno.test("checkout: creates checkout session", async () => {
   assertExists(mockSession.id);
 });
 
-Deno.test("checkout: validates payment amount", async () => {
+Deno.test("checkout: validates payment amount", () => {
   const amount = 45.99;
   assert(amount > 0);
   assert(amount < 10000); // Reasonable max
 });
 
-Deno.test("checkout: applies promo code", async () => {
+Deno.test("checkout: applies promo code", () => {
   const subtotal = 50;
   const discount = 10; // $10 off
   const total = subtotal - discount;
   assertEquals(total, 40);
 });
 
-Deno.test("checkout: calculates final total", async () => {
+Deno.test("checkout: calculates final total", () => {
   const subtotal = 35;
   const tax = 2.8;
   const deliveryFee = 2.99;
@@ -201,13 +201,13 @@ Deno.test("checkout: calculates final total", async () => {
   assertEquals(total, 47.79);
 });
 
-Deno.test("checkout: validates payment method", async () => {
+Deno.test("checkout: validates payment method", () => {
   const paymentMethods = ["credit_card", "debit_card", "paypal"];
   const selected = "credit_card";
   assert(paymentMethods.includes(selected));
 });
 
-Deno.test("checkout: handles payment failure", async () => {
+Deno.test("checkout: handles payment failure", () => {
   const mockResult = {
     success: false,
     error: "INSUFFICIENT_FUNDS",
@@ -215,7 +215,7 @@ Deno.test("checkout: handles payment failure", async () => {
   assertEquals(mockResult.success, false);
 });
 
-Deno.test("checkout: confirms successful payment", async () => {
+Deno.test("checkout: confirms successful payment", () => {
   const mockResult = {
     success: true,
     transaction_id: "txn_123",
@@ -224,7 +224,7 @@ Deno.test("checkout: confirms successful payment", async () => {
   assertEquals(mockResult.success, true);
 });
 
-Deno.test("checkout: generates receipt", async () => {
+Deno.test("checkout: generates receipt", () => {
   const mockReceipt = {
     order_id: "order_123",
     amount: 45.99,
@@ -235,7 +235,7 @@ Deno.test("checkout: generates receipt", async () => {
 });
 
 // Subscription Management Tests (7 tests)
-Deno.test("subscription: creates subscription", async () => {
+Deno.test("subscription: creates subscription", () => {
   const mockSub = {
     id: crypto.randomUUID(),
     user_id: testData.userId(),
@@ -246,34 +246,34 @@ Deno.test("subscription: creates subscription", async () => {
   assertEquals(mockSub.status, "active");
 });
 
-Deno.test("subscription: validates plan tiers", async () => {
+Deno.test("subscription: validates plan tiers", () => {
   const plans = ["free", "basic", "premium"];
   const selected = "premium";
   assert(plans.includes(selected));
 });
 
-Deno.test("subscription: calculates billing cycle", async () => {
+Deno.test("subscription: calculates billing cycle", () => {
   const startDate = new Date("2024-01-01");
   const nextBilling = new Date(startDate);
   nextBilling.setMonth(nextBilling.getMonth() + 1);
   assert(nextBilling > startDate);
 });
 
-Deno.test("subscription: handles upgrade", async () => {
+Deno.test("subscription: handles upgrade", () => {
   const currentPlan = "basic";
   const newPlan = "premium";
   const priceIncrease = 10; // $10 more per month
   assert(priceIncrease > 0);
 });
 
-Deno.test("subscription: handles downgrade", async () => {
+Deno.test("subscription: handles downgrade", () => {
   const currentPlan = "premium";
   const newPlan = "basic";
   const priceDecrease = 10; // $10 less per month
   assert(priceDecrease > 0);
 });
 
-Deno.test("subscription: cancels subscription", async () => {
+Deno.test("subscription: cancels subscription", () => {
   const mockSub = {
     status: "cancelled",
     cancelled_at: new Date().toISOString(),
@@ -282,7 +282,7 @@ Deno.test("subscription: cancels subscription", async () => {
   assertEquals(mockSub.status, "cancelled");
 });
 
-Deno.test("subscription: tracks usage limits", async () => {
+Deno.test("subscription: tracks usage limits", () => {
   const mockUsage = {
     orders_this_month: 15,
     plan_limit: 20,
@@ -292,13 +292,13 @@ Deno.test("subscription: tracks usage limits", async () => {
 });
 
 // Webhook Handling Tests (5 tests)
-Deno.test("webhook: validates signature", async () => {
+Deno.test("webhook: validates signature", () => {
   const signature = "sha256=abc123";
   const isValid = signature.startsWith("sha256=");
   assertEquals(isValid, true);
 });
 
-Deno.test("webhook: handles payment success", async () => {
+Deno.test("webhook: handles payment success", () => {
   const mockEvent = {
     type: "payment.succeeded",
     data: {
@@ -309,7 +309,7 @@ Deno.test("webhook: handles payment success", async () => {
   assertEquals(mockEvent.type, "payment.succeeded");
 });
 
-Deno.test("webhook: handles payment failure", async () => {
+Deno.test("webhook: handles payment failure", () => {
   const mockEvent = {
     type: "payment.failed",
     data: {
@@ -319,7 +319,7 @@ Deno.test("webhook: handles payment failure", async () => {
   assertEquals(mockEvent.type, "payment.failed");
 });
 
-Deno.test("webhook: handles subscription events", async () => {
+Deno.test("webhook: handles subscription events", () => {
   const mockEvent = {
     type: "subscription.updated",
     data: {
@@ -330,7 +330,7 @@ Deno.test("webhook: handles subscription events", async () => {
   assertEquals(mockEvent.type, "subscription.updated");
 });
 
-Deno.test("webhook: logs webhook events", async () => {
+Deno.test("webhook: logs webhook events", () => {
   const mockLog = {
     webhook_id: crypto.randomUUID(),
     event_type: "payment.succeeded",

@@ -14,7 +14,7 @@ import { FOOD_DATABASE } from "./dictionary.ts";
 import type {
   DietTag,
   IngredientFlags,
-  IngredientQuantity,
+
   Macros,
 } from "./types.ts";
 import { DIET_TAG_THRESHOLDS } from "./types.ts";

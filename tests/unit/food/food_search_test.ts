@@ -14,9 +14,9 @@ import {
   testData,
 } from "../../helpers.ts";
 
-Deno.test("food_search: returns results for valid query", async () => {
+Deno.test("food_search: returns results for valid query", () => {
   // Mock implementation - in real tests, this would call the actual function
-  const query = "chicken breast";
+  // const query = "chicken breast";
   const mockResults = {
     foods: [
       testData.food({ description: "Chicken Breast, Raw" }),
@@ -30,8 +30,8 @@ Deno.test("food_search: returns results for valid query", async () => {
   assert(mockResults.foods[0].description.toLowerCase().includes("chicken"));
 });
 
-Deno.test("food_search: handles empty query gracefully", async () => {
-  const query = "";
+Deno.test("food_search: handles empty query gracefully", () => {
+  // const query = "";
   const mockError = {
     error: "INVALID_QUERY",
     message: "Query cannot be empty",
@@ -41,8 +41,8 @@ Deno.test("food_search: handles empty query gracefully", async () => {
   assertEquals(mockError.error, "INVALID_QUERY");
 });
 
-Deno.test("food_search: handles special characters in query", async () => {
-  const query = "chicken & rice";
+Deno.test("food_search: handles special characters in query", () => {
+  // const query = "chicken & rice";
   const mockResults = {
     foods: [testData.food()],
     total: 1,
@@ -52,8 +52,8 @@ Deno.test("food_search: handles special characters in query", async () => {
   assert(mockResults.total >= 0);
 });
 
-Deno.test("food_search: returns empty array for no matches", async () => {
-  const query = "xyzabc123nonexistent";
+Deno.test("food_search: returns empty array for no matches", () => {
+  // const query = "xyzabc123nonexistent";
   const mockResults = {
     foods: [],
     total: 0,
@@ -63,8 +63,8 @@ Deno.test("food_search: returns empty array for no matches", async () => {
   assertEquals(mockResults.total, 0);
 });
 
-Deno.test("food_search: limits results to specified count", async () => {
-  const query = "apple";
+Deno.test("food_search: limits results to specified count", () => {
+  // const query = "apple";
   const limit = 5;
   const mockResults = {
     foods: Array(5).fill(null).map(() => testData.food()),
@@ -75,10 +75,10 @@ Deno.test("food_search: limits results to specified count", async () => {
   assert(mockResults.total >= mockResults.foods.length);
 });
 
-Deno.test("food_search: handles case-insensitive search", async () => {
+Deno.test("food_search: handles case-insensitive search", () => {
   const queries = ["CHICKEN", "chicken", "ChIcKeN"];
 
-  for (const query of queries) {
+  for (const _query of queries) {
     const mockResults = {
       foods: [testData.food({ description: "Chicken Breast" })],
       total: 1,
@@ -89,8 +89,8 @@ Deno.test("food_search: handles case-insensitive search", async () => {
   }
 });
 
-Deno.test("food_search: returns nutrition data for each food", async () => {
-  const query = "apple";
+Deno.test("food_search: returns nutrition data for each food", () => {
+  // const query = "apple";
   const mockResults = {
     foods: [testData.food({
       calories: 95,
@@ -108,8 +108,8 @@ Deno.test("food_search: returns nutrition data for each food", async () => {
   assertExists(food.fat);
 });
 
-Deno.test("food_search: handles pagination correctly", async () => {
-  const query = "chicken";
+Deno.test("food_search: handles pagination correctly", () => {
+  // const query = "chicken";
   const page = 2;
   const limit = 10;
 
@@ -125,8 +125,8 @@ Deno.test("food_search: handles pagination correctly", async () => {
   assert(mockResults.total > mockResults.foods.length);
 });
 
-Deno.test("food_search: handles very long queries", async () => {
-  const query = "a".repeat(500);
+Deno.test("food_search: handles very long queries", () => {
+  // const query = "a".repeat(500);
   const mockError = {
     error: "QUERY_TOO_LONG",
     message: "Query exceeds maximum length",
@@ -136,8 +136,8 @@ Deno.test("food_search: handles very long queries", async () => {
   assertEquals(mockError.error, "QUERY_TOO_LONG");
 });
 
-Deno.test("food_search: returns branded and generic foods", async () => {
-  const query = "milk";
+Deno.test("food_search: returns branded and generic foods", () => {
+  // const query = "milk";
   const mockResults = {
     foods: [
       testData.food({ description: "Milk, whole", brand_name: null }),

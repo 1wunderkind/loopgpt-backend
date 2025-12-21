@@ -6,7 +6,7 @@
 import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 // Search Restaurants Tests (10 tests)
-Deno.test("delivery: searches restaurants by query", async () => {
+Deno.test("delivery: searches restaurants by query", () => {
   const query = "pizza";
   const mockResults = [
     { id: "1", name: "Pizza Place", cuisine: "Italian" },
@@ -16,7 +16,7 @@ Deno.test("delivery: searches restaurants by query", async () => {
   assert(mockResults.every((r) => r.name.toLowerCase().includes("pizza")));
 });
 
-Deno.test("delivery: filters by location", async () => {
+Deno.test("delivery: filters by location", () => {
   const location = testData.location();
   const mockResults = [
     { id: "1", name: "Restaurant", distance_km: 2.5 },
@@ -24,7 +24,7 @@ Deno.test("delivery: filters by location", async () => {
   assertExists(mockResults[0].distance_km);
 });
 
-Deno.test("delivery: filters by cuisine type", async () => {
+Deno.test("delivery: filters by cuisine type", () => {
   const cuisine = "Italian";
   const mockResults = [
     { id: "1", cuisine: "Italian" },
@@ -33,7 +33,7 @@ Deno.test("delivery: filters by cuisine type", async () => {
   assert(mockResults.every((r) => r.cuisine === cuisine));
 });
 
-Deno.test("delivery: sorts by distance", async () => {
+Deno.test("delivery: sorts by distance", () => {
   const mockResults = [
     { id: "1", distance_km: 1.5 },
     { id: "2", distance_km: 2.5 },
@@ -44,7 +44,7 @@ Deno.test("delivery: sorts by distance", async () => {
   }
 });
 
-Deno.test("delivery: includes delivery time estimate", async () => {
+Deno.test("delivery: includes delivery time estimate", () => {
   const mockResults = [
     { id: "1", estimated_delivery_minutes: 30 },
   ];
@@ -52,7 +52,7 @@ Deno.test("delivery: includes delivery time estimate", async () => {
   assert(mockResults[0].estimated_delivery_minutes > 0);
 });
 
-Deno.test("delivery: includes delivery fee", async () => {
+Deno.test("delivery: includes delivery fee", () => {
   const mockResults = [
     { id: "1", delivery_fee: 2.99 },
   ];
@@ -60,7 +60,7 @@ Deno.test("delivery: includes delivery fee", async () => {
   assert(mockResults[0].delivery_fee >= 0);
 });
 
-Deno.test("delivery: filters by rating", async () => {
+Deno.test("delivery: filters by rating", () => {
   const minRating = 4.0;
   const mockResults = [
     { id: "1", rating: 4.5 },
@@ -69,20 +69,21 @@ Deno.test("delivery: filters by rating", async () => {
   assert(mockResults.every((r) => r.rating >= minRating));
 });
 
-Deno.test("delivery: handles no results", async () => {
+Deno.test("delivery: handles no results", () => {
   const query = "nonexistent123";
+  // deno-lint-ignore no-explicit-any
   const mockResults: any[] = [];
   assertEquals(mockResults.length, 0);
 });
 
-Deno.test("delivery: includes restaurant hours", async () => {
+Deno.test("delivery: includes restaurant hours", () => {
   const mockResults = [
     { id: "1", is_open: true, closes_at: "22:00" },
   ];
   assertExists(mockResults[0].is_open);
 });
 
-Deno.test("delivery: filters by price range", async () => {
+Deno.test("delivery: filters by price range", () => {
   const priceRange = "$$";
   const mockResults = [
     { id: "1", price_range: "$$" },
@@ -91,7 +92,7 @@ Deno.test("delivery: filters by price range", async () => {
 });
 
 // Get Menu Tests (10 tests)
-Deno.test("menu: retrieves restaurant menu", async () => {
+Deno.test("menu: retrieves restaurant menu", () => {
   const restaurantId = "rest_123";
   const mockMenu = {
     restaurant_id: restaurantId,
@@ -102,7 +103,7 @@ Deno.test("menu: retrieves restaurant menu", async () => {
   assert(mockMenu.categories.length > 0);
 });
 
-Deno.test("menu: includes item details", async () => {
+Deno.test("menu: includes item details", () => {
   const mockItem = {
     id: "item_1",
     name: "Margherita Pizza",
@@ -114,7 +115,7 @@ Deno.test("menu: includes item details", async () => {
   assertExists(mockItem.price);
 });
 
-Deno.test("menu: groups items by category", async () => {
+Deno.test("menu: groups items by category", () => {
   const mockMenu = {
     categories: [
       { name: "Appetizers", items: [{ id: "1" }] },
@@ -124,7 +125,7 @@ Deno.test("menu: groups items by category", async () => {
   assertEquals(mockMenu.categories.length, 2);
 });
 
-Deno.test("menu: includes customization options", async () => {
+Deno.test("menu: includes customization options", () => {
   const mockItem = {
     id: "item_1",
     customizations: [
@@ -134,7 +135,7 @@ Deno.test("menu: includes customization options", async () => {
   assertExists(mockItem.customizations);
 });
 
-Deno.test("menu: includes allergen information", async () => {
+Deno.test("menu: includes allergen information", () => {
   const mockItem = {
     id: "item_1",
     allergens: ["dairy", "gluten"],
@@ -142,7 +143,7 @@ Deno.test("menu: includes allergen information", async () => {
   assertExists(mockItem.allergens);
 });
 
-Deno.test("menu: includes nutritional info", async () => {
+Deno.test("menu: includes nutritional info", () => {
   const mockItem = {
     id: "item_1",
     nutrition: {
@@ -155,7 +156,7 @@ Deno.test("menu: includes nutritional info", async () => {
   assertExists(mockItem.nutrition);
 });
 
-Deno.test("menu: handles unavailable items", async () => {
+Deno.test("menu: handles unavailable items", () => {
   const mockItem = {
     id: "item_1",
     available: false,
@@ -164,7 +165,7 @@ Deno.test("menu: handles unavailable items", async () => {
   assertEquals(mockItem.available, false);
 });
 
-Deno.test("menu: includes item images", async () => {
+Deno.test("menu: includes item images", () => {
   const mockItem = {
     id: "item_1",
     image_url: "https://example.com/image.jpg",
@@ -172,7 +173,7 @@ Deno.test("menu: includes item images", async () => {
   assertExists(mockItem.image_url);
 });
 
-Deno.test("menu: shows popular items", async () => {
+Deno.test("menu: shows popular items", () => {
   const mockItem = {
     id: "item_1",
     is_popular: true,
@@ -180,7 +181,7 @@ Deno.test("menu: shows popular items", async () => {
   assertEquals(mockItem.is_popular, true);
 });
 
-Deno.test("menu: includes preparation time", async () => {
+Deno.test("menu: includes preparation time", () => {
   const mockItem = {
     id: "item_1",
     prep_time_minutes: 15,
@@ -189,14 +190,14 @@ Deno.test("menu: includes preparation time", async () => {
 });
 
 // Place Order Tests (15 tests)
-Deno.test("order: creates order successfully", async () => {
+Deno.test("order: creates order successfully", () => {
   const mockOrder = testData.order();
   assertExists(mockOrder.id);
   assertExists(mockOrder.user_id);
   assertEquals(mockOrder.status, "pending");
 });
 
-Deno.test("order: validates items", async () => {
+Deno.test("order: validates items", () => {
   const items = [
     { item_id: "1", quantity: 2 },
     { item_id: "2", quantity: 1 },
@@ -204,7 +205,7 @@ Deno.test("order: validates items", async () => {
   assert(items.every((i) => i.quantity > 0));
 });
 
-Deno.test("order: calculates subtotal", async () => {
+Deno.test("order: calculates subtotal", () => {
   const items = [
     { price: 10, quantity: 2 },
     { price: 15, quantity: 1 },
@@ -213,28 +214,28 @@ Deno.test("order: calculates subtotal", async () => {
   assertEquals(subtotal, 35);
 });
 
-Deno.test("order: adds delivery fee", async () => {
+Deno.test("order: adds delivery fee", () => {
   const subtotal = 35;
   const deliveryFee = 2.99;
   const total = subtotal + deliveryFee;
   assertEquals(total, 37.99);
 });
 
-Deno.test("order: calculates tax", async () => {
+Deno.test("order: calculates tax", () => {
   const subtotal = 35;
   const taxRate = 0.08;
   const tax = Math.round(subtotal * taxRate * 100) / 100;
   assertEquals(tax, 2.8);
 });
 
-Deno.test("order: applies tip", async () => {
+Deno.test("order: applies tip", () => {
   const subtotal = 35;
   const tipPercent = 20;
   const tip = subtotal * (tipPercent / 100);
   assertEquals(tip, 7);
 });
 
-Deno.test("order: validates delivery address", async () => {
+Deno.test("order: validates delivery address", () => {
   const address = testData.location();
   assertExists(address.street);
   assertExists(address.city);
@@ -242,20 +243,20 @@ Deno.test("order: validates delivery address", async () => {
   assertExists(address.zip);
 });
 
-Deno.test("order: includes delivery instructions", async () => {
+Deno.test("order: includes delivery instructions", () => {
   const mockOrder = {
     delivery_instructions: "Leave at door",
   };
   assertExists(mockOrder.delivery_instructions);
 });
 
-Deno.test("order: validates minimum order amount", async () => {
+Deno.test("order: validates minimum order amount", () => {
   const subtotal = 15;
   const minimum = 10;
   assert(subtotal >= minimum);
 });
 
-Deno.test("order: handles payment method", async () => {
+Deno.test("order: handles payment method", () => {
   const mockOrder = {
     payment_method: "credit_card",
     payment_id: "pm_123",
@@ -263,32 +264,32 @@ Deno.test("order: handles payment method", async () => {
   assertExists(mockOrder.payment_method);
 });
 
-Deno.test("order: generates confirmation token", async () => {
+Deno.test("order: generates confirmation token", () => {
   const token = crypto.randomUUID();
   assertExists(token);
   assert(token.length > 0);
 });
 
-Deno.test("order: sets expiration time", async () => {
+Deno.test("order: sets expiration time", () => {
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
   const now = new Date();
   assert(expiresAt > now);
 });
 
-Deno.test("order: validates provider availability", async () => {
+Deno.test("order: validates provider availability", () => {
   const provider = "instacart";
   const isAvailable = true;
   assertEquals(isAvailable, true);
 });
 
-Deno.test("order: handles order notes", async () => {
+Deno.test("order: handles order notes", () => {
   const mockOrder = {
     notes: "Extra sauce please",
   };
   assertExists(mockOrder.notes);
 });
 
-Deno.test("order: includes estimated delivery time", async () => {
+Deno.test("order: includes estimated delivery time", () => {
   const mockOrder = {
     estimated_delivery_at: new Date(Date.now() + 45 * 60 * 1000).toISOString(),
   };
@@ -296,7 +297,7 @@ Deno.test("order: includes estimated delivery time", async () => {
 });
 
 // Track Order Tests (8 tests)
-Deno.test("track: retrieves order status", async () => {
+Deno.test("track: retrieves order status", () => {
   const orderId = "order_123";
   const mockStatus = {
     order_id: orderId,
@@ -306,7 +307,7 @@ Deno.test("track: retrieves order status", async () => {
   assertEquals(mockStatus.order_id, orderId);
 });
 
-Deno.test("track: shows order timeline", async () => {
+Deno.test("track: shows order timeline", () => {
   const timeline = [
     { status: "placed", timestamp: "2024-01-01T10:00:00Z" },
     { status: "confirmed", timestamp: "2024-01-01T10:05:00Z" },
@@ -315,7 +316,7 @@ Deno.test("track: shows order timeline", async () => {
   assert(timeline.length > 0);
 });
 
-Deno.test("track: includes driver information", async () => {
+Deno.test("track: includes driver information", () => {
   const mockStatus = {
     driver: {
       name: "John Doe",
@@ -326,7 +327,7 @@ Deno.test("track: includes driver information", async () => {
   assertExists(mockStatus.driver);
 });
 
-Deno.test("track: shows live location", async () => {
+Deno.test("track: shows live location", () => {
   const mockStatus = {
     driver_location: {
       lat: 37.7749,
@@ -336,14 +337,14 @@ Deno.test("track: shows live location", async () => {
   assertExists(mockStatus.driver_location);
 });
 
-Deno.test("track: updates ETA", async () => {
+Deno.test("track: updates ETA", () => {
   const mockStatus = {
     estimated_arrival: new Date(Date.now() + 20 * 60 * 1000).toISOString(),
   };
   assertExists(mockStatus.estimated_arrival);
 });
 
-Deno.test("track: handles order cancellation", async () => {
+Deno.test("track: handles order cancellation", () => {
   const mockStatus = {
     status: "cancelled",
     cancellation_reason: "Customer request",
@@ -351,7 +352,7 @@ Deno.test("track: handles order cancellation", async () => {
   assertEquals(mockStatus.status, "cancelled");
 });
 
-Deno.test("track: shows delivery completion", async () => {
+Deno.test("track: shows delivery completion", () => {
   const mockStatus = {
     status: "delivered",
     delivered_at: new Date().toISOString(),
@@ -359,7 +360,7 @@ Deno.test("track: shows delivery completion", async () => {
   assertEquals(mockStatus.status, "delivered");
 });
 
-Deno.test("track: includes contact options", async () => {
+Deno.test("track: includes contact options", () => {
   const mockStatus = {
     support_phone: "+1234567890",
     support_chat: true,
@@ -368,13 +369,13 @@ Deno.test("track: includes contact options", async () => {
 });
 
 // Provider Routing Tests (7 tests)
-Deno.test("routing: queries multiple providers", async () => {
+Deno.test("routing: queries multiple providers", () => {
   const providers = ["instacart", "mealme", "walmart"];
   const mockQuotes = providers.map((p) => ({ provider: p, available: true }));
   assertEquals(mockQuotes.length, 3);
 });
 
-Deno.test("routing: compares prices", async () => {
+Deno.test("routing: compares prices", () => {
   const quotes = [
     { provider: "instacart", total: 45.99 },
     { provider: "mealme", total: 42.99 },
@@ -384,7 +385,7 @@ Deno.test("routing: compares prices", async () => {
   assertEquals(cheapest.provider, "mealme");
 });
 
-Deno.test("routing: compares delivery times", async () => {
+Deno.test("routing: compares delivery times", () => {
   const quotes = [
     { provider: "instacart", delivery_minutes: 45 },
     { provider: "mealme", delivery_minutes: 30 },
@@ -395,7 +396,7 @@ Deno.test("routing: compares delivery times", async () => {
   assertEquals(fastest.provider, "mealme");
 });
 
-Deno.test("routing: checks item availability", async () => {
+Deno.test("routing: checks item availability", () => {
   const quote = {
     provider: "instacart",
     items_found: 5,
@@ -405,7 +406,7 @@ Deno.test("routing: checks item availability", async () => {
   assertEquals(quote.availability_score, 100);
 });
 
-Deno.test("routing: calculates provider score", async () => {
+Deno.test("routing: calculates provider score", () => {
   const quote = {
     provider: "instacart",
     price_score: 70,
@@ -416,7 +417,7 @@ Deno.test("routing: calculates provider score", async () => {
   assert(quote.weighted_score > 0 && quote.weighted_score <= 100);
 });
 
-Deno.test("routing: handles provider failures", async () => {
+Deno.test("routing: handles provider failures", () => {
   const quotes = [
     { provider: "instacart", available: true },
     { provider: "mealme", available: false, error: "Service unavailable" },
@@ -425,7 +426,7 @@ Deno.test("routing: handles provider failures", async () => {
   assertEquals(available.length, 1);
 });
 
-Deno.test("routing: selects best provider", async () => {
+Deno.test("routing: selects best provider", () => {
   const quotes = [
     { provider: "instacart", score: 85 },
     { provider: "mealme", score: 72 },
