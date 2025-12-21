@@ -1,6 +1,7 @@
 import { serve } from "std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { crypto } from "std@0.177.0/crypto/mod.ts";
+import { selectProvider, RouterInput } from "../_shared/router.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -16,7 +17,10 @@ const ALLOWED_DOMAINS = [
   "walmart.com",
   "www.walmart.com",
   "kroger.com",
-  "www.kroger.com"
+  "www.kroger.com",
+  "mealme.ai",
+  "checkout.mealme.ai",
+  "loopkitchen-ui.vercel.app" // Allow fallback page
 ];
 
 function isAllowedUrl(url: string): boolean {
@@ -44,10 +48,10 @@ serve(async (req) => {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const tokenHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    // 2. Lookup Session
+    // 2. Lookup Session (Minimal Select)
     const { data: session, error } = await supabase
       .from("checkout_sessions")
-      .select("*")
+      .select("id, status, expires_at, missing_items")
       .eq("token_hash", tokenHash)
       .single();
 
@@ -65,24 +69,26 @@ serve(async (req) => {
     }
 
     // 3. Route Order (Server-Side Routing)
-    // Since we don't collect location, we default to a national provider search link.
-    // This ensures privacy compliance while maintaining utility.
+    // Derive coarse location from request headers (e.g. CF-IPCountry) or default to US
+    const country = req.headers.get("cf-ipcountry") || "US";
     
-    let checkoutUrl = "";
     const items = session.missing_items || [];
-    
-    // Normalize items to string list
-    const queryItems = items.map((i: any) => {
-      if (typeof i === 'string') return i;
-      if (typeof i === 'object' && i.name) return i.name;
-      return "";
-    }).filter((i: string) => i.length > 0);
+    const basket = items.map((i: any) => ({
+      name: typeof i === 'string' ? i : i.name,
+      quantity: typeof i === 'string' ? "1" : (i.quantity || "1")
+    }));
 
-    const query = queryItems.join(" ");
+    const routerInput: RouterInput = {
+      intent: "order_missing_ingredients",
+      basket: basket,
+      coarse_location: { country },
+      channel: "chatgpt",
+      token_hash: tokenHash // Pass hash for deterministic seeding
+    };
 
-    // Default Strategy: Instacart Search
-    // This is a safe, deep-linkable fallback that works without location data.
-    checkoutUrl = `https://www.instacart.com/store/search_v3/${encodeURIComponent(query)}`;
+    // Call Competitive ZIP-Free Router
+    const routingResult = selectProvider(routerInput);
+    const checkoutUrl = routingResult.handoff_url;
 
     // 4. Validate URL against Allowlist
     if (!isAllowedUrl(checkoutUrl)) {

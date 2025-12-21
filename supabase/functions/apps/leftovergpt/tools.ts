@@ -3,6 +3,12 @@
  * 
  * The ONLY tools exposed to ChatGPT.
  * Strict adherence to the 4 allowed tools.
+ * 
+ * COMPLIANCE NOTE:
+ * - Descriptions are purely functional.
+ * - No "use when" or triggering guidance.
+ * - Schemas are minimal and privacy-preserving.
+ * - Commerce tool requires a server-signed token (UI enforcement).
  */
 
 export const LEFTOVERGPT_TOOLS = [
@@ -91,9 +97,13 @@ export const LEFTOVERGPT_TOOLS = [
         recipe_id: {
           type: "string",
           description: "ID of the recipe to order ingredients for"
+        },
+        commerce_token: {
+          type: "string",
+          description: "Server-signed token required to authorize commerce"
         }
       },
-      required: ["recipe_id"]
+      required: ["recipe_id", "commerce_token"]
     },
     openWorldHint: true,
     readOnlyHint: false

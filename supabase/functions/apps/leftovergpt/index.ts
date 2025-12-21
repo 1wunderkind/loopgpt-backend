@@ -1,16 +1,20 @@
-
 /**
  * LeftoverGPT App Adapter
  * 
  * Main entrypoint for the LeftoverGPT ChatGPT App.
  * Handles tool routing, schema validation, and response formatting.
+ * 
+ * COMPLIANCE NOTE:
+ * - Implements server-side commerce gating via HMAC tokens.
+ * - Enforces recipe_id lifecycle.
+ * - Minimizes data exposure.
  */
 
 import { serve } from "std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { crypto } from "std@0.177.0/crypto/mod.ts";
 import { getOpenAIClient } from "../../shared/openai.ts";
 import { LEFTOVERGPT_TOOLS } from "./tools.ts";
-import { CommerceGuard } from "./guards.ts";
 import { createCheckoutSession } from "./session.ts";
 import { sanitizeResponse, createErrorResponse } from "./utils.ts";
 import { 
@@ -22,7 +26,27 @@ import {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const JWT_SECRET = Deno.env.get("JWT_SECRET") || "default-secret-do-not-use-in-prod"; // Should be env var
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const FRONTEND_URL = "https://loopkitchen-ui.vercel.app";
+
+// Helper to sign tokens
+async function signCommerceToken(recipeId: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(JWT_SECRET);
+  const key = await crypto.subtle.importKey(
+    "raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+  );
+  const data = encoder.encode(recipeId);
+  const signature = await crypto.subtle.sign("HMAC", key, data);
+  return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Helper to verify tokens
+async function verifyCommerceToken(recipeId: string, token: string): Promise<boolean> {
+  const expected = await signCommerceToken(recipeId);
+  return expected === token;
+}
 
 export async function handleLeftoverGPTRequest(req: Request): Promise<Response> {
   try {
@@ -54,7 +78,7 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
 
       const result = JSON.parse(completion.choices[0].message.content || "{}");
       
-      // Save to DB
+      // Save to DB (Service Role Only)
       const { data: recipe, error } = await supabase
         .from("recipes")
         .insert({
@@ -68,15 +92,15 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
         .select("id")
         .single();
 
-      if (error) {
-        console.error("DB Error:", error);
-        // Fallback if DB fails? No, we need the ID.
-        throw new Error("Failed to save recipe.");
-      }
+      if (error) throw new Error("Failed to save recipe.");
+
+      // Generate Commerce Token
+      const commerceToken = await signCommerceToken(recipe.id);
 
       return new Response(JSON.stringify(sanitizeResponse({
         ...result,
         recipe_id: recipe.id,
+        commerce_token: commerceToken, // Pass token to LLM
         missing_items: result.ingredientsNeed
       })), { headers: { "Content-Type": "application/json" } });
     }
@@ -88,7 +112,7 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
 
       let context = "";
       if (recipe_id) {
-        const { data: recipe } = await supabase.from("recipes").select("*").eq("id", recipe_id).single();
+        const { data: recipe } = await supabase.from("recipes").select("metadata").eq("id", recipe_id).single();
         if (recipe) {
           context = `Original Recipe: ${JSON.stringify(recipe.metadata)}`;
         }
@@ -128,9 +152,12 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
         
       if (error) throw error;
 
+      const commerceToken = await signCommerceToken(newRecipe.id);
+
       return new Response(JSON.stringify(sanitizeResponse({
         ...result,
         recipe_id: newRecipe.id,
+        commerce_token: commerceToken,
         missing_items: result.ingredientsNeed
       })), { headers: { "Content-Type": "application/json" } });
     }
@@ -144,10 +171,9 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
       let ingList = ingredients || [];
 
       if (recipe_id) {
-        const { data: recipe } = await supabase.from("recipes").select("*").eq("id", recipe_id).single();
+        const { data: recipe } = await supabase.from("recipes").select("title, ingredients_have, ingredients_need").eq("id", recipe_id).single();
         if (recipe) {
           title = recipe.title;
-          // Combine have + need
           const have = (recipe.ingredients_have || []).map((i: any) => ({ name: i.name, quantity: i.quantity }));
           const need = (recipe.ingredients_need || []).map((i: any) => ({ name: i.name, quantity: i.quantity }));
           ingList = [...have, ...need];
@@ -175,10 +201,15 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
       return new Response(JSON.stringify(sanitizeResponse(result)), { headers: { "Content-Type": "application/json" } });
     }
 
-    // 4. Create Grocery Order Link
+    // 4. Create Grocery Order Link (Commerce Trigger)
     if (tool === "create_external_grocery_order_link") {
-      const { recipe_id } = parameters;
+      const { recipe_id, commerce_token } = parameters;
       
+      // GUARD: Validate Token
+      if (!commerce_token || !(await verifyCommerceToken(recipe_id, commerce_token))) {
+        return createErrorResponse("Security Error: Invalid or missing commerce token. Please regenerate the recipe.");
+      }
+
       let missingItems = [];
       
       if (recipe_id) {
@@ -195,9 +226,7 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
       // Create secure session
       const token = await createCheckoutSession(recipe_id || "unknown", missingItems);
       
-      const projectRef = Deno.env.get("SUPABASE_URL")?.split("//")[1].split(".")[0] || "qmagnwxeijctkksqbcqz";
-      // Point to Frontend, passing token and ingredients for display
-      // The actual secure checkout happens when Frontend redirects to backend with token
+      // Point to Frontend
       const ingredientsParam = encodeURIComponent(JSON.stringify(missingItems));
       const orderUrl = `${FRONTEND_URL}/checkout?token=${token}&ingredients=${ingredientsParam}`;
 
