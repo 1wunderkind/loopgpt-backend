@@ -1,9 +1,9 @@
 /**
  * Commerce Logger
- * 
+ *
  * Wrapper around the Step 2 structured logger for commerce-specific events.
  * Provides semantic logging for commerce router operations.
- * 
+ *
  * Part of: Step 3 - Provider Arbitrage Hardening & Failover
  */
 
@@ -42,7 +42,7 @@ export interface CommerceLogContext {
 export function logCommerce(
   level: LogLevel,
   message: string,
-  context: CommerceLogContext = {}
+  context: CommerceLogContext = {},
 ): void {
   const {
     source = "commerce",
@@ -95,19 +95,31 @@ export function logCommerce(
 // Convenience Functions
 // ============================================================================
 
-export function logCommerceInfo(message: string, context?: CommerceLogContext): void {
+export function logCommerceInfo(
+  message: string,
+  context?: CommerceLogContext,
+): void {
   logCommerce("info", message, context);
 }
 
-export function logCommerceWarn(message: string, context?: CommerceLogContext): void {
+export function logCommerceWarn(
+  message: string,
+  context?: CommerceLogContext,
+): void {
   logCommerce("warn", message, context);
 }
 
-export function logCommerceError(message: string, context?: CommerceLogContext): void {
+export function logCommerceError(
+  message: string,
+  context?: CommerceLogContext,
+): void {
   logCommerce("error", message, context);
 }
 
-export function logCommerceDebug(message: string, context?: CommerceLogContext): void {
+export function logCommerceDebug(
+  message: string,
+  context?: CommerceLogContext,
+): void {
   logCommerce("debug", message, context);
 }
 
@@ -121,7 +133,7 @@ export function logCommerceDebug(message: string, context?: CommerceLogContext):
 export function logRouteOrderStart(
   userId: string,
   itemCount: number,
-  routeId: string
+  routeId: string,
 ): void {
   logCommerceInfo("commerce.route_order.start", {
     userId,
@@ -134,7 +146,7 @@ export function logRouteOrderSuccess(
   routeId: string,
   providerId: ProviderId,
   durationMs: number,
-  score: number
+  score: number,
 ): void {
   logCommerceInfo("commerce.route_order.success", {
     routeId,
@@ -147,7 +159,7 @@ export function logRouteOrderSuccess(
 export function logRouteOrderFailure(
   routeId: string,
   errorCode: string,
-  durationMs: number
+  durationMs: number,
 ): void {
   logCommerceError("commerce.route_order.failure", {
     routeId,
@@ -162,7 +174,7 @@ export function logRouteOrderFailure(
 export function logConfirmOrderStart(
   orderId: string,
   providerId: ProviderId,
-  userId: string
+  userId: string,
 ): void {
   logCommerceInfo("commerce.confirm_order.start", {
     orderId,
@@ -175,7 +187,7 @@ export function logConfirmOrderSuccess(
   orderId: string,
   providerId: ProviderId,
   durationMs: number,
-  totalValue?: number
+  totalValue?: number,
 ): void {
   logCommerceInfo("commerce.confirm_order.success", {
     orderId,
@@ -190,7 +202,7 @@ export function logConfirmOrderFailure(
   providerId: ProviderId,
   errorCode: string,
   durationMs: number,
-  retryable: boolean
+  retryable: boolean,
 ): void {
   logCommerceError("commerce.confirm_order.failure", {
     orderId,
@@ -208,7 +220,7 @@ export function logFailoverAttempt(
   orderId: string,
   failoverFrom: ProviderId,
   failoverTo: ProviderId,
-  reason: string
+  reason: string,
 ): void {
   logCommerceWarn("commerce.failover_attempt", {
     orderId,
@@ -222,7 +234,7 @@ export function logFailoverSuccess(
   orderId: string,
   failoverFrom: ProviderId,
   failoverTo: ProviderId,
-  durationMs: number
+  durationMs: number,
 ): void {
   logCommerceInfo("commerce.failover_success", {
     orderId,
@@ -236,7 +248,7 @@ export function logFailoverFailure(
   orderId: string,
   failoverFrom: ProviderId,
   failoverTo: ProviderId,
-  errorCode: string
+  errorCode: string,
 ): void {
   logCommerceError("commerce.failover_failure", {
     orderId,
@@ -252,9 +264,9 @@ export function logFailoverFailure(
 export function logRecordOutcome(
   orderId: string,
   providerId: ProviderId,
-  outcome: 'success' | 'failed' | 'cancelled',
+  outcome: "success" | "failed" | "cancelled",
   totalValue: number,
-  commission: number
+  commission: number,
 ): void {
   logCommerceInfo("commerce.record_outcome", {
     orderId,
@@ -272,7 +284,7 @@ export function logProviderMetricsUpdate(
   providerId: ProviderId,
   successRate: number | null,
   avgMarginRate: number | null,
-  totalOrders: number
+  totalOrders: number,
 ): void {
   logCommerceDebug("commerce.provider_metrics_update", {
     providerId,
@@ -293,7 +305,7 @@ export function logScoringDecision(
   speedScore: number,
   availabilityScore: number,
   marginScore: number,
-  reliabilityScore: number
+  reliabilityScore: number,
 ): void {
   logCommerceDebug("commerce.scoring_decision", {
     routeId,

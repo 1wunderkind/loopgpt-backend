@@ -1,14 +1,14 @@
 /**
  * push_plan_feedback Edge Function
- * 
+ *
  * Marks a plan outcome as "applied" and optionally notifies MealPlannerGPT.
  * This function is called when a user accepts a recommendation.
- * 
+ *
  * @param {string} chatgpt_user_id - User identifier
  * @param {string} outcome_id - Plan outcome UUID
  * @param {boolean} applied - Whether user applied the recommendation
  * @param {boolean} notify_mealplanner - Whether to notify MealPlannerGPT (future)
- * 
+ *
  * @returns {object} { ok: true, outcome: {...} }
  */
 
@@ -42,55 +42,42 @@ async function handler(req: Request): Promise<Response> {
     if (!chatgpt_user_id) {
       return new Response(
         JSON.stringify({ ok: false, error: "chatgpt_user_id is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     if (!outcome_id) {
       return new Response(
         JSON.stringify({ ok: false, error: "outcome_id is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     if (typeof applied !== "boolean") {
       return new Response(
         JSON.stringify({ ok: false, error: "applied must be a boolean" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     // Create Supabase client
     // Get authenticated Supabase client (enforces RLS)
 
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-    
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: authError }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
-    
-
     if (!userId) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
     // Update plan_outcomes table
@@ -106,7 +93,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("Database error:", error);
       return new Response(
         JSON.stringify({ ok: false, error: error.message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -116,7 +103,7 @@ async function handler(req: Request): Promise<Response> {
           ok: false,
           error: "Outcome not found or access denied",
         }),
-        { status: 404, headers: { "Content-Type": "application/json" } }
+        { status: 404, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -130,7 +117,7 @@ async function handler(req: Request): Promise<Response> {
       // - Or update a shared "pending_adjustments" table
       // - Or send a webhook to MealPlannerGPT
       console.log(
-        `TODO: Notify MealPlannerGPT about outcome ${outcome_id} for user ${chatgpt_user_id}`
+        `TODO: Notify MealPlannerGPT about outcome ${outcome_id} for user ${chatgpt_user_id}`,
       );
       notification_sent = false; // Not implemented yet
     }
@@ -143,7 +130,7 @@ async function handler(req: Request): Promise<Response> {
         recommendation_kcal_per_day: data.recommendation_kcal_per_day,
         applied,
       },
-      userInput
+      userInput,
     );
 
     // Return success
@@ -154,7 +141,7 @@ async function handler(req: Request): Promise<Response> {
         notification_sent,
         message: formatted_message, // Multilingual!
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
     return handleError(error);
@@ -163,4 +150,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export with logging middleware
 export default withHeavyOperation(withLogging(handler));
-

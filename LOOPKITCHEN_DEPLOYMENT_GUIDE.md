@@ -1,7 +1,7 @@
 # LoopKitchen Deployment Guide
 
-**Version**: 1.0.0  
-**Date**: December 6, 2025  
+**Version**: 1.0.0\
+**Date**: December 6, 2025\
 **Status**: Production Ready
 
 ---
@@ -22,16 +22,19 @@
 
 ## Overview
 
-LoopKitchen is a comprehensive recipe generation, nutrition analysis, and meal planning system integrated into the LoopGPT backend. This guide covers deployment to Supabase Edge Functions.
+LoopKitchen is a comprehensive recipe generation, nutrition analysis, and meal
+planning system integrated into the LoopGPT backend. This guide covers
+deployment to Supabase Edge Functions.
 
 **Components**:
+
 - **Phase 1**: Shared module (types, prompts, utilities)
 - **Phase 2**: Recipe generation with chaos mode
 - **Phase 3**: Nutrition analysis and meal logging
 - **Phase 4**: Meal planning with commerce integration
 - **Phase 5**: Testing and deployment
 
-**Total Code**: 2,342+ lines  
+**Total Code**: 2,342+ lines\
 **MCP Tools**: 9 (7 available, 2 planned)
 
 ---
@@ -97,6 +100,7 @@ COMMERCE_ROUTER_URL=https://your-commerce-router.supabase.co/functions/v1
 ```
 
 **Set in Supabase Dashboard**:
+
 1. Go to Project Settings → Edge Functions
 2. Add environment variables
 3. Save changes
@@ -148,6 +152,7 @@ WHERE routine_name LIKE '%loopkitchen%';
 ### Option B: Skip Database (Placeholder Mode)
 
 If you want to deploy without database integration:
+
 - Meal logging tools will return placeholder InfoMessage widgets
 - All other features work normally
 - Can add database later without code changes
@@ -206,6 +211,7 @@ curl https://your-project.supabase.co/functions/v1/mcp-tools/health | jq '.'
 ```
 
 **Expected**:
+
 - `status: "healthy"`
 - `version: "1.8.0-loopkitchen-phase4"`
 - `services.environment.hasOpenAI: true`
@@ -290,6 +296,7 @@ supabase functions logs mcp-tools | grep loopkitchen
 ```
 
 **Key log patterns**:
+
 - `[loopkitchen.recipes]` - Recipe generation
 - `[loopkitchen.nutrition]` - Nutrition analysis
 - `[loopkitchen.mealplan]` - Meal planning
@@ -400,12 +407,14 @@ If LoopKitchen tools are causing issues:
 
 ### Issue: OpenAI API Errors
 
-**Symptoms**: 
+**Symptoms**:
+
 - "OpenAI API error" in logs
 - Slow response times
 - Timeout errors
 
 **Solutions**:
+
 1. Check OpenAI API key is valid
 2. Verify API quota/limits
 3. Check retry logic is working
@@ -414,11 +423,13 @@ If LoopKitchen tools are causing issues:
 ### Issue: Database Connection Errors
 
 **Symptoms**:
+
 - "Database not configured" errors
 - Meal logging fails
 - Daily summary fails
 
 **Solutions**:
+
 1. Verify `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set
 2. Check database is accessible
 3. Verify RLS policies (if enabled)
@@ -427,11 +438,13 @@ If LoopKitchen tools are causing issues:
 ### Issue: Slow Performance
 
 **Symptoms**:
+
 - Response times > 10s
 - Timeout errors
 - High latency
 
 **Solutions**:
+
 1. Check OpenAI API response times
 2. Optimize GPT prompts (reduce token count)
 3. Add caching for common requests
@@ -441,11 +454,13 @@ If LoopKitchen tools are causing issues:
 ### Issue: Commerce Integration Fails
 
 **Symptoms**:
+
 - "Commerce Router URL not set" errors
 - Provider quotes fail
 - Order preparation fails
 
 **Solutions**:
+
 1. Verify `COMMERCE_ROUTER_URL` is set
 2. Check commerce router is deployed
 3. Verify service role key has permissions
@@ -454,11 +469,13 @@ If LoopKitchen tools are causing issues:
 ### Issue: Widget Structure Errors
 
 **Symptoms**:
+
 - "Invalid widget type" errors
 - Missing fields in response
 - Type validation errors
 
 **Solutions**:
+
 1. Check GPT schema matches widget types
 2. Verify structured output is enabled
 3. Check for schema drift
@@ -509,6 +526,7 @@ If LoopKitchen tools are causing issues:
 ## Support & Resources
 
 **Documentation**:
+
 - Phase 1 Complete: `LOOPKITCHEN_PHASE1_COMPLETE.md`
 - Phase 2 Complete: `LOOPKITCHEN_PHASE2_COMPLETE.md`
 - Phase 3 Complete: `LOOPKITCHEN_PHASE3_COMPLETE.md`
@@ -516,11 +534,13 @@ If LoopKitchen tools are causing issues:
 - API Documentation: `LOOPKITCHEN_API_DOCS.md`
 
 **Test Suites**:
+
 - Integration tests: `tests/loopkitchen_integration_tests.sh`
 - Nutrition tests: `tests/test_nutrition_tool.sh`
 - Validation guides: `tests/loopkitchen_*_validation.md`
 
 **Database**:
+
 - Schema: `database/schemas/loopkitchen_meal_logs.sql`
 
 ---
@@ -528,6 +548,7 @@ If LoopKitchen tools are causing issues:
 ## Version History
 
 **v1.8.0-loopkitchen-phase4** (December 6, 2025)
+
 - ✅ Phase 1: Shared module
 - ✅ Phase 2: Recipe generation
 - ✅ Phase 3: Nutrition analysis
@@ -535,6 +556,7 @@ If LoopKitchen tools are causing issues:
 - ✅ Phase 5: Testing & deployment
 
 **Next Version** (Planned)
+
 - Database integration activation
 - Performance optimizations
 - Enhanced commerce features
@@ -542,5 +564,5 @@ If LoopKitchen tools are causing issues:
 
 ---
 
-*Last Updated: December 6, 2025*  
-*LoopKitchen Integration Project*
+_Last Updated: December 6, 2025_\
+_LoopKitchen Integration Project_

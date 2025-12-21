@@ -1,10 +1,11 @@
 /**
  * Engagement Layer Test Script
- * 
+ *
  * Tests CTA generation and impression logging
  */
 
-const SUPABASE_URL = "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
+const SUPABASE_URL =
+  "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!SERVICE_ROLE_KEY) {
@@ -30,7 +31,7 @@ const tests: TestCase[] = [
     },
     expectedCtaCount: 5,
   },
-  
+
   // Test 2: Meal plan should have 4 CTAs
   {
     name: "Meal plan with CTAs",
@@ -45,7 +46,7 @@ const tests: TestCase[] = [
     },
     expectedCtaCount: 4,
   },
-  
+
   // Test 3: Grocery list should have 2-3 CTAs
   {
     name: "Grocery list with CTAs",
@@ -64,7 +65,7 @@ const tests: TestCase[] = [
     },
     expectedCtaCount: 3,
   },
-  
+
   // Test 4: Nutrition should have 3 CTAs
   {
     name: "Nutrition with CTAs",
@@ -84,7 +85,7 @@ const tests: TestCase[] = [
     },
     expectedCtaCount: 3,
   },
-  
+
   // Test 5: Router should include CTAs
   {
     name: "Router with CTAs",
@@ -100,9 +101,9 @@ async function runTest(test: TestCase): Promise<boolean> {
   console.log(`\n=== Test: ${test.name} ===`);
   console.log(`Tool: ${test.tool}`);
   console.log(`Expected CTAs: ${test.expectedCtaCount}`);
-  
+
   const startTime = Date.now();
-  
+
   try {
     const response = await fetch(`${SUPABASE_URL}/tools/${test.tool}`, {
       method: "POST",
@@ -112,21 +113,21 @@ async function runTest(test: TestCase): Promise<boolean> {
       },
       body: JSON.stringify(test.params),
     });
-    
+
     const duration = Date.now() - startTime;
-    
+
     if (!response.ok) {
       console.error(`❌ HTTP error: ${response.status} ${response.statusText}`);
       const text = await response.text();
       console.error(`Response: ${text}`);
       return false;
     }
-    
+
     const result = await response.json();
-    
+
     // Check for suggestedActions
     let suggestedActions: any[] = [];
-    
+
     if (Array.isArray(result)) {
       // For array responses (recipes, nutrition), check if they have suggestedActions
       suggestedActions = result.suggestedActions || [];
@@ -142,10 +143,10 @@ async function runTest(test: TestCase): Promise<boolean> {
         suggestedActions = result.mealPlan.suggestedActions;
       }
     }
-    
+
     console.log(`Duration: ${duration}ms`);
     console.log(`Found CTAs: ${suggestedActions.length}`);
-    
+
     if (suggestedActions.length > 0) {
       console.log(`\nCTA List:`);
       suggestedActions.forEach((cta: any, index: number) => {
@@ -157,28 +158,35 @@ async function runTest(test: TestCase): Promise<boolean> {
         }
       });
     }
-    
+
     // Verify CTA count
-    if (suggestedActions.length >= test.expectedCtaCount - 1 && 
-        suggestedActions.length <= test.expectedCtaCount + 1) {
-      console.log(`✅ CTA count matches expectation (${suggestedActions.length} ≈ ${test.expectedCtaCount})`);
+    if (
+      suggestedActions.length >= test.expectedCtaCount - 1 &&
+      suggestedActions.length <= test.expectedCtaCount + 1
+    ) {
+      console.log(
+        `✅ CTA count matches expectation (${suggestedActions.length} ≈ ${test.expectedCtaCount})`,
+      );
     } else {
-      console.log(`⚠️  CTA count doesn't match expectation (${suggestedActions.length} vs ${test.expectedCtaCount})`);
+      console.log(
+        `⚠️  CTA count doesn't match expectation (${suggestedActions.length} vs ${test.expectedCtaCount})`,
+      );
     }
-    
+
     // Verify CTA structure
     if (suggestedActions.length > 0) {
       const firstCta = suggestedActions[0];
-      if (firstCta.id && firstCta.label && firstCta.actionType && firstCta.payload) {
+      if (
+        firstCta.id && firstCta.label && firstCta.actionType && firstCta.payload
+      ) {
         console.log(`✅ CTA structure is valid`);
       } else {
         console.log(`❌ CTA structure is invalid`);
         return false;
       }
     }
-    
+
     return true;
-    
   } catch (error: any) {
     const duration = Date.now() - startTime;
     console.error(`❌ Test failed: ${error.message}`);
@@ -191,10 +199,10 @@ async function main() {
   console.log("=== Engagement Layer Test Suite ===");
   console.log(`Testing: ${SUPABASE_URL}`);
   console.log(`Total tests: ${tests.length}\n`);
-  
+
   let passed = 0;
   let failed = 0;
-  
+
   for (const test of tests) {
     const success = await runTest(test);
     if (success) {
@@ -202,16 +210,16 @@ async function main() {
     } else {
       failed++;
     }
-    
+
     // Wait between tests to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
-  
+
   console.log("\n=== Test Summary ===");
   console.log(`Passed: ${passed}/${tests.length}`);
   console.log(`Failed: ${failed}/${tests.length}`);
   console.log(`Success rate: ${((passed / tests.length) * 100).toFixed(1)}%`);
-  
+
   if (failed === 0) {
     console.log("\n✅ All tests passed!");
   } else {

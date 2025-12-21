@@ -1,6 +1,6 @@
 /**
  * Commerce Schemas
- * 
+ *
  * Types and schemas for pantry management, cart preparation,
  * and integration with the LoopGPT Commerce Router.
  */
@@ -31,16 +31,18 @@ export function validatePantry(pantry: any): Pantry {
   if (!Array.isArray(pantry)) {
     throw new Error("Pantry must be an array");
   }
-  
+
   return pantry.map((item, index) => {
     if (!item || typeof item !== "object") {
       throw new Error(`Pantry item at index ${index} must be an object`);
     }
-    
+
     if (!item.name || typeof item.name !== "string") {
-      throw new Error(`Pantry item at index ${index} must have a name (string)`);
+      throw new Error(
+        `Pantry item at index ${index} must have a name (string)`,
+      );
     }
-    
+
     return {
       name: item.name.trim(),
       quantity: item.quantity ? String(item.quantity) : undefined,
@@ -217,10 +219,10 @@ export function buildCartPayload(
     mealPlanId?: string;
     recipeIds?: string[];
     missingItemsCount?: number;
-  }
+  },
 ): CartPayload {
   const items = groceryToCartItems(groceryItems);
-  
+
   return {
     items,
     metadata: {
@@ -237,7 +239,7 @@ export function buildOrderRoutingRequest(
   userId: string,
   cartPayload: CartPayload,
   location: UserLocation,
-  preferences?: OrderPreferences
+  preferences?: OrderPreferences,
 ): OrderRoutingRequest {
   return {
     userId,
@@ -260,14 +262,14 @@ export function validateLocation(location: any): UserLocation {
   if (!location || typeof location !== "object") {
     throw new Error("Location must be an object");
   }
-  
+
   const required = ["street", "city", "state", "zip"];
   for (const field of required) {
     if (!location[field] || typeof location[field] !== "string") {
       throw new Error(`Location.${field} is required (string)`);
     }
   }
-  
+
   return {
     street: location.street.trim(),
     city: location.city.trim(),
@@ -284,21 +286,40 @@ export function validatePreferences(preferences: any): OrderPreferences {
   if (!preferences) {
     return { optimizeFor: "balanced" };
   }
-  
+
   if (typeof preferences !== "object") {
     throw new Error("Preferences must be an object");
   }
-  
-  const validOptimizations = ["balanced", "price", "speed", "margin", "availability"];
-  if (preferences.optimizeFor && !validOptimizations.includes(preferences.optimizeFor)) {
-    throw new Error(`Invalid optimizeFor value. Must be one of: ${validOptimizations.join(", ")}`);
+
+  const validOptimizations = [
+    "balanced",
+    "price",
+    "speed",
+    "margin",
+    "availability",
+  ];
+  if (
+    preferences.optimizeFor &&
+    !validOptimizations.includes(preferences.optimizeFor)
+  ) {
+    throw new Error(
+      `Invalid optimizeFor value. Must be one of: ${
+        validOptimizations.join(", ")
+      }`,
+    );
   }
-  
+
   return {
     optimizeFor: preferences.optimizeFor || "balanced",
-    maxDeliveryTime: preferences.maxDeliveryTime ? Number(preferences.maxDeliveryTime) : undefined,
+    maxDeliveryTime: preferences.maxDeliveryTime
+      ? Number(preferences.maxDeliveryTime)
+      : undefined,
     maxPrice: preferences.maxPrice ? Number(preferences.maxPrice) : undefined,
-    preferredProviders: Array.isArray(preferences.preferredProviders) ? preferences.preferredProviders : undefined,
-    avoidProviders: Array.isArray(preferences.avoidProviders) ? preferences.avoidProviders : undefined,
+    preferredProviders: Array.isArray(preferences.preferredProviders)
+      ? preferences.preferredProviders
+      : undefined,
+    avoidProviders: Array.isArray(preferences.avoidProviders)
+      ? preferences.avoidProviders
+      : undefined,
   };
 }

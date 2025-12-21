@@ -6,7 +6,10 @@ import { createHash } from "std@0.168.0/hash/mod.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const receiptManager = new ReceiptManager(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const receiptManager = new ReceiptManager(
+  SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE_KEY,
+);
 
 // Mock Merchant Routing System
 // In production, this would call an external service or complex logic
@@ -40,7 +43,7 @@ serve(async (req) => {
     if (!cart || !Array.isArray(cart) || cart.length === 0) {
       return new Response(
         JSON.stringify({ error: "Cart is empty or invalid" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -48,7 +51,10 @@ serve(async (req) => {
     const provider = routeToProvider(cart);
 
     // 2. Calculate Financials (Mock)
-    const subtotal = cart.reduce((sum: number, item: any) => sum + (item.quantity * 5), 0); // Mock $5/item
+    const subtotal = cart.reduce(
+      (sum: number, item: any) => sum + (item.quantity * 5),
+      0,
+    ); // Mock $5/item
     const deliveryFee = 5.99;
     const tax = subtotal * 0.08;
     const total = subtotal + deliveryFee + tax;
@@ -73,11 +79,14 @@ serve(async (req) => {
       cart,
       cartHash,
       support: {
-        providerSupportText: `For delivery issues, substitutions, refunds, or billing questions, contact ${provider.name} support.`,
-        loopSupportText: "If something looks wrong in the cart or the app behavior, contact LoopKitchen support:",
+        providerSupportText:
+          `For delivery issues, substitutions, refunds, or billing questions, contact ${provider.name} support.`,
+        loopSupportText:
+          "If something looks wrong in the cart or the app behavior, contact LoopKitchen support:",
         loopSupportEmail: "support@loopgpt.app",
       },
-      disclaimerText: `Checkout, delivery, substitutions, refunds, and billing are handled by ${provider.name}. LoopKitchen helps you build the cart and redirects you to their checkout.`,
+      disclaimerText:
+        `Checkout, delivery, substitutions, refunds, and billing are handled by ${provider.name}. LoopKitchen helps you build the cart and redirects you to their checkout.`,
     });
 
     // 5. Construct Widget
@@ -115,14 +124,13 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ widgets: [widget] }),
-      { headers: { "Content-Type": "application/json" } }
+      { headers: { "Content-Type": "application/json" } },
     );
-
   } catch (error) {
     console.error("Error in prepare_external_checkout:", error);
     return new Response(
       JSON.stringify({ error: "Internal Server Error" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { "Content-Type": "application/json" } },
     );
   }
 });

@@ -3,10 +3,10 @@
  * Track KPIs, business metrics, and generate analytics
  */
 
-import { Logger } from '../monitoring/Logger.ts';
-import { eventTracker, Events } from '../observability/EventTracker.ts';
+import { Logger } from "../monitoring/Logger.ts";
+import { Events, eventTracker } from "../observability/EventTracker.ts";
 
-const logger = new Logger('BusinessMetrics');
+const logger = new Logger("BusinessMetrics");
 
 export interface MetricValue {
   value: number;
@@ -68,7 +68,7 @@ export class BusinessMetrics {
   record(
     name: string,
     value: number,
-    dimensions?: Record<string, string>
+    dimensions?: Record<string, string>,
   ): void {
     const metric: MetricValue = {
       value,
@@ -88,7 +88,7 @@ export class BusinessMetrics {
       metrics.shift();
     }
 
-    logger.debug('Metric recorded', { name, value, dimensions });
+    logger.debug("Metric recorded", { name, value, dimensions });
   }
 
   /**
@@ -97,7 +97,7 @@ export class BusinessMetrics {
   getMetrics(
     name: string,
     startTime?: number,
-    endTime?: number
+    endTime?: number,
   ): MetricValue[] {
     const metrics = this.metrics.get(name) || [];
 
@@ -105,7 +105,7 @@ export class BusinessMetrics {
       return metrics;
     }
 
-    return metrics.filter(m => {
+    return metrics.filter((m) => {
       if (startTime && m.timestamp < startTime) return false;
       if (endTime && m.timestamp > endTime) return false;
       return true;
@@ -115,7 +115,11 @@ export class BusinessMetrics {
   /**
    * Aggregate metrics
    */
-  aggregate(name: string, startTime?: number, endTime?: number): AggregatedMetric {
+  aggregate(
+    name: string,
+    startTime?: number,
+    endTime?: number,
+  ): AggregatedMetric {
     const metrics = this.getMetrics(name, startTime, endTime);
 
     if (metrics.length === 0) {
@@ -132,7 +136,7 @@ export class BusinessMetrics {
       };
     }
 
-    const values = metrics.map(m => m.value).sort((a, b) => a - b);
+    const values = metrics.map((m) => m.value).sort((a, b) => a - b);
     const sum = values.reduce((a, b) => a + b, 0);
 
     return {
@@ -165,9 +169,17 @@ export class BusinessMetrics {
     // TODO: Implement actual database queries
     // This is a placeholder implementation
 
-    const orderMetrics = this.aggregate('order.completed', startTime, endTime);
-    const revenueMetrics = this.aggregate('revenue.generated', startTime, endTime);
-    const responseTimeMetrics = this.aggregate('api.response_time', startTime, endTime);
+    const orderMetrics = this.aggregate("order.completed", startTime, endTime);
+    const revenueMetrics = this.aggregate(
+      "revenue.generated",
+      startTime,
+      endTime,
+    );
+    const responseTimeMetrics = this.aggregate(
+      "api.response_time",
+      startTime,
+      endTime,
+    );
 
     return {
       // User metrics
@@ -195,18 +207,18 @@ export class BusinessMetrics {
 
       // Provider metrics
       providerDistribution: {
-        'Instacart': 0.35,
-        'Shipt': 0.25,
-        'DoorDash': 0.20,
-        'UberEats': 0.15,
-        'MealMe': 0.05,
+        "Instacart": 0.35,
+        "Shipt": 0.25,
+        "DoorDash": 0.20,
+        "UberEats": 0.15,
+        "MealMe": 0.05,
       },
       providerSuccessRates: {
-        'Instacart': 0.96,
-        'Shipt': 0.94,
-        'DoorDash': 0.97,
-        'UberEats': 0.95,
-        'MealMe': 0.93,
+        "Instacart": 0.96,
+        "Shipt": 0.94,
+        "DoorDash": 0.97,
+        "UberEats": 0.95,
+        "MealMe": 0.93,
       },
     };
   }
@@ -227,33 +239,44 @@ export const businessMetrics = new BusinessMetrics();
 /**
  * Metric recording helpers
  */
-export const recordOrderMetric = (orderId: string, value: number, success: boolean) => {
-  businessMetrics.record('order.value', value, {
+export const recordOrderMetric = (
+  orderId: string,
+  value: number,
+  success: boolean,
+) => {
+  businessMetrics.record("order.value", value, {
     orderId,
     success: success.toString(),
   });
 
   if (success) {
-    businessMetrics.record('order.completed', value);
+    businessMetrics.record("order.completed", value);
     eventTracker.trackBusiness(Events.ORDER_COMPLETED, { orderId, value });
   } else {
-    businessMetrics.record('order.failed', value);
+    businessMetrics.record("order.failed", value);
     eventTracker.trackBusiness(Events.ORDER_FAILED, { orderId, value });
   }
 };
 
 export const recordRevenueMetric = (amount: number, source: string) => {
-  businessMetrics.record('revenue.generated', amount, { source });
+  businessMetrics.record("revenue.generated", amount, { source });
   eventTracker.trackBusiness(Events.REVENUE_GENERATED, { amount, source });
 };
 
-export const recordResponseTimeMetric = (endpoint: string, duration: number) => {
-  businessMetrics.record('api.response_time', duration, { endpoint });
+export const recordResponseTimeMetric = (
+  endpoint: string,
+  duration: number,
+) => {
+  businessMetrics.record("api.response_time", duration, { endpoint });
   businessMetrics.record(`api.response_time.${endpoint}`, duration);
 };
 
-export const recordProviderMetric = (provider: string, success: boolean, duration: number) => {
-  businessMetrics.record('provider.request', duration, {
+export const recordProviderMetric = (
+  provider: string,
+  success: boolean,
+  duration: number,
+) => {
+  businessMetrics.record("provider.request", duration, {
     provider,
     success: success.toString(),
   });
@@ -274,34 +297,46 @@ export const getOrderAnalytics = async (days: number = 30) => {
   const startTime = Date.now() - days * 24 * 60 * 60 * 1000;
 
   return {
-    completed: businessMetrics.aggregate('order.completed', startTime),
-    failed: businessMetrics.aggregate('order.failed', startTime),
-    value: businessMetrics.aggregate('order.value', startTime),
+    completed: businessMetrics.aggregate("order.completed", startTime),
+    failed: businessMetrics.aggregate("order.failed", startTime),
+    value: businessMetrics.aggregate("order.value", startTime),
   };
 };
 
 export const getRevenueAnalytics = async (days: number = 30) => {
   const startTime = Date.now() - days * 24 * 60 * 60 * 1000;
 
-  return businessMetrics.aggregate('revenue.generated', startTime);
+  return businessMetrics.aggregate("revenue.generated", startTime);
 };
 
 export const getPerformanceAnalytics = async (days: number = 7) => {
   const startTime = Date.now() - days * 24 * 60 * 60 * 1000;
 
   return {
-    responseTime: businessMetrics.aggregate('api.response_time', startTime),
-    cacheHit: businessMetrics.aggregate('cache.hit', startTime),
-    cacheMiss: businessMetrics.aggregate('cache.miss', startTime),
+    responseTime: businessMetrics.aggregate("api.response_time", startTime),
+    cacheHit: businessMetrics.aggregate("cache.hit", startTime),
+    cacheMiss: businessMetrics.aggregate("cache.miss", startTime),
   };
 };
 
-export const getProviderAnalytics = async (provider: string, days: number = 30) => {
+export const getProviderAnalytics = async (
+  provider: string,
+  days: number = 30,
+) => {
   const startTime = Date.now() - days * 24 * 60 * 60 * 1000;
 
   return {
-    requests: businessMetrics.aggregate(`provider.${provider}.request`, startTime),
-    successes: businessMetrics.aggregate(`provider.${provider}.success`, startTime),
-    failures: businessMetrics.aggregate(`provider.${provider}.failure`, startTime),
+    requests: businessMetrics.aggregate(
+      `provider.${provider}.request`,
+      startTime,
+    ),
+    successes: businessMetrics.aggregate(
+      `provider.${provider}.success`,
+      startTime,
+    ),
+    failures: businessMetrics.aggregate(
+      `provider.${provider}.failure`,
+      startTime,
+    ),
   };
 };

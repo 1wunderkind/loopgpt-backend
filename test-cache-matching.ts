@@ -3,11 +3,14 @@
  * Verify that smart cache matching works with ingredient variations
  */
 
-const MCP_TOOLS_URL = "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
+const MCP_TOOLS_URL =
+  "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!SERVICE_ROLE_KEY) {
-  console.error("ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable not set");
+  console.error(
+    "ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable not set",
+  );
   Deno.exit(1);
 }
 
@@ -92,7 +95,7 @@ const TEST_CASES = [
 
 async function callRecipesTool(ingredients: string[]) {
   const startTime = Date.now();
-  
+
   const response = await fetch(`${MCP_TOOLS_URL}/tools/recipes.generate`, {
     method: "POST",
     headers: {
@@ -113,63 +116,82 @@ async function callRecipesTool(ingredients: string[]) {
   }
 
   const result = await response.json();
-  
+
   // Cache hit if response is very fast (< 2 seconds)
   const wasCacheHit = duration < 2000;
-  
+
   return { result, duration, wasCacheHit };
 }
 
 async function runTests() {
   console.log("=== Testing Smart Cache Matching ===\n");
-  
+
   let totalTests = 0;
   let cacheHits = 0;
   let cacheMisses = 0;
   let correctPredictions = 0;
-  
+
   for (const testCase of TEST_CASES) {
     totalTests++;
-    
+
     try {
-      const { duration, wasCacheHit } = await callRecipesTool(testCase.ingredients);
-      
+      const { duration, wasCacheHit } = await callRecipesTool(
+        testCase.ingredients,
+      );
+
       const status = wasCacheHit ? "✓ CACHE HIT" : "✗ CACHE MISS";
       const prediction = testCase.expectedCacheHit === wasCacheHit ? "✓" : "✗";
-      
+
       if (wasCacheHit) {
         cacheHits++;
       } else {
         cacheMisses++;
       }
-      
+
       if (testCase.expectedCacheHit === wasCacheHit) {
         correctPredictions++;
       }
-      
+
       console.log(`${prediction} ${testCase.name}`);
       console.log(`   Ingredients: ${testCase.ingredients.join(", ")}`);
       console.log(`   ${status} (${duration}ms)`);
-      console.log(`   Expected: ${testCase.expectedCacheHit ? "HIT" : "MISS"}, Got: ${wasCacheHit ? "HIT" : "MISS"}`);
+      console.log(
+        `   Expected: ${testCase.expectedCacheHit ? "HIT" : "MISS"}, Got: ${
+          wasCacheHit ? "HIT" : "MISS"
+        }`,
+      );
       console.log();
-      
+
       // Small delay between requests
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (error) {
       console.error(`✗ ${testCase.name}: ${error.message}\n`);
     }
   }
-  
+
   console.log("=== Test Summary ===");
   console.log(`Total Tests: ${totalTests}`);
-  console.log(`Cache Hits: ${cacheHits} (${((cacheHits / totalTests) * 100).toFixed(1)}%)`);
-  console.log(`Cache Misses: ${cacheMisses} (${((cacheMisses / totalTests) * 100).toFixed(1)}%)`);
-  console.log(`Correct Predictions: ${correctPredictions}/${totalTests} (${((correctPredictions / totalTests) * 100).toFixed(1)}%)`);
+  console.log(
+    `Cache Hits: ${cacheHits} (${
+      ((cacheHits / totalTests) * 100).toFixed(1)
+    }%)`,
+  );
+  console.log(
+    `Cache Misses: ${cacheMisses} (${
+      ((cacheMisses / totalTests) * 100).toFixed(1)
+    }%)`,
+  );
+  console.log(
+    `Correct Predictions: ${correctPredictions}/${totalTests} (${
+      ((correctPredictions / totalTests) * 100).toFixed(1)
+    }%)`,
+  );
   console.log();
-  
+
   if (correctPredictions === totalTests) {
-    console.log("🎉 All tests passed! Smart cache matching is working perfectly.");
+    console.log(
+      "🎉 All tests passed! Smart cache matching is working perfectly.",
+    );
   } else {
     console.log("⚠️  Some tests failed. Review the results above.");
   }

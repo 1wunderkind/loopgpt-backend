@@ -4,11 +4,27 @@
  */
 
 import { withLogging } from "../../middleware/logging.ts";
-import { createErrorResponse, createSuccessResponse, validateRequired, AppError, ErrorCodes } from "../../middleware/errorHandler.ts";
-import { getKCalGoals, getRecipesFromLeftover, getMacrosFromNutrition } from "../_lib/mcpWrappers.ts";
-import { buildAffiliateLinks, generateAffiliateSummary } from "../_lib/affiliate.ts";
+import {
+  AppError,
+  createErrorResponse,
+  createSuccessResponse,
+  ErrorCodes,
+  validateRequired,
+} from "../../middleware/errorHandler.ts";
+import {
+  getKCalGoals,
+  getMacrosFromNutrition,
+  getRecipesFromLeftover,
+} from "../_lib/mcpWrappers.ts";
+import {
+  buildAffiliateLinks,
+  generateAffiliateSummary,
+} from "../_lib/affiliate.ts";
 import { isFeatureEnabled } from "../_lib/featureFlags.ts";
-import type { GenerateWeekPlanRequest, GenerateWeekPlanResponse } from "../_lib/types.ts";
+import type {
+  GenerateWeekPlanRequest,
+  GenerateWeekPlanResponse,
+} from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {
@@ -34,38 +50,47 @@ async function handler(req: Request): Promise<Response> {
     const startDate = start_date || getNextDay();
     const endDate = end_date || getDateAfterDays(startDate, 7);
 
-    console.log(`Generating meal plan for user ${chatgpt_user_id} from ${startDate} to ${endDate}`);
+    console.log(
+      `Generating meal plan for user ${chatgpt_user_id} from ${startDate} to ${endDate}`,
+    );
 
     // Step 1: Get user goals from K-Cal GPT
     const userGoals = await getKCalGoals(chatgpt_user_id);
-    const finalCaloriesTarget = calories_target || userGoals?.daily_calorie_goal || 2000;
+    const finalCaloriesTarget = calories_target ||
+      userGoals?.daily_calorie_goal || 2000;
     const finalMacrosTarget = macros_target || {
       protein_g: userGoals?.daily_protein_goal || 150,
       carbs_g: userGoals?.daily_carbs_goal || 200,
       fat_g: userGoals?.daily_fat_goal || 65,
     };
 
-    console.log(`User goals: ${finalCaloriesTarget} cal, ${JSON.stringify(finalMacrosTarget)} macros`);
+    console.log(
+      `User goals: ${finalCaloriesTarget} cal, ${
+        JSON.stringify(finalMacrosTarget)
+      } macros`,
+    );
 
     // Step 2: Generate recipes for the week
     const daysCount = getDaysBetween(startDate, endDate);
     const totalRecipesNeeded = daysCount * recipes_per_day;
 
-    console.log(`Generating ${totalRecipesNeeded} recipes (${daysCount} days × ${recipes_per_day} meals/day)`);
+    console.log(
+      `Generating ${totalRecipesNeeded} recipes (${daysCount} days × ${recipes_per_day} meals/day)`,
+    );
 
     // Get recipes from LeftoverGPT
     const recipes = await getRecipesFromLeftover(
       chatgpt_user_id,
       totalRecipesNeeded,
       vibe,
-      goal_type
+      goal_type,
     );
 
     if (recipes.length === 0) {
       throw new AppError(
         ErrorCodes.EXTERNAL_SERVICE_ERROR,
         "Failed to generate recipes from LeftoverGPT",
-        500
+        500,
       );
     }
 
@@ -87,13 +112,17 @@ async function handler(req: Request): Promise<Response> {
 
         return {
           ...recipe,
-          nutrition: nutrition || { calories: 400, protein_g: 20, carbs_g: 40, fat_g: 15 },
+          nutrition: nutrition ||
+            { calories: 400, protein_g: 20, carbs_g: 40, fat_g: 15 },
         };
-      })
+      }),
     );
 
     // Step 4: Build affiliate links if enabled
-    const affiliateEnabled = await isFeatureEnabled("affiliate_links", chatgpt_user_id);
+    const affiliateEnabled = await isFeatureEnabled(
+      "affiliate_links",
+      chatgpt_user_id,
+    );
     let affiliateLinks: Record<string, unknown> = {};
     let affiliateSummary = null;
 
@@ -103,7 +132,9 @@ async function handler(req: Request): Promise<Response> {
       );
       affiliateLinks = buildAffiliateLinks(allIngredients);
       affiliateSummary = generateAffiliateSummary(allIngredients);
-      console.log(`Generated affiliate links for ${allIngredients.length} ingredients`);
+      console.log(
+        `Generated affiliate links for ${allIngredients.length} ingredients`,
+      );
     }
 
     // Step 5: Organize recipes into daily meal plan
@@ -132,11 +163,11 @@ async function handler(req: Request): Promise<Response> {
           macros: recipe.nutrition,
           affiliate_links: affiliateEnabled
             ? Object.fromEntries(
-                ingredientNames.map((name) => [
-                  name,
-                  affiliateLinks[name.toLowerCase()],
-                ])
-              )
+              ingredientNames.map((name) => [
+                name,
+                affiliateLinks[name.toLowerCase()],
+              ]),
+            )
             : undefined,
         });
 
@@ -152,7 +183,7 @@ async function handler(req: Request): Promise<Response> {
         carbs_g: acc.carbs_g + (meal.macros?.carbs_g || 0),
         fat_g: acc.fat_g + (meal.macros?.fat_g || 0),
       }),
-      { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }
+      { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 },
     );
 
     // Step 7: Build response
@@ -176,7 +207,9 @@ async function handler(req: Request): Promise<Response> {
       affiliate_summary: affiliateSummary || undefined,
     };
 
-    console.log(`Successfully generated meal plan with ${dailyMeals.length} meals`);
+    console.log(
+      `Successfully generated meal plan with ${dailyMeals.length} meals`,
+    );
 
     return createSuccessResponse(response);
   } catch (error) {
@@ -213,4 +246,3 @@ function getMealTypes(count: number): string[] {
 
 // Export with logging middleware
 export default withLogging(handler, "generate_week_plan");
-

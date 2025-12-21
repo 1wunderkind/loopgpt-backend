@@ -13,19 +13,19 @@ import { ValidationError } from "./errors.ts";
 export function validateInput<T>(
   schema: z.ZodSchema<T>,
   input: unknown,
-  toolName: string
+  toolName: string,
 ): T {
   const result = schema.safeParse(input);
 
   if (!result.success) {
-    const errors = result.error.errors.map(err => {
+    const errors = result.error.errors.map((err) => {
       const path = err.path.join(".");
       return `${path}: ${err.message}`;
     }).join("; ");
 
     throw new ValidationError(
       `Validation failed for ${toolName}: ${errors}`,
-      `Invalid input: ${errors}`
+      `Invalid input: ${errors}`,
     );
   }
 
@@ -39,12 +39,12 @@ export function validateInput<T>(
 export function validateOutput<T>(
   schema: z.ZodSchema<T>,
   output: unknown,
-  toolName: string
+  toolName: string,
 ): T | null {
   const result = schema.safeParse(output);
 
   if (!result.success) {
-    const errors = result.error.errors.map(err => {
+    const errors = result.error.errors.map((err) => {
       const path = err.path.join(".");
       return `${path}: ${err.message}`;
     }).join("; ");

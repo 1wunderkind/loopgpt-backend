@@ -42,21 +42,21 @@ export interface GMVEvent {
 
 // Helper to create a decision envelope
 export function createAgentDecision(
-  params: Omit<AgentDecision, "timestamp">
+  params: Omit<AgentDecision, "timestamp">,
 ): AgentDecision {
   return {
     ...params,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 
 // Helper to create a GMV event
 export function createGMVEvent(
-  params: Omit<GMVEvent, "timestamp" | "eventId">
+  params: Omit<GMVEvent, "timestamp" | "eventId">,
 ): GMVEvent {
   return {
     ...params,
     eventId: crypto.randomUUID(),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }

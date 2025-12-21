@@ -1,9 +1,9 @@
 /**
  * Nutrition Analyze (Deterministic) - Edge Function
- * 
+ *
  * Deterministic nutrition analysis using rule-based engine.
  * No LLM calls in calculation path - pure computation.
- * 
+ *
  * Part of: Step 4 - Deterministic Nutrition Engine
  */
 
@@ -57,7 +57,7 @@ const handler = async (req: Request): Promise<Response> => {
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 };

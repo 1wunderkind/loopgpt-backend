@@ -16,7 +16,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["turkey"],
   ["lamb"],
   ["tuna"],
-  
+
   // Protein + vegetable
   ["chicken", "broccoli"],
   ["chicken", "spinach"],
@@ -28,7 +28,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["tofu", "vegetables"],
   ["pork", "peppers"],
   ["turkey", "vegetables"],
-  
+
   // Protein + carb
   ["chicken", "rice"],
   ["chicken", "pasta"],
@@ -40,7 +40,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["turkey", "rice"],
   ["pork", "rice"],
   ["tuna", "pasta"],
-  
+
   // Protein + carb + vegetable
   ["chicken", "rice", "broccoli"],
   ["chicken", "pasta", "tomatoes"],
@@ -52,7 +52,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["turkey", "rice", "peppers"],
   ["pork", "noodles", "vegetables"],
   ["tuna", "pasta", "tomatoes"],
-  
+
   // Popular vegetarian combinations
   ["pasta", "tomatoes", "basil"],
   ["rice", "beans", "vegetables"],
@@ -64,7 +64,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["zucchini", "pasta"],
   ["sweet potato", "black beans"],
   ["avocado", "toast"],
-  
+
   // Popular breakfast combinations
   ["eggs", "bacon", "toast"],
   ["oatmeal", "berries"],
@@ -76,7 +76,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["smoothie", "banana", "berries"],
   ["eggs", "avocado", "toast"],
   ["breakfast burrito"],
-  
+
   // Popular lunch/dinner combinations
   ["chicken", "caesar salad"],
   ["burger", "fries"],
@@ -88,7 +88,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["sandwich", "turkey"],
   ["salad", "grilled chicken"],
   ["wrap", "chicken"],
-  
+
   // Ethnic cuisine combinations
   ["chicken", "curry", "rice"],
   ["beef", "stir fry", "vegetables"],
@@ -100,7 +100,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["beef", "tacos"],
   ["chicken", "enchiladas"],
   ["shrimp", "scampi"],
-  
+
   // Healthy combinations
   ["grilled chicken", "salad"],
   ["salmon", "vegetables"],
@@ -112,7 +112,7 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["lentil", "soup"],
   ["greek yogurt", "fruit"],
   ["smoothie bowl"],
-  
+
   // Quick meal combinations
   ["pasta", "sauce"],
   ["rice", "chicken"],
@@ -126,11 +126,14 @@ const TOP_INGREDIENT_COMBINATIONS = [
   ["baked potato"],
 ];
 
-const MCP_TOOLS_URL = "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
+const MCP_TOOLS_URL =
+  "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!SERVICE_ROLE_KEY) {
-  console.error("ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable not set");
+  console.error(
+    "ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable not set",
+  );
   Deno.exit(1);
 }
 
@@ -180,12 +183,16 @@ async function warmCache(options: {
   // Process in batches to avoid overwhelming the API
   for (let i = 0; i < TOP_INGREDIENT_COMBINATIONS.length; i += maxConcurrent) {
     const batch = TOP_INGREDIENT_COMBINATIONS.slice(i, i + maxConcurrent);
-    
-    console.log(`[warmCache] Processing batch ${Math.floor(i / maxConcurrent) + 1}/${Math.ceil(TOP_INGREDIENT_COMBINATIONS.length / maxConcurrent)}`);
+
+    console.log(
+      `[warmCache] Processing batch ${Math.floor(i / maxConcurrent) + 1}/${
+        Math.ceil(TOP_INGREDIENT_COMBINATIONS.length / maxConcurrent)
+      }`,
+    );
 
     if (dryRun) {
       console.log("[warmCache] DRY RUN - Would process:", batch);
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       continue;
     }
 
@@ -196,22 +203,29 @@ async function warmCache(options: {
           const startTime = Date.now();
           const result = await callRecipesTool(ingredients);
           const duration = Date.now() - startTime;
-          
+
           // Check if it was a cache hit (very fast response)
           const wasCacheHit = duration < 1000;
-          
-          console.log(`[warmCache] ✓ ${ingredients.join(", ")} (${duration}ms)${wasCacheHit ? " [cache hit]" : ""}`);
-          
+
+          console.log(
+            `[warmCache] ✓ ${ingredients.join(", ")} (${duration}ms)${
+              wasCacheHit ? " [cache hit]" : ""
+            }`,
+          );
+
           if (wasCacheHit) {
             cacheHitCount++;
           }
-          
+
           return { success: true, ingredients, duration };
         } catch (error) {
-          console.error(`[warmCache] ✗ ${ingredients.join(", ")}:`, error.message);
+          console.error(
+            `[warmCache] ✗ ${ingredients.join(", ")}:`,
+            error.message,
+          );
           return { success: false, ingredients, error: error.message };
         }
-      })
+      }),
     );
 
     // Count successes and errors
@@ -226,7 +240,7 @@ async function warmCache(options: {
     // Delay between batches to avoid rate limiting
     if (i + maxConcurrent < TOP_INGREDIENT_COMBINATIONS.length) {
       console.log(`[warmCache] Waiting ${delayMs}ms before next batch...`);
-      await new Promise(resolve => setTimeout(resolve, delayMs));
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
   }
 
@@ -235,20 +249,28 @@ async function warmCache(options: {
     success: successCount,
     errors: errorCount,
     cacheHits: cacheHitCount,
-    successRate: `${((successCount / TOP_INGREDIENT_COMBINATIONS.length) * 100).toFixed(1)}%`,
-    cacheHitRate: `${((cacheHitCount / TOP_INGREDIENT_COMBINATIONS.length) * 100).toFixed(1)}%`,
+    successRate: `${
+      ((successCount / TOP_INGREDIENT_COMBINATIONS.length) * 100).toFixed(1)
+    }%`,
+    cacheHitRate: `${
+      ((cacheHitCount / TOP_INGREDIENT_COMBINATIONS.length) * 100).toFixed(1)
+    }%`,
   };
 
   console.log("[warmCache] Cache warming complete!", summary);
-  
+
   return summary;
 }
 
 // CLI usage
 const args = Deno.args;
 const dryRun = args.includes("--dry-run");
-const maxConcurrent = parseInt(args.find(arg => arg.startsWith("--concurrent="))?.split("=")[1] || "5");
-const delayMs = parseInt(args.find(arg => arg.startsWith("--delay="))?.split("=")[1] || "1000");
+const maxConcurrent = parseInt(
+  args.find((arg) => arg.startsWith("--concurrent="))?.split("=")[1] || "5",
+);
+const delayMs = parseInt(
+  args.find((arg) => arg.startsWith("--delay="))?.split("=")[1] || "1000",
+);
 
 warmCache({ maxConcurrent, delayMs, dryRun })
   .then((summary) => {

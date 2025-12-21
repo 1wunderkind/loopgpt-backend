@@ -1,6 +1,6 @@
 /**
  * Food Lookup Helper with Food Resolver Integration
- * 
+ *
  * Provides a unified interface for food lookups with:
  * 1. Primary: 1,000-food resolver (CDN-hosted)
  * 2. Fallback: Embedded nutrition data (40+ ingredients)
@@ -8,11 +8,16 @@
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { initFoodResolver, getFoodResolver, type Food } from "./food_resolver.ts";
+import {
+  type Food,
+  getFoodResolver,
+  initFoodResolver,
+} from "./food_resolver.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const FOOD_CDN_URL = Deno.env.get("FOOD_CDN_URL") || "https://qmagnwxeijctkksqbcqz.supabase.co/storage/v1/object/public/food-database";
+const FOOD_CDN_URL = Deno.env.get("FOOD_CDN_URL") ||
+  "https://qmagnwxeijctkksqbcqz.supabase.co/storage/v1/object/public/food-database";
 
 // Initialize Supabase client with service role for logging
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -39,7 +44,7 @@ async function logFoodSearch(
   resultCount: number,
   latencyMs: number,
   success: boolean,
-  userId?: string
+  userId?: string,
 ) {
   try {
     await supabase.from("food_search_logs").insert({
@@ -60,41 +65,45 @@ async function logFoodSearch(
  */
 export async function findFood(
   name: string,
-  userId?: string
+  userId?: string,
 ): Promise<Food | null> {
   const startTime = performance.now();
-  
+
   try {
     // Ensure resolver is initialized
     await initFoodLookup();
-    
+
     const resolver = getFoodResolver();
-    
+
     // Try exact match first
     let food = await resolver.findExact(name);
-    
+
     // If no exact match, try fuzzy search
     if (!food) {
       const results = await resolver.findFuzzy(name, 1);
       if (results.length > 0 && results[0].score >= 0.5) {
         food = results[0].food;
-        console.log(`Fuzzy matched "${name}" → "${food.name}" (score: ${results[0].score})`);
+        console.log(
+          `Fuzzy matched "${name}" → "${food.name}" (score: ${
+            results[0].score
+          })`,
+        );
       }
     }
-    
+
     const latencyMs = performance.now() - startTime;
-    
+
     // Log the search
     await logFoodSearch(name, food ? 1 : 0, latencyMs, !!food, userId);
-    
+
     return food;
   } catch (error) {
     const latencyMs = performance.now() - startTime;
     console.error("Food resolver error:", error);
-    
+
     // Log the failure
     await logFoodSearch(name, 0, latencyMs, false, userId);
-    
+
     // Return null - caller should handle fallback
     return null;
   }
@@ -105,15 +114,15 @@ export async function findFood(
  */
 export async function findFoods(
   names: string[],
-  userId?: string
+  userId?: string,
 ): Promise<Array<{ name: string; food: Food | null }>> {
   const results = [];
-  
+
   for (const name of names) {
     const food = await findFood(name, userId);
     results.push({ name, food });
   }
-  
+
   return results;
 }
 
@@ -123,15 +132,15 @@ export async function findFoods(
 export async function getFoodSuggestions(
   query: string,
   limit: number = 10,
-  userId?: string
+  userId?: string,
 ): Promise<Food[]> {
   const startTime = performance.now();
-  
+
   try {
     await initFoodLookup();
-    
+
     const resolver = getFoodResolver();
-    
+
     // Try exact match first
     const exactMatch = await resolver.findExact(query);
     if (exactMatch) {
@@ -139,14 +148,20 @@ export async function getFoodSuggestions(
       await logFoodSearch(query, 1, latencyMs, true, userId);
       return [exactMatch];
     }
-    
+
     // Otherwise return fuzzy matches
     const results = await resolver.findFuzzy(query, limit);
-    const foods = results.map(r => r.food);
-    
+    const foods = results.map((r) => r.food);
+
     const latencyMs = performance.now() - startTime;
-    await logFoodSearch(query, foods.length, latencyMs, foods.length > 0, userId);
-    
+    await logFoodSearch(
+      query,
+      foods.length,
+      latencyMs,
+      foods.length > 0,
+      userId,
+    );
+
     return foods;
   } catch (error) {
     const latencyMs = performance.now() - startTime;
@@ -174,4 +189,3 @@ export function foodToLegacyFormat(food: Food): any {
     micros: {}, // TODO: Add micronutrients when available
   };
 }
-

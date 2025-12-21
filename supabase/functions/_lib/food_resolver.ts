@@ -8,9 +8,9 @@
  * =====================================================
  */
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL" )!;
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
 /**
@@ -68,13 +68,13 @@ export class FoodResolver {
     try {
       // Load from tracker_foods table
       const { data, error } = await this.supabase
-        .from('tracker_foods')
-        .select('*')
-        .eq('verified', true)
-        .order('name');
+        .from("tracker_foods")
+        .select("*")
+        .eq("verified", true)
+        .order("name");
 
       if (error) {
-        console.error('Error loading foods:', error);
+        console.error("Error loading foods:", error);
         throw error;
       }
 
@@ -85,7 +85,7 @@ export class FoodResolver {
         aliases: food.name_variations || [],
         group: food.category,
         category: food.category,
-        measures: food.common_servings || [{ label: 'g', grams: 1 }],
+        measures: food.common_servings || [{ label: "g", grams: 1 }],
         nutrition: {
           calories: food.calories_per_100g,
           protein_g: food.protein_per_100g,
@@ -93,51 +93,48 @@ export class FoodResolver {
           fat_g: food.fat_per_100g,
           fiber_g: food.fiber_per_100g || 0,
           sugar_g: food.sugar_per_100g || 0,
-          sodium_mg: 0
-        }
+          sodium_mg: 0,
+        },
       }));
 
       this.loaded = true;
       console.log(`Loaded ${this.foods.length} foods into memory`);
     } catch (error) {
-      console.error('Failed to load food database:', error);
+      console.error("Failed to load food database:", error);
       throw error;
     }
   }
 
   /**
    * Find foods using fuzzy matching
-   * 
+   *
    * @param query - Search query
    * @param limit - Maximum number of results (default: 10)
    * @returns Array of matching foods, sorted by relevance
    */
   public findFuzzy(query: string, limit: number = 10): FoodItem[] {
     if (!this.loaded) {
-      console.warn('Food database not loaded, returning empty results');
+      console.warn("Food database not loaded, returning empty results");
       return [];
     }
 
     const searchTerm = query.toLowerCase().trim();
-    
+
     // Score each food based on match quality
-    const scored = this.foods.map(food => {
+    const scored = this.foods.map((food) => {
       let score = 0;
       const foodName = food.name.toLowerCase();
-      
+
       // Exact match (highest score)
       if (foodName === searchTerm) {
         score = 1000;
-      }
-      // Starts with query
+      } // Starts with query
       else if (foodName.startsWith(searchTerm)) {
         score = 500;
-      }
-      // Contains query
+      } // Contains query
       else if (foodName.includes(searchTerm)) {
         score = 250;
-      }
-      // Check aliases
+      } // Check aliases
       else if (food.aliases) {
         for (const alias of food.aliases) {
           const aliasLower = alias.toLowerCase();
@@ -153,16 +150,16 @@ export class FoodResolver {
           }
         }
       }
-      
+
       // Fuzzy matching - check for word matches
       if (score === 0) {
-        const queryWords = searchTerm.split(' ');
-        const foodWords = foodName.split(' ');
-        
+        const queryWords = searchTerm.split(" ");
+        const foodWords = foodName.split(" ");
+
         let matchedWords = 0;
         for (const queryWord of queryWords) {
           if (queryWord.length < 3) continue; // Skip very short words
-          
+
           for (const foodWord of foodWords) {
             if (foodWord.includes(queryWord) || queryWord.includes(foodWord)) {
               matchedWords++;
@@ -170,69 +167,69 @@ export class FoodResolver {
             }
           }
         }
-        
+
         if (matchedWords > 0) {
           score = matchedWords * 50;
         }
       }
-      
+
       return { food, score };
     });
 
     // Filter out zero scores and sort by score descending
     const results = scored
-      .filter(item => item.score > 0)
+      .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, limit)
-      .map(item => item.food);
+      .map((item) => item.food);
 
     return results;
   }
 
   /**
    * Find exact food by name
-   * 
+   *
    * @param name - Exact food name
    * @returns Food item or null if not found
    */
   public findExact(name: string): FoodItem | null {
     if (!this.loaded) {
-      console.warn('Food database not loaded');
+      console.warn("Food database not loaded");
       return null;
     }
 
     const searchTerm = name.toLowerCase().trim();
-    
+
     // Try exact match
-    const exactMatch = this.foods.find(food => 
+    const exactMatch = this.foods.find((food) =>
       food.name.toLowerCase() === searchTerm
     );
-    
+
     if (exactMatch) {
       return exactMatch;
     }
-    
+
     // Try alias match
-    const aliasMatch = this.foods.find(food => 
-      food.aliases?.some(alias => alias.toLowerCase() === searchTerm)
+    const aliasMatch = this.foods.find((food) =>
+      food.aliases?.some((alias) => alias.toLowerCase() === searchTerm)
     );
-    
+
     return aliasMatch || null;
   }
 
   /**
    * Get all foods in a category
-   * 
+   *
    * @param category - Food category
    * @returns Array of foods in that category
    */
   public getByCategory(category: string): FoodItem[] {
     if (!this.loaded) {
-      console.warn('Food database not loaded');
+      console.warn("Food database not loaded");
       return [];
     }
 
-    return this.foods.filter(food => 
+    return this.foods.filter((food) =>
       food.category?.toLowerCase() === category.toLowerCase()
     );
   }

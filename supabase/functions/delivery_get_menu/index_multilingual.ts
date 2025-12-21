@@ -4,10 +4,20 @@
  */
 
 import { withLogging } from "../../middleware/logging.ts";
-import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  validateRequired,
+} from "../../middleware/errorHandler.ts";
 import { matchDeliveryPartners } from "../_lib/deliveryMatcher.ts";
-import { formatDeliveryRecommendations, detectLanguage } from "../_lib/multilingual.ts";
-import type { GetDeliveryRecommendationsRequest, GetDeliveryRecommendationsResponse } from "../_lib/types.ts";
+import {
+  detectLanguage,
+  formatDeliveryRecommendations,
+} from "../_lib/multilingual.ts";
+import type {
+  GetDeliveryRecommendationsRequest,
+  GetDeliveryRecommendationsResponse,
+} from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {
@@ -30,8 +40,10 @@ async function handler(req: Request): Promise<Response> {
     // NEW: Detect language from user input
     const userInput = cuisine || diet || "food delivery";
     const detectedLanguage = language || detectLanguage(userInput);
-    
-    console.log(`[MULTILINGUAL] Detected language: ${detectedLanguage} from input: "${userInput}"`);
+
+    console.log(
+      `[MULTILINGUAL] Detected language: ${detectedLanguage} from input: "${userInput}"`,
+    );
 
     // Match delivery partners
     const recommendations = await matchDeliveryPartners({
@@ -41,12 +53,14 @@ async function handler(req: Request): Promise<Response> {
       calories,
     }, limit);
 
-    console.log(`Found ${recommendations.length} delivery partner recommendations`);
+    console.log(
+      `Found ${recommendations.length} delivery partner recommendations`,
+    );
 
     // Build response data
     const responseData: GetDeliveryRecommendationsResponse = {
       success: true,
-      recommendations: recommendations.map(r => ({
+      recommendations: recommendations.map((r) => ({
         partner_id: r.partner_id,
         partner_name: r.partner_name,
         affiliate_url: r.affiliate_url,
@@ -54,14 +68,22 @@ async function handler(req: Request): Promise<Response> {
         commission_rate: r.commission_rate,
         metadata: r.metadata,
       })),
-      alternatives: recommendations.length < limit ? ["Try different cuisine", "Expand search area"] : undefined,
-      disclaimer: "As a delivery affiliate partner, we earn from qualifying orders.",
+      alternatives: recommendations.length < limit
+        ? ["Try different cuisine", "Expand search area"]
+        : undefined,
+      disclaimer:
+        "As a delivery affiliate partner, we earn from qualifying orders.",
     };
 
     // NEW: Format response in user's language
-    const formattedMessage = await formatDeliveryRecommendations(recommendations, userInput);
+    const formattedMessage = await formatDeliveryRecommendations(
+      recommendations,
+      userInput,
+    );
 
-    console.log(`[MULTILINGUAL] Formatted delivery recommendations in ${detectedLanguage}`);
+    console.log(
+      `[MULTILINGUAL] Formatted delivery recommendations in ${detectedLanguage}`,
+    );
 
     // Return response with formatted message
     return createSuccessResponse({
@@ -69,7 +91,6 @@ async function handler(req: Request): Promise<Response> {
       formatted_message: formattedMessage,
       language: detectedLanguage,
     });
-
   } catch (error) {
     console.error("Error getting delivery recommendations:", error);
     return createErrorResponse(error);
@@ -78,4 +99,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export handler with logging middleware
 export default withLogging(handler);
-

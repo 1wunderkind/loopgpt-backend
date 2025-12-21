@@ -1,12 +1,12 @@
 /**
  * Premium Entitlement Middleware
- * 
+ *
  * Purpose: Reusable middleware to check if user has premium access
- * 
+ *
  * Usage in Edge Functions:
  * ```typescript
  * import { checkPremiumAccess } from "../middleware/check-premium.ts";
- * 
+ *
  * const entitlement = await checkPremiumAccess(supabase, chatgpt_user_id);
  * if (!entitlement.has_access) {
  *   return new Response(JSON.stringify({
@@ -42,7 +42,7 @@ export interface EntitlementResult {
  */
 export async function checkPremiumAccess(
   supabase: SupabaseClient,
-  chatgpt_user_id: string
+  chatgpt_user_id: string,
 ): Promise<EntitlementResult> {
   const appUrl = Deno.env.get("APP_URL") || "https://theloopgpt.ai";
 
@@ -72,13 +72,16 @@ export async function checkPremiumAccess(
       renewal_date: null,
       credits: 0,
       upgrade_url: `${appUrl}/upgrade`,
-      message: "This is a Premium feature. Upgrade to LoopGPT Premium for unlimited access!",
+      message:
+        "This is a Premium feature. Upgrade to LoopGPT Premium for unlimited access!",
     };
   }
 
   // Check if trial is active
   const now = new Date();
-  const trialEnd = subscription.trial_end ? new Date(subscription.trial_end) : null;
+  const trialEnd = subscription.trial_end
+    ? new Date(subscription.trial_end)
+    : null;
   const trialActive = trialEnd ? trialEnd > now : false;
   const trialDaysRemaining = trialActive && trialEnd
     ? Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
@@ -86,7 +89,8 @@ export async function checkPremiumAccess(
 
   // Determine if user has access
   const hasAccess =
-    (subscription.status === "active" || subscription.status === "trialing" || trialActive) &&
+    (subscription.status === "active" || subscription.status === "trialing" ||
+      trialActive) &&
     (subscription.tier === "premium" || subscription.tier === "family");
 
   // Build result
@@ -106,15 +110,19 @@ export async function checkPremiumAccess(
   // Set appropriate message
   if (!hasAccess) {
     if (subscription.status === "cancelled") {
-      result.message = "Your subscription has been cancelled. Reactivate Premium to continue using this feature.";
+      result.message =
+        "Your subscription has been cancelled. Reactivate Premium to continue using this feature.";
     } else if (subscription.status === "past_due") {
-      result.message = "Your payment is past due. Please update your payment method to continue using Premium features.";
+      result.message =
+        "Your payment is past due. Please update your payment method to continue using Premium features.";
     } else {
-      result.message = "This is a Premium feature. Upgrade to LoopGPT Premium for unlimited access!";
+      result.message =
+        "This is a Premium feature. Upgrade to LoopGPT Premium for unlimited access!";
     }
   } else {
     if (trialActive) {
-      result.message = `You're on a ${trialDaysRemaining}-day free trial. Enjoying Premium features!`;
+      result.message =
+        `You're on a ${trialDaysRemaining}-day free trial. Enjoying Premium features!`;
     } else {
       result.message = "Premium access granted. Enjoy unlimited features!";
     }
@@ -133,7 +141,7 @@ export async function checkPremiumAccess(
 export async function deductCredits(
   supabase: SupabaseClient,
   chatgpt_user_id: string,
-  amount: number
+  amount: number,
 ): Promise<boolean> {
   // Get current credits
   const { data: entitlement } = await supabase
@@ -173,7 +181,7 @@ export async function logPremiumUsage(
   supabase: SupabaseClient,
   chatgpt_user_id: string,
   feature_name: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
 ): Promise<void> {
   await supabase.from("analytics_events").insert({
     event_type: "premium_feature_used",
@@ -184,4 +192,3 @@ export async function logPremiumUsage(
     },
   });
 }
-

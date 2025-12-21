@@ -2,28 +2,33 @@
 
 ## Overview
 
-This guide explains how to deploy and use the expanded 1,000-food database system in TheLoopGPT.ai.
+This guide explains how to deploy and use the expanded 1,000-food database
+system in TheLoopGPT.ai.
 
 ---
 
 ## What Was Built
 
 ### 1. **Food Database (1,000 foods)**
+
 - **File:** `foods@v1.json` (243 KB)
 - **Content:** 1,000 foods with complete nutrition data
 - **Source:** 107 existing + 893 new from USDA FoodData Central
 - **Format:** JSON array of food objects
 
 ### 2. **N-gram Fuzzy Search Index**
+
 - **File:** `index.ngram@v1.json` (173 KB)
 - **Content:** 3,659 unique tokens for fuzzy matching
 - **Performance:** < 1ms average search time
 
 ### 3. **Manifest**
+
 - **File:** `manifest@v1.json` (< 1 KB)
 - **Content:** Version metadata and statistics
 
 ### 4. **Runtime Resolver**
+
 - **File:** `supabase/lib/food_resolver.ts`
 - **Features:**
   - CDN loading from Supabase Storage
@@ -54,7 +59,8 @@ https://qmagnwxeijctkksqbcqz.supabase.co/storage/v1/object/public/food-database/
 ```typescript
 import { initFoodResolver } from "../lib/food_resolver.ts";
 
-const CDN_BASE_URL = "https://qmagnwxeijctkksqbcqz.supabase.co/storage/v1/object/public/food-database";
+const CDN_BASE_URL =
+  "https://qmagnwxeijctkksqbcqz.supabase.co/storage/v1/object/public/food-database";
 
 // Call once at the top of your handler
 const resolver = initFoodResolver(CDN_BASE_URL, "v1");
@@ -95,26 +101,26 @@ const food = await getFoodResolver().findExact(ingredientName);
 
 ## Performance Benchmarks
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Cold Load | < 60ms | 24ms | ✅ 2.5x faster |
-| Exact Match | < 1ms | 0.02ms | ✅ 50x faster |
-| Fuzzy Search | < 5ms | 0.36ms | ✅ 14x faster |
+| Metric       | Target  | Actual  | Status            |
+| ------------ | ------- | ------- | ----------------- |
+| Cold Load    | < 60ms  | 24ms    | ✅ 2.5x faster    |
+| Exact Match  | < 1ms   | 0.02ms  | ✅ 50x faster     |
+| Fuzzy Search | < 5ms   | 0.36ms  | ✅ 14x faster     |
 | Memory Usage | < 50 MB | 8.65 MB | ✅ Very efficient |
 
 ---
 
 ## Food Groups Distribution
 
-| Group | Count | Examples |
-|-------|-------|----------|
-| **Meat** | 329 | Chicken, beef, pork, fish |
-| **Dairy** | 294 | Milk, cheese, yogurt, eggs |
-| **Fat** | 228 | Oils, butter, margarine |
-| **Misc** | 68 | Beverages, sweets |
-| **Condiment** | 60 | Sauces, seasonings |
-| **Veg** | 11 | Vegetables |
-| **Fruit** | 10 | Fruits |
+| Group         | Count | Examples                   |
+| ------------- | ----- | -------------------------- |
+| **Meat**      | 329   | Chicken, beef, pork, fish  |
+| **Dairy**     | 294   | Milk, cheese, yogurt, eggs |
+| **Fat**       | 228   | Oils, butter, margarine    |
+| **Misc**      | 68    | Beverages, sweets          |
+| **Condiment** | 60    | Sauces, seasonings         |
+| **Veg**       | 11    | Vegetables                 |
+| **Fruit**     | 10    | Fruits                     |
 
 ---
 
@@ -214,6 +220,7 @@ curl -X POST "https://qmagnwxeijctkksqbcqz.supabase.co/storage/v1/bucket" \
 ### Issue: Slow cold load
 
 **Check:**
+
 - CDN URLs are correct
 - Files are publicly accessible
 - Cache headers are set correctly
@@ -248,7 +255,7 @@ const food = results[0]?.food;
 ## Support
 
 For questions or issues, contact the development team or refer to:
+
 - Integration examples: `supabase/lib/food_resolver_integration_example.ts`
 - Performance tests: `scripts/test_food_resolver.ts`
 - Build script: `scripts/build_food_database.ts`
-

@@ -1,8 +1,8 @@
 /**
  * Stripe Webhook Handler
- * 
+ *
  * Purpose: Handle Stripe webhook events for subscription lifecycle
- * 
+ *
  * Events handled:
  * - checkout.session.completed: Subscription created
  * - customer.subscription.created: Subscription activated
@@ -10,7 +10,7 @@
  * - customer.subscription.deleted: Subscription cancelled
  * - invoice.payment_succeeded: Payment successful
  * - invoice.payment_failed: Payment failed
- * 
+ *
  * Security: Verifies Stripe webhook signature
  */
 
@@ -18,7 +18,6 @@ import { serve } from "std@0.168.0/http/server.ts";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { withWebhook } from "../_shared/security/applyMiddleware.ts";
-
 
 const handler = async (req) => {
   try {
@@ -35,7 +34,7 @@ const handler = async (req) => {
     // Initialize Stripe
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
-    
+
     if (!stripeKey || !webhookSecret) {
       throw new Error("Stripe credentials not configured");
     }
@@ -66,7 +65,7 @@ const handler = async (req) => {
 
         // Get metadata
         const chatgptUserId = session.metadata?.chatgpt_user_id;
-        const plan = session.metadata?.plan || 'monthly';
+        const plan = session.metadata?.plan || "monthly";
 
         if (!chatgptUserId) {
           console.error("❌ No chatgpt_user_id in session metadata");
@@ -74,28 +73,31 @@ const handler = async (req) => {
         }
 
         // Calculate trial end and renewal date
-        const trialEnd = session.subscription 
+        const trialEnd = session.subscription
           ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
           : null;
-        const renewalDate = trialEnd 
+        const renewalDate = trialEnd
           ? new Date(trialEnd.getTime() + 30 * 24 * 60 * 60 * 1000) // 30 days after trial
           : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
         // Update subscription
-        const { error: subError } = await supabase.from("subscriptions").upsert({
-          chatgpt_user_id: chatgptUserId,
-          email: session.customer_email || session.customer_details?.email,
-          stripe_customer_id: session.customer as string,
-          stripe_subscription_id: session.subscription as string,
-          tier: plan === 'family' ? 'family' : 'premium',
-          status: 'trialing',
-          trial_end: trialEnd?.toISOString(),
-          renewal_date: renewalDate.toISOString(),
-          sku: `loop_${plan}_v1`,
-          launch_phase: "intro_499",
-        }, {
-          onConflict: 'chatgpt_user_id',
-        });
+        const { error: subError } = await supabase.from("subscriptions").upsert(
+          {
+            chatgpt_user_id: chatgptUserId,
+            email: session.customer_email || session.customer_details?.email,
+            stripe_customer_id: session.customer as string,
+            stripe_subscription_id: session.subscription as string,
+            tier: plan === "family" ? "family" : "premium",
+            status: "trialing",
+            trial_end: trialEnd?.toISOString(),
+            renewal_date: renewalDate.toISOString(),
+            sku: `loop_${plan}_v1`,
+            launch_phase: "intro_499",
+          },
+          {
+            onConflict: "chatgpt_user_id",
+          },
+        );
 
         if (subError) {
           console.error("❌ Error updating subscription:", subError);
@@ -107,7 +109,7 @@ const handler = async (req) => {
           credits: 0, // Will be refilled on first renewal
           last_refill: new Date().toISOString(),
         }, {
-          onConflict: 'chatgpt_user_id',
+          onConflict: "chatgpt_user_id",
         });
 
         if (entError) {
@@ -137,19 +139,20 @@ const handler = async (req) => {
         console.log(`🔄 Subscription updated: ${subscription.id}`);
 
         // Determine status
-        let status = 'inactive';
-        if (subscription.status === 'active') status = 'active';
-        else if (subscription.status === 'trialing') status = 'trialing';
-        else if (subscription.status === 'past_due') status = 'past_due';
-        else if (subscription.status === 'canceled') status = 'cancelled';
+        let status = "inactive";
+        if (subscription.status === "active") status = "active";
+        else if (subscription.status === "trialing") status = "trialing";
+        else if (subscription.status === "past_due") status = "past_due";
+        else if (subscription.status === "canceled") status = "cancelled";
 
         // Update subscription
         const { error } = await supabase
           .from("subscriptions")
           .update({
             status,
-            renewal_date: new Date(subscription.current_period_end * 1000).toISOString(),
-            trial_end: subscription.trial_end 
+            renewal_date: new Date(subscription.current_period_end * 1000)
+              .toISOString(),
+            trial_end: subscription.trial_end
               ? new Date(subscription.trial_end * 1000).toISOString()
               : null,
           })
@@ -222,7 +225,7 @@ const handler = async (req) => {
 
           if (subData) {
             // Refill credits based on tier
-            const creditAmount = subData.tier === 'family' ? 500 : 200;
+            const creditAmount = subData.tier === "family" ? 500 : 200;
 
             await supabase
               .from("entitlements")
@@ -232,7 +235,9 @@ const handler = async (req) => {
               })
               .eq("chatgpt_user_id", subData.chatgpt_user_id);
 
-            console.log(`✅ Refilled ${creditAmount} credits for ${subData.chatgpt_user_id}`);
+            console.log(
+              `✅ Refilled ${creditAmount} credits for ${subData.chatgpt_user_id}`,
+            );
           }
         }
 
@@ -288,11 +293,10 @@ const handler = async (req) => {
     console.error("❌ Webhook handler error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { "Content-Type": "application/json" } },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withWebhook(handler));
-

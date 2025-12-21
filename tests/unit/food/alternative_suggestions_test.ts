@@ -3,11 +3,7 @@
  * Tests for suggesting healthier alternatives
  */
 
-import {
-  assertEquals,
-  assert,
-  testData,
-} from "../../helpers.ts";
+import { assert, assertEquals, testData } from "../../helpers.ts";
 
 Deno.test("alternatives: suggests lower calorie options", async () => {
   const originalFood = testData.food({ calories: 500 });
@@ -16,7 +12,7 @@ Deno.test("alternatives: suggests lower calorie options", async () => {
     testData.food({ calories: 350 }),
   ];
 
-  assert(alternatives.every(alt => alt.calories < originalFood.calories));
+  assert(alternatives.every((alt) => alt.calories < originalFood.calories));
 });
 
 Deno.test("alternatives: suggests higher protein options", async () => {
@@ -26,7 +22,7 @@ Deno.test("alternatives: suggests higher protein options", async () => {
     testData.food({ protein: 25 }),
   ];
 
-  assert(alternatives.every(alt => alt.protein > originalFood.protein));
+  assert(alternatives.every((alt) => alt.protein > originalFood.protein));
 });
 
 Deno.test("alternatives: suggests lower fat options", async () => {
@@ -36,7 +32,7 @@ Deno.test("alternatives: suggests lower fat options", async () => {
     testData.food({ fat: 5 }),
   ];
 
-  assert(alternatives.every(alt => alt.fat < originalFood.fat));
+  assert(alternatives.every((alt) => alt.fat < originalFood.fat));
 });
 
 Deno.test("alternatives: returns similar food types", async () => {
@@ -46,7 +42,9 @@ Deno.test("alternatives: returns similar food types", async () => {
     testData.food({ description: "Almond Milk" }),
   ];
 
-  assert(alternatives.every(alt => alt.description.toLowerCase().includes("milk")));
+  assert(
+    alternatives.every((alt) => alt.description.toLowerCase().includes("milk")),
+  );
 });
 
 Deno.test("alternatives: limits number of suggestions", async () => {

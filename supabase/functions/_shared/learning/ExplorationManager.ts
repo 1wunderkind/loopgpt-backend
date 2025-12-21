@@ -8,16 +8,19 @@ import { ScoredProvider } from "./PolicyEngine.ts";
 export enum LearningMode {
   OFF = "off",
   OBSERVE = "observe",
-  LEARN = "learn"
+  LEARN = "learn",
 }
 
 export class ExplorationManager {
   static getMode(): LearningMode {
     const env = Deno.env.get("LEARNING_MODE");
     switch (env) {
-      case "learn": return LearningMode.LEARN;
-      case "observe": return LearningMode.OBSERVE;
-      default: return LearningMode.OFF;
+      case "learn":
+        return LearningMode.LEARN;
+      case "observe":
+        return LearningMode.OBSERVE;
+      default:
+        return LearningMode.OFF;
     }
   }
 
@@ -27,7 +30,7 @@ export class ExplorationManager {
 
   static selectProvider(
     candidates: ScoredProvider[],
-    explorationRate: number = 0.05
+    explorationRate: number = 0.05,
   ): { selected: ScoredProvider; exploration: boolean } {
     // Sort by score descending
     const sorted = [...candidates].sort((a, b) => b.score - a.score);

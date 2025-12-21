@@ -1,30 +1,42 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const configDir = path.join(__dirname, 'metadata-config');
-const outputFile = path.join(__dirname, 'supabase/functions/mcp-server/metadata_bundled.ts');
+const configDir = path.join(__dirname, "metadata-config");
+const outputFile = path.join(
+  __dirname,
+  "supabase/functions/mcp-server/metadata_bundled.ts",
+);
 
-console.log('📦 Bundling metadata from:', configDir);
+console.log("📦 Bundling metadata from:", configDir);
 
-const types = fs.readFileSync(path.join(configDir, 'types.ts'), 'utf8');
-const theloopgptMetadata = fs.readFileSync(path.join(configDir, 'theloopgptMetadata.ts'), 'utf8');
-const toolDescriptions = fs.readFileSync(path.join(configDir, 'toolDescriptions.ts'), 'utf8');
-const routingHints = fs.readFileSync(path.join(configDir, 'routingHints.ts'), 'utf8');
-const index = fs.readFileSync(path.join(configDir, 'index.ts'), 'utf8');
+const types = fs.readFileSync(path.join(configDir, "types.ts"), "utf8");
+const theloopgptMetadata = fs.readFileSync(
+  path.join(configDir, "theloopgptMetadata.ts"),
+  "utf8",
+);
+const toolDescriptions = fs.readFileSync(
+  path.join(configDir, "toolDescriptions.ts"),
+  "utf8",
+);
+const routingHints = fs.readFileSync(
+  path.join(configDir, "routingHints.ts"),
+  "utf8",
+);
+const index = fs.readFileSync(path.join(configDir, "index.ts"), "utf8");
 
 function removeImports(content) {
   return content
     // Remove: export type { ... } from "..."
-    .replace(/export\s+type\s*\{[^}]*\}\s*from\s+['"].*['"];?/gs, '')
+    .replace(/export\s+type\s*\{[^}]*\}\s*from\s+['"].*['"];?/gs, "")
     // Remove: export { ... } from "..."
-    .replace(/export\s*\{[^}]*\}\s*from\s+['"].*['"];?/gs, '')
+    .replace(/export\s*\{[^}]*\}\s*from\s+['"].*['"];?/gs, "")
     // Remove: import type { ... } from "..."
-    .replace(/^import\s+type\s+\{[^}]+\}\s+from\s+['"].*['"];?\s*$/gm, '')
+    .replace(/^import\s+type\s+\{[^}]+\}\s+from\s+['"].*['"];?\s*$/gm, "")
     // Remove: import type ... from "..."
-    .replace(/^import\s+type\s+.*from\s+['"].*['"];?\s*$/gm, '')
+    .replace(/^import\s+type\s+.*from\s+['"].*['"];?\s*$/gm, "")
     // Remove: import ... from "..."
-    .replace(/^import\s+.*from\s+['"].*['"];?\s*$/gm, '');
+    .replace(/^import\s+.*from\s+['"].*['"];?\s*$/gm, "");
   // NOTE: We do NOT remove "export function" or "export const" - those are kept!
 }
 
@@ -43,22 +55,26 @@ const header = `/**
 const parts = [
   header,
   removeImports(types),
-  '\n// ============================================================================\n// THELOOPGPT METADATA\n// ============================================================================\n',
+  "\n// ============================================================================\n// THELOOPGPT METADATA\n// ============================================================================\n",
   removeImports(theloopgptMetadata),
-  '\n// ============================================================================\n// TOOL DESCRIPTIONS\n// ============================================================================\n',
+  "\n// ============================================================================\n// TOOL DESCRIPTIONS\n// ============================================================================\n",
   removeImports(toolDescriptions),
-  '\n// ============================================================================\n// ROUTING HINTS\n// ============================================================================\n',
+  "\n// ============================================================================\n// ROUTING HINTS\n// ============================================================================\n",
   removeImports(routingHints),
-  '\n// ============================================================================\n// CONVENIENCE FUNCTIONS (from index.ts)\n// ============================================================================\n',
-  removeImports(index)
+  "\n// ============================================================================\n// CONVENIENCE FUNCTIONS (from index.ts)\n// ============================================================================\n",
+  removeImports(index),
 ];
 
-const bundled = parts.join('');
+const bundled = parts.join("");
 
 fs.writeFileSync(outputFile, bundled);
-console.log('✅ Bundled metadata written to:', outputFile);
-console.log('📊 File size:', (fs.statSync(outputFile).size / 1024).toFixed(2), 'KB');
+console.log("✅ Bundled metadata written to:", outputFile);
+console.log(
+  "📊 File size:",
+  (fs.statSync(outputFile).size / 1024).toFixed(2),
+  "KB",
+);
 
 // Verify the functions are present
 const functionCount = (bundled.match(/export function/g) || []).length;
-console.log('📊 Export functions found:', functionCount);
+console.log("📊 Export functions found:", functionCount);

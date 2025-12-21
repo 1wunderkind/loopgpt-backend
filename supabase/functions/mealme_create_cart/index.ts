@@ -1,6 +1,6 @@
 /**
  * MealMe Create Cart Edge Function
- * 
+ *
  * Creates a shopping cart from meal plan ingredients or prepared meals
  * via MealMe API.
  */
@@ -65,7 +65,9 @@ async function createCart(req: CreateCartRequest): Promise<CreateCartResponse> {
     ? `${MEALME_API}/groceries/search/cart`
     : `${MEALME_API}/restaurants/search/cart`;
 
-  console.log(`[MealMe Cart] Creating ${mode} cart with ${items.length} items for user ${chatgpt_user_id}`);
+  console.log(
+    `[MealMe Cart] Creating ${mode} cart with ${items.length} items for user ${chatgpt_user_id}`,
+  );
 
   // Call MealMe API
   const response = await fetch(endpoint, {
@@ -77,7 +79,7 @@ async function createCart(req: CreateCartRequest): Promise<CreateCartResponse> {
     body: JSON.stringify({
       latitude,
       longitude,
-      items: items.map(i => ({
+      items: items.map((i) => ({
         name: i.name,
         quantity: i.qty,
         sku: i.skuHint,
@@ -94,7 +96,7 @@ async function createCart(req: CreateCartRequest): Promise<CreateCartResponse> {
 
   const cartData = await response.json();
 
-  console.log(`[MealMe Cart] Cart created: ${cartData?.cartId || 'unknown'}`);
+  console.log(`[MealMe Cart] Cart created: ${cartData?.cartId || "unknown"}`);
 
   // Create order record in database
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -118,7 +120,7 @@ async function createCart(req: CreateCartRequest): Promise<CreateCartResponse> {
   }
 
   // Insert order items
-  const orderItems = items.map(item => ({
+  const orderItems = items.map((item) => ({
     order_id: order.id,
     name: item.name,
     qty: item.qty,
@@ -131,7 +133,9 @@ async function createCart(req: CreateCartRequest): Promise<CreateCartResponse> {
     .insert(orderItems);
 
   if (itemsError) {
-    console.error(`[MealMe Cart] Failed to insert order items: ${itemsError.message}`);
+    console.error(
+      `[MealMe Cart] Failed to insert order items: ${itemsError.message}`,
+    );
   }
 
   console.log(`[MealMe Cart] Order record created: ${order.id}`);
@@ -163,4 +167,3 @@ const handler = async (req: Request): Promise<Response> => {
 // Export with logging middleware
 // withLogging is not compatible with withOrderAPI in this context, using withOrderAPI directly
 export default withOrderAPI(handler);
-

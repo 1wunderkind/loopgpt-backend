@@ -1,7 +1,7 @@
 # LoopKitchen Meal Planning - Phase 4 Validation
 
-**Date**: December 6, 2025  
-**Phase**: 4 - Meal Planning Enhancement  
+**Date**: December 6, 2025\
+**Phase**: 4 - Meal Planning Enhancement\
 **Status**: Ready for Testing
 
 ---
@@ -13,6 +13,7 @@
 **Tool**: `loopkitchen.mealplan.generate`
 
 **Test Input**:
+
 ```json
 {
   "ingredients": ["chicken", "rice", "broccoli", "eggs", "olive oil"],
@@ -23,6 +24,7 @@
 ```
 
 **Expected Output**:
+
 - Widget type: `WeekPlanner`
 - 7 days with breakfast, lunch, dinner
 - Each meal has: recipeId, title, approxCalories
@@ -30,6 +32,7 @@
 - weeklySummary with avgDailyCalories, totalCalories, notes
 
 **Validation Criteria**:
+
 - ✅ All 7 days present
 - ✅ Each day has 3 meals
 - ✅ Recipe titles are realistic
@@ -44,6 +47,7 @@
 **Tool**: `loopkitchen.mealplan.withGrocery`
 
 **Test Input**:
+
 ```json
 {
   "ingredients": ["chicken", "pasta", "tomatoes", "garlic", "cheese"],
@@ -54,10 +58,12 @@
 ```
 
 **Expected Output**:
+
 - `mealPlan`: WeekPlanner widget (5 days)
 - `groceryList`: GroceryList widget
 
 **Validation Criteria**:
+
 - ✅ Both widgets returned
 - ✅ Grocery list has categories (Produce, Meat & Seafood, etc.)
 - ✅ Items are organized logically
@@ -71,6 +77,7 @@
 **Tool**: `loopkitchen.mealplan.complete`
 
 **Test Input**:
+
 ```json
 {
   "userId": "test_user_123",
@@ -91,11 +98,13 @@
 ```
 
 **Expected Output**:
+
 - `mealPlan`: WeekPlanner widget
 - `groceryList`: GroceryList widget
 - `commerce`: Provider quotes with pricing
 
 **Validation Criteria**:
+
 - ✅ All three components returned
 - ✅ Commerce data includes providers array
 - ✅ Each provider has: name, estimatedCost, deliveryTime, score
@@ -109,6 +118,7 @@
 **Tool**: `loopkitchen.mealplan.prepareOrder`
 
 **Test Input**:
+
 ```json
 {
   "userId": "test_user_123",
@@ -130,11 +140,13 @@
 ```
 
 **Expected Output**:
+
 - `groceryList`: GroceryList widget (filtered by pantry)
 - `commerce`: Provider quotes
 - `mealPlan`: Original meal plan (passed through)
 
 **Validation Criteria**:
+
 - ✅ Pantry ingredients excluded from grocery list
 - ✅ Commerce quotes generated
 - ✅ Original meal plan preserved
@@ -146,6 +158,7 @@
 **Tool**: `loopkitchen.mealplan.generate`
 
 **Test Input**:
+
 ```json
 {
   "ingredients": ["eggs", "bacon", "bread", "cheese"],
@@ -156,10 +169,12 @@
 ```
 
 **Expected Output**:
+
 - WeekPlanner with 3 days
 - Meals optimized for simplicity
 
 **Validation Criteria**:
+
 - ✅ Exactly 3 days
 - ✅ Recipes are simple (low prep time implied)
 - ✅ Ingredient reuse maximized
@@ -171,9 +186,16 @@
 **Tool**: `loopkitchen.mealplan.generate`
 
 **Test Input**:
+
 ```json
 {
-  "ingredients": ["chicken", "eggs", "greek yogurt", "protein powder", "almonds"],
+  "ingredients": [
+    "chicken",
+    "eggs",
+    "greek yogurt",
+    "protein powder",
+    "almonds"
+  ],
   "caloriesPerDay": 2500,
   "dietNotes": "high-protein, muscle gain",
   "days": 7
@@ -181,10 +203,12 @@
 ```
 
 **Expected Output**:
+
 - WeekPlanner with protein-focused meals
 - Weekly summary notes mention high-protein goal
 
 **Validation Criteria**:
+
 - ✅ Meals prioritize protein sources
 - ✅ Recipe titles suggest protein-rich dishes
 - ✅ Weekly summary acknowledges high-protein goal
@@ -196,6 +220,7 @@
 **Tool**: `loopkitchen.mealplan.generate`
 
 **Test Input**:
+
 ```json
 {
   "ingredients": ["rice", "beans", "eggs", "potatoes", "carrots", "onions"],
@@ -206,10 +231,12 @@
 ```
 
 **Expected Output**:
+
 - WeekPlanner with economical meals
 - High ingredient reuse
 
 **Validation Criteria**:
+
 - ✅ Recipes use basic, affordable ingredients
 - ✅ Minimal variety (cost-effective)
 - ✅ Weekly summary mentions budget-friendly approach
@@ -221,6 +248,7 @@
 **Tool**: `loopkitchen.mealplan.complete`
 
 **Test Input**:
+
 ```json
 {
   "userId": "test_user_123",
@@ -230,10 +258,12 @@
 ```
 
 **Expected Output**:
+
 - InfoMessage widget with error
 - Message: "location is required for order routing"
 
 **Validation Criteria**:
+
 - ✅ Returns InfoMessage (not thrown error)
 - ✅ Error message is clear
 - ✅ Severity is "error"
@@ -245,22 +275,33 @@
 **Tool**: `loopkitchen.mealplan.withGrocery`
 
 **Test Input**:
+
 ```json
 {
   "ingredients": [
-    "chicken breast", "salmon", "eggs",
-    "broccoli", "spinach", "tomatoes",
-    "rice", "pasta", "bread",
-    "milk", "cheese", "yogurt"
+    "chicken breast",
+    "salmon",
+    "eggs",
+    "broccoli",
+    "spinach",
+    "tomatoes",
+    "rice",
+    "pasta",
+    "bread",
+    "milk",
+    "cheese",
+    "yogurt"
   ],
   "days": 7
 }
 ```
 
 **Expected Output**:
+
 - GroceryList with proper categorization
 
 **Validation Criteria**:
+
 - ✅ Produce category: broccoli, spinach, tomatoes
 - ✅ Meat & Seafood category: chicken, salmon
 - ✅ Dairy & Eggs category: milk, cheese, yogurt, eggs
@@ -274,6 +315,7 @@
 **Tool**: `loopkitchen.mealplan.withGrocery`
 
 **Test Input**:
+
 ```json
 {
   "ingredients": ["chicken", "rice", "vegetables"],
@@ -282,9 +324,11 @@
 ```
 
 **Expected Output**:
+
 - GroceryList with reasonable quantities
 
 **Validation Criteria**:
+
 - ✅ Chicken quantity: 3-5 lbs for 7 days
 - ✅ Rice quantity: 3-4 cups
 - ✅ Vegetables: multiple items, reasonable amounts
@@ -299,6 +343,7 @@
 **Scenario**: Complete meal planning and ordering flow
 
 **Steps**:
+
 1. Call `loopkitchen.mealplan.complete` with all params
 2. Verify WeekPlanner widget
 3. Verify GroceryList widget
@@ -307,6 +352,7 @@
 6. Call `commerce.confirmOrder` with confirmation token
 
 **Validation Criteria**:
+
 - ✅ All steps complete successfully
 - ✅ Data flows correctly between steps
 - ✅ Provider quotes are realistic
@@ -319,11 +365,13 @@
 **Scenario**: User has pantry items, should be excluded from grocery list
 
 **Steps**:
+
 1. Generate meal plan
 2. Call `loopkitchen.mealplan.prepareOrder` with pantryIngredients
 3. Verify grocery list excludes pantry items
 
 **Validation Criteria**:
+
 - ✅ Pantry items not in grocery list
 - ✅ Non-pantry items present
 - ✅ Quantities adjusted if needed
@@ -339,6 +387,7 @@
 **Test**: Generate 7-day meal plan
 
 **Validation Criteria**:
+
 - ✅ Response time < 5s
 - ✅ GPT call completes successfully
 - ✅ No retries needed (ideally)
@@ -352,6 +401,7 @@
 **Test**: Generate meal plan + grocery list + commerce quotes
 
 **Validation Criteria**:
+
 - ✅ Total time < 10s
 - ✅ Parallel operations where possible
 - ✅ All components successful
@@ -365,6 +415,7 @@
 **Test**: Verify WeekPlanner structure matches TypeScript type
 
 **Validation Criteria**:
+
 - ✅ `type` = "WeekPlanner"
 - ✅ `data.startDate` is ISO date string
 - ✅ `data.days` is array
@@ -380,6 +431,7 @@
 **Test**: Verify GroceryList structure matches TypeScript type
 
 **Validation Criteria**:
+
 - ✅ `type` = "GroceryList"
 - ✅ `data.categories` is array
 - ✅ Each category has: name, items
@@ -394,6 +446,7 @@
 ### 17. Minimal Input (Defaults)
 
 **Test Input**:
+
 ```json
 {
   "days": 7
@@ -407,6 +460,7 @@
 ### 18. Maximum Days (14)
 
 **Test Input**:
+
 ```json
 {
   "days": 14,
@@ -421,6 +475,7 @@
 ### 19. Very Low Calorie Target
 
 **Test Input**:
+
 ```json
 {
   "caloriesPerDay": 1200,
@@ -435,6 +490,7 @@
 ### 20. Very High Calorie Target
 
 **Test Input**:
+
 ```json
 {
   "caloriesPerDay": 3500,
@@ -499,9 +555,10 @@ Phase 4 is considered complete when:
 - **Commerce Layer**: Fully integrated, ready for grocery ordering
 - **Grocery List**: Uses GroceryGPT for intelligent categorization
 - **Widget System**: All outputs are UI-ready widgets
-- **Ingredient Estimation**: Smart estimation based on recipe titles (Phase 5 can enhance with actual recipe details)
+- **Ingredient Estimation**: Smart estimation based on recipe titles (Phase 5
+  can enhance with actual recipe details)
 
 ---
 
-*Generated: December 6, 2025*  
-*LoopKitchen Integration Project - Phase 4*
+_Generated: December 6, 2025_\
+_LoopKitchen Integration Project - Phase 4_

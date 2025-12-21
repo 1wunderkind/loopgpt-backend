@@ -6,38 +6,44 @@
 import { GroceryListJsonSchema } from "./shared/jsonSchema.ts";
 import {
   GroceryInputSchema,
-  GroceryListSchema,
   type GroceryList,
+  GroceryListSchema,
 } from "./shared/schemas.ts";
 import { getOpenAIClient } from "../config/openai.ts";
 import { ENV } from "../config/env.ts";
 import { OpenAiError, ValidationError } from "./shared/errors.ts";
 import { validateInput } from "./shared/validation.ts";
-import { logToolStart, logToolSuccess, logToolError } from "./shared/logging.ts";
+import {
+  logToolError,
+  logToolStart,
+  logToolSuccess,
+} from "./shared/logging.ts";
 import { recordToolCall } from "./shared/metrics.ts";
 import { cacheGet, cacheSet, generateCacheKey } from "./shared/cache.ts";
 
 /**
  * Generate grocery list from recipes or meal plan
  */
-export async function generateGroceryList(params: unknown): Promise<GroceryList> {
+export async function generateGroceryList(
+  params: unknown,
+): Promise<GroceryList> {
   const startTime = Date.now();
   const toolName = "grocery.list";
-  
+
   try {
     logToolStart(toolName, { params });
-    
+
     // Validate input
     const input = validateInput(GroceryInputSchema, params, toolName);
-    
+
     // Ensure at least one source is provided
     if (!input.recipes && !input.mealPlan) {
       throw new ValidationError(
         "Either recipes or mealPlan must be provided",
-        "Please provide recipes or a meal plan to generate a grocery list"
+        "Please provide recipes or a meal plan to generate a grocery list",
       );
     }
-    
+
     // Check cache
     if (ENV.ENABLE_CACHING) {
       const cacheKey = generateCacheKey(toolName, input);
@@ -49,7 +55,7 @@ export async function generateGroceryList(params: unknown): Promise<GroceryList>
         return cached;
       }
     }
-    
+
     // Collect all recipes
     const allRecipes = [];
     if (input.recipes) {
@@ -60,11 +66,12 @@ export async function generateGroceryList(params: unknown): Promise<GroceryList>
         allRecipes.push(...day.recipes);
       }
     }
-    
+
     // Generate grocery list using OpenAI Structured Outputs
     const client = getOpenAIClient();
-    
-    const systemPrompt = `You are TheLoopGPT's grocery list generator. Create organized, practical shopping lists.
+
+    const systemPrompt =
+      `You are TheLoopGPT's grocery list generator. Create organized, practical shopping lists.
 
 Rules:
 - Consolidate duplicate ingredients across recipes (e.g., "2 cups flour" + "1 cup flour" = "3 cups flour")
@@ -76,18 +83,36 @@ Rules:
 
     const userPrompt = `Generate a grocery list for these recipes:
 
-${allRecipes.map((r, i) => `
+${
+      allRecipes.map((r, i) => `
 Recipe ${i + 1}: ${r.name} (ID: ${r.id})
 Ingredients:
-${r.ingredients.map(ing => `- ${ing.name}${ing.quantity ? ` (${ing.quantity})` : ''}`).join('\n')}
-`).join('\n')}
+${
+        r.ingredients.map((ing) =>
+          `- ${ing.name}${ing.quantity ? ` (${ing.quantity})` : ""}`
+        ).join("\n")
+      }
+`).join("\n")
+    }
 
-${input.additionalItems && input.additionalItems.length > 0 ? `
+${
+      input.additionalItems && input.additionalItems.length > 0
+        ? `
 Additional items to include:
-${input.additionalItems.map(item => `- ${item.name}${item.quantity ? ` (${item.quantity})` : ''}`).join('\n')}
-` : ''}
+${
+          input.additionalItems.map((item) =>
+            `- ${item.name}${item.quantity ? ` (${item.quantity})` : ""}`
+          ).join("\n")
+        }
+`
+        : ""
+    }
 
-${input.categorize ? 'Organize items by grocery store category.' : 'List items in order.'}`;
+${
+      input.categorize
+        ? "Organize items by grocery store category."
+        : "List items in order."
+    }`;
 
     // Use pre-defined JSON Schema for Structured Outputs
 
@@ -115,22 +140,24 @@ ${input.categorize ? 'Organize items by grocery store category.' : 'List items i
     }
 
     const groceryList: GroceryList = JSON.parse(rawContent);
-    
+
     // Cache the result
     if (ENV.ENABLE_CACHING) {
       const cacheKey = generateCacheKey(toolName, input);
       await cacheSet(cacheKey, groceryList, ENV.CACHE_TTL_SECONDS, toolName);
     }
-    
+
     const duration = Date.now() - startTime;
     logToolSuccess(toolName, duration, { itemCount: groceryList.items.length });
     recordToolCall(toolName, true, duration);
-    
+
     return groceryList;
   } catch (error) {
     const duration = Date.now() - startTime;
     logToolError(toolName, error as Error, duration);
-    recordToolCall(toolName, false, duration, { errorType: (error as Error).name });
+    recordToolCall(toolName, false, duration, {
+      errorType: (error as Error).name,
+    });
     throw error;
   }
 }

@@ -1,7 +1,7 @@
 /**
  * LoopGPT Commerce Router - Provider Scorer
  * Production-grade scoring with configurable weights
- * 
+ *
  * Scores providers based on:
  * 1. Base Priority - Static config bias
  * 2. Price - Total cost to user (totalCents)
@@ -9,7 +9,7 @@
  * 4. Commission - Our revenue (commissionRate)
  * 5. Availability - % of items fulfilled
  * 6. Reliability - Historical performance
- * 
+ *
  * Configurable via environment variables:
  * - LOOPGPT_SCORE_PRIORITY_WEIGHT (default: 1.0)
  * - LOOPGPT_SCORE_PRICE_WEIGHT (default: 0.30)
@@ -21,16 +21,16 @@
 
 import { SupabaseClient } from "@supabase/supabase-js";
 import type {
+  ItemAvailability,
   ProviderQuote,
+  ScoreBreakdown,
   ScoredQuote,
   ScoringWeights,
-  ScoreBreakdown,
-  ItemAvailability,
 } from "./types/index.ts";
 import {
-  getMultipleProviderMetrics,
-  calculateReliabilityScore,
   calculateMarginScore,
+  calculateReliabilityScore,
+  getMultipleProviderMetrics,
   logProviderMetrics,
   type ProviderMetrics,
 } from "./providerMetrics.ts";
@@ -51,12 +51,24 @@ interface ScoringConfig {
 
 function getScoringConfig(): ScoringConfig {
   return {
-    priorityWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_PRIORITY_WEIGHT') || '1.0'),
-    priceWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_PRICE_WEIGHT') || '0.30'),
-    speedWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_SPEED_WEIGHT') || '0.15'),
-    commissionWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_COMMISSION_WEIGHT') || '0.20'),
-    availabilityWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_AVAILABILITY_WEIGHT') || '0.25'),
-    reliabilityWeight: parseFloat(Deno.env.get('LOOPGPT_SCORE_RELIABILITY_WEIGHT') || '0.10'),
+    priorityWeight: parseFloat(
+      Deno.env.get("LOOPGPT_SCORE_PRIORITY_WEIGHT") || "1.0",
+    ),
+    priceWeight: parseFloat(
+      Deno.env.get("LOOPGPT_SCORE_PRICE_WEIGHT") || "0.30",
+    ),
+    speedWeight: parseFloat(
+      Deno.env.get("LOOPGPT_SCORE_SPEED_WEIGHT") || "0.15",
+    ),
+    commissionWeight: parseFloat(
+      Deno.env.get("LOOPGPT_SCORE_COMMISSION_WEIGHT") || "0.20",
+    ),
+    availabilityWeight: parseFloat(
+      Deno.env.get("LOOPGPT_SCORE_AVAILABILITY_WEIGHT") || "0.25",
+    ),
+    reliabilityWeight: parseFloat(
+      Deno.env.get("LOOPGPT_SCORE_RELIABILITY_WEIGHT") || "0.10",
+    ),
     defaultEtaMinutes: 60, // Default ETA if not provided
   };
 }
@@ -76,7 +88,7 @@ export class ProviderScorer {
 
   /**
    * Score and rank all provider quotes
-   * 
+   *
    * @param quotes - Array of provider quotes to score
    * @param totalItemsRequested - Total number of items in the order
    * @param preference - Optimization preference (price, speed, margin, balanced)
@@ -85,7 +97,7 @@ export class ProviderScorer {
   async scoreProviders(
     quotes: ProviderQuote[],
     totalItemsRequested: number,
-    preference: 'price' | 'speed' | 'margin' | 'balanced' = 'balanced'
+    preference: "price" | "speed" | "margin" | "balanced" = "balanced",
   ): Promise<ScoredQuote[]> {
     if (quotes.length === 0) {
       return [];
@@ -95,7 +107,7 @@ export class ProviderScorer {
     const weights = this.getWeightsForPreference(preference);
 
     // Pre-fetch provider metrics for all providers in parallel
-    const providerIds = quotes.map(q => q.provider.id);
+    const providerIds = quotes.map((q) => q.provider.id);
     const metricsMap = await getMultipleProviderMetrics(this.db, providerIds);
 
     // Calculate reliability and margin scores from metrics
@@ -107,12 +119,17 @@ export class ProviderScorer {
       const metrics = metricsMap.get(quote.provider.id) || null;
       const reliabilityScore = calculateReliabilityScore(metrics);
       const marginScore = calculateMarginScore(metrics, allMetrics);
-      
+
       reliabilityScores.set(quote.provider.id, reliabilityScore);
       marginScores.set(quote.provider.id, marginScore);
-      
+
       // Log metrics for debugging
-      logProviderMetrics(quote.provider.id, metrics, reliabilityScore, marginScore);
+      logProviderMetrics(
+        quote.provider.id,
+        metrics,
+        reliabilityScore,
+        marginScore,
+      );
     }
 
     // Score each provider
@@ -123,7 +140,7 @@ export class ProviderScorer {
         totalItemsRequested,
         reliabilityScores.get(quote.provider.id) || 50,
         marginScores.get(quote.provider.id) || 50,
-        weights
+        weights,
       );
 
       return {
@@ -141,12 +158,12 @@ export class ProviderScorer {
    * Get weights adjusted for user preference
    */
   private getWeightsForPreference(
-    preference: 'price' | 'speed' | 'margin' | 'balanced'
+    preference: "price" | "speed" | "margin" | "balanced",
   ): ScoringWeights {
     const base = this.config;
 
     switch (preference) {
-      case 'price':
+      case "price":
         return {
           price: base.priceWeight * 2.0,
           speed: base.speedWeight * 0.5,
@@ -154,8 +171,8 @@ export class ProviderScorer {
           margin: base.commissionWeight * 0.5,
           reliability: base.reliabilityWeight,
         };
-      
-      case 'speed':
+
+      case "speed":
         return {
           price: base.priceWeight * 0.5,
           speed: base.speedWeight * 2.5,
@@ -163,8 +180,8 @@ export class ProviderScorer {
           margin: base.commissionWeight * 0.5,
           reliability: base.reliabilityWeight,
         };
-      
-      case 'margin':
+
+      case "margin":
         return {
           price: base.priceWeight * 0.7,
           speed: base.speedWeight * 0.7,
@@ -172,8 +189,8 @@ export class ProviderScorer {
           margin: base.commissionWeight * 2.0,
           reliability: base.reliabilityWeight,
         };
-      
-      case 'balanced':
+
+      case "balanced":
       default:
         return {
           price: base.priceWeight,
@@ -187,9 +204,9 @@ export class ProviderScorer {
 
   /**
    * Calculate complete score breakdown for a provider
-   * 
+   *
    * Formula:
-   * score = 
+   * score =
    *   priorityWeight * config.priority
    *   - priceWeight * (totalCents / 100)  // Normalize cents to dollars
    *   - speedWeight * estimatedDeliveryMinutes
@@ -203,7 +220,7 @@ export class ProviderScorer {
     totalItemsRequested: number,
     reliabilityScore: number,
     marginScore: number,
-    weights: ScoringWeights
+    weights: ScoringWeights,
   ): ScoreBreakdown {
     // 1. Base Priority Score (static config bias)
     const priorityScore = quote.config.priority;
@@ -211,13 +228,15 @@ export class ProviderScorer {
     // 2. Price Score (lower price = higher score)
     const priceScore = this.calculatePriceScore(
       quote.quote.totalCents,
-      allQuotes.map(q => q.quote.totalCents)
+      allQuotes.map((q) => q.quote.totalCents),
     );
 
     // 3. Speed Score (faster delivery = higher score)
     const speedScore = this.calculateSpeedScore(
       quote.quote.estimatedDeliveryMinutes || this.config.defaultEtaMinutes,
-      allQuotes.map(q => q.quote.estimatedDeliveryMinutes || this.config.defaultEtaMinutes)
+      allQuotes.map((q) =>
+        q.quote.estimatedDeliveryMinutes || this.config.defaultEtaMinutes
+      ),
     );
 
     // 4. Margin Score (from provider metrics)
@@ -228,12 +247,11 @@ export class ProviderScorer {
     // 5. Availability Score (more items found = higher score)
     const availabilityScore = this.calculateAvailabilityScore(
       quote.itemAvailability,
-      totalItemsRequested
+      totalItemsRequested,
     );
 
     // 6. Calculate weighted total
-    const weightedTotal =
-      (this.config.priorityWeight * priorityScore) +
+    const weightedTotal = (this.config.priorityWeight * priorityScore) +
       (weights.price * priceScore) +
       (weights.speed * speedScore) +
       (weights.margin * marginScore) +
@@ -251,7 +269,7 @@ export class ProviderScorer {
         reliabilityScore,
       },
       weights,
-      quote.config.priority
+      quote.config.priority,
     );
 
     return {
@@ -269,7 +287,10 @@ export class ProviderScorer {
    * Calculate price score (lower price = higher score)
    * Normalized to 0-100 scale
    */
-  private calculatePriceScore(totalCents: number, allTotalCents: number[]): number {
+  private calculatePriceScore(
+    totalCents: number,
+    allTotalCents: number[],
+  ): number {
     const minPrice = Math.min(...allTotalCents);
     const maxPrice = Math.max(...allTotalCents);
 
@@ -285,7 +306,10 @@ export class ProviderScorer {
    * Calculate speed score (faster delivery = higher score)
    * Normalized to 0-100 scale
    */
-  private calculateSpeedScore(etaMinutes: number, allEtaMinutes: number[]): number {
+  private calculateSpeedScore(
+    etaMinutes: number,
+    allEtaMinutes: number[],
+  ): number {
     const minTime = Math.min(...allEtaMinutes);
     const maxTime = Math.max(...allEtaMinutes);
 
@@ -304,12 +328,14 @@ export class ProviderScorer {
   private calculateCommissionScore(
     totalCents: number,
     commissionRate: number,
-    allQuotes: ProviderQuote[]
+    allQuotes: ProviderQuote[],
   ): number {
     // Our revenue from this order (in cents)
     const ourRevenueCents = totalCents * commissionRate;
 
-    const allRevenues = allQuotes.map(q => q.quote.totalCents * q.config.commissionRate);
+    const allRevenues = allQuotes.map((q) =>
+      q.quote.totalCents * q.config.commissionRate
+    );
     const minRevenue = Math.min(...allRevenues);
     const maxRevenue = Math.max(...allRevenues);
 
@@ -317,7 +343,8 @@ export class ProviderScorer {
     if (maxRevenue === minRevenue) return 100;
 
     // Higher revenue = higher score
-    const normalized = (ourRevenueCents - minRevenue) / (maxRevenue - minRevenue);
+    const normalized = (ourRevenueCents - minRevenue) /
+      (maxRevenue - minRevenue);
     return Math.round(normalized * 100);
   }
 
@@ -327,12 +354,13 @@ export class ProviderScorer {
    */
   private calculateAvailabilityScore(
     itemAvailability: ItemAvailability[],
-    totalRequested: number
+    totalRequested: number,
   ): number {
     if (totalRequested === 0) return 100;
 
-    const found = itemAvailability.filter(ia => ia.status === 'found').length;
-    const substituted = itemAvailability.filter(ia => ia.status === 'substituted').length;
+    const found = itemAvailability.filter((ia) => ia.status === "found").length;
+    const substituted =
+      itemAvailability.filter((ia) => ia.status === "substituted").length;
 
     // Substituted items count for 80% of a found item
     const effectiveFulfillment = found + (substituted * 0.8);
@@ -351,11 +379,11 @@ export class ProviderScorer {
 
       // Get last 30 days of performance
       const { data: metrics, error } = await this.db
-        .from('provider_metrics')
-        .select('*')
-        .eq('provider_id', providerId)
-        .gte('metric_date', thirtyDaysAgo.toISOString().split('T')[0])
-        .order('metric_date', { ascending: false });
+        .from("provider_metrics")
+        .select("*")
+        .eq("provider_id", providerId)
+        .gte("metric_date", thirtyDaysAgo.toISOString().split("T")[0])
+        .order("metric_date", { ascending: false });
 
       if (error || !metrics || metrics.length === 0) {
         // No data = neutral score
@@ -363,8 +391,14 @@ export class ProviderScorer {
       }
 
       // Calculate success rate
-      const totalOrders = metrics.reduce((sum, m) => sum + (m.total_orders || 0), 0);
-      const successfulOrders = metrics.reduce((sum, m) => sum + (m.successful_orders || 0), 0);
+      const totalOrders = metrics.reduce(
+        (sum, m) => sum + (m.total_orders || 0),
+        0,
+      );
+      const successfulOrders = metrics.reduce(
+        (sum, m) => sum + (m.successful_orders || 0),
+        0,
+      );
 
       if (totalOrders === 0) return 50;
 
@@ -378,7 +412,7 @@ export class ProviderScorer {
       metrics.forEach((metric, index) => {
         const dayAge = index;
         const weight = Math.exp(-dayAge / 15); // Decay factor
-        
+
         const daySuccessRate = metric.total_orders > 0
           ? (metric.successful_orders || 0) / metric.total_orders
           : 0.5;
@@ -393,7 +427,10 @@ export class ProviderScorer {
 
       return Math.round(weightedSuccessRate * 100);
     } catch (error) {
-      console.error(`Error calculating reliability score for ${providerId}:`, error);
+      console.error(
+        `Error calculating reliability score for ${providerId}:`,
+        error,
+      );
       return 50; // Default to neutral on error
     }
   }
@@ -411,32 +448,32 @@ export class ProviderScorer {
       reliabilityScore: number;
     },
     weights: ScoringWeights,
-    priority: number
+    priority: number,
   ): string {
     const factors: string[] = [];
 
     // Priority bias
     if (priority >= 60) {
-      factors.push('preferred provider');
+      factors.push("preferred provider");
     }
 
     // Identify strong factors (score > 80)
     if (scores.priceScore > 80) {
-      factors.push('competitive pricing');
+      factors.push("competitive pricing");
     }
     if (scores.speedScore > 80) {
-      factors.push('fast delivery');
+      factors.push("fast delivery");
     }
     if (scores.availabilityScore === 100) {
-      factors.push('all items in stock');
+      factors.push("all items in stock");
     } else if (scores.availabilityScore > 80) {
-      factors.push('most items available');
+      factors.push("most items available");
     }
     if (scores.marginScore > 80) {
-      factors.push('good commission');
+      factors.push("good commission");
     }
     if (scores.reliabilityScore > 80) {
-      factors.push('reliable service');
+      factors.push("reliable service");
     }
 
     // Build explanation
@@ -448,7 +485,9 @@ export class ProviderScorer {
       return `${providerName} selected for ${factors[0]} and ${factors[1]}.`;
     } else {
       const lastFactor = factors.pop();
-      return `${providerName} selected for ${factors.join(', ')}, and ${lastFactor}.`;
+      return `${providerName} selected for ${
+        factors.join(", ")
+      }, and ${lastFactor}.`;
     }
   }
 }

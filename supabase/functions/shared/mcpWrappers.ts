@@ -11,9 +11,9 @@ import type {
   KCalGoals,
   LeftoverRecipeRequest,
   LeftoverRecipeResponse,
+  MCPResponse,
   NutritionAnalysisRequest,
   NutritionAnalysisResponse,
-  MCPResponse,
 } from "./types.ts";
 
 /**
@@ -22,7 +22,7 @@ import type {
 async function callMCP<T>(
   endpoint: string,
   method: string,
-  params?: Record<string, unknown>
+  params?: Record<string, unknown>,
 ): Promise<MCPResponse<T>> {
   try {
     const response = await fetch(endpoint, {
@@ -39,7 +39,9 @@ async function callMCP<T>(
     });
 
     if (!response.ok) {
-      throw new Error(`MCP call failed: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `MCP call failed: ${response.status} ${response.statusText}`,
+      );
     }
 
     const data = await response.json();
@@ -63,7 +65,9 @@ async function callMCP<T>(
       success: false,
       error: {
         code: "NETWORK_ERROR",
-        message: error instanceof Error ? error.message : "Failed to call MCP endpoint",
+        message: error instanceof Error
+          ? error.message
+          : "Failed to call MCP endpoint",
       },
     };
   }
@@ -76,7 +80,9 @@ async function callMCP<T>(
 /**
  * Get user's calorie and macro goals from K-Cal GPT
  */
-export async function getKCalGoals(chatgptUserId: string): Promise<KCalGoals | null> {
+export async function getKCalGoals(
+  chatgptUserId: string,
+): Promise<KCalGoals | null> {
   const response = await callMCP<KCalGoals>(
     KCAL_ENDPOINT,
     "tools/call",
@@ -85,7 +91,7 @@ export async function getKCalGoals(chatgptUserId: string): Promise<KCalGoals | n
       arguments: {
         chatgpt_user_id: chatgptUserId,
       },
-    }
+    },
   );
 
   if (!response.success || !response.data) {
@@ -103,7 +109,7 @@ export async function logMealToKCal(
   chatgptUserId: string,
   foodDescription: string,
   calories?: number,
-  macros?: { protein_g?: number; carbs_g?: number; fat_g?: number }
+  macros?: { protein_g?: number; carbs_g?: number; fat_g?: number },
 ): Promise<boolean> {
   const response = await callMCP(
     KCAL_ENDPOINT,
@@ -116,7 +122,7 @@ export async function logMealToKCal(
         calories,
         ...macros,
       },
-    }
+    },
   );
 
   return response.success;
@@ -127,7 +133,7 @@ export async function logMealToKCal(
  */
 export async function getDailySummary(
   chatgptUserId: string,
-  date?: string
+  date?: string,
 ): Promise<unknown> {
   const response = await callMCP(
     KCAL_ENDPOINT,
@@ -138,7 +144,7 @@ export async function getDailySummary(
         chatgpt_user_id: chatgptUserId,
         date,
       },
-    }
+    },
   );
 
   return response.data;
@@ -152,7 +158,7 @@ export async function getDailySummary(
  * Generate a recipe from LeftoverGPT
  */
 export async function getRecipeFromLeftover(
-  request: LeftoverRecipeRequest
+  request: LeftoverRecipeRequest,
 ): Promise<LeftoverRecipeResponse | null> {
   const response = await callMCP<LeftoverRecipeResponse>(
     LEFTOVER_ENDPOINT,
@@ -166,7 +172,7 @@ export async function getRecipeFromLeftover(
         diet: request.diet,
         chef_persona: request.chef_persona || "Gordon",
       },
-    }
+    },
   );
 
   if (!response.success || !response.data) {
@@ -184,7 +190,7 @@ export async function getRecipesFromLeftover(
   chatgptUserId: string,
   count: number,
   vibe?: string,
-  diet?: string
+  diet?: string,
 ): Promise<LeftoverRecipeResponse[]> {
   const recipes: LeftoverRecipeResponse[] = [];
 
@@ -211,7 +217,7 @@ export async function getRecipesFromLeftover(
  * Analyze nutrition for a recipe using NutritionGPT
  */
 export async function getMacrosFromNutrition(
-  request: NutritionAnalysisRequest
+  request: NutritionAnalysisRequest,
 ): Promise<NutritionAnalysisResponse | null> {
   const response = await callMCP<NutritionAnalysisResponse>(
     NUTRITION_ENDPOINT,
@@ -223,7 +229,7 @@ export async function getMacrosFromNutrition(
         servings: request.servings || 1,
         ingredients: request.ingredients,
       },
-    }
+    },
   );
 
   if (!response.success || !response.data) {
@@ -238,10 +244,10 @@ export async function getMacrosFromNutrition(
  * Analyze nutrition for multiple recipes
  */
 export async function analyzeBatchNutrition(
-  recipes: NutritionAnalysisRequest[]
+  recipes: NutritionAnalysisRequest[],
 ): Promise<(NutritionAnalysisResponse | null)[]> {
   const results = await Promise.all(
-    recipes.map((recipe) => getMacrosFromNutrition(recipe))
+    recipes.map((recipe) => getMacrosFromNutrition(recipe)),
   );
 
   return results;
@@ -277,4 +283,3 @@ export async function healthCheckExternalGPTs(): Promise<{
     nutrition: checks[2],
   };
 }
-

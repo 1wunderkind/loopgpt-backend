@@ -3,11 +3,14 @@
  * Verify that the smart router correctly classifies and routes queries
  */
 
-const MCP_TOOLS_URL = "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
+const MCP_TOOLS_URL =
+  "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!SERVICE_ROLE_KEY) {
-  console.error("ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable not set");
+  console.error(
+    "ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable not set",
+  );
   Deno.exit(1);
 }
 
@@ -44,7 +47,7 @@ const TEST_CASES: TestCase[] = [
     expectedIntent: "recipes",
     expectedType: "recipes",
   },
-  
+
   // Nutrition queries
   {
     name: "Calorie question",
@@ -64,7 +67,7 @@ const TEST_CASES: TestCase[] = [
     expectedIntent: "nutrition",
     expectedType: "fallback",
   },
-  
+
   // Meal plan queries
   {
     name: "Multi-day plan",
@@ -84,7 +87,7 @@ const TEST_CASES: TestCase[] = [
     expectedIntent: "mealplan",
     expectedType: "mealplan",
   },
-  
+
   // Grocery queries
   {
     name: "Shopping list request",
@@ -98,7 +101,7 @@ const TEST_CASES: TestCase[] = [
     expectedIntent: "grocery",
     expectedType: "fallback",
   },
-  
+
   // Other/vague queries
   {
     name: "General help",
@@ -116,7 +119,7 @@ const TEST_CASES: TestCase[] = [
 
 async function testFoodRouter(testCase: TestCase) {
   const startTime = Date.now();
-  
+
   try {
     const response = await fetch(`${MCP_TOOLS_URL}/tools/food.router`, {
       method: "POST",
@@ -138,39 +141,44 @@ async function testFoodRouter(testCase: TestCase) {
     }
 
     const result = await response.json();
-    
+
     // Check if result matches expectations
-    const intentMatch = result.intent === testCase.expectedIntent || 
-                       result.intent === "recipes"; // Fallback often uses recipes
+    const intentMatch = result.intent === testCase.expectedIntent ||
+      result.intent === "recipes"; // Fallback often uses recipes
     const typeMatch = result.type === testCase.expectedType;
-    
+
     const status = typeMatch ? "✓ PASS" : "✗ FAIL";
-    
+
     console.log(`${status} ${testCase.name}`);
     console.log(`   Query: "${testCase.query}"`);
-    console.log(`   Expected: intent=${testCase.expectedIntent}, type=${testCase.expectedType}`);
-    console.log(`   Got: intent=${result.intent}, type=${result.type}, confidence=${result.confidence}`);
+    console.log(
+      `   Expected: intent=${testCase.expectedIntent}, type=${testCase.expectedType}`,
+    );
+    console.log(
+      `   Got: intent=${result.intent}, type=${result.type}, confidence=${result.confidence}`,
+    );
     console.log(`   Duration: ${duration}ms`);
-    
+
     if (result.type === "fallback" && result.message) {
-      console.log(`   Fallback message: ${result.message.substring(0, 100)}...`);
+      console.log(
+        `   Fallback message: ${result.message.substring(0, 100)}...`,
+      );
     }
-    
+
     console.log();
-    
+
     return {
       testCase,
       result,
       duration,
       passed: typeMatch,
     };
-    
   } catch (error: any) {
     console.error(`✗ ERROR ${testCase.name}`);
     console.error(`   Query: "${testCase.query}"`);
     console.error(`   Error: ${error.message}`);
     console.log();
-    
+
     return {
       testCase,
       result: null,
@@ -184,70 +192,75 @@ async function testFoodRouter(testCase: TestCase) {
 async function runAllTests() {
   console.log("=== Testing Food Router ===\n");
   console.log(`Running ${TEST_CASES.length} tests...\n`);
-  
+
   const results = [];
-  
+
   for (const testCase of TEST_CASES) {
     const result = await testFoodRouter(testCase);
     results.push(result);
-    
+
     // Small delay between tests to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-  
+
   // Summary
   console.log("=== Test Summary ===");
-  const passed = results.filter(r => r.passed).length;
-  const failed = results.filter(r => !r.passed).length;
-  const errors = results.filter(r => r.error).length;
-  
+  const passed = results.filter((r) => r.passed).length;
+  const failed = results.filter((r) => !r.passed).length;
+  const errors = results.filter((r) => r.error).length;
+
   console.log(`Total Tests: ${TEST_CASES.length}`);
-  console.log(`Passed: ${passed} (${((passed / TEST_CASES.length) * 100).toFixed(1)}%)`);
-  console.log(`Failed: ${failed} (${((failed / TEST_CASES.length) * 100).toFixed(1)}%)`);
+  console.log(
+    `Passed: ${passed} (${((passed / TEST_CASES.length) * 100).toFixed(1)}%)`,
+  );
+  console.log(
+    `Failed: ${failed} (${((failed / TEST_CASES.length) * 100).toFixed(1)}%)`,
+  );
   console.log(`Errors: ${errors}`);
   console.log();
-  
+
   // Average duration
-  const avgDuration = results.reduce((sum, r) => sum + r.duration, 0) / results.length;
+  const avgDuration = results.reduce((sum, r) => sum + r.duration, 0) /
+    results.length;
   console.log(`Average Response Time: ${avgDuration.toFixed(0)}ms`);
   console.log();
-  
+
   // Intent distribution
   const intentCounts = new Map<string, number>();
-  results.forEach(r => {
+  results.forEach((r) => {
     if (r.result && r.result.intent) {
       const count = intentCounts.get(r.result.intent) || 0;
       intentCounts.set(r.result.intent, count + 1);
     }
   });
-  
+
   console.log("Intent Distribution:");
   intentCounts.forEach((count, intent) => {
     console.log(`  ${intent}: ${count}`);
   });
   console.log();
-  
+
   // Type distribution
   const typeCounts = new Map<string, number>();
-  results.forEach(r => {
+  results.forEach((r) => {
     if (r.result && r.result.type) {
       const count = typeCounts.get(r.result.type) || 0;
       typeCounts.set(r.result.type, count + 1);
     }
   });
-  
+
   console.log("Response Type Distribution:");
   typeCounts.forEach((count, type) => {
     console.log(`  ${type}: ${count}`);
   });
   console.log();
-  
+
   if (passed === TEST_CASES.length) {
     console.log("🎉 All tests passed!");
   } else {
     console.log(`⚠️  ${failed} test(s) failed. Review results above.`);
   }
-  
+
   return results;
 }
 

@@ -3,12 +3,7 @@
  * Tests for adding weight entries
  */
 
-import {
-  assertEquals,
-  assertExists,
-  assert,
-  testData,
-} from "../../helpers.ts";
+import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 Deno.test("weight_add: creates entry successfully", async () => {
   const userId = testData.userId();
@@ -67,7 +62,7 @@ Deno.test("weight_add: allows optional notes", async () => {
 
 Deno.test("weight_add: handles decimal weights", async () => {
   const weights = [70.5, 68.25, 72.125];
-  
+
   for (const weight of weights) {
     const mockEntry = testData.weightEntry({ weight_kg: weight });
     assertEquals(mockEntry.weight_kg, weight);

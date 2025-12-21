@@ -38,7 +38,9 @@ CREATE INDEX IF NOT EXISTS idx_sentiment_events_timestamp ON sentiment_events(ti
 `;
 
 try {
-  const { error: eventsError } = await supabase.rpc("exec_sql", { sql: createEventsTable });
+  const { error: eventsError } = await supabase.rpc("exec_sql", {
+    sql: createEventsTable,
+  });
   if (eventsError) {
     console.error("❌ Failed to create sentiment_events:", eventsError.message);
   } else {
@@ -65,9 +67,14 @@ CREATE INDEX IF NOT EXISTS idx_user_favorites_user_id ON user_favorites(user_id,
 `;
 
 try {
-  const { error: favoritesError } = await supabase.rpc("exec_sql", { sql: createFavoritesTable });
+  const { error: favoritesError } = await supabase.rpc("exec_sql", {
+    sql: createFavoritesTable,
+  });
   if (favoritesError) {
-    console.error("❌ Failed to create user_favorites:", favoritesError.message);
+    console.error(
+      "❌ Failed to create user_favorites:",
+      favoritesError.message,
+    );
   } else {
     console.log("✅ user_favorites table created");
   }
@@ -96,7 +103,10 @@ const { data: favoritesData, error: favoritesCheckError } = await supabase
 if (!favoritesCheckError) {
   console.log("✅ user_favorites table verified");
 } else {
-  console.log("❌ user_favorites table not found:", favoritesCheckError.message);
+  console.log(
+    "❌ user_favorites table not found:",
+    favoritesCheckError.message,
+  );
 }
 
 console.log("\n🎉 Sentiment Layer Tables Initialized!");

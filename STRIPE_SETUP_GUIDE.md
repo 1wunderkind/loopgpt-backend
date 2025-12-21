@@ -405,7 +405,7 @@ ORDER BY count DESC;
 
 ---
 
-**Questions?** Check the troubleshooting section or contact support@theloopgpt.ai
+**Questions?** Check the troubleshooting section or contact
+support@theloopgpt.ai
 
 **Good luck with your launch!** 🚀
-

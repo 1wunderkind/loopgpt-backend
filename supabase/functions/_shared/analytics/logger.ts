@@ -1,18 +1,18 @@
 /**
  * LoopGPT Analytics Logger
- * 
+ *
  * Centralized logging module for the 7 foundational metrics
- * 
+ *
  * Usage:
  *   import { logIngredientSubmission, logRecipeEvent } from '../_shared/analytics/logger.ts';
- *   
+ *
  *   await logIngredientSubmission({
  *     userId: 'user-123',
  *     sessionId: 'session-456',
  *     sourceGpt: 'LeftoverGPT',
  *     ingredients: [{name: 'chicken', quantity: 500, unit: 'g'}]
  *   });
- * 
+ *
  * Features:
  * - Type-safe logging functions
  * - Graceful error handling (never breaks user flow)
@@ -21,16 +21,16 @@
  * - Supabase client integration
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 import type {
+  LogAffiliateEventParams,
   LogIngredientSubmissionParams,
-  LogRecipeEventParams,
   LogMealLogParams,
   LogMealPlanParams,
-  LogAffiliateEventParams,
-  UpsertUserGoalParams,
+  LogRecipeEventParams,
   LogSessionEventParams,
-} from './types.ts';
+  UpsertUserGoalParams,
+} from "./types.ts";
 
 // ============================================================================
 // Supabase Client
@@ -41,18 +41,18 @@ import type {
  * Uses service role key for unrestricted access
  */
 function getAnalyticsClient() {
-  const supabaseUrl = Deno.env.get('SUPABASE_URL');
-  const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-  
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error('[Analytics] Supabase credentials not configured');
+    throw new Error("[Analytics] Supabase credentials not configured");
   }
-  
+
   return createClient(supabaseUrl, supabaseKey, {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   });
 }
 
@@ -67,14 +67,14 @@ function getAnalyticsClient() {
 async function insertAnalyticsRow<T>(
   table: string,
   payload: T,
-  context: string
+  context: string,
 ): Promise<void> {
   try {
     const client = getAnalyticsClient();
     const { error } = await client
       .from(`analytics.${table}`)
       .insert(payload as any);
-    
+
     if (error) {
       console.error(`[Analytics] Failed to insert into ${table}:`, error);
       console.error(`[Analytics] Context: ${context}`);
@@ -82,7 +82,10 @@ async function insertAnalyticsRow<T>(
     }
   } catch (error) {
     // Graceful degradation - log but don't throw
-    console.error(`[Analytics] Exception in insertAnalyticsRow (${table}):`, error);
+    console.error(
+      `[Analytics] Exception in insertAnalyticsRow (${table}):`,
+      error,
+    );
     console.error(`[Analytics] Context: ${context}`);
   }
 }
@@ -93,7 +96,7 @@ async function insertAnalyticsRow<T>(
 
 /**
  * Log ingredient submission to LeftoverGPT or other recipe tools
- * 
+ *
  * @example
  * await logIngredientSubmission({
  *   userId: 'user-123',
@@ -107,7 +110,7 @@ async function insertAnalyticsRow<T>(
  * });
  */
 export async function logIngredientSubmission(
-  params: LogIngredientSubmissionParams
+  params: LogIngredientSubmissionParams,
 ): Promise<void> {
   const payload = {
     user_id: params.userId || null,
@@ -116,17 +119,17 @@ export async function logIngredientSubmission(
     ingredients: params.ingredients,
     locale: params.locale || null,
   };
-  
+
   await insertAnalyticsRow(
-    'ingredient_submissions',
+    "ingredient_submissions",
     payload,
-    `logIngredientSubmission: ${params.sourceGpt}, ${params.ingredients.length} ingredients`
+    `logIngredientSubmission: ${params.sourceGpt}, ${params.ingredients.length} ingredients`,
   );
 }
 
 /**
  * Log recipe generation or user reaction event
- * 
+ *
  * @example
  * // Recipe generated
  * await logRecipeEvent({
@@ -139,7 +142,7 @@ export async function logIngredientSubmission(
  *   sourceGpt: 'LeftoverGPT',
  *   responseTimeMs: 3500
  * });
- * 
+ *
  * // Recipe accepted
  * await logRecipeEvent({
  *   userId: 'user-123',
@@ -150,7 +153,7 @@ export async function logIngredientSubmission(
  * });
  */
 export async function logRecipeEvent(
-  params: LogRecipeEventParams
+  params: LogRecipeEventParams,
 ): Promise<void> {
   const payload = {
     user_id: params.userId || null,
@@ -164,17 +167,17 @@ export async function logRecipeEvent(
     response_time_ms: params.responseTimeMs || null,
     metadata: params.metadata || null,
   };
-  
+
   await insertAnalyticsRow(
-    'recipe_events',
+    "recipe_events",
     payload,
-    `logRecipeEvent: ${params.eventType} - ${params.recipeId}`
+    `logRecipeEvent: ${params.eventType} - ${params.recipeId}`,
   );
 }
 
 /**
  * Log meal consumption from KCalGPT or manual entry
- * 
+ *
  * @example
  * await logMealLog({
  *   userId: 'user-123',
@@ -191,10 +194,10 @@ export async function logRecipeEvent(
  * });
  */
 export async function logMealLog(
-  params: LogMealLogParams
+  params: LogMealLogParams,
 ): Promise<void> {
-  const loggedAt = params.loggedAt instanceof Date 
-    ? params.loggedAt.toISOString() 
+  const loggedAt = params.loggedAt instanceof Date
+    ? params.loggedAt.toISOString()
     : (params.loggedAt || params.log_date || new Date().toISOString());
 
   const payload = {
@@ -211,17 +214,19 @@ export async function logMealLog(
     fiber_g: params.fiberG || null,
     raw_payload: params.rawPayload || null,
   };
-  
+
   await insertAnalyticsRow(
-    'meal_logs',
+    "meal_logs",
     payload,
-    `logMealLog: ${params.mealType || 'unknown'} - ${params.description.substring(0, 50)}`
+    `logMealLog: ${params.mealType || "unknown"} - ${
+      params.description.substring(0, 50)
+    }`,
   );
 }
 
 /**
  * Log meal plan generation
- * 
+ *
  * @example
  * await logMealPlanGenerated({
  *   userId: 'user-123',
@@ -238,7 +243,7 @@ export async function logMealLog(
  * });
  */
 export async function logMealPlanGenerated(
-  params: LogMealPlanParams
+  params: LogMealPlanParams,
 ): Promise<void> {
   const payload = {
     user_id: params.userId || null,
@@ -251,17 +256,19 @@ export async function logMealPlanGenerated(
     target_calories_per_day: params.targetCaloriesPerDay || null,
     metadata: params.metadata || null,
   };
-  
+
   await insertAnalyticsRow(
-    'meal_plans',
+    "meal_plans",
     payload,
-    `logMealPlanGenerated: ${params.daysPlanned} days - ${params.vibe || 'default'}`
+    `logMealPlanGenerated: ${params.daysPlanned} days - ${
+      params.vibe || "default"
+    }`,
   );
 }
 
 /**
  * Log affiliate link click
- * 
+ *
  * @example
  * // Click event
  * await logAffiliateClick({
@@ -271,7 +278,7 @@ export async function logMealPlanGenerated(
  *   ingredientName: 'chicken breast',
  *   url: 'https://instacart.com/...'
  * });
- * 
+ *
  * // Conversion event (when order completes)
  * await logAffiliateConversion({
  *   userId: 'user-123',
@@ -283,7 +290,7 @@ export async function logMealPlanGenerated(
  * });
  */
 export async function logAffiliateClick(
-  params: LogAffiliateEventParams
+  params: LogAffiliateEventParams,
 ): Promise<void> {
   const payload = {
     user_id: params.userId || null,
@@ -294,14 +301,14 @@ export async function logAffiliateClick(
     url: params.url || null,
     grocery_order_id: params.groceryOrderId || null,
     conversion_value: params.conversionValue || null,
-    currency: params.currency || 'USD',
+    currency: params.currency || "USD",
     metadata: params.metadata || null,
   };
-  
+
   await insertAnalyticsRow(
-    'affiliate_events',
+    "affiliate_events",
     payload,
-    `logAffiliateClick: ${params.eventType} - ${params.provider}`
+    `logAffiliateClick: ${params.eventType} - ${params.provider}`,
   );
 }
 
@@ -309,17 +316,17 @@ export async function logAffiliateClick(
  * Convenience wrapper for logging affiliate conversions
  */
 export async function logAffiliateConversion(
-  params: Omit<LogAffiliateEventParams, 'eventType'>
+  params: Omit<LogAffiliateEventParams, "eventType">,
 ): Promise<void> {
   return logAffiliateClick({
     ...params,
-    eventType: 'conversion',
+    eventType: "conversion",
   });
 }
 
 /**
  * Upsert user goal (deactivates previous goals, inserts new active goal)
- * 
+ *
  * @example
  * await upsertUserGoal({
  *   userId: 'user-123',
@@ -334,22 +341,25 @@ export async function logAffiliateConversion(
  * });
  */
 export async function upsertUserGoal(
-  params: UpsertUserGoalParams
+  params: UpsertUserGoalParams,
 ): Promise<void> {
   try {
     const client = getAnalyticsClient();
-    
+
     // Step 1: Deactivate all previous goals for this user
     const { error: updateError } = await client
-      .from('analytics.user_goals')
+      .from("analytics.user_goals")
       .update({ is_active: false })
-      .eq('user_id', params.userId)
-      .eq('is_active', true);
-    
+      .eq("user_id", params.userId)
+      .eq("is_active", true);
+
     if (updateError) {
-      console.error('[Analytics] Failed to deactivate previous goals:', updateError);
+      console.error(
+        "[Analytics] Failed to deactivate previous goals:",
+        updateError,
+      );
     }
-    
+
     // Step 2: Insert new active goal
     const payload = {
       user_id: params.userId,
@@ -360,23 +370,23 @@ export async function upsertUserGoal(
       is_active: true,
       modification_count: 0,
     };
-    
+
     const { error: insertError } = await client
-      .from('analytics.user_goals')
+      .from("analytics.user_goals")
       .insert(payload);
-    
+
     if (insertError) {
-      console.error('[Analytics] Failed to insert new goal:', insertError);
-      console.error('[Analytics] Payload:', JSON.stringify(payload, null, 2));
+      console.error("[Analytics] Failed to insert new goal:", insertError);
+      console.error("[Analytics] Payload:", JSON.stringify(payload, null, 2));
     }
   } catch (error) {
-    console.error('[Analytics] Exception in upsertUserGoal:', error);
+    console.error("[Analytics] Exception in upsertUserGoal:", error);
   }
 }
 
 /**
  * Log session event (start, end, tool call)
- * 
+ *
  * @example
  * // Session start
  * await logSessionEvent({
@@ -387,7 +397,7 @@ export async function upsertUserGoal(
  *   userAgent: 'Mozilla/5.0...',
  *   metadata: {route: '/recipes/generate'}
  * });
- * 
+ *
  * // Tool call
  * await logSessionEvent({
  *   userId: 'user-123',
@@ -396,7 +406,7 @@ export async function upsertUserGoal(
  *   eventType: 'tool_call',
  *   metadata: {tool: 'loopkitchen.recipes.generate', duration: 3500}
  * });
- * 
+ *
  * // Session end
  * await logSessionEvent({
  *   userId: 'user-123',
@@ -407,7 +417,7 @@ export async function upsertUserGoal(
  * });
  */
 export async function logSessionEvent(
-  params: LogSessionEventParams
+  params: LogSessionEventParams,
 ): Promise<void> {
   const payload = {
     user_id: params.userId || null,
@@ -417,11 +427,11 @@ export async function logSessionEvent(
     user_agent: params.userAgent || null,
     metadata: params.metadata || null,
   };
-  
+
   await insertAnalyticsRow(
-    'session_events',
+    "session_events",
     payload,
-    `logSessionEvent: ${params.eventType} - ${params.gptName}`
+    `logSessionEvent: ${params.eventType} - ${params.gptName}`,
   );
 }
 
@@ -432,7 +442,7 @@ export async function logSessionEvent(
 /**
  * Log multiple events in a single transaction (best effort)
  * Useful for logging related events together
- * 
+ *
  * @example
  * await batchLog([
  *   () => logIngredientSubmission({...}),
@@ -441,12 +451,12 @@ export async function logSessionEvent(
  * ]);
  */
 export async function batchLog(
-  logFunctions: Array<() => Promise<void>>
+  logFunctions: Array<() => Promise<void>>,
 ): Promise<void> {
   try {
-    await Promise.all(logFunctions.map(fn => fn()));
+    await Promise.all(logFunctions.map((fn) => fn()));
   } catch (error) {
-    console.error('[Analytics] Batch logging failed:', error);
+    console.error("[Analytics] Batch logging failed:", error);
   }
 }
 
@@ -456,7 +466,7 @@ export async function batchLog(
 
 /**
  * Get user activity summary
- * 
+ *
  * @example
  * const summary = await getUserSummary('user-123');
  * console.log(`User has generated ${summary.total_recipes_generated} recipes`);
@@ -465,16 +475,16 @@ export async function getUserSummary(userId: string) {
   try {
     const client = getAnalyticsClient();
     const { data, error } = await client
-      .rpc('analytics.get_user_summary', { p_user_id: userId });
-    
+      .rpc("analytics.get_user_summary", { p_user_id: userId });
+
     if (error) {
-      console.error('[Analytics] Failed to get user summary:', error);
+      console.error("[Analytics] Failed to get user summary:", error);
       return null;
     }
-    
+
     return data;
   } catch (error) {
-    console.error('[Analytics] Exception in getUserSummary:', error);
+    console.error("[Analytics] Exception in getUserSummary:", error);
     return null;
   }
 }
@@ -482,22 +492,22 @@ export async function getUserSummary(userId: string) {
 /**
  * Refresh all materialized views
  * Should be called periodically (e.g., daily via cron)
- * 
+ *
  * @example
  * await refreshAnalyticsViews();
  */
 export async function refreshAnalyticsViews(): Promise<void> {
   try {
     const client = getAnalyticsClient();
-    const { error } = await client.rpc('analytics.refresh_all_views');
-    
+    const { error } = await client.rpc("analytics.refresh_all_views");
+
     if (error) {
-      console.error('[Analytics] Failed to refresh views:', error);
+      console.error("[Analytics] Failed to refresh views:", error);
     } else {
-      console.log('[Analytics] Successfully refreshed all materialized views');
+      console.log("[Analytics] Successfully refreshed all materialized views");
     }
   } catch (error) {
-    console.error('[Analytics] Exception in refreshAnalyticsViews:', error);
+    console.error("[Analytics] Exception in refreshAnalyticsViews:", error);
   }
 }
 

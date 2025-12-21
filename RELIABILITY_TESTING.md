@@ -1,6 +1,7 @@
 # Reliability Layer Testing Guide
 
-This document describes how to test and validate the reliability layer implementation.
+This document describes how to test and validate the reliability layer
+implementation.
 
 ---
 
@@ -9,6 +10,7 @@ This document describes how to test and validate the reliability layer implement
 **Location:** `supabase/functions/_tests/reliability.test.ts`
 
 **Test Coverage:**
+
 - ✅ Timeout enforcement
 - ✅ Retry logic with exponential backoff
 - ✅ Error classification
@@ -60,6 +62,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/delivery_search_resta
 ```
 
 **Expected:**
+
 - ✅ Response within 8 seconds
 - ✅ If timeout, returns HTTP 200 with `{"success": false, "code": "TIMEOUT"}`
 
@@ -82,6 +85,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/delivery_search_resta
 ```
 
 **Expected:**
+
 - ✅ 3 attempts total (initial + 2 retries)
 - ✅ Exponential backoff delays (400ms, 800ms)
 - ✅ Structured logs show retry attempts
@@ -105,6 +109,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/delivery_place_order 
 ```
 
 **Expected:**
+
 - ✅ Only 1 attempt (no retries)
 - ✅ Timeout after 45 seconds if slow
 - ✅ No duplicate orders created
@@ -115,16 +120,16 @@ curl -X POST https://your-project.supabase.co/functions/v1/delivery_place_order 
 
 **Test various error scenarios:**
 
-| Scenario | Expected Error Code | Retryable |
-|----------|---------------------|-----------|
-| Timeout (8s) | `TIMEOUT` | ✅ Yes |
-| Network failure | `NETWORK_ERROR` | ✅ Yes |
-| 400 Bad Request | `UPSTREAM_4XX` | ❌ No |
-| 404 Not Found | `UPSTREAM_4XX` | ❌ No |
-| 500 Internal Error | `UPSTREAM_5XX` | ✅ Yes |
-| 503 Service Unavailable | `UPSTREAM_5XX` | ✅ Yes |
-| Missing required field | `VALIDATION_ERROR` | ❌ No |
-| Unknown error | `UNKNOWN` | ❌ No |
+| Scenario                | Expected Error Code | Retryable |
+| ----------------------- | ------------------- | --------- |
+| Timeout (8s)            | `TIMEOUT`           | ✅ Yes    |
+| Network failure         | `NETWORK_ERROR`     | ✅ Yes    |
+| 400 Bad Request         | `UPSTREAM_4XX`      | ❌ No     |
+| 404 Not Found           | `UPSTREAM_4XX`      | ❌ No     |
+| 500 Internal Error      | `UPSTREAM_5XX`      | ✅ Yes    |
+| 503 Service Unavailable | `UPSTREAM_5XX`      | ✅ Yes    |
+| Missing required field  | `VALIDATION_ERROR`  | ❌ No     |
+| Unknown error           | `UNKNOWN`           | ❌ No     |
 
 ---
 
@@ -163,6 +168,7 @@ supabase functions logs delivery_search_restaurants
 **All responses should use standardized envelope:**
 
 **Success:**
+
 ```json
 {
   "success": true,
@@ -174,6 +180,7 @@ supabase functions logs delivery_search_restaurants
 ```
 
 **Error:**
+
 ```json
 {
   "success": false,
@@ -197,11 +204,11 @@ supabase functions logs delivery_search_restaurants
 
 ### Expected Latencies (P95)
 
-| Tool | Without Reliability | With Reliability | Overhead |
-|------|---------------------|------------------|----------|
-| `delivery_search_restaurants` | 2.5s | 2.7s | +8% |
-| `delivery_place_order` | 12s | 12.2s | +1.6% |
-| `grocery.list` | 3.5s | 3.6s | +2.8% |
+| Tool                          | Without Reliability | With Reliability | Overhead |
+| ----------------------------- | ------------------- | ---------------- | -------- |
+| `delivery_search_restaurants` | 2.5s                | 2.7s             | +8%      |
+| `delivery_place_order`        | 12s                 | 12.2s            | +1.6%    |
+| `grocery.list`                | 3.5s                | 3.6s             | +2.8%    |
 
 **Overhead is acceptable for the reliability benefits.**
 
@@ -222,6 +229,7 @@ Deno.test("test name", async () => {
 ### Issue: Retries not working
 
 **Debug checklist:**
+
 1. Check `retryOnCodes` configuration
 2. Verify error classification is correct
 3. Check structured logs for retry attempts
@@ -254,20 +262,20 @@ supabase functions logs <function-name> --json
 
 ## 📝 Test Results Log
 
-**Date:** 2025-12-06  
-**Tester:** [Your Name]  
+**Date:** 2025-12-06\
+**Tester:** [Your Name]\
 **Environment:** Production / Staging / Local
 
-| Test Case | Status | Notes |
-|-----------|--------|-------|
-| Timeout enforcement | ⏳ Pending | |
-| Retry on 5xx | ⏳ Pending | |
-| No retry on 4xx | ⏳ Pending | |
-| No retry on write ops | ⏳ Pending | |
-| Error classification | ⏳ Pending | |
-| Structured logging | ⏳ Pending | |
-| Response envelope | ⏳ Pending | |
-| Performance overhead | ⏳ Pending | |
+| Test Case             | Status     | Notes |
+| --------------------- | ---------- | ----- |
+| Timeout enforcement   | ⏳ Pending |       |
+| Retry on 5xx          | ⏳ Pending |       |
+| No retry on 4xx       | ⏳ Pending |       |
+| No retry on write ops | ⏳ Pending |       |
+| Error classification  | ⏳ Pending |       |
+| Structured logging    | ⏳ Pending |       |
+| Response envelope     | ⏳ Pending |       |
+| Performance overhead  | ⏳ Pending |       |
 
 ---
 
@@ -281,4 +289,5 @@ supabase functions logs <function-name> --json
 
 ---
 
-**Questions?** Contact the backend team or check `RELIABILITY_IMPLEMENTATION.md` for implementation details.
+**Questions?** Contact the backend team or check `RELIABILITY_IMPLEMENTATION.md`
+for implementation details.

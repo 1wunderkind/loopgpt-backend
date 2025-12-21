@@ -1,6 +1,7 @@
 # TheLoopGPT Tool Taxonomy Mapping (v1 → v2)
 
-This document maps the existing 27 tools to the new 7-cluster taxonomy with intent-based naming.
+This document maps the existing 27 tools to the new 7-cluster taxonomy with
+intent-based naming.
 
 ---
 
@@ -8,20 +9,22 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 - **Total v1 tools:** 27
 - **Total v2 tools:** 30 (27 renamed + 3 new support tools)
-- **Deprecated tools:** 1 (`tracker_set_goals` → merged into `user_set_weight_goal`)
-- **New tools:** 3 (`sys_get_help`, `sys_healthcheck`, `sys_debug_tool_choice_log`)
+- **Deprecated tools:** 1 (`tracker_set_goals` → merged into
+  `user_set_weight_goal`)
+- **New tools:** 3 (`sys_get_help`, `sys_healthcheck`,
+  `sys_debug_tool_choice_log`)
 
 ---
 
 ## 🔄 **Cluster 1: User Profile & Goals** (`user_*`)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| `get_weight_prefs` | `user_get_profile` | RENAME | Expanded to include all preferences |
-| `tracker_set_goals` | `user_set_weight_goal` | RENAME | Primary goal-setting tool |
-| `update_weight_prefs` | `user_update_diet_preferences` | RENAME | Diet tags + allergies |
-| — | `user_get_goals` | NEW | Read-only goal retrieval |
-| — | `user_reset_profile` | NEW | Fresh start functionality |
+| Old Name              | New Name                       | Status | Notes                               |
+| --------------------- | ------------------------------ | ------ | ----------------------------------- |
+| `get_weight_prefs`    | `user_get_profile`             | RENAME | Expanded to include all preferences |
+| `tracker_set_goals`   | `user_set_weight_goal`         | RENAME | Primary goal-setting tool           |
+| `update_weight_prefs` | `user_update_diet_preferences` | RENAME | Diet tags + allergies               |
+| —                     | `user_get_goals`               | NEW    | Read-only goal retrieval            |
+| —                     | `user_reset_profile`           | NEW    | Fresh start functionality           |
 
 **Total:** 5 tools
 
@@ -29,13 +32,13 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ## 🔄 **Cluster 2: Meal Planning** (`plan_*`)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| `generate_week_plan` | `plan_create_meal_plan` | RENAME | Primary plan generator |
+| Old Name                  | New Name                       | Status | Notes                        |
+| ------------------------- | ------------------------------ | ------ | ---------------------------- |
+| `generate_week_plan`      | `plan_create_meal_plan`        | RENAME | Primary plan generator       |
 | `recipes_creative_recipe` | `plan_generate_from_leftovers` | RENAME | Leftover-based meal creation |
-| — | `plan_random_meal` | NEW | Quick meal suggestions |
-| — | `plan_customize_meal_plan` | NEW | Edit existing plans |
-| `log_meal_plan` | `plan_get_active_plan` | RENAME | Retrieve current plan |
+| —                         | `plan_random_meal`             | NEW    | Quick meal suggestions       |
+| —                         | `plan_customize_meal_plan`     | NEW    | Edit existing plans          |
+| `log_meal_plan`           | `plan_get_active_plan`         | RENAME | Retrieve current plan        |
 
 **Total:** 5 tools
 
@@ -43,12 +46,12 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ## 🔄 **Cluster 3: Nutrition Analysis** (`nutrition_*`)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| `nutrition_analyze` | `nutrition_analyze_food` | RENAME | Primary analysis tool |
-| `normalize_ingredients` | `nutrition_get_macros` | RENAME | Macro summarization |
-| — | `nutrition_compare_foods` | NEW | Food comparison |
-| — | `nutrition_get_recommendations` | NEW | Nutrient-based discovery |
+| Old Name                | New Name                        | Status | Notes                    |
+| ----------------------- | ------------------------------- | ------ | ------------------------ |
+| `nutrition_analyze`     | `nutrition_analyze_food`        | RENAME | Primary analysis tool    |
+| `normalize_ingredients` | `nutrition_get_macros`          | RENAME | Macro summarization      |
+| —                       | `nutrition_compare_foods`       | NEW    | Food comparison          |
+| —                       | `nutrition_get_recommendations` | NEW    | Nutrient-based discovery |
 
 **Total:** 4 tools
 
@@ -56,14 +59,14 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ## 🔄 **Cluster 4: Tracking & Progress** (`tracker_*`)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| `tracker_log_food` | `tracker_log_meal` | RENAME | Meal logging |
-| `log_weight` | `tracker_log_weight` | RENAME | Weight logging |
-| `weekly_trend` | `tracker_get_progress` | RENAME | Historical trends |
-| `tracker_get_daily_summary` | `tracker_summary` | RENAME | Period summaries |
-| `tracker_quick_add_calories` | — | DEPRECATE | Merged into tracker_log_meal |
-| `tracker_set_goals` | — | DEPRECATE | Moved to user_set_weight_goal |
+| Old Name                     | New Name               | Status    | Notes                         |
+| ---------------------------- | ---------------------- | --------- | ----------------------------- |
+| `tracker_log_food`           | `tracker_log_meal`     | RENAME    | Meal logging                  |
+| `log_weight`                 | `tracker_log_weight`   | RENAME    | Weight logging                |
+| `weekly_trend`               | `tracker_get_progress` | RENAME    | Historical trends             |
+| `tracker_get_daily_summary`  | `tracker_summary`      | RENAME    | Period summaries              |
+| `tracker_quick_add_calories` | —                      | DEPRECATE | Merged into tracker_log_meal  |
+| `tracker_set_goals`          | —                      | DEPRECATE | Moved to user_set_weight_goal |
 
 **Total:** 4 tools (2 deprecated)
 
@@ -71,13 +74,13 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ## 🔄 **Cluster 5: Feedback Loop** (`loop_*`)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| `evaluate_plan_outcome` | `loop_evaluate_plan` | RENAME | Plan vs actual comparison |
-| `push_plan_feedback` | `loop_adjust_calories` | RENAME | Calorie adjustment |
-| — | `loop_generate_feedback_report` | NEW | Narrative feedback |
-| — | `loop_predict_outcome` | NEW | Future forecasting |
-| — | `loop_reset_cycle` | NEW | Weekly cycle reset |
+| Old Name                | New Name                        | Status | Notes                     |
+| ----------------------- | ------------------------------- | ------ | ------------------------- |
+| `evaluate_plan_outcome` | `loop_evaluate_plan`            | RENAME | Plan vs actual comparison |
+| `push_plan_feedback`    | `loop_adjust_calories`          | RENAME | Calorie adjustment        |
+| —                       | `loop_generate_feedback_report` | NEW    | Narrative feedback        |
+| —                       | `loop_predict_outcome`          | NEW    | Future forecasting        |
+| —                       | `loop_reset_cycle`              | NEW    | Weekly cycle reset        |
 
 **Total:** 5 tools
 
@@ -85,21 +88,21 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ## 🔄 **Cluster 6: Delivery & Integrations** (`delivery_*`)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| `mealme_search` | `delivery_search_restaurants` | RENAME | Restaurant search |
-| `get_delivery_recommendations` | `delivery_get_menu` | RENAME | Menu retrieval |
-| `mealme_order_plan` | `delivery_place_order` | RENAME | Order placement |
-| `mealme_checkout_url` | — | DEPRECATE | Merged into delivery_place_order |
-| `mealme_create_cart` | — | DEPRECATE | Internal helper |
-| `mealme_get_quotes` | — | DEPRECATE | Internal helper |
-| `mealme_webhook` | — | KEEP | Webhook handler (not MCP tool) |
-| — | `delivery_track_order` | NEW | Order tracking |
-| `get_affiliate_links` | — | KEEP | Grocery affiliate links |
-| `get_affiliate_by_country` | — | KEEP | Country-specific affiliates |
-| `get_user_location` | — | KEEP | Location helper |
-| `update_user_location` | — | KEEP | Location update |
-| `change_location` | — | KEEP | Location change |
+| Old Name                       | New Name                      | Status    | Notes                            |
+| ------------------------------ | ----------------------------- | --------- | -------------------------------- |
+| `mealme_search`                | `delivery_search_restaurants` | RENAME    | Restaurant search                |
+| `get_delivery_recommendations` | `delivery_get_menu`           | RENAME    | Menu retrieval                   |
+| `mealme_order_plan`            | `delivery_place_order`        | RENAME    | Order placement                  |
+| `mealme_checkout_url`          | —                             | DEPRECATE | Merged into delivery_place_order |
+| `mealme_create_cart`           | —                             | DEPRECATE | Internal helper                  |
+| `mealme_get_quotes`            | —                             | DEPRECATE | Internal helper                  |
+| `mealme_webhook`               | —                             | KEEP      | Webhook handler (not MCP tool)   |
+| —                              | `delivery_track_order`        | NEW       | Order tracking                   |
+| `get_affiliate_links`          | —                             | KEEP      | Grocery affiliate links          |
+| `get_affiliate_by_country`     | —                             | KEEP      | Country-specific affiliates      |
+| `get_user_location`            | —                             | KEEP      | Location helper                  |
+| `update_user_location`         | —                             | KEEP      | Location update                  |
+| `change_location`              | —                             | KEEP      | Location change                  |
 
 **Total:** 4 tools (3 deprecated, 5 kept as-is)
 
@@ -107,11 +110,11 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ## 🔄 **Cluster 7: System & Support** (`sys_*`)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| — | `sys_get_help` | NEW | Tool list + examples |
-| — | `sys_healthcheck` | NEW | System status |
-| — | `sys_debug_tool_choice_log` | NEW | Routing debug logs |
+| Old Name | New Name                    | Status | Notes                |
+| -------- | --------------------------- | ------ | -------------------- |
+| —        | `sys_get_help`              | NEW    | Tool list + examples |
+| —        | `sys_healthcheck`           | NEW    | System status        |
+| —        | `sys_debug_tool_choice_log` | NEW    | Routing debug logs   |
 
 **Total:** 3 tools (all new)
 
@@ -119,14 +122,14 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ## 🔄 **Billing & Premium** (Keep as-is)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| `upgrade_to_premium` | `upgrade_to_premium` | KEEP | Premium upgrade |
-| `check_entitlement` | `check_entitlement` | KEEP | Entitlement check |
-| `create_checkout_session` | `create_checkout_session` | KEEP | Stripe checkout |
-| `create_customer_portal` | `create_customer_portal` | KEEP | Billing portal |
-| `stripe_webhook` | `stripe_webhook` | KEEP | Webhook handler |
-| `trial_reminder` | `trial_reminder` | KEEP | Cron job |
+| Old Name                  | New Name                  | Status | Notes             |
+| ------------------------- | ------------------------- | ------ | ----------------- |
+| `upgrade_to_premium`      | `upgrade_to_premium`      | KEEP   | Premium upgrade   |
+| `check_entitlement`       | `check_entitlement`       | KEEP   | Entitlement check |
+| `create_checkout_session` | `create_checkout_session` | KEEP   | Stripe checkout   |
+| `create_customer_portal`  | `create_customer_portal`  | KEEP   | Billing portal    |
+| `stripe_webhook`          | `stripe_webhook`          | KEEP   | Webhook handler   |
+| `trial_reminder`          | `trial_reminder`          | KEEP   | Cron job          |
 
 **Total:** 6 tools (not part of MCP manifest - internal)
 
@@ -134,10 +137,10 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ## 🔄 **Food Search** (Keep as-is)
 
-| Old Name | New Name | Status | Notes |
-|----------|----------|--------|-------|
-| `food_search` | `food_search` | KEEP | Autocomplete API |
-| `metrics_food_resolver` | `metrics_food_resolver` | KEEP | Metrics endpoint |
+| Old Name                | New Name                | Status | Notes            |
+| ----------------------- | ----------------------- | ------ | ---------------- |
+| `food_search`           | `food_search`           | KEEP   | Autocomplete API |
+| `metrics_food_resolver` | `metrics_food_resolver` | KEEP   | Metrics endpoint |
 
 **Total:** 2 tools (not part of MCP manifest - internal)
 
@@ -146,6 +149,7 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 ## 📋 **Implementation Checklist**
 
 ### **Phase 1: Rename Edge Functions**
+
 - [ ] user_get_profile (was get_weight_prefs)
 - [ ] user_set_weight_goal (was tracker_set_goals)
 - [ ] user_update_diet_preferences (was update_weight_prefs)
@@ -165,6 +169,7 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 - [ ] delivery_place_order (was mealme_order_plan)
 
 ### **Phase 2: Create New Tools**
+
 - [ ] user_get_goals
 - [ ] user_reset_profile
 - [ ] plan_random_meal
@@ -180,6 +185,7 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 - [ ] sys_debug_tool_choice_log
 
 ### **Phase 3: Add Deprecated Aliases**
+
 - [ ] tracker_set_goals → user_set_weight_goal
 - [ ] tracker_quick_add_calories → tracker_log_meal
 - [ ] mealme_checkout_url → delivery_place_order
@@ -187,12 +193,14 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 - [ ] mealme_get_quotes → (internal, remove)
 
 ### **Phase 4: Update Manifest**
+
 - [ ] Create manifest.json v2
 - [ ] Add all 30 tools with intent-first descriptions
 - [ ] Add deprecated aliases with redirect_to
 - [ ] Update version to 2.0.0
 
 ### **Phase 5: Update MCP Server**
+
 - [ ] Add redirect logic for deprecated tools
 - [ ] Update routing to new tool names
 - [ ] Add logging for deprecated calls
@@ -210,7 +218,5 @@ This document maps the existing 27 tools to the new 7-cluster taxonomy with inte
 
 ---
 
-**Status:** Ready for implementation
-**Branch:** `feature/manifest-v2`
-**Target Release:** v2.0.0
-
+**Status:** Ready for implementation **Branch:** `feature/manifest-v2` **Target
+Release:** v2.0.0

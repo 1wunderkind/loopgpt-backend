@@ -3,16 +3,16 @@
  * Utilities for integration testing
  */
 
-import { assertEquals, assertExists, assert } from "../helpers.ts";
+import { assert, assertEquals, assertExists } from "../helpers.ts";
 
-export { assertEquals, assertExists, assert };
+export { assert, assertEquals, assertExists };
 
 /**
  * Test Supabase client (mock for now)
  */
 export function createTestSupabaseClient() {
-  const supabaseUrl = Deno.env.get('SUPABASE_URL') || 'http://localhost:54321';
-  const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') || 'test-key';
+  const supabaseUrl = Deno.env.get("SUPABASE_URL") || "http://localhost:54321";
+  const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY") || "test-key";
 
   return {
     url: supabaseUrl,
@@ -30,13 +30,13 @@ export async function callEdgeFunction(
     method?: string;
     body?: any;
     headers?: Record<string, string>;
-  } = {}
+  } = {},
 ): Promise<Response> {
-  const baseUrl = Deno.env.get('SUPABASE_URL') || 'http://localhost:54321';
+  const baseUrl = Deno.env.get("SUPABASE_URL") || "http://localhost:54321";
   const url = `${baseUrl}/functions/v1/${functionName}`;
 
   const {
-    method = 'POST',
+    method = "POST",
     body,
     headers = {},
   } = options;
@@ -44,7 +44,7 @@ export async function callEdgeFunction(
   return await fetch(url, {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,
@@ -65,7 +65,7 @@ export async function parseResponse<T = any>(response: Response): Promise<T> {
 export async function assertSuccess(response: Response): Promise<void> {
   assert(
     response.status >= 200 && response.status < 300,
-    `Expected success status, got ${response.status}: ${await response.text()}`
+    `Expected success status, got ${response.status}: ${await response.text()}`,
   );
 }
 
@@ -74,14 +74,14 @@ export async function assertSuccess(response: Response): Promise<void> {
  */
 export async function assertError(
   response: Response,
-  expectedStatus?: number
+  expectedStatus?: number,
 ): Promise<void> {
   if (expectedStatus) {
     assertEquals(response.status, expectedStatus);
   } else {
     assert(
       response.status >= 400,
-      `Expected error status, got ${response.status}`
+      `Expected error status, got ${response.status}`,
     );
   }
 }
@@ -94,7 +94,7 @@ export async function waitFor(
   options: {
     timeout?: number;
     interval?: number;
-  } = {}
+  } = {},
 ): Promise<void> {
   const { timeout = 5000, interval = 100 } = options;
   const startTime = Date.now();
@@ -103,10 +103,10 @@ export async function waitFor(
     if (await condition()) {
       return;
     }
-    await new Promise(resolve => setTimeout(resolve, interval));
+    await new Promise((resolve) => setTimeout(resolve, interval));
   }
 
-  throw new Error('Timeout waiting for condition');
+  throw new Error("Timeout waiting for condition");
 }
 
 /**
@@ -114,7 +114,7 @@ export async function waitFor(
  */
 export async function cleanupTestData(
   tableName: string,
-  condition: Record<string, any>
+  condition: Record<string, any>,
 ): Promise<void> {
   // In production, use actual Supabase client to delete test data
   console.log(`Cleanup: DELETE FROM ${tableName} WHERE`, condition);
@@ -127,7 +127,7 @@ export function createTestUser() {
   return {
     id: `test_user_${Date.now()}_${Math.random().toString(36).substring(7)}`,
     email: `test_${Date.now()}@example.com`,
-    name: 'Test User',
+    name: "Test User",
   };
 }
 
@@ -135,7 +135,7 @@ export function createTestUser() {
  * Measure response time
  */
 export async function measureResponseTime(
-  fn: () => Promise<Response>
+  fn: () => Promise<Response>,
 ): Promise<{ response: Response; duration: number }> {
   const start = Date.now();
   const response = await fn();

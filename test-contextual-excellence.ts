@@ -1,6 +1,6 @@
 /**
  * Test Suite for Contextual Excellence Enhancement
- * 
+ *
  * Tests vague query handling, missing info detection, low-effort mode, and profile integration
  */
 
@@ -76,19 +76,22 @@ const testCases: TestCase[] = [
 async function testFoodRouter(testCase: TestCase) {
   console.log(`\n🧪 Test: ${testCase.name}`);
   console.log(`   Query: "${testCase.query}"`);
-  
+
   try {
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/food.router`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/mcp-tools/tools/food.router`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          query: testCase.query,
+          userId: testCase.userId,
+        }),
       },
-      body: JSON.stringify({
-        query: testCase.query,
-        userId: testCase.userId,
-      }),
-    });
+    );
 
     const status = response.status;
     console.log(`   Status: ${status}`);
@@ -102,21 +105,25 @@ async function testFoodRouter(testCase: TestCase) {
     const result = await response.json();
     console.log(`   Intent: ${result.type}`);
     console.log(`   Confidence: ${result.confidence}`);
-    
+
     // Check if intent matches
     if (result.type !== testCase.expectedIntent) {
-      console.log(`   ❌ Expected intent: ${testCase.expectedIntent}, got: ${result.type}`);
+      console.log(
+        `   ❌ Expected intent: ${testCase.expectedIntent}, got: ${result.type}`,
+      );
       return false;
     }
 
     // Check result structure
     if (result.type === "recipes" && result.recipes) {
-      const recipes = Array.isArray(result.recipes) ? result.recipes : result.recipes.recipes || [];
+      const recipes = Array.isArray(result.recipes)
+        ? result.recipes
+        : result.recipes.recipes || [];
       console.log(`   ✅ Generated ${recipes.length} recipes`);
-      
+
       // Check for low-effort tags
       if (testCase.shouldTriggerLowEffort) {
-        const hasLowEffortTags = recipes.some((r: any) => 
+        const hasLowEffortTags = recipes.some((r: any) =>
           r.tags?.includes("low_effort") || r.tags?.includes("quick")
         );
         if (hasLowEffortTags) {
@@ -132,7 +139,6 @@ async function testFoodRouter(testCase: TestCase) {
 
     console.log(`   ✅ Test passed`);
     return true;
-
   } catch (error: any) {
     console.log(`   ❌ Exception: ${error.message}`);
     return false;
@@ -142,20 +148,23 @@ async function testFoodRouter(testCase: TestCase) {
 async function testIntentClassification(testCase: TestCase) {
   console.log(`\n🔍 Intent Test: ${testCase.name}`);
   console.log(`   Query: "${testCase.query}"`);
-  
+
   try {
     // We'll test this by calling the router and checking logs
     // In production, you'd call classifyFoodIntent directly
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/food.router`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/mcp-tools/tools/food.router`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          query: testCase.query,
+        }),
       },
-      body: JSON.stringify({
-        query: testCase.query,
-      }),
-    });
+    );
 
     if (response.status === 200) {
       const result = await response.json();
@@ -167,7 +176,6 @@ async function testIntentClassification(testCase: TestCase) {
       console.log(`   ❌ Failed with status ${response.status}`);
       return false;
     }
-
   } catch (error: any) {
     console.log(`   ❌ Exception: ${error.message}`);
     return false;
@@ -176,25 +184,28 @@ async function testIntentClassification(testCase: TestCase) {
 
 async function testWithUserProfile() {
   console.log(`\n👤 Test: Profile-based vague query`);
-  
+
   const testUserId = `test_user_${Date.now()}`;
-  
+
   try {
     // Step 1: Create user profile
     console.log(`   Creating profile for ${testUserId}...`);
-    const profileResponse = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/user.updatePreferences`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+    const profileResponse = await fetch(
+      `${SUPABASE_URL}/functions/v1/mcp-tools/tools/user.updatePreferences`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          userId: testUserId,
+          dietTags: ["vegan"],
+          cuisines: ["Italian"],
+          caloriesPerDay: 1800,
+        }),
       },
-      body: JSON.stringify({
-        userId: testUserId,
-        dietTags: ["vegan"],
-        cuisines: ["Italian"],
-        caloriesPerDay: 1800,
-      }),
-    });
+    );
 
     if (profileResponse.status !== 200) {
       console.log(`   ❌ Failed to create profile`);
@@ -205,17 +216,20 @@ async function testWithUserProfile() {
 
     // Step 2: Test vague query with profile
     console.log(`   Testing vague query with profile...`);
-    const routerResponse = await fetch(`${SUPABASE_URL}/functions/v1/mcp-tools/tools/theloopgpt.food.router`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+    const routerResponse = await fetch(
+      `${SUPABASE_URL}/functions/v1/mcp-tools/tools/theloopgpt.food.router`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          query: "What should I eat tonight?",
+          userId: testUserId,
+        }),
       },
-      body: JSON.stringify({
-        query: "What should I eat tonight?",
-        userId: testUserId,
-      }),
-    });
+    );
 
     if (routerResponse.status !== 200) {
       console.log(`   ❌ Router failed`);
@@ -225,9 +239,8 @@ async function testWithUserProfile() {
     const result = await routerResponse.json();
     console.log(`   ✅ Router used profile data`);
     console.log(`   Generated: ${result.type}`);
-    
-    return true;
 
+    return true;
   } catch (error: any) {
     console.log(`   ❌ Exception: ${error.message}`);
     return false;
@@ -237,15 +250,15 @@ async function testWithUserProfile() {
 // Main test runner
 async function runTests() {
   console.log("🚀 Testing Contextual Excellence Enhancement\n");
-  console.log("=" .repeat(60));
+  console.log("=".repeat(60));
 
   let passed = 0;
   let failed = 0;
 
   // Test 1: Intent classification with missing info detection
   console.log("\n📋 PHASE 1: Intent Classification Tests");
-  console.log("=" .repeat(60));
-  
+  console.log("=".repeat(60));
+
   for (const testCase of testCases.slice(0, 4)) {
     const result = await testIntentClassification(testCase);
     if (result) passed++;
@@ -254,8 +267,8 @@ async function runTests() {
 
   // Test 2: Router with vague queries
   console.log("\n📋 PHASE 2: Router Vague Query Tests");
-  console.log("=" .repeat(60));
-  
+  console.log("=".repeat(60));
+
   for (const testCase of testCases) {
     const result = await testFoodRouter(testCase);
     if (result) passed++;
@@ -264,8 +277,8 @@ async function runTests() {
 
   // Test 3: Profile integration
   console.log("\n📋 PHASE 3: Profile Integration Test");
-  console.log("=" .repeat(60));
-  
+  console.log("=".repeat(60));
+
   const profileResult = await testWithUserProfile();
   if (profileResult) passed++;
   else failed++;
@@ -276,8 +289,10 @@ async function runTests() {
   console.log("=".repeat(60));
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
-  console.log(`📈 Success Rate: ${Math.round((passed / (passed + failed)) * 100)}%`);
-  
+  console.log(
+    `📈 Success Rate: ${Math.round((passed / (passed + failed)) * 100)}%`,
+  );
+
   if (failed === 0) {
     console.log("\n🎉 All tests passed! Contextual Excellence is working!");
   } else {

@@ -4,18 +4,21 @@
  */
 
 import type {
-  ProviderQuote,
-  ProviderConfig,
   CartItem,
   ItemAvailability,
+  ProviderConfig,
   ProviderMeta,
-} from '../types/index.ts';
-import { BaseCommerceProvider, type QuoteRequest } from './ICommerceProvider.ts';
-import { ProviderError, ProviderTimeoutError } from '../types/index.ts';
+  ProviderQuote,
+} from "../types/index.ts";
+import {
+  BaseCommerceProvider,
+  type QuoteRequest,
+} from "./ICommerceProvider.ts";
+import { ProviderError, ProviderTimeoutError } from "../types/index.ts";
 
 /**
  * MealMeProvider - Integrates with MealMe MCP for restaurant and grocery delivery
- * 
+ *
  * Features:
  * - Restaurant delivery from 1M+ restaurants
  * - Grocery delivery via MealMe partners
@@ -23,12 +26,15 @@ import { ProviderError, ProviderTimeoutError } from '../types/index.ts';
  * - Affiliate tracking
  */
 class MealMeProvider extends BaseCommerceProvider {
-  readonly id = 'MEALME' as const;
+  readonly id = "MEALME" as const;
 
-  async getQuote(request: QuoteRequest, config: ProviderConfig): Promise<ProviderQuote> {
+  async getQuote(
+    request: QuoteRequest,
+    config: ProviderConfig,
+  ): Promise<ProviderQuote> {
     // TODO: Replace with real MealMe MCP integration
     // For now, return deterministic mock data
-    
+
     const providerMeta: ProviderMeta = {
       id: this.id,
       name: config.name,
@@ -41,22 +47,28 @@ class MealMeProvider extends BaseCommerceProvider {
       providerSku: this.generateMockSku(this.id, item.name, idx),
       name: item.name,
       quantity: item.quantity,
-      unit: item.unit || 'pcs',
+      unit: item.unit || "pcs",
       priceCents: this.dollarsToCents(12.99),
       substituted: false,
     }));
 
     // Mock pricing
-    const subtotalCents = cart.reduce((sum, item) => sum + (item.priceCents * item.quantity), 0);
+    const subtotalCents = cart.reduce(
+      (sum, item) => sum + (item.priceCents * item.quantity),
+      0,
+    );
     const feesCents = this.dollarsToCents(4.99);
     const taxCents = Math.round(subtotalCents * 0.08); // 8% tax
     const totalCents = subtotalCents + feesCents + taxCents;
 
     // Mock availability
-    const itemAvailability: ItemAvailability[] = request.items.map((item, idx) => ({
+    const itemAvailability: ItemAvailability[] = request.items.map((
+      item,
+      idx,
+    ) => ({
       clientItemId: item.id,
       requestedItem: item.name,
-      status: 'found' as const,
+      status: "found" as const,
       inStock: true,
       providerSku: cart[idx].providerSku,
       foundProduct: {
@@ -67,7 +79,8 @@ class MealMeProvider extends BaseCommerceProvider {
     }));
 
     // Mock affiliate URL
-    const affiliateUrl = `https://mealme.ai/checkout?cartId=mock-mealme-${Date.now()}&affId=LOOPGPT`;
+    const affiliateUrl =
+      `https://mealme.ai/checkout?cartId=mock-mealme-${Date.now()}&affId=LOOPGPT`;
 
     return {
       provider: providerMeta,
@@ -78,7 +91,7 @@ class MealMeProvider extends BaseCommerceProvider {
         feesCents,
         taxCents,
         totalCents,
-        currency: 'USD',
+        currency: "USD",
         estimatedDeliveryMinutes: 35, // 30-40 min average
         // Legacy fields for backward compatibility
         subtotal: this.centsToDollars(subtotalCents),
@@ -93,7 +106,7 @@ class MealMeProvider extends BaseCommerceProvider {
       itemAvailability,
       affiliateUrl,
       raw: {
-        provider: 'mealme',
+        provider: "mealme",
         mock: true,
         timestamp: new Date().toISOString(),
       },
@@ -106,7 +119,7 @@ class MealMeProvider extends BaseCommerceProvider {
   }
 
   getName(): string {
-    return 'MealMe MCP';
+    return "MealMe MCP";
   }
 }
 

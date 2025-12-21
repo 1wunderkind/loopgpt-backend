@@ -1,9 +1,9 @@
 /**
  * Auto-generated Food Dictionary
- * 
+ *
  * Generated from: data/foods@v1.json (1,000 foods)
  * Generated at: 2025-12-14T16:37:08.270Z
- * 
+ *
  * DO NOT EDIT MANUALLY - Run scripts/generate-food-dictionary.ts to regenerate
  */
 
@@ -45,8 +45,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "animal fat bacon grease": {
@@ -64,8 +64,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "apple": {
@@ -83,9 +83,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "avocado": {
@@ -103,9 +103,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "bacon": {
@@ -155,9 +155,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "basil": {
@@ -175,8 +175,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "bbq sauce": {
@@ -226,14 +226,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "beverage instant breakfast powder chocolate not reconstituted": {
-    canonicalName: "beverage instant breakfast powder chocolate not reconstituted",
-    displayName: "Beverage Instant Breakfast Powder Chocolate Not Reconstituted",
+    canonicalName:
+      "beverage instant breakfast powder chocolate not reconstituted",
+    displayName:
+      "Beverage Instant Breakfast Powder Chocolate Not Reconstituted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -246,15 +248,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "beverage instant breakfast powder chocolate sugar-free not reconstituted": {
-    canonicalName: "beverage instant breakfast powder chocolate sugar-free not reconstituted",
-    displayName: "Beverage Instant Breakfast Powder Chocolate Sugar-free Not Reconstituted",
+    canonicalName:
+      "beverage instant breakfast powder chocolate sugar-free not reconstituted",
+    displayName:
+      "Beverage Instant Breakfast Powder Chocolate Sugar-free Not Reconstituted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -267,10 +271,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "blueberries": {
@@ -288,9 +292,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "broccoli": {
@@ -308,9 +312,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "brown rice": {
@@ -376,9 +380,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "butter clarified butter ghee": {
@@ -396,10 +400,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "butter light stick with salt": {
@@ -417,9 +421,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "butter light stick without salt": {
@@ -437,9 +441,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "butter oil anhydrous": {
@@ -457,10 +461,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "butter replacement without fat powder": {
@@ -478,9 +482,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "butter salted": {
@@ -498,10 +502,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "butter whipped with salt": {
@@ -519,10 +523,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "butter without salt": {
@@ -540,10 +544,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "caesar salad": {
@@ -561,9 +565,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "cake": {
@@ -597,9 +601,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "capers": {
@@ -617,8 +621,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "carrots": {
@@ -636,9 +640,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "cashews": {
@@ -656,8 +660,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "cauliflower": {
@@ -675,9 +679,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "cereal": {
@@ -711,10 +715,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese  queso fresco": {
@@ -732,10 +736,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese american cheddar imitation": {
@@ -753,10 +757,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese american nonfat or fat free": {
@@ -774,10 +778,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese blue": {
@@ -795,10 +799,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese brick": {
@@ -816,10 +820,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese brie": {
@@ -837,10 +841,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese camembert": {
@@ -858,10 +862,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese caraway": {
@@ -879,15 +883,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cheddar includes foods for usda's food distribution program": {
-    canonicalName: "cheese cheddar includes foods for usda's food distribution program",
-    displayName: "Cheese Cheddar Includes Foods For Usda's Food Distribution Program",
+    canonicalName:
+      "cheese cheddar includes foods for usda's food distribution program",
+    displayName:
+      "Cheese Cheddar Includes Foods For Usda's Food Distribution Program",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -900,10 +906,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cheddar nonfat or fat free": {
@@ -921,33 +927,36 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "cheese cheddar reduced fat includes foods for usda's food distribution program": {
-    canonicalName: "cheese cheddar reduced fat includes foods for usda's food distribution program",
-    displayName: "Cheese Cheddar Reduced Fat Includes Foods For Usda's Food Distribution Program",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 3.16,
-      protein_g: 0.27,
-      carbs_g: 0.03,
-      fat_g: 0.20,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "cheese cheddar reduced fat includes foods for usda's food distribution program":
+    {
+      canonicalName:
+        "cheese cheddar reduced fat includes foods for usda's food distribution program",
+      displayName:
+        "Cheese Cheddar Reduced Fat Includes Foods For Usda's Food Distribution Program",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 3.16,
+        protein_g: 0.27,
+        carbs_g: 0.03,
+        fat_g: 0.20,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "cheese cheddar sharp sliced": {
     canonicalName: "cheese cheddar sharp sliced",
     displayName: "Cheese Cheddar Sharp Sliced",
@@ -963,10 +972,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cheshire": {
@@ -984,10 +993,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese colby": {
@@ -1005,10 +1014,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage creamed large or small curd": {
@@ -1026,10 +1035,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage creamed with fruit": {
@@ -1047,10 +1056,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage lowfat 1% milkfat": {
@@ -1068,10 +1077,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage lowfat 1% milkfat lactose reduced": {
@@ -1089,10 +1098,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage lowfat 1% milkfat no sodium added": {
@@ -1110,10 +1119,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage lowfat 1% milkfat with vegetables": {
@@ -1131,10 +1140,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage lowfat 2% milkfat": {
@@ -1152,10 +1161,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage nonfat uncreamed dry large or small curd": {
@@ -1173,10 +1182,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cottage with vegetables": {
@@ -1194,10 +1203,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cream": {
@@ -1215,10 +1224,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cream fat free": {
@@ -1236,10 +1245,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese cream low fat": {
@@ -1257,10 +1266,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese dry white queso seco": {
@@ -1278,10 +1287,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese edam": {
@@ -1299,10 +1308,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese feta": {
@@ -1320,10 +1329,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese fontina": {
@@ -1341,10 +1350,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese food cold pack american": {
@@ -1362,14 +1371,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese food pasteurized process american vitamin d fortified": {
-    canonicalName: "cheese food pasteurized process american vitamin d fortified",
+    canonicalName:
+      "cheese food pasteurized process american vitamin d fortified",
     displayName: "Cheese Food Pasteurized Process American Vitamin D Fortified",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -1383,15 +1393,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese food pasteurized process american without added vitamin d": {
-    canonicalName: "cheese food pasteurized process american without added vitamin d",
-    displayName: "Cheese Food Pasteurized Process American Without Added Vitamin D",
+    canonicalName:
+      "cheese food pasteurized process american without added vitamin d",
+    displayName:
+      "Cheese Food Pasteurized Process American Without Added Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -1404,10 +1416,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese food pasteurized process swiss": {
@@ -1425,10 +1437,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese gjetost": {
@@ -1446,10 +1458,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese goat hard type": {
@@ -1467,10 +1479,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese goat semisoft type": {
@@ -1488,10 +1500,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese goat soft type": {
@@ -1509,10 +1521,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese gouda": {
@@ -1530,10 +1542,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese gruyere": {
@@ -1551,10 +1563,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese limburger": {
@@ -1572,10 +1584,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese low fat cheddar or colby": {
@@ -1593,10 +1605,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese low-sodium cheddar or colby": {
@@ -1614,10 +1626,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mexican blend": {
@@ -1635,10 +1647,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mexican blend reduced fat": {
@@ -1656,10 +1668,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mexican queso anejo": {
@@ -1677,10 +1689,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mexican queso asadero": {
@@ -1698,10 +1710,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mexican queso chihuahua": {
@@ -1719,10 +1731,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mexican queso cotija": {
@@ -1740,10 +1752,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese monterey": {
@@ -1761,10 +1773,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese monterey low fat": {
@@ -1782,10 +1794,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mozzarella low moisture part-skim": {
@@ -1803,10 +1815,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mozzarella low moisture part-skim shredded": {
@@ -1824,10 +1836,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mozzarella low sodium": {
@@ -1845,10 +1857,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mozzarella nonfat": {
@@ -1866,10 +1878,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mozzarella part skim milk": {
@@ -1887,10 +1899,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mozzarella whole milk": {
@@ -1908,10 +1920,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese mozzarella whole milk low moisture": {
@@ -1929,10 +1941,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese muenster": {
@@ -1950,10 +1962,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese muenster low fat": {
@@ -1971,10 +1983,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese neufchatel": {
@@ -1992,10 +2004,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese parmesan dry grated reduced fat": {
@@ -2013,10 +2025,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese parmesan grated": {
@@ -2034,10 +2046,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese parmesan hard": {
@@ -2055,10 +2067,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese parmesan low sodium": {
@@ -2076,10 +2088,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese parmesan shredded": {
@@ -2097,14 +2109,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese pasteurized process american fortified with vitamin d": {
-    canonicalName: "cheese pasteurized process american fortified with vitamin d",
+    canonicalName:
+      "cheese pasteurized process american fortified with vitamin d",
     displayName: "Cheese Pasteurized Process American Fortified With Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -2118,10 +2131,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese pasteurized process american low fat": {
@@ -2139,14 +2152,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese pasteurized process american without added vitamin d": {
-    canonicalName: "cheese pasteurized process american without added vitamin d",
+    canonicalName:
+      "cheese pasteurized process american without added vitamin d",
     displayName: "Cheese Pasteurized Process American Without Added Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -2160,10 +2174,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese pasteurized process cheddar or american low sodium": {
@@ -2181,10 +2195,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese pasteurized process pimento": {
@@ -2202,10 +2216,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese pasteurized process swiss": {
@@ -2223,10 +2237,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese port de salut": {
@@ -2244,36 +2258,41 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "cheese product pasteurized process american reduced fat fortified with vitamin d": {
-    canonicalName: "cheese product pasteurized process american reduced fat fortified with vitamin d",
-    displayName: "Cheese Product Pasteurized Process American Reduced Fat Fortified With Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.40,
-      protein_g: 0.18,
-      carbs_g: 0.11,
-      fat_g: 0.14,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "cheese product pasteurized process american reduced fat fortified with vitamin d":
+    {
+      canonicalName:
+        "cheese product pasteurized process american reduced fat fortified with vitamin d",
+      displayName:
+        "Cheese Product Pasteurized Process American Reduced Fat Fortified With Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.40,
+        protein_g: 0.18,
+        carbs_g: 0.11,
+        fat_g: 0.14,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "cheese product pasteurized process american vitamin d fortified": {
-    canonicalName: "cheese product pasteurized process american vitamin d fortified",
-    displayName: "Cheese Product Pasteurized Process American Vitamin D Fortified",
+    canonicalName:
+      "cheese product pasteurized process american vitamin d fortified",
+    displayName:
+      "Cheese Product Pasteurized Process American Vitamin D Fortified",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -2286,10 +2305,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese provolone": {
@@ -2307,10 +2326,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese provolone reduced fat": {
@@ -2328,10 +2347,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese ricotta part skim milk": {
@@ -2349,10 +2368,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese ricotta whole milk": {
@@ -2370,10 +2389,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese romano": {
@@ -2391,10 +2410,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese roquefort": {
@@ -2412,10 +2431,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese sauce prepared from recipe": {
@@ -2433,10 +2452,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese spread american or cheddar cheese base reduced fat": {
@@ -2454,10 +2473,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese spread cream cheese base": {
@@ -2475,10 +2494,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese spread pasteurized process american": {
@@ -2496,10 +2515,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese substitute mozzarella": {
@@ -2517,10 +2536,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese swiss": {
@@ -2538,10 +2557,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese swiss low fat": {
@@ -2559,10 +2578,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese swiss low sodium": {
@@ -2580,10 +2599,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese swiss nonfat or fat free": {
@@ -2601,10 +2620,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese tilsit": {
@@ -2622,10 +2641,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cheese white queso blanco": {
@@ -2643,10 +2662,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "chia seeds": {
@@ -2664,8 +2683,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "chicken  meat only with broth": {
@@ -2683,9 +2702,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken  no broth": {
@@ -2703,9 +2722,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken breast": {
@@ -2739,9 +2758,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken breast tenders breaded uncooked": {
@@ -2759,13 +2778,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler or fryers breast skinless boneless meat only": {
-    canonicalName: "chicken broiler or fryers breast skinless boneless meat only",
+    canonicalName:
+      "chicken broiler or fryers breast skinless boneless meat only",
     displayName: "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -2779,14 +2799,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler or fryers breast skinless boneless meat only  braised": {
-    canonicalName: "chicken broiler or fryers breast skinless boneless meat only  braised",
-    displayName: "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only  Braised",
+    canonicalName:
+      "chicken broiler or fryers breast skinless boneless meat only  braised",
+    displayName:
+      "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -2799,14 +2821,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler or fryers breast skinless boneless meat only  grilled": {
-    canonicalName: "chicken broiler or fryers breast skinless boneless meat only  grilled",
-    displayName: "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only  Grilled",
+    canonicalName:
+      "chicken broiler or fryers breast skinless boneless meat only  grilled",
+    displayName:
+      "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only  Grilled",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -2819,51 +2843,57 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broiler or fryers breast skinless boneless meat only with added solution  braised": {
-    canonicalName: "chicken broiler or fryers breast skinless boneless meat only with added solution  braised",
-    displayName: "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only With Added Solution  Braised",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.45,
-      protein_g: 0.28,
-      carbs_g: 0.00,
-      fat_g: 0.04,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "chicken broiler or fryers breast skinless boneless meat only with added solution  braised":
+    {
+      canonicalName:
+        "chicken broiler or fryers breast skinless boneless meat only with added solution  braised",
+      displayName:
+        "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only With Added Solution  Braised",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.45,
+        protein_g: 0.28,
+        carbs_g: 0.00,
+        fat_g: 0.04,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+  "chicken broiler or fryers breast skinless boneless meat only with added solution  grilled":
+    {
+      canonicalName:
+        "chicken broiler or fryers breast skinless boneless meat only with added solution  grilled",
+      displayName:
+        "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only With Added Solution  Grilled",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.48,
+        protein_g: 0.29,
+        carbs_g: 0.00,
+        fat_g: 0.03,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-  },
-  "chicken broiler or fryers breast skinless boneless meat only with added solution  grilled": {
-    canonicalName: "chicken broiler or fryers breast skinless boneless meat only with added solution  grilled",
-    displayName: "Chicken Broiler Or Fryers Breast Skinless Boneless Meat Only With Added Solution  Grilled",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.48,
-      protein_g: 0.29,
-      carbs_g: 0.00,
-      fat_g: 0.03,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broiler rotisserie bbq back meat and skin": {
     canonicalName: "chicken broiler rotisserie bbq back meat and skin",
     displayName: "Chicken Broiler Rotisserie Bbq Back Meat And Skin",
@@ -2879,9 +2909,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq back meat only": {
@@ -2899,9 +2929,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq breast meat and skin": {
@@ -2919,9 +2949,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq breast meat only": {
@@ -2939,9 +2969,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq drumstick meat and skin": {
@@ -2959,9 +2989,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq drumstick meat only": {
@@ -2979,9 +3009,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq skin": {
@@ -2999,9 +3029,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq thigh meat and skin": {
@@ -3019,9 +3049,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq thigh meat only": {
@@ -3039,9 +3069,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq wing meat and skin": {
@@ -3059,9 +3089,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broiler rotisserie bbq wing meat only": {
@@ -3079,9 +3109,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat and skin": {
@@ -3099,13 +3129,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat and skin  fried batter": {
-    canonicalName: "chicken broilers or fryers back meat and skin  fried batter",
+    canonicalName:
+      "chicken broilers or fryers back meat and skin  fried batter",
     displayName: "Chicken Broilers Or Fryers Back Meat And Skin  Fried Batter",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -3119,9 +3150,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat and skin  fried flour": {
@@ -3139,9 +3170,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat and skin  roasted": {
@@ -3159,9 +3190,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat and skin  stewed": {
@@ -3179,9 +3210,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat only": {
@@ -3199,9 +3230,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat only  fried": {
@@ -3219,9 +3250,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat only  roasted": {
@@ -3239,9 +3270,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers back meat only  stewed": {
@@ -3259,9 +3290,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers breast meat and skin": {
@@ -3279,14 +3310,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers breast meat and skin  fried batter": {
-    canonicalName: "chicken broilers or fryers breast meat and skin  fried batter",
-    displayName: "Chicken Broilers Or Fryers Breast Meat And Skin  Fried Batter",
+    canonicalName:
+      "chicken broilers or fryers breast meat and skin  fried batter",
+    displayName:
+      "Chicken Broilers Or Fryers Breast Meat And Skin  Fried Batter",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3299,13 +3332,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers breast meat and skin  fried flour": {
-    canonicalName: "chicken broilers or fryers breast meat and skin  fried flour",
+    canonicalName:
+      "chicken broilers or fryers breast meat and skin  fried flour",
     displayName: "Chicken Broilers Or Fryers Breast Meat And Skin  Fried Flour",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -3319,9 +3353,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers breast meat and skin  roasted": {
@@ -3339,9 +3373,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers breast meat and skin  stewed": {
@@ -3359,9 +3393,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers breast meat only  fried": {
@@ -3379,9 +3413,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers breast meat only  roasted": {
@@ -3399,9 +3433,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers breast meat only  stewed": {
@@ -3419,34 +3453,39 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broilers or fryers breast skinless boneless meat only with added solution": {
-    canonicalName: "chicken broilers or fryers breast skinless boneless meat only with added solution",
-    displayName: "Chicken Broilers Or Fryers Breast Skinless Boneless Meat Only With Added Solution",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.08,
-      protein_g: 0.20,
-      carbs_g: 0.00,
-      fat_g: 0.03,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "chicken broilers or fryers breast skinless boneless meat only with added solution":
+    {
+      canonicalName:
+        "chicken broilers or fryers breast skinless boneless meat only with added solution",
+      displayName:
+        "Chicken Broilers Or Fryers Breast Skinless Boneless Meat Only With Added Solution",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.08,
+        protein_g: 0.20,
+        carbs_g: 0.00,
+        fat_g: 0.03,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broilers or fryers dark meat drumstick meat and skin  braised": {
-    canonicalName: "chicken broilers or fryers dark meat drumstick meat and skin  braised",
-    displayName: "Chicken Broilers Or Fryers Dark Meat Drumstick Meat And Skin  Braised",
+    canonicalName:
+      "chicken broilers or fryers dark meat drumstick meat and skin  braised",
+    displayName:
+      "Chicken Broilers Or Fryers Dark Meat Drumstick Meat And Skin  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3459,9 +3498,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat drumstick meat only": {
@@ -3479,14 +3518,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat drumstick meat only  braised": {
-    canonicalName: "chicken broilers or fryers dark meat drumstick meat only  braised",
-    displayName: "Chicken Broilers Or Fryers Dark Meat Drumstick Meat Only  Braised",
+    canonicalName:
+      "chicken broilers or fryers dark meat drumstick meat only  braised",
+    displayName:
+      "Chicken Broilers Or Fryers Dark Meat Drumstick Meat Only  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3499,14 +3540,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat drumstick meat only  roasted": {
-    canonicalName: "chicken broilers or fryers dark meat drumstick meat only  roasted",
-    displayName: "Chicken Broilers Or Fryers Dark Meat Drumstick Meat Only  Roasted",
+    canonicalName:
+      "chicken broilers or fryers dark meat drumstick meat only  roasted",
+    displayName:
+      "Chicken Broilers Or Fryers Dark Meat Drumstick Meat Only  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3519,9 +3562,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat and skin": {
@@ -3539,14 +3582,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat and skin  fried batter": {
-    canonicalName: "chicken broilers or fryers dark meat meat and skin  fried batter",
-    displayName: "Chicken Broilers Or Fryers Dark Meat Meat And Skin  Fried Batter",
+    canonicalName:
+      "chicken broilers or fryers dark meat meat and skin  fried batter",
+    displayName:
+      "Chicken Broilers Or Fryers Dark Meat Meat And Skin  Fried Batter",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3559,14 +3604,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat and skin  fried flour": {
-    canonicalName: "chicken broilers or fryers dark meat meat and skin  fried flour",
-    displayName: "Chicken Broilers Or Fryers Dark Meat Meat And Skin  Fried Flour",
+    canonicalName:
+      "chicken broilers or fryers dark meat meat and skin  fried flour",
+    displayName:
+      "Chicken Broilers Or Fryers Dark Meat Meat And Skin  Fried Flour",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3579,13 +3626,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat and skin  roasted": {
-    canonicalName: "chicken broilers or fryers dark meat meat and skin  roasted",
+    canonicalName:
+      "chicken broilers or fryers dark meat meat and skin  roasted",
     displayName: "Chicken Broilers Or Fryers Dark Meat Meat And Skin  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -3599,9 +3647,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat and skin  stewed": {
@@ -3619,9 +3667,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat only": {
@@ -3639,9 +3687,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat only  fried": {
@@ -3659,9 +3707,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat only  roasted": {
@@ -3679,9 +3727,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat meat only  stewed": {
@@ -3699,14 +3747,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat thigh meat and skin  braised": {
-    canonicalName: "chicken broilers or fryers dark meat thigh meat and skin  braised",
-    displayName: "Chicken Broilers Or Fryers Dark Meat Thigh Meat And Skin  Braised",
+    canonicalName:
+      "chicken broilers or fryers dark meat thigh meat and skin  braised",
+    displayName:
+      "Chicken Broilers Or Fryers Dark Meat Thigh Meat And Skin  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3719,9 +3769,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat thigh meat only": {
@@ -3739,14 +3789,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers dark meat thigh meat only  braised": {
-    canonicalName: "chicken broilers or fryers dark meat thigh meat only  braised",
-    displayName: "Chicken Broilers Or Fryers Dark Meat Thigh Meat Only  Braised",
+    canonicalName:
+      "chicken broilers or fryers dark meat thigh meat only  braised",
+    displayName:
+      "Chicken Broilers Or Fryers Dark Meat Thigh Meat Only  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3759,9 +3811,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers drumstick meat and skin": {
@@ -3779,14 +3831,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers drumstick meat and skin  fried batter": {
-    canonicalName: "chicken broilers or fryers drumstick meat and skin  fried batter",
-    displayName: "Chicken Broilers Or Fryers Drumstick Meat And Skin  Fried Batter",
+    canonicalName:
+      "chicken broilers or fryers drumstick meat and skin  fried batter",
+    displayName:
+      "Chicken Broilers Or Fryers Drumstick Meat And Skin  Fried Batter",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3799,14 +3853,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers drumstick meat and skin  fried flour": {
-    canonicalName: "chicken broilers or fryers drumstick meat and skin  fried flour",
-    displayName: "Chicken Broilers Or Fryers Drumstick Meat And Skin  Fried Flour",
+    canonicalName:
+      "chicken broilers or fryers drumstick meat and skin  fried flour",
+    displayName:
+      "Chicken Broilers Or Fryers Drumstick Meat And Skin  Fried Flour",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -3819,13 +3875,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers drumstick meat and skin  roasted": {
-    canonicalName: "chicken broilers or fryers drumstick meat and skin  roasted",
+    canonicalName:
+      "chicken broilers or fryers drumstick meat and skin  roasted",
     displayName: "Chicken Broilers Or Fryers Drumstick Meat And Skin  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -3839,9 +3896,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers drumstick meat and skin  stewed": {
@@ -3859,9 +3916,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers drumstick meat only  fried": {
@@ -3879,9 +3936,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers drumstick meat only  stewed": {
@@ -3899,31 +3956,34 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broilers or fryers drumstick rotisserie original seasoning meat only": {
-    canonicalName: "chicken broilers or fryers drumstick rotisserie original seasoning meat only",
-    displayName: "Chicken Broilers Or Fryers Drumstick Rotisserie Original Seasoning Meat Only",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.76,
-      protein_g: 0.29,
-      carbs_g: 0.00,
-      fat_g: 0.07,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "chicken broilers or fryers drumstick rotisserie original seasoning meat only":
+    {
+      canonicalName:
+        "chicken broilers or fryers drumstick rotisserie original seasoning meat only",
+      displayName:
+        "Chicken Broilers Or Fryers Drumstick Rotisserie Original Seasoning Meat Only",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.76,
+        protein_g: 0.29,
+        carbs_g: 0.00,
+        fat_g: 0.07,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broilers or fryers giblets": {
     canonicalName: "chicken broilers or fryers giblets",
     displayName: "Chicken Broilers Or Fryers Giblets",
@@ -3939,9 +3999,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers giblets  fried": {
@@ -3959,9 +4019,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers giblets  simmered": {
@@ -3979,9 +4039,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat and skin": {
@@ -3999,9 +4059,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat and skin  fried batter": {
@@ -4019,9 +4079,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat and skin  fried flour": {
@@ -4039,9 +4099,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat and skin  roasted": {
@@ -4059,9 +4119,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat and skin  stewed": {
@@ -4079,9 +4139,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat only": {
@@ -4099,9 +4159,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat only  fried": {
@@ -4119,9 +4179,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat only  roasted": {
@@ -4139,9 +4199,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers leg meat only  stewed": {
@@ -4159,9 +4219,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat and skin": {
@@ -4179,14 +4239,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat and skin  fried batter": {
-    canonicalName: "chicken broilers or fryers light meat meat and skin  fried batter",
-    displayName: "Chicken Broilers Or Fryers Light Meat Meat And Skin  Fried Batter",
+    canonicalName:
+      "chicken broilers or fryers light meat meat and skin  fried batter",
+    displayName:
+      "Chicken Broilers Or Fryers Light Meat Meat And Skin  Fried Batter",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4199,14 +4261,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat and skin  fried flour": {
-    canonicalName: "chicken broilers or fryers light meat meat and skin  fried flour",
-    displayName: "Chicken Broilers Or Fryers Light Meat Meat And Skin  Fried Flour",
+    canonicalName:
+      "chicken broilers or fryers light meat meat and skin  fried flour",
+    displayName:
+      "Chicken Broilers Or Fryers Light Meat Meat And Skin  Fried Flour",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4219,13 +4283,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat and skin  roasted": {
-    canonicalName: "chicken broilers or fryers light meat meat and skin  roasted",
+    canonicalName:
+      "chicken broilers or fryers light meat meat and skin  roasted",
     displayName: "Chicken Broilers Or Fryers Light Meat Meat And Skin  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -4239,13 +4304,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat and skin  stewed": {
-    canonicalName: "chicken broilers or fryers light meat meat and skin  stewed",
+    canonicalName:
+      "chicken broilers or fryers light meat meat and skin  stewed",
     displayName: "Chicken Broilers Or Fryers Light Meat Meat And Skin  Stewed",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -4259,9 +4325,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat only": {
@@ -4279,9 +4345,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat only  fried": {
@@ -4299,9 +4365,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat only  roasted": {
@@ -4319,9 +4385,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers light meat meat only  stewed": {
@@ -4339,9 +4405,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat and skin": {
@@ -4359,9 +4425,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat and skin  fried batter": {
@@ -4379,9 +4445,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat and skin  fried flour": {
@@ -4399,9 +4465,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat and skin  roasted": {
@@ -4419,9 +4485,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat and skin  stewed": {
@@ -4439,14 +4505,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat and skin and giblets and neck": {
-    canonicalName: "chicken broilers or fryers meat and skin and giblets and neck",
-    displayName: "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck",
+    canonicalName:
+      "chicken broilers or fryers meat and skin and giblets and neck",
+    displayName:
+      "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4459,54 +4527,62 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broilers or fryers meat and skin and giblets and neck  fried batter": {
-    canonicalName: "chicken broilers or fryers meat and skin and giblets and neck  fried batter",
-    displayName: "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck  Fried Batter",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.91,
-      protein_g: 0.23,
-      carbs_g: 0.09,
-      fat_g: 0.17,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "chicken broilers or fryers meat and skin and giblets and neck  fried batter":
+    {
+      canonicalName:
+        "chicken broilers or fryers meat and skin and giblets and neck  fried batter",
+      displayName:
+        "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck  Fried Batter",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.91,
+        protein_g: 0.23,
+        carbs_g: 0.09,
+        fat_g: 0.17,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+  "chicken broilers or fryers meat and skin and giblets and neck  fried flour":
+    {
+      canonicalName:
+        "chicken broilers or fryers meat and skin and giblets and neck  fried flour",
+      displayName:
+        "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck  Fried Flour",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.72,
+        protein_g: 0.29,
+        carbs_g: 0.03,
+        fat_g: 0.15,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-  },
-  "chicken broilers or fryers meat and skin and giblets and neck  fried flour": {
-    canonicalName: "chicken broilers or fryers meat and skin and giblets and neck  fried flour",
-    displayName: "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck  Fried Flour",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.72,
-      protein_g: 0.29,
-      carbs_g: 0.03,
-      fat_g: 0.15,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broilers or fryers meat and skin and giblets and neck roasted": {
-    canonicalName: "chicken broilers or fryers meat and skin and giblets and neck roasted",
-    displayName: "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck Roasted",
+    canonicalName:
+      "chicken broilers or fryers meat and skin and giblets and neck roasted",
+    displayName:
+      "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4519,14 +4595,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat and skin and giblets and neck stewed": {
-    canonicalName: "chicken broilers or fryers meat and skin and giblets and neck stewed",
-    displayName: "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck Stewed",
+    canonicalName:
+      "chicken broilers or fryers meat and skin and giblets and neck stewed",
+    displayName:
+      "Chicken Broilers Or Fryers Meat And Skin And Giblets And Neck Stewed",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4539,9 +4617,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat only": {
@@ -4559,9 +4637,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat only  fried": {
@@ -4579,9 +4657,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat only  roasted": {
@@ -4599,9 +4677,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers meat only  stewed": {
@@ -4619,9 +4697,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers neck meat and skin": {
@@ -4639,13 +4717,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers neck meat and skin  fried batter": {
-    canonicalName: "chicken broilers or fryers neck meat and skin  fried batter",
+    canonicalName:
+      "chicken broilers or fryers neck meat and skin  fried batter",
     displayName: "Chicken Broilers Or Fryers Neck Meat And Skin  Fried Batter",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -4659,9 +4738,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers neck meat and skin  fried flour": {
@@ -4679,9 +4758,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers neck meat and skin  simmered": {
@@ -4699,9 +4778,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers neck meat only": {
@@ -4719,9 +4798,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers neck meat only  fried": {
@@ -4739,9 +4818,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers neck meat only  simmered": {
@@ -4759,34 +4838,39 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broilers or fryers rotisserie original seasoning back meat and skin": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning back meat and skin",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Back Meat And Skin",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.60,
-      protein_g: 0.23,
-      carbs_g: 0.00,
-      fat_g: 0.19,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "chicken broilers or fryers rotisserie original seasoning back meat and skin":
+    {
+      canonicalName:
+        "chicken broilers or fryers rotisserie original seasoning back meat and skin",
+      displayName:
+        "Chicken Broilers Or Fryers Rotisserie Original Seasoning Back Meat And Skin",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.60,
+        protein_g: 0.23,
+        carbs_g: 0.00,
+        fat_g: 0.19,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broilers or fryers rotisserie original seasoning back meat only": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning back meat only",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Back Meat Only",
+    canonicalName:
+      "chicken broilers or fryers rotisserie original seasoning back meat only",
+    displayName:
+      "Chicken Broilers Or Fryers Rotisserie Original Seasoning Back Meat Only",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4799,34 +4883,39 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broilers or fryers rotisserie original seasoning breast meat and skin": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning breast meat and skin",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Breast Meat And Skin",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.84,
-      protein_g: 0.28,
-      carbs_g: 0.00,
-      fat_g: 0.08,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "chicken broilers or fryers rotisserie original seasoning breast meat and skin":
+    {
+      canonicalName:
+        "chicken broilers or fryers rotisserie original seasoning breast meat and skin",
+      displayName:
+        "Chicken Broilers Or Fryers Rotisserie Original Seasoning Breast Meat And Skin",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.84,
+        protein_g: 0.28,
+        carbs_g: 0.00,
+        fat_g: 0.08,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broilers or fryers rotisserie original seasoning breast meat only": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning breast meat only",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Breast Meat Only",
+    canonicalName:
+      "chicken broilers or fryers rotisserie original seasoning breast meat only",
+    displayName:
+      "Chicken Broilers Or Fryers Rotisserie Original Seasoning Breast Meat Only",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4839,34 +4928,39 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broilers or fryers rotisserie original seasoning drumstick meat and skin": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning drumstick meat and skin",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Drumstick Meat And Skin",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.15,
-      protein_g: 0.27,
-      carbs_g: 0.00,
-      fat_g: 0.12,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "chicken broilers or fryers rotisserie original seasoning drumstick meat and skin":
+    {
+      canonicalName:
+        "chicken broilers or fryers rotisserie original seasoning drumstick meat and skin",
+      displayName:
+        "Chicken Broilers Or Fryers Rotisserie Original Seasoning Drumstick Meat And Skin",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.15,
+        protein_g: 0.27,
+        carbs_g: 0.00,
+        fat_g: 0.12,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broilers or fryers rotisserie original seasoning skin only": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning skin only",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Skin Only",
+    canonicalName:
+      "chicken broilers or fryers rotisserie original seasoning skin only",
+    displayName:
+      "Chicken Broilers Or Fryers Rotisserie Original Seasoning Skin Only",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4879,34 +4973,39 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broilers or fryers rotisserie original seasoning thigh meat and skin": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning thigh meat and skin",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Thigh Meat And Skin",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.33,
-      protein_g: 0.23,
-      carbs_g: 0.00,
-      fat_g: 0.16,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "chicken broilers or fryers rotisserie original seasoning thigh meat and skin":
+    {
+      canonicalName:
+        "chicken broilers or fryers rotisserie original seasoning thigh meat and skin",
+      displayName:
+        "Chicken Broilers Or Fryers Rotisserie Original Seasoning Thigh Meat And Skin",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.33,
+        protein_g: 0.23,
+        carbs_g: 0.00,
+        fat_g: 0.16,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broilers or fryers rotisserie original seasoning thigh meat only": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning thigh meat only",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Thigh Meat Only",
+    canonicalName:
+      "chicken broilers or fryers rotisserie original seasoning thigh meat only",
+    displayName:
+      "Chicken Broilers Or Fryers Rotisserie Original Seasoning Thigh Meat Only",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4919,34 +5018,39 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "chicken broilers or fryers rotisserie original seasoning wing meat and skin": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning wing meat and skin",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Wing Meat And Skin",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.66,
-      protein_g: 0.24,
-      carbs_g: 0.00,
-      fat_g: 0.19,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "chicken broilers or fryers rotisserie original seasoning wing meat and skin":
+    {
+      canonicalName:
+        "chicken broilers or fryers rotisserie original seasoning wing meat and skin",
+      displayName:
+        "Chicken Broilers Or Fryers Rotisserie Original Seasoning Wing Meat And Skin",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.66,
+        protein_g: 0.24,
+        carbs_g: 0.00,
+        fat_g: 0.19,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "chicken broilers or fryers rotisserie original seasoning wing meat only": {
-    canonicalName: "chicken broilers or fryers rotisserie original seasoning wing meat only",
-    displayName: "Chicken Broilers Or Fryers Rotisserie Original Seasoning Wing Meat Only",
+    canonicalName:
+      "chicken broilers or fryers rotisserie original seasoning wing meat only",
+    displayName:
+      "Chicken Broilers Or Fryers Rotisserie Original Seasoning Wing Meat Only",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -4959,9 +5063,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers separable fat": {
@@ -4979,9 +5083,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers skin only": {
@@ -4999,9 +5103,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers skin only  fried batter": {
@@ -5019,9 +5123,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers skin only  fried flour": {
@@ -5039,9 +5143,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers skin only  roasted": {
@@ -5059,9 +5163,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers skin only  stewed": {
@@ -5079,9 +5183,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers thigh meat and skin": {
@@ -5099,13 +5203,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers thigh meat and skin  fried batter": {
-    canonicalName: "chicken broilers or fryers thigh meat and skin  fried batter",
+    canonicalName:
+      "chicken broilers or fryers thigh meat and skin  fried batter",
     displayName: "Chicken Broilers Or Fryers Thigh Meat And Skin  Fried Batter",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -5119,13 +5224,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers thigh meat and skin  fried flour": {
-    canonicalName: "chicken broilers or fryers thigh meat and skin  fried flour",
+    canonicalName:
+      "chicken broilers or fryers thigh meat and skin  fried flour",
     displayName: "Chicken Broilers Or Fryers Thigh Meat And Skin  Fried Flour",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -5139,9 +5245,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers thigh meat and skin  roasted": {
@@ -5159,9 +5265,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers thigh meat and skin  stewed": {
@@ -5179,9 +5285,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers thigh meat only  fried": {
@@ -5199,9 +5305,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers thigh meat only  roasted": {
@@ -5219,9 +5325,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers thigh meat only  stewed": {
@@ -5239,9 +5345,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat and skin": {
@@ -5259,13 +5365,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat and skin  fried batter": {
-    canonicalName: "chicken broilers or fryers wing meat and skin  fried batter",
+    canonicalName:
+      "chicken broilers or fryers wing meat and skin  fried batter",
     displayName: "Chicken Broilers Or Fryers Wing Meat And Skin  Fried Batter",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -5279,9 +5386,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat and skin  fried flour": {
@@ -5299,9 +5406,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat and skin  roasted": {
@@ -5319,9 +5426,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat and skin  stewed": {
@@ -5339,9 +5446,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat only": {
@@ -5359,9 +5466,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat only  fried": {
@@ -5379,9 +5486,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat only  roasted": {
@@ -5399,9 +5506,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken broilers or fryers wing meat only  stewed": {
@@ -5419,9 +5526,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken capons giblets": {
@@ -5439,9 +5546,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken capons giblets  simmered": {
@@ -5459,9 +5566,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken capons meat and skin": {
@@ -5479,9 +5586,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken capons meat and skin  roasted": {
@@ -5499,9 +5606,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken capons meat and skin and giblets and neck": {
@@ -5519,9 +5626,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken capons meat and skin and giblets and neck  roasted": {
@@ -5539,9 +5646,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken cornish game hens meat and skin": {
@@ -5559,9 +5666,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken cornish game hens meat and skin  roasted": {
@@ -5579,9 +5686,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken cornish game hens meat only": {
@@ -5599,9 +5706,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken cornish game hens meat only  roasted": {
@@ -5619,14 +5726,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat drumstick meat and skin with added solution": {
-    canonicalName: "chicken dark meat drumstick meat and skin with added solution",
-    displayName: "Chicken Dark Meat Drumstick Meat And Skin With Added Solution",
+    canonicalName:
+      "chicken dark meat drumstick meat and skin with added solution",
+    displayName:
+      "Chicken Dark Meat Drumstick Meat And Skin With Added Solution",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5639,14 +5748,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat drumstick meat and skin with added solution  braised": {
-    canonicalName: "chicken dark meat drumstick meat and skin with added solution  braised",
-    displayName: "Chicken Dark Meat Drumstick Meat And Skin With Added Solution  Braised",
+    canonicalName:
+      "chicken dark meat drumstick meat and skin with added solution  braised",
+    displayName:
+      "Chicken Dark Meat Drumstick Meat And Skin With Added Solution  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5659,14 +5770,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat drumstick meat and skin with added solution  roasted": {
-    canonicalName: "chicken dark meat drumstick meat and skin with added solution  roasted",
-    displayName: "Chicken Dark Meat Drumstick Meat And Skin With Added Solution  Roasted",
+    canonicalName:
+      "chicken dark meat drumstick meat and skin with added solution  roasted",
+    displayName:
+      "Chicken Dark Meat Drumstick Meat And Skin With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5679,9 +5792,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat drumstick meat only with added solution": {
@@ -5699,14 +5812,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat drumstick meat only with added solution  braised": {
-    canonicalName: "chicken dark meat drumstick meat only with added solution  braised",
-    displayName: "Chicken Dark Meat Drumstick Meat Only With Added Solution  Braised",
+    canonicalName:
+      "chicken dark meat drumstick meat only with added solution  braised",
+    displayName:
+      "Chicken Dark Meat Drumstick Meat Only With Added Solution  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5719,14 +5834,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat drumstick meat only with added solution  roasted": {
-    canonicalName: "chicken dark meat drumstick meat only with added solution  roasted",
-    displayName: "Chicken Dark Meat Drumstick Meat Only With Added Solution  Roasted",
+    canonicalName:
+      "chicken dark meat drumstick meat only with added solution  roasted",
+    displayName:
+      "Chicken Dark Meat Drumstick Meat Only With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5739,9 +5856,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat thigh meat and skin with added solution": {
@@ -5759,14 +5876,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat thigh meat and skin with added solution  braised": {
-    canonicalName: "chicken dark meat thigh meat and skin with added solution  braised",
-    displayName: "Chicken Dark Meat Thigh Meat And Skin With Added Solution  Braised",
+    canonicalName:
+      "chicken dark meat thigh meat and skin with added solution  braised",
+    displayName:
+      "Chicken Dark Meat Thigh Meat And Skin With Added Solution  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5779,14 +5898,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat thigh meat and skin with added solution  roasted": {
-    canonicalName: "chicken dark meat thigh meat and skin with added solution  roasted",
-    displayName: "Chicken Dark Meat Thigh Meat And Skin With Added Solution  Roasted",
+    canonicalName:
+      "chicken dark meat thigh meat and skin with added solution  roasted",
+    displayName:
+      "Chicken Dark Meat Thigh Meat And Skin With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5799,9 +5920,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat thigh meat only with added solution": {
@@ -5819,14 +5940,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat thigh meat only with added solution  braised": {
-    canonicalName: "chicken dark meat thigh meat only with added solution  braised",
-    displayName: "Chicken Dark Meat Thigh Meat Only With Added Solution  Braised",
+    canonicalName:
+      "chicken dark meat thigh meat only with added solution  braised",
+    displayName:
+      "Chicken Dark Meat Thigh Meat Only With Added Solution  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5839,14 +5962,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken dark meat thigh meat only with added solution  roasted": {
-    canonicalName: "chicken dark meat thigh meat only with added solution  roasted",
-    displayName: "Chicken Dark Meat Thigh Meat Only With Added Solution  Roasted",
+    canonicalName:
+      "chicken dark meat thigh meat only with added solution  roasted",
+    displayName:
+      "Chicken Dark Meat Thigh Meat Only With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -5859,9 +5984,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken feet boiled": {
@@ -5879,9 +6004,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken gizzard all classes": {
@@ -5899,9 +6024,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken gizzard all classes  simmered": {
@@ -5919,9 +6044,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken ground": {
@@ -5939,9 +6064,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken ground crumbles  pan-browned": {
@@ -5959,9 +6084,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken heart all classes": {
@@ -5979,9 +6104,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken heart all classes  simmered": {
@@ -5999,9 +6124,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken liver all classes": {
@@ -6019,9 +6144,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken liver all classes  pan-fried": {
@@ -6039,9 +6164,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken liver all classes  simmered": {
@@ -6059,9 +6184,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken patty": {
@@ -6079,9 +6204,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken patty  uncooked": {
@@ -6099,9 +6224,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting dark meat meat only": {
@@ -6119,9 +6244,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting dark meat meat only  roasted": {
@@ -6139,9 +6264,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting giblets": {
@@ -6159,9 +6284,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting giblets  simmered": {
@@ -6179,9 +6304,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting light meat meat only": {
@@ -6199,9 +6324,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting light meat meat only  roasted": {
@@ -6219,9 +6344,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting meat and skin  roasted": {
@@ -6239,9 +6364,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting meat and skin and giblets and neck": {
@@ -6259,13 +6384,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting meat and skin and giblets and neck  roasted": {
-    canonicalName: "chicken roasting meat and skin and giblets and neck  roasted",
+    canonicalName:
+      "chicken roasting meat and skin and giblets and neck  roasted",
     displayName: "Chicken Roasting Meat And Skin And Giblets And Neck  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -6279,9 +6405,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting meat only": {
@@ -6299,9 +6425,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken roasting meat only  roasted": {
@@ -6319,9 +6445,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken skin drumsticks and thighs": {
@@ -6339,9 +6465,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken skin drumsticks and thighs  braised": {
@@ -6359,9 +6485,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken skin drumsticks and thighs  roasted": {
@@ -6379,9 +6505,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken skin drumsticks and thighs with added solution": {
@@ -6399,14 +6525,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken skin drumsticks and thighs with added solution  braised": {
-    canonicalName: "chicken skin drumsticks and thighs with added solution  braised",
-    displayName: "Chicken Skin Drumsticks And Thighs With Added Solution  Braised",
+    canonicalName:
+      "chicken skin drumsticks and thighs with added solution  braised",
+    displayName:
+      "Chicken Skin Drumsticks And Thighs With Added Solution  Braised",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -6419,14 +6547,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken skin drumsticks and thighs with added solution  roasted": {
-    canonicalName: "chicken skin drumsticks and thighs with added solution  roasted",
-    displayName: "Chicken Skin Drumsticks And Thighs With Added Solution  Roasted",
+    canonicalName:
+      "chicken skin drumsticks and thighs with added solution  roasted",
+    displayName:
+      "Chicken Skin Drumsticks And Thighs With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -6439,9 +6569,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing dark meat meat only": {
@@ -6459,9 +6589,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing dark meat meat only  stewed": {
@@ -6479,9 +6609,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing giblets": {
@@ -6499,9 +6629,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing giblets  simmered": {
@@ -6519,9 +6649,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing light meat meat only": {
@@ -6539,9 +6669,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing light meat meat only  stewed": {
@@ -6559,9 +6689,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing meat and skin": {
@@ -6579,9 +6709,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing meat and skin  stewed": {
@@ -6599,9 +6729,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing meat and skin and giblets and neck": {
@@ -6619,9 +6749,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing meat and skin and giblets and neck  stewed": {
@@ -6639,9 +6769,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing meat only": {
@@ -6659,9 +6789,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken stewing meat only  stewed": {
@@ -6679,9 +6809,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken wing  glazed barbecue flavored": {
@@ -6699,14 +6829,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken wing  glazed barbecue flavored heated conventional oven": {
-    canonicalName: "chicken wing  glazed barbecue flavored heated conventional oven",
-    displayName: "Chicken Wing  Glazed Barbecue Flavored Heated Conventional Oven",
+    canonicalName:
+      "chicken wing  glazed barbecue flavored heated conventional oven",
+    displayName:
+      "Chicken Wing  Glazed Barbecue Flavored Heated Conventional Oven",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -6719,9 +6851,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "chicken wing  glazed barbecue flavored heated microwave": {
@@ -6739,9 +6871,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "coconut water": {
@@ -6807,10 +6939,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream fluid half and half": {
@@ -6828,10 +6960,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream fluid heavy whipping": {
@@ -6849,10 +6981,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream fluid light coffee cream or table cream": {
@@ -6870,10 +7002,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream fluid light whipping": {
@@ -6891,10 +7023,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream half and half fat free": {
@@ -6912,10 +7044,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream half and half lowfat": {
@@ -6933,10 +7065,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream sour cultured": {
@@ -6954,10 +7086,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream sour reduced fat cultured": {
@@ -6975,10 +7107,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream substitute flavored liquid": {
@@ -6996,10 +7128,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream substitute flavored powdered": {
@@ -7017,10 +7149,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream substitute liquid light": {
@@ -7038,15 +7170,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream substitute liquid with hydrogenated vegetable oil and soy protein": {
-    canonicalName: "cream substitute liquid with hydrogenated vegetable oil and soy protein",
-    displayName: "Cream Substitute Liquid With Hydrogenated Vegetable Oil And Soy Protein",
+    canonicalName:
+      "cream substitute liquid with hydrogenated vegetable oil and soy protein",
+    displayName:
+      "Cream Substitute Liquid With Hydrogenated Vegetable Oil And Soy Protein",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -7059,15 +7193,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream substitute liquid with lauric acid oil and sodium caseinate": {
-    canonicalName: "cream substitute liquid with lauric acid oil and sodium caseinate",
-    displayName: "Cream Substitute Liquid With Lauric Acid Oil And Sodium Caseinate",
+    canonicalName:
+      "cream substitute liquid with lauric acid oil and sodium caseinate",
+    displayName:
+      "Cream Substitute Liquid With Lauric Acid Oil And Sodium Caseinate",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -7080,10 +7216,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream substitute powdered": {
@@ -7101,10 +7237,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream substitute powdered light": {
@@ -7122,10 +7258,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "cream whipped cream topping pressurized": {
@@ -7143,72 +7279,81 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie": {
-    canonicalName: "creamy dressing made with sour cream and or buttermilk and oil reduced calorie",
-    displayName: "Creamy Dressing Made With Sour Cream And Or Buttermilk And Oil Reduced Calorie",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.60,
-      protein_g: 0.01,
-      carbs_g: 0.07,
-      fat_g: 0.14,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie":
+    {
+      canonicalName:
+        "creamy dressing made with sour cream and or buttermilk and oil reduced calorie",
+      displayName:
+        "Creamy Dressing Made With Sour Cream And Or Buttermilk And Oil Reduced Calorie",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.60,
+        protein_g: 0.01,
+        carbs_g: 0.07,
+        fat_g: 0.14,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie cholesterol-free":
+    {
+      canonicalName:
+        "creamy dressing made with sour cream and or buttermilk and oil reduced calorie cholesterol-free",
+      displayName:
+        "Creamy Dressing Made With Sour Cream And Or Buttermilk And Oil Reduced Calorie Cholesterol-free",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.40,
+        protein_g: 0.01,
+        carbs_g: 0.16,
+        fat_g: 0.08,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+      },
     },
-  },
-  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie cholesterol-free": {
-    canonicalName: "creamy dressing made with sour cream and or buttermilk and oil reduced calorie cholesterol-free",
-    displayName: "Creamy Dressing Made With Sour Cream And Or Buttermilk And Oil Reduced Calorie Cholesterol-free",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.40,
-      protein_g: 0.01,
-      carbs_g: 0.16,
-      fat_g: 0.08,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie fat-free":
+    {
+      canonicalName:
+        "creamy dressing made with sour cream and or buttermilk and oil reduced calorie fat-free",
+      displayName:
+        "Creamy Dressing Made With Sour Cream And Or Buttermilk And Oil Reduced Calorie Fat-free",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.07,
+        protein_g: 0.01,
+        carbs_g: 0.20,
+        fat_g: 0.03,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
-    },
-  },
-  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie fat-free": {
-    canonicalName: "creamy dressing made with sour cream and or buttermilk and oil reduced calorie fat-free",
-    displayName: "Creamy Dressing Made With Sour Cream And Or Buttermilk And Oil Reduced Calorie Fat-free",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.07,
-      protein_g: 0.01,
-      carbs_g: 0.20,
-      fat_g: 0.03,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
-    },
-  },
   "cucumber": {
     canonicalName: "cucumber",
     displayName: "Cucumber",
@@ -7224,9 +7369,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "dark chocolate": {
@@ -7260,15 +7405,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "dessert topping powdered 1.5 ounce prepared with 1 2 cup milk": {
-    canonicalName: "dessert topping powdered 1.5 ounce prepared with 1 2 cup milk",
-    displayName: "Dessert Topping Powdered 1.5 Ounce Prepared With 1 2 Cup Milk",
+    canonicalName:
+      "dessert topping powdered 1.5 ounce prepared with 1 2 cup milk",
+    displayName:
+      "Dessert Topping Powdered 1.5 Ounce Prepared With 1 2 Cup Milk",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -7281,10 +7428,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "dessert topping pressurized": {
@@ -7302,10 +7449,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "dessert topping semi solid": {
@@ -7323,10 +7470,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "dill weed": {
@@ -7344,8 +7491,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "donut": {
@@ -7379,9 +7526,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "dressing honey mustard fat-free": {
@@ -7399,8 +7546,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "duck": {
@@ -7434,9 +7581,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "duck domesticated meat and skin": {
@@ -7454,9 +7601,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "duck domesticated meat and skin  roasted": {
@@ -7474,9 +7621,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "duck domesticated meat only": {
@@ -7494,9 +7641,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "duck domesticated meat only  roasted": {
@@ -7514,9 +7661,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "duck wild breast meat only": {
@@ -7534,9 +7681,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "duck wild meat and skin": {
@@ -7554,91 +7701,103 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
-  "duck young duckling domesticated white pekin breast meat and skin boneless  roasted": {
-    canonicalName: "duck young duckling domesticated white pekin breast meat and skin boneless  roasted",
-    displayName: "Duck Young Duckling Domesticated White Pekin Breast Meat And Skin Boneless  Roasted",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.02,
-      protein_g: 0.24,
-      carbs_g: 0.00,
-      fat_g: 0.11,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "duck young duckling domesticated white pekin breast meat and skin boneless  roasted":
+    {
+      canonicalName:
+        "duck young duckling domesticated white pekin breast meat and skin boneless  roasted",
+      displayName:
+        "Duck Young Duckling Domesticated White Pekin Breast Meat And Skin Boneless  Roasted",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.02,
+        protein_g: 0.24,
+        carbs_g: 0.00,
+        fat_g: 0.11,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+  "duck young duckling domesticated white pekin breast meat only boneless  without skin broiled":
+    {
+      canonicalName:
+        "duck young duckling domesticated white pekin breast meat only boneless  without skin broiled",
+      displayName:
+        "Duck Young Duckling Domesticated White Pekin Breast Meat Only Boneless  Without Skin Broiled",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.40,
+        protein_g: 0.28,
+        carbs_g: 0.00,
+        fat_g: 0.03,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-  },
-  "duck young duckling domesticated white pekin breast meat only boneless  without skin broiled": {
-    canonicalName: "duck young duckling domesticated white pekin breast meat only boneless  without skin broiled",
-    displayName: "Duck Young Duckling Domesticated White Pekin Breast Meat Only Boneless  Without Skin Broiled",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.40,
-      protein_g: 0.28,
-      carbs_g: 0.00,
-      fat_g: 0.03,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "duck young duckling domesticated white pekin leg meat and skin bone in  roasted":
+    {
+      canonicalName:
+        "duck young duckling domesticated white pekin leg meat and skin bone in  roasted",
+      displayName:
+        "Duck Young Duckling Domesticated White Pekin Leg Meat And Skin Bone In  Roasted",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 2.17,
+        protein_g: 0.27,
+        carbs_g: 0.00,
+        fat_g: 0.11,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+  "duck young duckling domesticated white pekin leg meat only bone in  without skin braised":
+    {
+      canonicalName:
+        "duck young duckling domesticated white pekin leg meat only bone in  without skin braised",
+      displayName:
+        "Duck Young Duckling Domesticated White Pekin Leg Meat Only Bone In  Without Skin Braised",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.78,
+        protein_g: 0.29,
+        carbs_g: 0.00,
+        fat_g: 0.06,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": false,
+        "isVegan": false,
+      },
     },
-  },
-  "duck young duckling domesticated white pekin leg meat and skin bone in  roasted": {
-    canonicalName: "duck young duckling domesticated white pekin leg meat and skin bone in  roasted",
-    displayName: "Duck Young Duckling Domesticated White Pekin Leg Meat And Skin Bone In  Roasted",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 2.17,
-      protein_g: 0.27,
-      carbs_g: 0.00,
-      fat_g: 0.11,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
-  "duck young duckling domesticated white pekin leg meat only bone in  without skin braised": {
-    canonicalName: "duck young duckling domesticated white pekin leg meat only bone in  without skin braised",
-    displayName: "Duck Young Duckling Domesticated White Pekin Leg Meat Only Bone In  Without Skin Braised",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.78,
-      protein_g: 0.29,
-      carbs_g: 0.00,
-      fat_g: 0.06,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
-    },
-  },
   "dulce de leche": {
     canonicalName: "dulce de leche",
     displayName: "Dulce De Leche",
@@ -7654,10 +7813,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg duck whole": {
@@ -7675,10 +7834,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg goose whole": {
@@ -7696,10 +7855,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg quail whole": {
@@ -7717,10 +7876,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg substitute liquid or  fat free": {
@@ -7738,10 +7897,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg substitute powder": {
@@ -7759,10 +7918,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg turkey whole": {
@@ -7780,10 +7939,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg white": {
@@ -7801,10 +7960,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg white   pasteurized": {
@@ -7822,10 +7981,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg white  flakes stabilized glucose reduced": {
@@ -7843,10 +8002,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg white  powder stabilized glucose reduced": {
@@ -7864,10 +8023,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg white  stabilized glucose reduced": {
@@ -7885,10 +8044,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg whole": {
@@ -7906,33 +8065,36 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "egg whole   pasteurized includes foods for usda's food distribution program": {
-    canonicalName: "egg whole   pasteurized includes foods for usda's food distribution program",
-    displayName: "Egg Whole   Pasteurized Includes Foods For Usda's Food Distribution Program",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.47,
-      protein_g: 0.12,
-      carbs_g: 0.01,
-      fat_g: 0.10,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "egg whole   pasteurized includes foods for usda's food distribution program":
+    {
+      canonicalName:
+        "egg whole   pasteurized includes foods for usda's food distribution program",
+      displayName:
+        "Egg Whole   Pasteurized Includes Foods For Usda's Food Distribution Program",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.47,
+        protein_g: 0.12,
+        carbs_g: 0.01,
+        fat_g: 0.10,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "egg whole   salted pasteurized": {
     canonicalName: "egg whole   salted pasteurized",
     displayName: "Egg Whole   Salted Pasteurized",
@@ -7948,10 +8110,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.04,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg whole  fried": {
@@ -7969,10 +8131,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg whole  hard-boiled": {
@@ -7990,10 +8152,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg whole  omelet": {
@@ -8011,10 +8173,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg whole  poached": {
@@ -8032,10 +8194,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg whole  scrambled": {
@@ -8053,10 +8215,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg whole  stabilized glucose reduced": {
@@ -8074,10 +8236,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg yolk": {
@@ -8095,10 +8257,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg yolk   pasteurized": {
@@ -8116,10 +8278,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg yolk   salted pasteurized": {
@@ -8137,10 +8299,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.04,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "egg yolk   sugared pasteurized": {
@@ -8158,10 +8320,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "eggnog": {
@@ -8179,10 +8341,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "eggs": {
@@ -8216,10 +8378,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "emu fan fillet": {
@@ -8237,9 +8399,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu fan fillet  broiled": {
@@ -8257,9 +8419,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu flat fillet": {
@@ -8277,9 +8439,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu full rump": {
@@ -8297,9 +8459,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu full rump  broiled": {
@@ -8317,9 +8479,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu ground": {
@@ -8337,9 +8499,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu ground  pan-broiled": {
@@ -8357,9 +8519,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu inside drum": {
@@ -8377,9 +8539,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu inside drums  broiled": {
@@ -8397,9 +8559,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu outside drum": {
@@ -8417,9 +8579,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu oyster": {
@@ -8437,9 +8599,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "emu top loin  broiled": {
@@ -8457,9 +8619,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "energy drink": {
@@ -8493,9 +8655,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "fat chicken": {
@@ -8513,13 +8675,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "fat free ice cream no sugar added flavors other than chocolate": {
-    canonicalName: "fat free ice cream no sugar added flavors other than chocolate",
-    displayName: "Fat Free Ice Cream No Sugar Added Flavors Other Than Chocolate",
+    canonicalName:
+      "fat free ice cream no sugar added flavors other than chocolate",
+    displayName:
+      "Fat Free Ice Cream No Sugar Added Flavors Other Than Chocolate",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -8532,10 +8696,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "fat goose": {
@@ -8553,8 +8717,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "fat turkey": {
@@ -8572,8 +8736,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "fish oil cod liver": {
@@ -8591,8 +8755,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "fish oil herring": {
@@ -8610,8 +8774,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "fish oil menhaden": {
@@ -8629,8 +8793,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "fish oil menhaden fully hydrogenated": {
@@ -8648,8 +8812,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "fish oil salmon": {
@@ -8667,8 +8831,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "fish oil sardine": {
@@ -8686,8 +8850,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "flax seeds": {
@@ -8705,8 +8869,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "french fries": {
@@ -8740,9 +8904,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "goose domesticated meat and skin  roasted": {
@@ -8760,9 +8924,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "goose domesticated meat only": {
@@ -8780,9 +8944,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "goose domesticated meat only  roasted": {
@@ -8800,9 +8964,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "goose liver": {
@@ -8820,9 +8984,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "granola bar": {
@@ -8856,9 +9020,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "greek yogurt": {
@@ -8876,10 +9040,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "guacamole": {
@@ -8913,9 +9077,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "guinea hen meat only": {
@@ -8933,9 +9097,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ham": {
@@ -8985,8 +9149,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "hot dog": {
@@ -9052,10 +9216,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream bar or stick chocolate covered": {
@@ -9073,10 +9237,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream bar stick or nugget with crunch coating": {
@@ -9094,15 +9258,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream cone chocolate covered with nuts flavors other than chocolate": {
-    canonicalName: "ice cream cone chocolate covered with nuts flavors other than chocolate",
-    displayName: "Ice Cream Cone Chocolate Covered With Nuts Flavors Other Than Chocolate",
+    canonicalName:
+      "ice cream cone chocolate covered with nuts flavors other than chocolate",
+    displayName:
+      "Ice Cream Cone Chocolate Covered With Nuts Flavors Other Than Chocolate",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -9115,10 +9281,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream cookie sandwich": {
@@ -9136,10 +9302,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream light soft serve chocolate": {
@@ -9157,15 +9323,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream lowfat no sugar added cone added peanuts and chocolate sauce": {
-    canonicalName: "ice cream lowfat no sugar added cone added peanuts and chocolate sauce",
-    displayName: "Ice Cream Lowfat No Sugar Added Cone Added Peanuts And Chocolate Sauce",
+    canonicalName:
+      "ice cream lowfat no sugar added cone added peanuts and chocolate sauce",
+    displayName:
+      "Ice Cream Lowfat No Sugar Added Cone Added Peanuts And Chocolate Sauce",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -9178,10 +9346,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream sandwich": {
@@ -9199,10 +9367,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream sandwich made with light ice cream vanilla": {
@@ -9220,10 +9388,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream sandwich vanilla light no sugar added": {
@@ -9241,10 +9409,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream soft serve chocolate": {
@@ -9262,10 +9430,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ice cream sundae cone": {
@@ -9283,10 +9451,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "imitation cheese american or cheddar low cholesterol": {
@@ -9304,10 +9472,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "jam": {
@@ -9341,9 +9509,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "kefir lowfat plain lifeway": {
@@ -9361,10 +9529,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "kefir lowfat strawberry lifeway": {
@@ -9382,10 +9550,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "ketchup": {
@@ -9419,10 +9587,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "kraft breakstone's reduced fat sour cream": {
@@ -9440,10 +9608,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "kraft cheez whiz light pasteurized process cheese product": {
@@ -9461,10 +9629,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "kraft cheez whiz pasteurized process cheese sauce": {
@@ -9482,15 +9650,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "kraft free singles american nonfat pasteurized process cheese product": {
-    canonicalName: "kraft free singles american nonfat pasteurized process cheese product",
-    displayName: "Kraft Free Singles American Nonfat Pasteurized Process Cheese Product",
+    canonicalName:
+      "kraft free singles american nonfat pasteurized process cheese product",
+    displayName:
+      "Kraft Free Singles American Nonfat Pasteurized Process Cheese Product",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -9503,15 +9673,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "kraft velveeta light reduced fat pasteurized process cheese product": {
-    canonicalName: "kraft velveeta light reduced fat pasteurized process cheese product",
-    displayName: "Kraft Velveeta Light Reduced Fat Pasteurized Process Cheese Product",
+    canonicalName:
+      "kraft velveeta light reduced fat pasteurized process cheese product",
+    displayName:
+      "Kraft Velveeta Light Reduced Fat Pasteurized Process Cheese Product",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -9524,10 +9696,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "kraft velveeta pasteurized process cheese spread": {
@@ -9545,10 +9717,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "lamb": {
@@ -9582,9 +9754,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "lettuce": {
@@ -9602,9 +9774,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "light ice cream creamsicle": {
@@ -9622,10 +9794,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "mango": {
@@ -9643,9 +9815,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "maple syrup": {
@@ -9664,84 +9836,97 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
     },
     flags: {},
   },
-  "margarine 80% fat stick includes regular and hydrogenated corn and soybean oils": {
-    canonicalName: "margarine 80% fat stick includes regular and hydrogenated corn and soybean oils",
-    displayName: "Margarine 80% Fat Stick Includes Regular And Hydrogenated Corn And Soybean Oils",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 7.17,
-      protein_g: 0.00,
-      carbs_g: 0.01,
-      fat_g: 0.81,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "margarine 80% fat stick includes regular and hydrogenated corn and soybean oils":
+    {
+      canonicalName:
+        "margarine 80% fat stick includes regular and hydrogenated corn and soybean oils",
+      displayName:
+        "Margarine 80% Fat Stick Includes Regular And Hydrogenated Corn And Soybean Oils",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 7.17,
+        protein_g: 0.00,
+        carbs_g: 0.01,
+        fat_g: 0.81,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
+  "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oils":
+    {
+      canonicalName:
+        "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oils",
+      displayName:
+        "Margarine 80% Fat Tub Canola Harvest Soft Spread Canola Palm And Palm Kernel Oils",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 7.30,
+        protein_g: 0.00,
+        carbs_g: 0.01,
+        fat_g: 0.80,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-  },
-  "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oils": {
-    canonicalName: "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oils",
-    displayName: "Margarine 80% Fat Tub Canola Harvest Soft Spread Canola Palm And Palm Kernel Oils",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 7.30,
-      protein_g: 0.00,
-      carbs_g: 0.01,
-      fat_g: 0.80,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastries":
+    {
+      canonicalName:
+        "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastries",
+      displayName:
+        "Margarine Industrial Non-dairy Cottonseed Soy Oil Partially Hydrogenated For Flaky Pastries",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 7.14,
+        protein_g: 0.02,
+        carbs_g: 0.00,
+        fat_g: 0.80,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
+  "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candy":
+    {
+      canonicalName:
+        "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candy",
+      displayName:
+        "Margarine Industrial Soy And Partially Hydrogenated Soy Oil Use For Baking Sauces And Candy",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 7.14,
+        protein_g: 0.00,
+        carbs_g: 0.01,
+        fat_g: 0.80,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-  },
-  "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastries": {
-    canonicalName: "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastries",
-    displayName: "Margarine Industrial Non-dairy Cottonseed Soy Oil Partially Hydrogenated For Flaky Pastries",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 7.14,
-      protein_g: 0.02,
-      carbs_g: 0.00,
-      fat_g: 0.80,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
-    },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
-  "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candy": {
-    canonicalName: "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candy",
-    displayName: "Margarine Industrial Soy And Partially Hydrogenated Soy Oil Use For Baking Sauces And Candy",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 7.14,
-      protein_g: 0.00,
-      carbs_g: 0.01,
-      fat_g: 0.80,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
-    },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "margarine margarine-like vegetable oil spread 67-70% fat tub": {
-    canonicalName: "margarine margarine-like vegetable oil spread 67-70% fat tub",
+    canonicalName:
+      "margarine margarine-like vegetable oil spread 67-70% fat tub",
     displayName: "Margarine Margarine-like Vegetable Oil Spread 67-70% Fat Tub",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -9755,29 +9940,32 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "margarine margarine-type vegetable oil spread 70% fat soybean and partially hydrogenated soybean stick": {
-    canonicalName: "margarine margarine-type vegetable oil spread 70% fat soybean and partially hydrogenated soybean stick",
-    displayName: "Margarine Margarine-type Vegetable Oil Spread 70% Fat Soybean And Partially Hydrogenated Soybean Stick",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 6.28,
-      protein_g: 0.00,
-      carbs_g: 0.01,
-      fat_g: 0.70,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "margarine margarine-type vegetable oil spread 70% fat soybean and partially hydrogenated soybean stick":
+    {
+      canonicalName:
+        "margarine margarine-type vegetable oil spread 70% fat soybean and partially hydrogenated soybean stick",
+      displayName:
+        "Margarine Margarine-type Vegetable Oil Spread 70% Fat Soybean And Partially Hydrogenated Soybean Stick",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 6.28,
+        protein_g: 0.00,
+        carbs_g: 0.01,
+        fat_g: 0.70,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "margarine regular 80% fat composite stick with salt": {
     canonicalName: "margarine regular 80% fat composite stick with salt",
     displayName: "Margarine Regular 80% Fat Composite Stick With Salt",
@@ -9793,13 +9981,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine regular 80% fat composite stick with salt with added vitamin d": {
-    canonicalName: "margarine regular 80% fat composite stick with salt with added vitamin d",
-    displayName: "Margarine Regular 80% Fat Composite Stick With Salt With Added Vitamin D",
+    canonicalName:
+      "margarine regular 80% fat composite stick with salt with added vitamin d",
+    displayName:
+      "Margarine Regular 80% Fat Composite Stick With Salt With Added Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -9812,8 +10002,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine regular 80% fat composite stick without salt": {
@@ -9831,29 +10021,32 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "margarine regular 80% fat composite stick without salt with added vitamin d": {
-    canonicalName: "margarine regular 80% fat composite stick without salt with added vitamin d",
-    displayName: "Margarine Regular 80% Fat Composite Stick Without Salt With Added Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 7.17,
-      protein_g: 0.00,
-      carbs_g: 0.01,
-      fat_g: 0.81,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "margarine regular 80% fat composite stick without salt with added vitamin d":
+    {
+      canonicalName:
+        "margarine regular 80% fat composite stick without salt with added vitamin d",
+      displayName:
+        "Margarine Regular 80% Fat Composite Stick Without Salt With Added Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 7.17,
+        protein_g: 0.00,
+        carbs_g: 0.01,
+        fat_g: 0.81,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "margarine regular 80% fat composite tub with salt": {
     canonicalName: "margarine regular 80% fat composite tub with salt",
     displayName: "Margarine Regular 80% Fat Composite Tub With Salt",
@@ -9869,13 +10062,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine regular 80% fat composite tub with salt with added vitamin d": {
-    canonicalName: "margarine regular 80% fat composite tub with salt with added vitamin d",
-    displayName: "Margarine Regular 80% Fat Composite Tub With Salt With Added Vitamin D",
+    canonicalName:
+      "margarine regular 80% fat composite tub with salt with added vitamin d",
+    displayName:
+      "Margarine Regular 80% Fat Composite Tub With Salt With Added Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -9888,8 +10083,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine regular 80% fat composite tub without salt": {
@@ -9907,8 +10102,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine regular hard soybean hydrogenated": {
@@ -9926,8 +10121,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine spread 35-39% fat tub": {
@@ -9945,8 +10140,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine spread 40-49% fat tub": {
@@ -9964,13 +10159,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like butter-margarine blend 80% fat stick without salt": {
-    canonicalName: "margarine-like butter-margarine blend 80% fat stick without salt",
-    displayName: "Margarine-like Butter-margarine Blend 80% Fat Stick Without Salt",
+    canonicalName:
+      "margarine-like butter-margarine blend 80% fat stick without salt",
+    displayName:
+      "Margarine-like Butter-margarine Blend 80% Fat Stick Without Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -9983,13 +10180,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "margarine-like margarine-butter blend soybean oil and butter": {
-    canonicalName: "margarine-like margarine-butter blend soybean oil and butter",
+    canonicalName:
+      "margarine-like margarine-butter blend soybean oil and butter",
     displayName: "Margarine-like Margarine-butter Blend Soybean Oil And Butter",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -10003,30 +10201,33 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
-  "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastries": {
-    canonicalName: "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastries",
-    displayName: "Margarine-like Shortening Industrial Soy Partially Hydrogenated Cottonseed And Soy Principal Use Flaky Pastries",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 6.28,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 0.71,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastries":
+    {
+      canonicalName:
+        "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastries",
+      displayName:
+        "Margarine-like Shortening Industrial Soy Partially Hydrogenated Cottonseed And Soy Principal Use Flaky Pastries",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 6.28,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 0.71,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "margarine-like spread benecol light spread": {
     canonicalName: "margarine-like spread benecol light spread",
     displayName: "Margarine-like Spread Benecol Light Spread",
@@ -10042,8 +10243,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like spread smart balance light buttery spread": {
@@ -10061,33 +10262,38 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
-  "margarine-like spread smart balance omega plus spread with plant sterols & fish oil": {
-    canonicalName: "margarine-like spread smart balance omega plus spread with plant sterols & fish oil",
-    displayName: "Margarine-like Spread Smart Balance Omega Plus Spread With Plant Sterols & Fish Oil",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 6.05,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 0.71,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "margarine-like spread smart balance omega plus spread with plant sterols & fish oil":
+    {
+      canonicalName:
+        "margarine-like spread smart balance omega plus spread with plant sterols & fish oil",
+      displayName:
+        "Margarine-like Spread Smart Balance Omega Plus Spread With Plant Sterols & Fish Oil",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 6.05,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 0.71,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "margarine-like spread smart balance regular buttery spread with flax oil": {
-    canonicalName: "margarine-like spread smart balance regular buttery spread with flax oil",
-    displayName: "Margarine-like Spread Smart Balance Regular Buttery Spread With Flax Oil",
+    canonicalName:
+      "margarine-like spread smart balance regular buttery spread with flax oil",
+    displayName:
+      "Margarine-like Spread Smart Balance Regular Buttery Spread With Flax Oil",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10100,9 +10306,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "margarine-like spread smart beat smart squeeze": {
@@ -10120,13 +10326,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like spread smart beat super light without saturated fat": {
-    canonicalName: "margarine-like spread smart beat super light without saturated fat",
-    displayName: "Margarine-like Spread Smart Beat Super Light Without Saturated Fat",
+    canonicalName:
+      "margarine-like spread smart beat super light without saturated fat",
+    displayName:
+      "Margarine-like Spread Smart Beat Super Light Without Saturated Fat",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10139,8 +10347,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like spread with yogurt 70% fat stick with salt": {
@@ -10158,13 +10366,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like spread with yogurt approximately 40% fat tub with salt": {
-    canonicalName: "margarine-like spread with yogurt approximately 40% fat tub with salt",
-    displayName: "Margarine-like Spread With Yogurt Approximately 40% Fat Tub With Salt",
+    canonicalName:
+      "margarine-like spread with yogurt approximately 40% fat tub with salt",
+    displayName:
+      "Margarine-like Spread With Yogurt Approximately 40% Fat Tub With Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10177,8 +10387,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like vegetable oil spread 20% fat with salt": {
@@ -10196,8 +10406,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like vegetable oil spread 20% fat without salt": {
@@ -10215,13 +10425,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like vegetable oil spread 60% fat stick tub bottle with salt": {
-    canonicalName: "margarine-like vegetable oil spread 60% fat stick tub bottle with salt",
-    displayName: "Margarine-like Vegetable Oil Spread 60% Fat Stick Tub Bottle With Salt",
+    canonicalName:
+      "margarine-like vegetable oil spread 60% fat stick tub bottle with salt",
+    displayName:
+      "Margarine-like Vegetable Oil Spread 60% Fat Stick Tub Bottle With Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10234,13 +10446,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like vegetable oil spread 60% fat stick tub bottle without salt": {
-    canonicalName: "margarine-like vegetable oil spread 60% fat stick tub bottle without salt",
-    displayName: "Margarine-like Vegetable Oil Spread 60% Fat Stick Tub Bottle Without Salt",
+    canonicalName:
+      "margarine-like vegetable oil spread 60% fat stick tub bottle without salt",
+    displayName:
+      "Margarine-like Vegetable Oil Spread 60% Fat Stick Tub Bottle Without Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10253,31 +10467,35 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "margarine-like vegetable oil spread 60% fat stick tub bottle without salt with added vitamin d": {
-    canonicalName: "margarine-like vegetable oil spread 60% fat stick tub bottle without salt with added vitamin d",
-    displayName: "Margarine-like Vegetable Oil Spread 60% Fat Stick Tub Bottle Without Salt With Added Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 5.42,
-      protein_g: 0.00,
-      carbs_g: 0.01,
-      fat_g: 0.60,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "margarine-like vegetable oil spread 60% fat stick tub bottle without salt with added vitamin d":
+    {
+      canonicalName:
+        "margarine-like vegetable oil spread 60% fat stick tub bottle without salt with added vitamin d",
+      displayName:
+        "Margarine-like Vegetable Oil Spread 60% Fat Stick Tub Bottle Without Salt With Added Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 5.42,
+        protein_g: 0.00,
+        carbs_g: 0.01,
+        fat_g: 0.60,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "margarine-like vegetable oil spread 60% fat stick with salt": {
-    canonicalName: "margarine-like vegetable oil spread 60% fat stick with salt",
+    canonicalName:
+      "margarine-like vegetable oil spread 60% fat stick with salt",
     displayName: "Margarine-like Vegetable Oil Spread 60% Fat Stick With Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -10291,29 +10509,32 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "margarine-like vegetable oil spread 60% fat stick with salt with added vitamin d": {
-    canonicalName: "margarine-like vegetable oil spread 60% fat stick with salt with added vitamin d",
-    displayName: "Margarine-like Vegetable Oil Spread 60% Fat Stick With Salt With Added Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 5.37,
-      protein_g: 0.00,
-      carbs_g: 0.01,
-      fat_g: 0.60,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "margarine-like vegetable oil spread 60% fat stick with salt with added vitamin d":
+    {
+      canonicalName:
+        "margarine-like vegetable oil spread 60% fat stick with salt with added vitamin d",
+      displayName:
+        "Margarine-like Vegetable Oil Spread 60% Fat Stick With Salt With Added Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 5.37,
+        protein_g: 0.00,
+        carbs_g: 0.01,
+        fat_g: 0.60,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "margarine-like vegetable oil spread 60% fat tub with salt": {
     canonicalName: "margarine-like vegetable oil spread 60% fat tub with salt",
     displayName: "Margarine-like Vegetable Oil Spread 60% Fat Tub With Salt",
@@ -10329,51 +10550,59 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "margarine-like vegetable oil spread 60% fat tub with salt with added vitamin d": {
-    canonicalName: "margarine-like vegetable oil spread 60% fat tub with salt with added vitamin d",
-    displayName: "Margarine-like Vegetable Oil Spread 60% Fat Tub With Salt With Added Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 5.33,
-      protein_g: 0.00,
-      carbs_g: 0.01,
-      fat_g: 0.60,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "margarine-like vegetable oil spread 60% fat tub with salt with added vitamin d":
+    {
+      canonicalName:
+        "margarine-like vegetable oil spread 60% fat tub with salt with added vitamin d",
+      displayName:
+        "Margarine-like Vegetable Oil Spread 60% Fat Tub With Salt With Added Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 5.33,
+        protein_g: 0.00,
+        carbs_g: 0.01,
+        fat_g: 0.60,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
+  "margarine-like vegetable oil spread approximately 37% fat unspecified oils with salt with added vitamin d":
+    {
+      canonicalName:
+        "margarine-like vegetable oil spread approximately 37% fat unspecified oils with salt with added vitamin d",
+      displayName:
+        "Margarine-like Vegetable Oil Spread Approximately 37% Fat Unspecified Oils With Salt With Added Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 3.39,
+        protein_g: 0.01,
+        carbs_g: 0.01,
+        fat_g: 0.38,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-  },
-  "margarine-like vegetable oil spread approximately 37% fat unspecified oils with salt with added vitamin d": {
-    canonicalName: "margarine-like vegetable oil spread approximately 37% fat unspecified oils with salt with added vitamin d",
-    displayName: "Margarine-like Vegetable Oil Spread Approximately 37% Fat Unspecified Oils With Salt With Added Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 3.39,
-      protein_g: 0.01,
-      carbs_g: 0.01,
-      fat_g: 0.38,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
-    },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "margarine-like vegetable oil spread fat free liquid with salt": {
-    canonicalName: "margarine-like vegetable oil spread fat free liquid with salt",
-    displayName: "Margarine-like Vegetable Oil Spread Fat Free Liquid With Salt",
+    canonicalName:
+      "margarine-like vegetable oil spread fat free liquid with salt",
+    displayName:
+      "Margarine-like Vegetable Oil Spread Fat Free Liquid With Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10386,8 +10615,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like vegetable oil spread fat-free tub": {
@@ -10405,8 +10634,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like vegetable oil spread stick or tub sweetened": {
@@ -10424,13 +10653,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "margarine-like vegetable oil-butter spread reduced calorie tub with salt": {
-    canonicalName: "margarine-like vegetable oil-butter spread reduced calorie tub with salt",
-    displayName: "Margarine-like Vegetable Oil-butter Spread Reduced Calorie Tub With Salt",
+    canonicalName:
+      "margarine-like vegetable oil-butter spread reduced calorie tub with salt",
+    displayName:
+      "Margarine-like Vegetable Oil-butter Spread Reduced Calorie Tub With Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10443,9 +10674,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "margarine-like vegetable oil-butter spread tub with salt": {
@@ -10463,30 +10694,33 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
-  "margarine-like vegetable-oil spread stick tub bottle 60% fat with added vitamin d": {
-    canonicalName: "margarine-like vegetable-oil spread stick tub bottle 60% fat with added vitamin d",
-    displayName: "Margarine-like Vegetable-oil Spread Stick Tub Bottle 60% Fat With Added Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 5.35,
-      protein_g: 0.01,
-      carbs_g: 0.00,
-      fat_g: 0.59,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.01,
+  "margarine-like vegetable-oil spread stick tub bottle 60% fat with added vitamin d":
+    {
+      canonicalName:
+        "margarine-like vegetable-oil spread stick tub bottle 60% fat with added vitamin d",
+      displayName:
+        "Margarine-like Vegetable-oil Spread Stick Tub Bottle 60% Fat With Added Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 5.35,
+        protein_g: 0.01,
+        carbs_g: 0.00,
+        fat_g: 0.59,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.01,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "mayonnaise": {
     canonicalName: "mayonnaise",
     displayName: "Mayonnaise",
@@ -10502,8 +10736,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "mayonnaise dressing no cholesterol": {
@@ -10521,8 +10755,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "mayonnaise low sodium low calorie or diet": {
@@ -10540,8 +10774,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "mayonnaise made with tofu": {
@@ -10559,8 +10793,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "mayonnaise reduced fat with olive oil": {
@@ -10578,8 +10812,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "mayonnaise reduced-calorie or diet cholesterol-free": {
@@ -10597,8 +10831,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "milk  condensed sweetened": {
@@ -10616,10 +10850,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk  evaporated nonfat with added vitamin a and vitamin d": {
@@ -10637,10 +10871,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk  evaporated with added vitamin a": {
@@ -10658,15 +10892,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk  evaporated with added vitamin d and without added vitamin a": {
-    canonicalName: "milk  evaporated with added vitamin d and without added vitamin a",
-    displayName: "Milk  Evaporated With Added Vitamin D And Without Added Vitamin A",
+    canonicalName:
+      "milk  evaporated with added vitamin d and without added vitamin a",
+    displayName:
+      "Milk  Evaporated With Added Vitamin D And Without Added Vitamin A",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10679,10 +10915,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk buttermilk": {
@@ -10700,10 +10936,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk buttermilk fluid cultured lowfat": {
@@ -10721,10 +10957,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk buttermilk fluid cultured reduced fat": {
@@ -10742,10 +10978,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk buttermilk fluid whole": {
@@ -10763,10 +10999,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk chocolate beverage hot cocoa homemade": {
@@ -10784,10 +11020,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk chocolate fat free with added vitamin a and vitamin d": {
@@ -10805,15 +11041,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk chocolate fluid commercial reduced fat with added calcium": {
-    canonicalName: "milk chocolate fluid commercial reduced fat with added calcium",
-    displayName: "Milk Chocolate Fluid Commercial Reduced Fat With Added Calcium",
+    canonicalName:
+      "milk chocolate fluid commercial reduced fat with added calcium",
+    displayName:
+      "Milk Chocolate Fluid Commercial Reduced Fat With Added Calcium",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10826,36 +11064,41 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "milk chocolate fluid commercial reduced fat with added vitamin a and vitamin d": {
-    canonicalName: "milk chocolate fluid commercial reduced fat with added vitamin a and vitamin d",
-    displayName: "Milk Chocolate Fluid Commercial Reduced Fat With Added Vitamin A And Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.76,
-      protein_g: 0.03,
-      carbs_g: 0.12,
-      fat_g: 0.02,
-      fiber_g: 0.01,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "milk chocolate fluid commercial reduced fat with added vitamin a and vitamin d":
+    {
+      canonicalName:
+        "milk chocolate fluid commercial reduced fat with added vitamin a and vitamin d",
+      displayName:
+        "Milk Chocolate Fluid Commercial Reduced Fat With Added Vitamin A And Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.76,
+        protein_g: 0.03,
+        carbs_g: 0.12,
+        fat_g: 0.02,
+        fiber_g: 0.01,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "milk chocolate fluid commercial whole with added vitamin a and vitamin d": {
-    canonicalName: "milk chocolate fluid commercial whole with added vitamin a and vitamin d",
-    displayName: "Milk Chocolate Fluid Commercial Whole With Added Vitamin A And Vitamin D",
+    canonicalName:
+      "milk chocolate fluid commercial whole with added vitamin a and vitamin d",
+    displayName:
+      "Milk Chocolate Fluid Commercial Whole With Added Vitamin A And Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10868,10 +11111,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk chocolate lowfat reduced sugar": {
@@ -10889,10 +11132,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk chocolate lowfat with added vitamin a and vitamin d": {
@@ -10910,10 +11153,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk dessert bar  made from lowfat milk": {
@@ -10931,10 +11174,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk dry nonfat calcium reduced": {
@@ -10952,10 +11195,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk dry nonfat instant with added vitamin a and vitamin d": {
@@ -10973,15 +11216,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk dry nonfat instant without added vitamin a and vitamin d": {
-    canonicalName: "milk dry nonfat instant without added vitamin a and vitamin d",
-    displayName: "Milk Dry Nonfat Instant Without Added Vitamin A And Vitamin D",
+    canonicalName:
+      "milk dry nonfat instant without added vitamin a and vitamin d",
+    displayName:
+      "Milk Dry Nonfat Instant Without Added Vitamin A And Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -10994,10 +11239,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk dry nonfat regular with added vitamin a and vitamin d": {
@@ -11015,15 +11260,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk dry nonfat regular without added vitamin a and vitamin d": {
-    canonicalName: "milk dry nonfat regular without added vitamin a and vitamin d",
-    displayName: "Milk Dry Nonfat Regular Without Added Vitamin A And Vitamin D",
+    canonicalName:
+      "milk dry nonfat regular without added vitamin a and vitamin d",
+    displayName:
+      "Milk Dry Nonfat Regular Without Added Vitamin A And Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -11036,10 +11283,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk dry whole with added vitamin d": {
@@ -11057,10 +11304,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk dry whole without added vitamin d": {
@@ -11078,10 +11325,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk evaporated 2% fat with added vitamin a and vitamin d": {
@@ -11099,14 +11346,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk filled fluid with blend of hydrogenated vegetable oils": {
-    canonicalName: "milk filled fluid with blend of hydrogenated vegetable oils",
+    canonicalName:
+      "milk filled fluid with blend of hydrogenated vegetable oils",
     displayName: "Milk Filled Fluid With Blend Of Hydrogenated Vegetable Oils",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -11120,10 +11368,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk filled fluid with lauric acid oil": {
@@ -11141,10 +11389,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk fluid 1% fat without added vitamin a and vitamin d": {
@@ -11162,10 +11410,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk fluid nonfat calcium fortified fat free or skim": {
@@ -11183,10 +11431,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk goat fluid with added vitamin d": {
@@ -11204,10 +11452,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk human mature fluid": {
@@ -11225,10 +11473,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk imitation non-soy": {
@@ -11246,10 +11494,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk indian buffalo fluid": {
@@ -11267,10 +11515,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk low sodium fluid": {
@@ -11288,57 +11536,65 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "milk lowfat fluid 1% milkfat protein fortified with added vitamin a and vitamin d": {
-    canonicalName: "milk lowfat fluid 1% milkfat protein fortified with added vitamin a and vitamin d",
-    displayName: "Milk Lowfat Fluid 1% Milkfat Protein Fortified With Added Vitamin A And Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.48,
-      protein_g: 0.04,
-      carbs_g: 0.06,
-      fat_g: 0.01,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "milk lowfat fluid 1% milkfat protein fortified with added vitamin a and vitamin d":
+    {
+      canonicalName:
+        "milk lowfat fluid 1% milkfat protein fortified with added vitamin a and vitamin d",
+      displayName:
+        "Milk Lowfat Fluid 1% Milkfat Protein Fortified With Added Vitamin A And Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.48,
+        protein_g: 0.04,
+        carbs_g: 0.06,
+        fat_g: 0.01,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+  "milk lowfat fluid 1% milkfat with added nonfat milk solids vitamin a and vitamin d":
+    {
+      canonicalName:
+        "milk lowfat fluid 1% milkfat with added nonfat milk solids vitamin a and vitamin d",
+      displayName:
+        "Milk Lowfat Fluid 1% Milkfat With Added Nonfat Milk Solids Vitamin A And Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.43,
+        protein_g: 0.04,
+        carbs_g: 0.05,
+        fat_g: 0.01,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-  },
-  "milk lowfat fluid 1% milkfat with added nonfat milk solids vitamin a and vitamin d": {
-    canonicalName: "milk lowfat fluid 1% milkfat with added nonfat milk solids vitamin a and vitamin d",
-    displayName: "Milk Lowfat Fluid 1% Milkfat With Added Nonfat Milk Solids Vitamin A And Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.43,
-      protein_g: 0.04,
-      carbs_g: 0.05,
-      fat_g: 0.01,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d": {
-    canonicalName: "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d",
-    displayName: "Milk Lowfat Fluid 1% Milkfat With Added Vitamin A And Vitamin D",
+    canonicalName:
+      "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d",
+    displayName:
+      "Milk Lowfat Fluid 1% Milkfat With Added Vitamin A And Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -11351,57 +11607,65 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "milk nonfat fluid protein fortified with added vitamin a and vitamin d fat free and skim": {
-    canonicalName: "milk nonfat fluid protein fortified with added vitamin a and vitamin d fat free and skim",
-    displayName: "Milk Nonfat Fluid Protein Fortified With Added Vitamin A And Vitamin D Fat Free And Skim",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.41,
-      protein_g: 0.04,
-      carbs_g: 0.06,
-      fat_g: 0.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "milk nonfat fluid protein fortified with added vitamin a and vitamin d fat free and skim":
+    {
+      canonicalName:
+        "milk nonfat fluid protein fortified with added vitamin a and vitamin d fat free and skim",
+      displayName:
+        "Milk Nonfat Fluid Protein Fortified With Added Vitamin A And Vitamin D Fat Free And Skim",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.41,
+        protein_g: 0.04,
+        carbs_g: 0.06,
+        fat_g: 0.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+  "milk nonfat fluid with added nonfat milk solids vitamin a and vitamin d fat free or skim":
+    {
+      canonicalName:
+        "milk nonfat fluid with added nonfat milk solids vitamin a and vitamin d fat free or skim",
+      displayName:
+        "Milk Nonfat Fluid With Added Nonfat Milk Solids Vitamin A And Vitamin D Fat Free Or Skim",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.37,
+        protein_g: 0.04,
+        carbs_g: 0.05,
+        fat_g: 0.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-  },
-  "milk nonfat fluid with added nonfat milk solids vitamin a and vitamin d fat free or skim": {
-    canonicalName: "milk nonfat fluid with added nonfat milk solids vitamin a and vitamin d fat free or skim",
-    displayName: "Milk Nonfat Fluid With Added Nonfat Milk Solids Vitamin A And Vitamin D Fat Free Or Skim",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.37,
-      protein_g: 0.04,
-      carbs_g: 0.05,
-      fat_g: 0.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "milk nonfat fluid with added vitamin a and vitamin d fat free or skim": {
-    canonicalName: "milk nonfat fluid with added vitamin a and vitamin d fat free or skim",
-    displayName: "Milk Nonfat Fluid With Added Vitamin A And Vitamin D Fat Free Or Skim",
+    canonicalName:
+      "milk nonfat fluid with added vitamin a and vitamin d fat free or skim",
+    displayName:
+      "Milk Nonfat Fluid With Added Vitamin A And Vitamin D Fat Free Or Skim",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -11414,15 +11678,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk nonfat fluid without added vitamin a and vitamin d fat free or skim": {
-    canonicalName: "milk nonfat fluid without added vitamin a and vitamin d fat free or skim",
-    displayName: "Milk Nonfat Fluid Without Added Vitamin A And Vitamin D Fat Free Or Skim",
+    canonicalName:
+      "milk nonfat fluid without added vitamin a and vitamin d fat free or skim",
+    displayName:
+      "Milk Nonfat Fluid Without Added Vitamin A And Vitamin D Fat Free Or Skim",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -11435,10 +11701,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk producer fluid 3.7% milkfat": {
@@ -11456,78 +11722,89 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "milk reduced fat fluid 2% milkfat protein fortified with added vitamin a and vitamin d": {
-    canonicalName: "milk reduced fat fluid 2% milkfat protein fortified with added vitamin a and vitamin d",
-    displayName: "Milk Reduced Fat Fluid 2% Milkfat Protein Fortified With Added Vitamin A And Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.56,
-      protein_g: 0.04,
-      carbs_g: 0.06,
-      fat_g: 0.02,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "milk reduced fat fluid 2% milkfat protein fortified with added vitamin a and vitamin d":
+    {
+      canonicalName:
+        "milk reduced fat fluid 2% milkfat protein fortified with added vitamin a and vitamin d",
+      displayName:
+        "Milk Reduced Fat Fluid 2% Milkfat Protein Fortified With Added Vitamin A And Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.56,
+        protein_g: 0.04,
+        carbs_g: 0.06,
+        fat_g: 0.02,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+  "milk reduced fat fluid 2% milkfat with added nonfat milk solids and vitamin a and vitamin d":
+    {
+      canonicalName:
+        "milk reduced fat fluid 2% milkfat with added nonfat milk solids and vitamin a and vitamin d",
+      displayName:
+        "Milk Reduced Fat Fluid 2% Milkfat With Added Nonfat Milk Solids And Vitamin A And Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.51,
+        protein_g: 0.04,
+        carbs_g: 0.05,
+        fat_g: 0.02,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-  },
-  "milk reduced fat fluid 2% milkfat with added nonfat milk solids and vitamin a and vitamin d": {
-    canonicalName: "milk reduced fat fluid 2% milkfat with added nonfat milk solids and vitamin a and vitamin d",
-    displayName: "Milk Reduced Fat Fluid 2% Milkfat With Added Nonfat Milk Solids And Vitamin A And Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.51,
-      protein_g: 0.04,
-      carbs_g: 0.05,
-      fat_g: 0.02,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "milk reduced fat fluid 2% milkfat with added nonfat milk solids without added vitamin a":
+    {
+      canonicalName:
+        "milk reduced fat fluid 2% milkfat with added nonfat milk solids without added vitamin a",
+      displayName:
+        "Milk Reduced Fat Fluid 2% Milkfat With Added Nonfat Milk Solids Without Added Vitamin A",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.56,
+        protein_g: 0.04,
+        carbs_g: 0.06,
+        fat_g: 0.02,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
-  "milk reduced fat fluid 2% milkfat with added nonfat milk solids without added vitamin a": {
-    canonicalName: "milk reduced fat fluid 2% milkfat with added nonfat milk solids without added vitamin a",
-    displayName: "Milk Reduced Fat Fluid 2% Milkfat With Added Nonfat Milk Solids Without Added Vitamin A",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.56,
-      protein_g: 0.04,
-      carbs_g: 0.06,
-      fat_g: 0.02,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin d": {
-    canonicalName: "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin d",
-    displayName: "Milk Reduced Fat Fluid 2% Milkfat With Added Vitamin A And Vitamin D",
+    canonicalName:
+      "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin d",
+    displayName:
+      "Milk Reduced Fat Fluid 2% Milkfat With Added Vitamin A And Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -11540,15 +11817,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk reduced fat fluid 2% milkfat without added vitamin a and vitamin d": {
-    canonicalName: "milk reduced fat fluid 2% milkfat without added vitamin a and vitamin d",
-    displayName: "Milk Reduced Fat Fluid 2% Milkfat Without Added Vitamin A And Vitamin D",
+    canonicalName:
+      "milk reduced fat fluid 2% milkfat without added vitamin a and vitamin d",
+    displayName:
+      "Milk Reduced Fat Fluid 2% Milkfat Without Added Vitamin A And Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -11561,10 +11840,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk shakes thick chocolate": {
@@ -11582,10 +11861,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk shakes thick vanilla": {
@@ -11603,10 +11882,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk sheep fluid": {
@@ -11624,10 +11903,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk skim": {
@@ -11645,10 +11924,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk substitutes fluid with lauric acid oil": {
@@ -11666,10 +11945,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk whole": {
@@ -11687,10 +11966,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk whole 3.25% milkfat with added vitamin d": {
@@ -11708,15 +11987,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "milk whole 3.25% milkfat without added vitamin a and vitamin d": {
-    canonicalName: "milk whole 3.25% milkfat without added vitamin a and vitamin d",
-    displayName: "Milk Whole 3.25% Milkfat Without Added Vitamin A And Vitamin D",
+    canonicalName:
+      "milk whole 3.25% milkfat without added vitamin a and vitamin d",
+    displayName:
+      "Milk Whole 3.25% Milkfat Without Added Vitamin A And Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -11729,10 +12010,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "muffin": {
@@ -11782,8 +12063,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "nutritional supplement for people with diabetes liquid": {
@@ -11801,10 +12082,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "oat milk": {
@@ -11854,8 +12135,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil apricot kernel": {
@@ -11873,8 +12154,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil avocado": {
@@ -11892,8 +12173,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil babassu": {
@@ -11911,8 +12192,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil canola": {
@@ -11930,8 +12211,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil cocoa butter": {
@@ -11949,9 +12230,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "oil coconut": {
@@ -11969,8 +12250,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil cooking and salad enova 80% diglycerides": {
@@ -11988,8 +12269,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil corn and canola": {
@@ -12007,12 +12288,13 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil corn industrial and retail all purpose salad or cooking": {
-    canonicalName: "oil corn industrial and retail all purpose salad or cooking",
+    canonicalName:
+      "oil corn industrial and retail all purpose salad or cooking",
     displayName: "Oil Corn Industrial And Retail All Purpose Salad Or Cooking",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -12026,8 +12308,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil corn peanut and olive": {
@@ -12045,8 +12327,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil cottonseed salad or cooking": {
@@ -12064,8 +12346,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil cupu assu": {
@@ -12083,8 +12365,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil flaxseed cold pressed": {
@@ -12102,8 +12384,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil flaxseed contains added sliced flaxseed": {
@@ -12121,8 +12403,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil grapeseed": {
@@ -12140,8 +12422,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil hazelnut": {
@@ -12159,8 +12441,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil industrial canola for salads woks and light frying": {
@@ -12178,8 +12460,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil industrial canola high oleic": {
@@ -12197,13 +12479,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil industrial canola partially hydrogenated oil for deep fat frying": {
-    canonicalName: "oil industrial canola partially hydrogenated oil for deep fat frying",
-    displayName: "Oil Industrial Canola Partially Hydrogenated Oil For Deep Fat Frying",
+    canonicalName:
+      "oil industrial canola partially hydrogenated oil for deep fat frying",
+    displayName:
+      "Oil Industrial Canola Partially Hydrogenated Oil For Deep Fat Frying",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -12216,87 +12500,99 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "oil industrial canola with antifoaming agent principal uses salads woks and light frying": {
-    canonicalName: "oil industrial canola with antifoaming agent principal uses salads woks and light frying",
-    displayName: "Oil Industrial Canola With Antifoaming Agent Principal Uses Salads Woks And Light Frying",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil industrial canola with antifoaming agent principal uses salads woks and light frying":
+    {
+      canonicalName:
+        "oil industrial canola with antifoaming agent principal uses salads woks and light frying",
+      displayName:
+        "Oil Industrial Canola With Antifoaming Agent Principal Uses Salads Woks And Light Frying",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
+  "oil industrial coconut confection fat typical basis for ice cream coatings":
+    {
+      canonicalName:
+        "oil industrial coconut confection fat typical basis for ice cream coatings",
+      displayName:
+        "Oil Industrial Coconut Confection Fat Typical Basis For Ice Cream Coatings",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+      },
     },
-  },
-  "oil industrial coconut confection fat typical basis for ice cream coatings": {
-    canonicalName: "oil industrial coconut confection fat typical basis for ice cream coatings",
-    displayName: "Oil Industrial Coconut Confection Fat Typical Basis For Ice Cream Coatings",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil industrial coconut hydrogenated used for whipped toppings and coffee whiteners":
+    {
+      canonicalName:
+        "oil industrial coconut hydrogenated used for whipped toppings and coffee whiteners",
+      displayName:
+        "Oil Industrial Coconut Hydrogenated Used For Whipped Toppings And Coffee Whiteners",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.80,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 0.99,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+  "oil industrial coconut principal uses candy coatings oil sprays roasting nuts":
+    {
+      canonicalName:
+        "oil industrial coconut principal uses candy coatings oil sprays roasting nuts",
+      displayName:
+        "Oil Industrial Coconut Principal Uses Candy Coatings Oil Sprays Roasting Nuts",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-  },
-  "oil industrial coconut hydrogenated used for whipped toppings and coffee whiteners": {
-    canonicalName: "oil industrial coconut hydrogenated used for whipped toppings and coffee whiteners",
-    displayName: "Oil Industrial Coconut Hydrogenated Used For Whipped Toppings And Coffee Whiteners",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.80,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 0.99,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
-  "oil industrial coconut principal uses candy coatings oil sprays roasting nuts": {
-    canonicalName: "oil industrial coconut principal uses candy coatings oil sprays roasting nuts",
-    displayName: "Oil Industrial Coconut Principal Uses Candy Coatings Oil Sprays Roasting Nuts",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "oil industrial cottonseed fully hydrogenated": {
     canonicalName: "oil industrial cottonseed fully hydrogenated",
     displayName: "Oil Industrial Cottonseed Fully Hydrogenated",
@@ -12312,8 +12608,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil industrial mid-oleic sunflower": {
@@ -12331,13 +12627,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil industrial palm and palm kernel filling fat non-hydrogenated": {
-    canonicalName: "oil industrial palm and palm kernel filling fat non-hydrogenated",
-    displayName: "Oil Industrial Palm And Palm Kernel Filling Fat Non-hydrogenated",
+    canonicalName:
+      "oil industrial palm and palm kernel filling fat non-hydrogenated",
+    displayName:
+      "Oil Industrial Palm And Palm Kernel Filling Fat Non-hydrogenated",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -12350,69 +12648,78 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "oil industrial palm kernel confection fat uses similar to high quality cocoa butter": {
-    canonicalName: "oil industrial palm kernel confection fat uses similar to high quality cocoa butter",
-    displayName: "Oil Industrial Palm Kernel Confection Fat Uses Similar To High Quality Cocoa Butter",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil industrial palm kernel confection fat uses similar to high quality cocoa butter":
+    {
+      canonicalName:
+        "oil industrial palm kernel confection fat uses similar to high quality cocoa butter",
+      displayName:
+        "Oil Industrial Palm Kernel Confection Fat Uses Similar To High Quality Cocoa Butter",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+  "oil industrial palm kernel hydrogenated confection fat intermediate grade product":
+    {
+      canonicalName:
+        "oil industrial palm kernel hydrogenated confection fat intermediate grade product",
+      displayName:
+        "Oil Industrial Palm Kernel Hydrogenated Confection Fat Intermediate Grade Product",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-  },
-  "oil industrial palm kernel hydrogenated confection fat intermediate grade product": {
-    canonicalName: "oil industrial palm kernel hydrogenated confection fat intermediate grade product",
-    displayName: "Oil Industrial Palm Kernel Hydrogenated Confection Fat Intermediate Grade Product",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil industrial palm kernel hydrogenated confection fat uses similar to 95 degree hard butter":
+    {
+      canonicalName:
+        "oil industrial palm kernel hydrogenated confection fat uses similar to 95 degree hard butter",
+      displayName:
+        "Oil Industrial Palm Kernel Hydrogenated Confection Fat Uses Similar To 95 Degree Hard Butter",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
-  "oil industrial palm kernel hydrogenated confection fat uses similar to 95 degree hard butter": {
-    canonicalName: "oil industrial palm kernel hydrogenated confection fat uses similar to 95 degree hard butter",
-    displayName: "Oil Industrial Palm Kernel Hydrogenated Confection Fat Uses Similar To 95 Degree Hard Butter",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
-    },
-  },
   "oil industrial palm kernel hydrogenated filling fat": {
     canonicalName: "oil industrial palm kernel hydrogenated filling fat",
     displayName: "Oil Industrial Palm Kernel Hydrogenated Filling Fat",
@@ -12428,29 +12735,32 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "oil industrial palm kernel hydrogenated used for whipped toppings non-dairy": {
-    canonicalName: "oil industrial palm kernel hydrogenated used for whipped toppings non-dairy",
-    displayName: "Oil Industrial Palm Kernel Hydrogenated Used For Whipped Toppings Non-dairy",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil industrial palm kernel hydrogenated used for whipped toppings non-dairy":
+    {
+      canonicalName:
+        "oil industrial palm kernel hydrogenated used for whipped toppings non-dairy",
+      displayName:
+        "Oil Industrial Palm Kernel Hydrogenated Used For Whipped Toppings Non-dairy",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "oil industrial soy fully hydrogenated": {
     canonicalName: "oil industrial soy fully hydrogenated",
     displayName: "Oil Industrial Soy Fully Hydrogenated",
@@ -12466,8 +12776,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil industrial soy low linolenic": {
@@ -12485,8 +12795,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil industrial soy partially hydrogenated all purpose": {
@@ -12504,106 +12814,121 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "oil industrial soy partially hydrogenated and cottonseed principal use as a tortilla shortening": {
-    canonicalName: "oil industrial soy partially hydrogenated and cottonseed principal use as a tortilla shortening",
-    displayName: "Oil Industrial Soy Partially Hydrogenated And Cottonseed Principal Use As A Tortilla Shortening",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil industrial soy partially hydrogenated and cottonseed principal use as a tortilla shortening":
+    {
+      canonicalName:
+        "oil industrial soy partially hydrogenated and cottonseed principal use as a tortilla shortening",
+      displayName:
+        "Oil Industrial Soy Partially Hydrogenated And Cottonseed Principal Use As A Tortilla Shortening",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
+  "oil industrial soy partially hydrogenated and soy winterized pourable clear fry":
+    {
+      canonicalName:
+        "oil industrial soy partially hydrogenated and soy winterized pourable clear fry",
+      displayName:
+        "Oil Industrial Soy Partially Hydrogenated And Soy Winterized Pourable Clear Fry",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-  },
-  "oil industrial soy partially hydrogenated and soy winterized pourable clear fry": {
-    canonicalName: "oil industrial soy partially hydrogenated and soy winterized pourable clear fry",
-    displayName: "Oil Industrial Soy Partially Hydrogenated And Soy Winterized Pourable Clear Fry",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil industrial soy partially hydrogenated multiuse for non-dairy butter flavor":
+    {
+      canonicalName:
+        "oil industrial soy partially hydrogenated multiuse for non-dairy butter flavor",
+      displayName:
+        "Oil Industrial Soy Partially Hydrogenated Multiuse For Non-dairy Butter Flavor",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
+  "oil industrial soy partially hydrogenated palm principal uses icings and fillings":
+    {
+      canonicalName:
+        "oil industrial soy partially hydrogenated palm principal uses icings and fillings",
+      displayName:
+        "Oil Industrial Soy Partially Hydrogenated Palm Principal Uses Icings And Fillings",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-  },
-  "oil industrial soy partially hydrogenated multiuse for non-dairy butter flavor": {
-    canonicalName: "oil industrial soy partially hydrogenated multiuse for non-dairy butter flavor",
-    displayName: "Oil Industrial Soy Partially Hydrogenated Multiuse For Non-dairy Butter Flavor",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetables":
+    {
+      canonicalName:
+        "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetables",
+      displayName:
+        "Oil Industrial Soy Partially Hydrogenated Principal Uses Popcorn And Flavoring Vegetables",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
-    },
-  },
-  "oil industrial soy partially hydrogenated palm principal uses icings and fillings": {
-    canonicalName: "oil industrial soy partially hydrogenated palm principal uses icings and fillings",
-    displayName: "Oil Industrial Soy Partially Hydrogenated Palm Principal Uses Icings And Fillings",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
-  "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetables": {
-    canonicalName: "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetables",
-    displayName: "Oil Industrial Soy Partially Hydrogenated Principal Uses Popcorn And Flavoring Vegetables",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "oil industrial soy refined for woks and light frying": {
     canonicalName: "oil industrial soy refined for woks and light frying",
     displayName: "Oil Industrial Soy Refined For Woks And Light Frying",
@@ -12619,8 +12944,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil industrial soy ultra low linolenic": {
@@ -12638,8 +12963,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil mustard": {
@@ -12657,8 +12982,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil nutmeg butter": {
@@ -12676,9 +13001,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "oil oat": {
@@ -12696,8 +13021,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil olive salad or cooking": {
@@ -12715,8 +13040,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil palm": {
@@ -12734,8 +13059,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil pam cooking spray original": {
@@ -12753,8 +13078,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil peanut salad or cooking": {
@@ -12772,8 +13097,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil poppyseed": {
@@ -12791,8 +13116,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil rice bran": {
@@ -12810,29 +13135,32 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "oil safflower salad or cooking high oleic primary safflower oil of commerce": {
-    canonicalName: "oil safflower salad or cooking high oleic primary safflower oil of commerce",
-    displayName: "Oil Safflower Salad Or Cooking High Oleic Primary Safflower Oil Of Commerce",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "oil safflower salad or cooking high oleic primary safflower oil of commerce":
+    {
+      canonicalName:
+        "oil safflower salad or cooking high oleic primary safflower oil of commerce",
+      displayName:
+        "Oil Safflower Salad Or Cooking High Oleic Primary Safflower Oil Of Commerce",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "oil safflower salad or cooking linoleic over 70%": {
     canonicalName: "oil safflower salad or cooking linoleic over 70%",
     displayName: "Oil Safflower Salad Or Cooking Linoleic Over 70%",
@@ -12848,8 +13176,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil sesame salad or cooking": {
@@ -12867,8 +13195,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil sheanut": {
@@ -12886,8 +13214,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil soybean lecithin": {
@@ -12905,8 +13233,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil soybean salad or cooking": {
@@ -12924,8 +13252,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil soybean salad or cooking partially hydrogenated": {
@@ -12943,13 +13271,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil soybean salad or cooking partially hydrogenated and cottonseed": {
-    canonicalName: "oil soybean salad or cooking partially hydrogenated and cottonseed",
-    displayName: "Oil Soybean Salad Or Cooking Partially Hydrogenated And Cottonseed",
+    canonicalName:
+      "oil soybean salad or cooking partially hydrogenated and cottonseed",
+    displayName:
+      "Oil Soybean Salad Or Cooking Partially Hydrogenated And Cottonseed",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -12962,8 +13292,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil sunflower high oleic 70% and over": {
@@ -12981,8 +13311,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil sunflower linoleic approx. 65%": {
@@ -13000,8 +13330,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil sunflower linoleic less than 60%": {
@@ -13019,8 +13349,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil sunflower linoleic partially hydrogenated": {
@@ -13038,8 +13368,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil teaseed": {
@@ -13057,8 +13387,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil tomatoseed": {
@@ -13076,8 +13406,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil ucuhuba butter": {
@@ -13095,14 +13425,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "oil vegetable natreon canola high stability non trans high oleic 70%": {
-    canonicalName: "oil vegetable natreon canola high stability non trans high oleic 70%",
-    displayName: "Oil Vegetable Natreon Canola High Stability Non Trans High Oleic 70%",
+    canonicalName:
+      "oil vegetable natreon canola high stability non trans high oleic 70%",
+    displayName:
+      "Oil Vegetable Natreon Canola High Stability Non Trans High Oleic 70%",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -13115,8 +13447,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil vegetable soybean refined": {
@@ -13134,8 +13466,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil walnut": {
@@ -13153,8 +13485,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "oil wheat germ": {
@@ -13172,8 +13504,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "olive oil": {
@@ -13191,8 +13523,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "orange": {
@@ -13210,9 +13542,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "orange juice": {
@@ -13246,9 +13578,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich ground": {
@@ -13266,9 +13598,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich ground  pan-broiled": {
@@ -13286,9 +13618,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich inside leg": {
@@ -13306,9 +13638,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich inside strip": {
@@ -13326,9 +13658,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich outside leg": {
@@ -13346,9 +13678,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich outside strip": {
@@ -13366,9 +13698,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich oyster": {
@@ -13386,9 +13718,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich round": {
@@ -13406,9 +13738,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich tenderloin": {
@@ -13426,9 +13758,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich tip trimmed": {
@@ -13446,9 +13778,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "ostrich top loin": {
@@ -13466,9 +13798,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "pancakes": {
@@ -13502,10 +13834,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "pasta": {
@@ -13539,9 +13871,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "peanut butter": {
@@ -13559,9 +13891,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "peanuts": {
@@ -13579,8 +13911,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "peppermint": {
@@ -13598,8 +13930,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "pepperoni": {
@@ -13633,9 +13965,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "pheasant  meat only": {
@@ -13653,9 +13985,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "pheasant  total edible": {
@@ -13673,9 +14005,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "pheasant breast meat only": {
@@ -13693,9 +14025,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "pheasant leg meat only": {
@@ -13713,9 +14045,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "pineapple": {
@@ -13733,9 +14065,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "pistachios": {
@@ -13753,8 +14085,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "pizza": {
@@ -13838,7 +14170,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
     flags: {},
   },
   "poultry mechanically deboned from backs and necks with skin": {
-    canonicalName: "poultry mechanically deboned from backs and necks with skin",
+    canonicalName:
+      "poultry mechanically deboned from backs and necks with skin",
     displayName: "Poultry Mechanically Deboned From Backs And Necks With Skin",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -13852,14 +14185,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "poultry mechanically deboned from backs and necks without skin": {
-    canonicalName: "poultry mechanically deboned from backs and necks without skin",
-    displayName: "Poultry Mechanically Deboned From Backs And Necks Without Skin",
+    canonicalName:
+      "poultry mechanically deboned from backs and necks without skin",
+    displayName:
+      "Poultry Mechanically Deboned From Backs And Necks Without Skin",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -13872,9 +14207,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "poultry mechanically deboned from mature hens": {
@@ -13892,9 +14227,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "pretzels": {
@@ -13960,10 +14295,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "protein supplement milk based muscle milk powder": {
@@ -13981,10 +14316,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "quail  total edible": {
@@ -14002,9 +14337,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "quail breast meat only": {
@@ -14022,9 +14357,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "quail meat and skin": {
@@ -14042,9 +14377,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "quail meat only": {
@@ -14062,9 +14397,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "quinoa": {
@@ -14114,10 +14449,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "rosemary": {
@@ -14135,8 +14470,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "ruffed grouse breast meat skinless": {
@@ -14154,9 +14489,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "salad dressing bacon and tomato": {
@@ -14174,13 +14509,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing blue or roquefort cheese dressing commercial regular": {
-    canonicalName: "salad dressing blue or roquefort cheese dressing commercial regular",
-    displayName: "Salad Dressing Blue Or Roquefort Cheese Dressing Commercial Regular",
+    canonicalName:
+      "salad dressing blue or roquefort cheese dressing commercial regular",
+    displayName:
+      "Salad Dressing Blue Or Roquefort Cheese Dressing Commercial Regular",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -14193,8 +14530,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing blue or roquefort cheese dressing fat-free": {
@@ -14212,8 +14549,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing blue or roquefort cheese dressing light": {
@@ -14231,8 +14568,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing blue or roquefort cheese low calorie": {
@@ -14250,8 +14587,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing buttermilk lite": {
@@ -14269,9 +14606,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "salad dressing caesar dressing regular": {
@@ -14289,8 +14626,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing caesar fat-free": {
@@ -14308,8 +14645,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing caesar low calorie": {
@@ -14327,8 +14664,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing coleslaw": {
@@ -14346,8 +14683,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing coleslaw reduced fat": {
@@ -14365,8 +14702,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.02,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing french cottonseed oil home recipe": {
@@ -14384,8 +14721,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing french dressing commercial regular": {
@@ -14403,13 +14740,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing french dressing commercial regular without salt": {
-    canonicalName: "salad dressing french dressing commercial regular without salt",
-    displayName: "Salad Dressing French Dressing Commercial Regular Without Salt",
+    canonicalName:
+      "salad dressing french dressing commercial regular without salt",
+    displayName:
+      "Salad Dressing French Dressing Commercial Regular Without Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -14422,8 +14761,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing french dressing fat-free": {
@@ -14441,8 +14780,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing french dressing reduced calorie": {
@@ -14460,8 +14799,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing french dressing reduced fat": {
@@ -14479,8 +14818,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing french dressing reduced fat without salt": {
@@ -14498,8 +14837,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing french home recipe": {
@@ -14517,8 +14856,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing green goddess regular": {
@@ -14536,8 +14875,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing home recipe vinegar and oil": {
@@ -14555,8 +14894,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing honey mustard dressing reduced calorie": {
@@ -14574,8 +14913,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing honey mustard regular": {
@@ -14593,8 +14932,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing italian dressing commercial reduced fat": {
@@ -14612,8 +14951,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing italian dressing commercial regular": {
@@ -14631,13 +14970,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing italian dressing commercial regular without salt": {
-    canonicalName: "salad dressing italian dressing commercial regular without salt",
-    displayName: "Salad Dressing Italian Dressing Commercial Regular Without Salt",
+    canonicalName:
+      "salad dressing italian dressing commercial regular without salt",
+    displayName:
+      "Salad Dressing Italian Dressing Commercial Regular Without Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -14650,8 +14991,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing italian dressing fat-free": {
@@ -14669,8 +15010,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing italian dressing reduced calorie": {
@@ -14688,8 +15029,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing italian dressing reduced fat without salt": {
@@ -14707,8 +15048,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing kraft mayo fat free mayonnaise dressing": {
@@ -14726,8 +15067,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing kraft mayo light mayonnaise": {
@@ -14745,8 +15086,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing kraft miracle whip free nonfat dressing": {
@@ -14764,8 +15105,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise and mayonnaise-type low calorie": {
@@ -14783,8 +15124,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise imitation milk cream": {
@@ -14802,9 +15143,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "salad dressing mayonnaise imitation soybean": {
@@ -14822,13 +15163,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise imitation soybean without cholesterol": {
-    canonicalName: "salad dressing mayonnaise imitation soybean without cholesterol",
-    displayName: "Salad Dressing Mayonnaise Imitation Soybean Without Cholesterol",
+    canonicalName:
+      "salad dressing mayonnaise imitation soybean without cholesterol",
+    displayName:
+      "Salad Dressing Mayonnaise Imitation Soybean Without Cholesterol",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -14841,8 +15184,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise light": {
@@ -14860,13 +15203,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise light smart balance omega plus light": {
-    canonicalName: "salad dressing mayonnaise light smart balance omega plus light",
-    displayName: "Salad Dressing Mayonnaise Light Smart Balance Omega Plus Light",
+    canonicalName:
+      "salad dressing mayonnaise light smart balance omega plus light",
+    displayName:
+      "Salad Dressing Mayonnaise Light Smart Balance Omega Plus Light",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -14879,8 +15224,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise regular": {
@@ -14898,13 +15243,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise soybean and safflower oil with salt": {
-    canonicalName: "salad dressing mayonnaise soybean and safflower oil with salt",
-    displayName: "Salad Dressing Mayonnaise Soybean And Safflower Oil With Salt",
+    canonicalName:
+      "salad dressing mayonnaise soybean and safflower oil with salt",
+    displayName:
+      "Salad Dressing Mayonnaise Soybean And Safflower Oil With Salt",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -14917,8 +15264,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise soybean oil without salt": {
@@ -14936,8 +15283,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise type regular with salt": {
@@ -14955,8 +15302,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise-like fat-free": {
@@ -14974,8 +15321,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing mayonnaise-type light": {
@@ -14993,8 +15340,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing peppercorn dressing commercial regular": {
@@ -15012,8 +15359,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing poppyseed creamy": {
@@ -15031,9 +15378,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "salad dressing ranch dressing fat-free": {
@@ -15051,8 +15398,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing ranch dressing reduced fat": {
@@ -15070,8 +15417,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing ranch dressing regular": {
@@ -15089,8 +15436,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing russian dressing": {
@@ -15108,8 +15455,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing russian dressing low calorie": {
@@ -15127,8 +15474,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing sesame seed dressing regular": {
@@ -15146,8 +15493,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing spray-style dressing assorted flavors": {
@@ -15165,8 +15512,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing sweet and sour": {
@@ -15184,8 +15531,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing thousand island commercial regular": {
@@ -15203,8 +15550,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing thousand island dressing fat-free": {
@@ -15222,8 +15569,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salad dressing thousand island dressing reduced fat": {
@@ -15241,8 +15588,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "salami": {
@@ -15294,7 +15641,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
     flags: {},
   },
   "sandwich spread with chopped pickle regular unspecified oils": {
-    canonicalName: "sandwich spread with chopped pickle regular unspecified oils",
+    canonicalName:
+      "sandwich spread with chopped pickle regular unspecified oils",
     displayName: "Sandwich Spread With Chopped Pickle Regular Unspecified Oils",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -15308,8 +15656,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "sausage": {
@@ -15343,8 +15691,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.05,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "seasoning mix dry taco original": {
@@ -15362,8 +15710,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.07,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "shortening bread soybean hydrogenated and cottonseed": {
@@ -15381,13 +15729,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "shortening cake mix soybean hydrogenated and cottonseed hydrogenated": {
-    canonicalName: "shortening cake mix soybean hydrogenated and cottonseed hydrogenated",
-    displayName: "Shortening Cake Mix Soybean Hydrogenated And Cottonseed Hydrogenated",
+    canonicalName:
+      "shortening cake mix soybean hydrogenated and cottonseed hydrogenated",
+    displayName:
+      "Shortening Cake Mix Soybean Hydrogenated And Cottonseed Hydrogenated",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -15400,29 +15750,32 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "shortening confectionery coconut hydrogenated and or palm kernel hydrogenated": {
-    canonicalName: "shortening confectionery coconut hydrogenated and or palm kernel hydrogenated",
-    displayName: "Shortening Confectionery Coconut Hydrogenated And Or Palm Kernel Hydrogenated",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "shortening confectionery coconut hydrogenated and or palm kernel hydrogenated":
+    {
+      canonicalName:
+        "shortening confectionery coconut hydrogenated and or palm kernel hydrogenated",
+      displayName:
+        "Shortening Confectionery Coconut Hydrogenated And Or Palm Kernel Hydrogenated",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "shortening confectionery fractionated palm": {
     canonicalName: "shortening confectionery fractionated palm",
     displayName: "Shortening Confectionery Fractionated Palm",
@@ -15438,8 +15791,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "shortening frying heavy duty beef tallow and cottonseed": {
@@ -15457,9 +15810,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "shortening frying heavy duty palm hydrogenated": {
@@ -15477,13 +15830,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "shortening frying heavy duty soybean hydrogenated linoleic less than 1%": {
-    canonicalName: "shortening frying heavy duty soybean hydrogenated linoleic less than 1%",
-    displayName: "Shortening Frying Heavy Duty Soybean Hydrogenated Linoleic Less Than 1%",
+    canonicalName:
+      "shortening frying heavy duty soybean hydrogenated linoleic less than 1%",
+    displayName:
+      "Shortening Frying Heavy Duty Soybean Hydrogenated Linoleic Less Than 1%",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -15496,8 +15851,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "shortening household lard and vegetable oil": {
@@ -15515,9 +15870,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "shortening household soybean hydrogenated and palm": {
@@ -15535,29 +15890,32 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "shortening household soybean partially hydrogenated -cottonseed partially hydrogenated": {
-    canonicalName: "shortening household soybean partially hydrogenated -cottonseed partially hydrogenated",
-    displayName: "Shortening Household Soybean Partially Hydrogenated -cottonseed Partially Hydrogenated",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "shortening household soybean partially hydrogenated -cottonseed partially hydrogenated":
+    {
+      canonicalName:
+        "shortening household soybean partially hydrogenated -cottonseed partially hydrogenated",
+      displayName:
+        "Shortening Household Soybean Partially Hydrogenated -cottonseed Partially Hydrogenated",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "shortening industrial lard and vegetable oil": {
     canonicalName: "shortening industrial lard and vegetable oil",
     displayName: "Shortening Industrial Lard And Vegetable Oil",
@@ -15573,14 +15931,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "shortening industrial soy partially hydrogenated and corn for frying": {
-    canonicalName: "shortening industrial soy partially hydrogenated and corn for frying",
-    displayName: "Shortening Industrial Soy Partially Hydrogenated And Corn For Frying",
+    canonicalName:
+      "shortening industrial soy partially hydrogenated and corn for frying",
+    displayName:
+      "Shortening Industrial Soy Partially Hydrogenated And Corn For Frying",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -15593,48 +15953,54 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "shortening industrial soy partially hydrogenated for baking and confections": {
-    canonicalName: "shortening industrial soy partially hydrogenated for baking and confections",
-    displayName: "Shortening Industrial Soy Partially Hydrogenated For Baking And Confections",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "shortening industrial soy partially hydrogenated for baking and confections":
+    {
+      canonicalName:
+        "shortening industrial soy partially hydrogenated for baking and confections",
+      displayName:
+        "Shortening Industrial Soy Partially Hydrogenated For Baking And Confections",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
+  "shortening industrial soy partially hydrogenated pourable liquid fry shortening":
+    {
+      canonicalName:
+        "shortening industrial soy partially hydrogenated pourable liquid fry shortening",
+      displayName:
+        "Shortening Industrial Soy Partially Hydrogenated Pourable Liquid Fry Shortening",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-  },
-  "shortening industrial soy partially hydrogenated pourable liquid fry shortening": {
-    canonicalName: "shortening industrial soy partially hydrogenated pourable liquid fry shortening",
-    displayName: "Shortening Industrial Soy Partially Hydrogenated Pourable Liquid Fry Shortening",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "shortening industrial soybean hydrogenated and cottonseed": {
     canonicalName: "shortening industrial soybean hydrogenated and cottonseed",
     displayName: "Shortening Industrial Soybean Hydrogenated And Cottonseed",
@@ -15650,13 +16016,15 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "shortening multipurpose soybean hydrogenated and palm hydrogenated": {
-    canonicalName: "shortening multipurpose soybean hydrogenated and palm hydrogenated",
-    displayName: "Shortening Multipurpose Soybean Hydrogenated And Palm Hydrogenated",
+    canonicalName:
+      "shortening multipurpose soybean hydrogenated and palm hydrogenated",
+    displayName:
+      "Shortening Multipurpose Soybean Hydrogenated And Palm Hydrogenated",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -15669,32 +16037,37 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
-  "shortening special purpose for baking soybean hydrogenated palm and cottonseed": {
-    canonicalName: "shortening special purpose for baking soybean hydrogenated palm and cottonseed",
-    displayName: "Shortening Special Purpose For Baking Soybean Hydrogenated Palm And Cottonseed",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 8.84,
-      protein_g: 0.00,
-      carbs_g: 0.00,
-      fat_g: 1.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "shortening special purpose for baking soybean hydrogenated palm and cottonseed":
+    {
+      canonicalName:
+        "shortening special purpose for baking soybean hydrogenated palm and cottonseed",
+      displayName:
+        "Shortening Special Purpose For Baking Soybean Hydrogenated Palm And Cottonseed",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 8.84,
+        protein_g: 0.00,
+        carbs_g: 0.00,
+        fat_g: 1.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isVegan": true,
+        "isVegetarian": true,
+      },
     },
-    flags: {
-          "isVegan": true,
-          "isVegetarian": true
-    },
-  },
   "shortening special purpose for cakes and frostings soybean hydrogenated": {
-    canonicalName: "shortening special purpose for cakes and frostings soybean hydrogenated",
-    displayName: "Shortening Special Purpose For Cakes And Frostings Soybean Hydrogenated",
+    canonicalName:
+      "shortening special purpose for cakes and frostings soybean hydrogenated",
+    displayName:
+      "Shortening Special Purpose For Cakes And Frostings Soybean Hydrogenated",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -15707,8 +16080,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "shortening vegetable household composite": {
@@ -15726,8 +16099,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "shrimp": {
@@ -15793,10 +16166,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "sour cream imitation cultured": {
@@ -15814,10 +16187,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "sour cream light": {
@@ -15835,10 +16208,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "sour cream reduced fat": {
@@ -15856,10 +16229,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "sour dressing non-butterfat cultured filled cream-type": {
@@ -15877,10 +16250,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "soy milk": {
@@ -15914,8 +16287,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices allspice ground": {
@@ -15933,8 +16306,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices anise seed": {
@@ -15952,8 +16325,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices basil": {
@@ -15971,8 +16344,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices bay leaf": {
@@ -15990,8 +16363,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices caraway seed": {
@@ -16009,8 +16382,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices cardamom": {
@@ -16028,8 +16401,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices celery seed": {
@@ -16047,8 +16420,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices chervil": {
@@ -16066,8 +16439,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices chili powder": {
@@ -16085,8 +16458,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.03,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices cinnamon ground": {
@@ -16104,8 +16477,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices cloves ground": {
@@ -16123,8 +16496,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices coriander leaf": {
@@ -16142,8 +16515,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices coriander seed": {
@@ -16161,8 +16534,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices cumin seed": {
@@ -16180,8 +16553,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices curry powder": {
@@ -16199,8 +16572,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices dill seed": {
@@ -16218,8 +16591,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices dill weed": {
@@ -16237,8 +16610,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices fennel seed": {
@@ -16256,8 +16629,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices fenugreek seed": {
@@ -16275,8 +16648,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices garlic powder": {
@@ -16294,8 +16667,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices ginger ground": {
@@ -16313,8 +16686,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices mace ground": {
@@ -16332,8 +16705,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices marjoram": {
@@ -16351,8 +16724,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices mustard seed ground": {
@@ -16370,8 +16743,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices nutmeg ground": {
@@ -16389,8 +16762,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices onion powder": {
@@ -16408,8 +16781,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices oregano": {
@@ -16427,8 +16800,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices paprika": {
@@ -16446,8 +16819,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices parsley": {
@@ -16465,8 +16838,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices pepper black": {
@@ -16484,8 +16857,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices pepper red or cayenne": {
@@ -16503,8 +16876,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices pepper white": {
@@ -16522,8 +16895,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices poppy seed": {
@@ -16541,8 +16914,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices poultry seasoning": {
@@ -16560,8 +16933,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices pumpkin pie spice": {
@@ -16579,8 +16952,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices rosemary": {
@@ -16598,8 +16971,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices saffron": {
@@ -16617,8 +16990,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices sage ground": {
@@ -16636,8 +17009,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices savory ground": {
@@ -16655,8 +17028,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices tarragon": {
@@ -16674,8 +17047,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices thyme": {
@@ -16693,8 +17066,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spices turmeric ground": {
@@ -16712,8 +17085,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "spinach": {
@@ -16731,9 +17104,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "sports drink": {
@@ -16767,9 +17140,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "squab pigeon meat and skin": {
@@ -16787,9 +17160,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "squab pigeon meat only": {
@@ -16807,9 +17180,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "strawberries": {
@@ -16827,9 +17200,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "sunflower seeds": {
@@ -16847,8 +17220,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "sushi roll": {
@@ -16914,8 +17287,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "tofu": {
@@ -16949,9 +17322,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "tortilla": {
@@ -17001,9 +17374,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes back meat and skin  roasted": {
@@ -17021,9 +17394,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes breast meat and skin": {
@@ -17041,9 +17414,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes breast meat and skin  roasted": {
@@ -17061,9 +17434,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes gizzard  simmered": {
@@ -17081,9 +17454,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes heart": {
@@ -17101,9 +17474,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes heart  simmered": {
@@ -17121,9 +17494,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes leg meat and skin": {
@@ -17141,9 +17514,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes leg meat and skin  roasted": {
@@ -17161,9 +17534,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes light meat  roasted": {
@@ -17181,9 +17554,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes liver": {
@@ -17201,9 +17574,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes liver  simmered": {
@@ -17221,9 +17594,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes wing meat and skin": {
@@ -17241,9 +17614,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey all classes wing meat and skin  roasted": {
@@ -17261,9 +17634,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey and gravy": {
@@ -17281,14 +17654,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey back from whole bird meat and skin with added solution": {
-    canonicalName: "turkey back from whole bird meat and skin with added solution",
-    displayName: "Turkey Back From Whole Bird Meat And Skin With Added Solution",
+    canonicalName:
+      "turkey back from whole bird meat and skin with added solution",
+    displayName:
+      "Turkey Back From Whole Bird Meat And Skin With Added Solution",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17301,14 +17676,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey back from whole bird meat and skin with added solution roasted": {
-    canonicalName: "turkey back from whole bird meat and skin with added solution roasted",
-    displayName: "Turkey Back From Whole Bird Meat And Skin With Added Solution Roasted",
+    canonicalName:
+      "turkey back from whole bird meat and skin with added solution roasted",
+    displayName:
+      "Turkey Back From Whole Bird Meat And Skin With Added Solution Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17321,9 +17698,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey back from whole bird meat only with added solution": {
@@ -17341,14 +17718,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey back from whole bird meat only with added solution roasted": {
-    canonicalName: "turkey back from whole bird meat only with added solution roasted",
-    displayName: "Turkey Back From Whole Bird Meat Only With Added Solution Roasted",
+    canonicalName:
+      "turkey back from whole bird meat only with added solution roasted",
+    displayName:
+      "Turkey Back From Whole Bird Meat Only With Added Solution Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17361,9 +17740,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey breast": {
@@ -17383,7 +17762,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
     flags: {},
   },
   "turkey breast from whole bird meat only with added solution": {
-    canonicalName: "turkey breast from whole bird meat only with added solution",
+    canonicalName:
+      "turkey breast from whole bird meat only with added solution",
     displayName: "Turkey Breast From Whole Bird Meat Only With Added Solution",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -17397,14 +17777,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey breast from whole bird meat only with added solution roasted": {
-    canonicalName: "turkey breast from whole bird meat only with added solution roasted",
-    displayName: "Turkey Breast From Whole Bird Meat Only With Added Solution Roasted",
+    canonicalName:
+      "turkey breast from whole bird meat only with added solution roasted",
+    displayName:
+      "Turkey Breast From Whole Bird Meat Only With Added Solution Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17417,9 +17799,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey breast pre-basted meat and skin  roasted": {
@@ -17437,14 +17819,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey dark meat from whole meat and skin with added solution": {
-    canonicalName: "turkey dark meat from whole meat and skin with added solution",
-    displayName: "Turkey Dark Meat From Whole Meat And Skin With Added Solution",
+    canonicalName:
+      "turkey dark meat from whole meat and skin with added solution",
+    displayName:
+      "Turkey Dark Meat From Whole Meat And Skin With Added Solution",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17457,14 +17841,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey dark meat from whole meat and skin with added solution  roasted": {
-    canonicalName: "turkey dark meat from whole meat and skin with added solution  roasted",
-    displayName: "Turkey Dark Meat From Whole Meat And Skin With Added Solution  Roasted",
+    canonicalName:
+      "turkey dark meat from whole meat and skin with added solution  roasted",
+    displayName:
+      "Turkey Dark Meat From Whole Meat And Skin With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17477,9 +17863,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey dark meat from whole meat only with added solution": {
@@ -17497,9 +17883,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey dark meat meat and skin": {
@@ -17517,9 +17903,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey dark meat meat only with added solution  roasted": {
@@ -17537,9 +17923,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey diced light and dark meat seasoned": {
@@ -17557,9 +17943,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey drumstick from whole bird meat only": {
@@ -17577,9 +17963,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey drumstick from whole bird meat only roasted": {
@@ -17597,14 +17983,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey drumstick from whole bird meat only with added solution": {
-    canonicalName: "turkey drumstick from whole bird meat only with added solution",
-    displayName: "Turkey Drumstick From Whole Bird Meat Only With Added Solution",
+    canonicalName:
+      "turkey drumstick from whole bird meat only with added solution",
+    displayName:
+      "Turkey Drumstick From Whole Bird Meat Only With Added Solution",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17617,14 +18005,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey drumstick from whole bird meat only with added solution roasted": {
-    canonicalName: "turkey drumstick from whole bird meat only with added solution roasted",
-    displayName: "Turkey Drumstick From Whole Bird Meat Only With Added Solution Roasted",
+    canonicalName:
+      "turkey drumstick from whole bird meat only with added solution roasted",
+    displayName:
+      "Turkey Drumstick From Whole Bird Meat Only With Added Solution Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17637,9 +18027,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey drumstick smoked  with skin bone removed": {
@@ -17657,14 +18047,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey from whole light meat meat and skin with added solution": {
-    canonicalName: "turkey from whole light meat meat and skin with added solution",
-    displayName: "Turkey From Whole Light Meat Meat And Skin With Added Solution",
+    canonicalName:
+      "turkey from whole light meat meat and skin with added solution",
+    displayName:
+      "Turkey From Whole Light Meat Meat And Skin With Added Solution",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17677,14 +18069,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey from whole light meat meat and skin with added solution  roasted": {
-    canonicalName: "turkey from whole light meat meat and skin with added solution  roasted",
-    displayName: "Turkey From Whole Light Meat Meat And Skin With Added Solution  Roasted",
+    canonicalName:
+      "turkey from whole light meat meat and skin with added solution  roasted",
+    displayName:
+      "Turkey From Whole Light Meat Meat And Skin With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17697,9 +18091,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey from whole light meat meat only with added solution": {
@@ -17717,14 +18111,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey from whole light meat meat only with added solution  roasted": {
-    canonicalName: "turkey from whole light meat meat only with added solution  roasted",
-    displayName: "Turkey From Whole Light Meat Meat Only With Added Solution  Roasted",
+    canonicalName:
+      "turkey from whole light meat meat only with added solution  roasted",
+    displayName:
+      "Turkey From Whole Light Meat Meat Only With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -17737,9 +18133,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey fryer-roasters meat and skin  roasted": {
@@ -17757,9 +18153,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey gizzard all classes": {
@@ -17777,9 +18173,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground": {
@@ -17797,9 +18193,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground 85% lean 15% fat": {
@@ -17817,9 +18213,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground 85% lean 15% fat pan-broiled crumbles": {
@@ -17837,9 +18233,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground 85% lean 15% fat patties broiled": {
@@ -17857,9 +18253,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground 93% lean 7% fat": {
@@ -17877,9 +18273,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground 93% lean 7% fat pan-broiled crumbles": {
@@ -17897,9 +18293,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground 93% lean 7% fat patties broiled": {
@@ -17917,9 +18313,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground fat free": {
@@ -17937,9 +18333,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground fat free pan-broiled crumbles": {
@@ -17957,9 +18353,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey ground fat free patties broiled": {
@@ -17977,9 +18373,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey light or dark meat smoked  skin and bone removed": {
@@ -17997,9 +18393,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey light or dark meat smoked  with skin bone removed": {
@@ -18017,9 +18413,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey mechanically deboned from turkey frames": {
@@ -18037,9 +18433,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts breast meat and skin": {
@@ -18057,9 +18453,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts breast meat and skin  roasted": {
@@ -18077,13 +18473,14 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts breast meat and skin with added solution": {
-    canonicalName: "turkey retail parts breast meat and skin with added solution",
+    canonicalName:
+      "turkey retail parts breast meat and skin with added solution",
     displayName: "Turkey Retail Parts Breast Meat And Skin With Added Solution",
     baseUnit: "g",
     gramsPerUnit: 1,
@@ -18097,9 +18494,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts breast meat only": {
@@ -18117,9 +18514,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts breast meat only  roasted": {
@@ -18137,9 +18534,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts breast meat only with added solution": {
@@ -18157,14 +18554,16 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts breast meat only with added solution  roasted": {
-    canonicalName: "turkey retail parts breast meat only with added solution  roasted",
-    displayName: "Turkey Retail Parts Breast Meat Only With Added Solution  Roasted",
+    canonicalName:
+      "turkey retail parts breast meat only with added solution  roasted",
+    displayName:
+      "Turkey Retail Parts Breast Meat Only With Added Solution  Roasted",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -18177,9 +18576,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts drumstick meat and skin": {
@@ -18197,9 +18596,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts drumstick meat and skin  roasted": {
@@ -18217,9 +18616,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey retail parts drumstick meat only  roasted": {
@@ -18237,9 +18636,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey roast boneless  seasoned light and dark meat": {
@@ -18257,9 +18656,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey sticks breaded battered fried": {
@@ -18277,9 +18676,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "turkey thigh pre-basted meat and skin  roasted": {
@@ -18297,9 +18696,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": false,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": false,
+      "isVegan": false,
     },
   },
   "vanilla extract": {
@@ -18317,8 +18716,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "vanilla extract imitation alcohol": {
@@ -18336,8 +18735,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "vanilla extract imitation no alcohol": {
@@ -18355,8 +18754,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "vegetable oil palm kernel": {
@@ -18374,8 +18773,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "vegetable oil-butter spread reduced calorie": {
@@ -18393,9 +18792,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
     },
   },
   "vinegar balsamic": {
@@ -18413,8 +18812,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "vinegar cider": {
@@ -18432,8 +18831,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "vinegar distilled": {
@@ -18451,8 +18850,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "vinegar red wine": {
@@ -18470,8 +18869,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "waffles": {
@@ -18505,8 +18904,8 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true
+      "isVegan": true,
+      "isVegetarian": true,
     },
   },
   "watermelon": {
@@ -18524,9 +18923,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
   "whey acid": {
@@ -18544,10 +18943,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "whey acid fluid": {
@@ -18565,10 +18964,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "whey sweet": {
@@ -18586,10 +18985,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.01,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "whey sweet fluid": {
@@ -18607,10 +19006,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "whipped cream substitute dietetic made from powdered mix": {
@@ -18628,10 +19027,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "whipped topping  low fat": {
@@ -18649,10 +19048,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "white rice": {
@@ -18702,15 +19101,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt  flavors not chocolate nonfat milk with low-calorie sweetener": {
-    canonicalName: "yogurt  flavors not chocolate nonfat milk with low-calorie sweetener",
-    displayName: "Yogurt  Flavors Not Chocolate Nonfat Milk With Low-calorie Sweetener",
+    canonicalName:
+      "yogurt  flavors not chocolate nonfat milk with low-calorie sweetener",
+    displayName:
+      "Yogurt  Flavors Not Chocolate Nonfat Milk With Low-calorie Sweetener",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -18723,10 +19124,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt  flavors other than chocolate lowfat": {
@@ -18744,10 +19145,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt chocolate nonfat milk": {
@@ -18765,10 +19166,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt chocolate nonfat milk fortified with vitamin d": {
@@ -18786,10 +19187,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt fruit low fat 10 grams protein per 8 ounce": {
@@ -18807,33 +19208,36 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "yogurt fruit low fat 10 grams protein per 8 ounce fortified with vitamin d": {
-    canonicalName: "yogurt fruit low fat 10 grams protein per 8 ounce fortified with vitamin d",
-    displayName: "Yogurt Fruit Low Fat 10 Grams Protein Per 8 Ounce Fortified With Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 1.02,
-      protein_g: 0.04,
-      carbs_g: 0.19,
-      fat_g: 0.01,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "yogurt fruit low fat 10 grams protein per 8 ounce fortified with vitamin d":
+    {
+      canonicalName:
+        "yogurt fruit low fat 10 grams protein per 8 ounce fortified with vitamin d",
+      displayName:
+        "Yogurt Fruit Low Fat 10 Grams Protein Per 8 Ounce Fortified With Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 1.02,
+        protein_g: 0.04,
+        carbs_g: 0.19,
+        fat_g: 0.01,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "yogurt fruit low fat 11g protein 8 oz": {
     canonicalName: "yogurt fruit low fat 11g protein 8 oz",
     displayName: "Yogurt Fruit Low Fat 11g Protein 8 Oz",
@@ -18849,10 +19253,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt fruit low fat 9 g protein 8 oz": {
@@ -18870,15 +19274,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt fruit low fat 9 grams protein per 8 ounce fortified with vitamin d": {
-    canonicalName: "yogurt fruit low fat 9 grams protein per 8 ounce fortified with vitamin d",
-    displayName: "Yogurt Fruit Low Fat 9 Grams Protein Per 8 Ounce Fortified With Vitamin D",
+    canonicalName:
+      "yogurt fruit low fat 9 grams protein per 8 ounce fortified with vitamin d",
+    displayName:
+      "Yogurt Fruit Low Fat 9 Grams Protein Per 8 Ounce Fortified With Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -18891,10 +19297,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt fruit lowfat with low calorie sweetener": {
@@ -18912,15 +19318,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt fruit lowfat with low calorie sweetener fortified with vitamin d": {
-    canonicalName: "yogurt fruit lowfat with low calorie sweetener fortified with vitamin d",
-    displayName: "Yogurt Fruit Lowfat With Low Calorie Sweetener Fortified With Vitamin D",
+    canonicalName:
+      "yogurt fruit lowfat with low calorie sweetener fortified with vitamin d",
+    displayName:
+      "Yogurt Fruit Lowfat With Low Calorie Sweetener Fortified With Vitamin D",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -18933,10 +19341,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt fruit variety nonfat": {
@@ -18954,10 +19362,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt fruit variety nonfat fortified with vitamin d": {
@@ -18975,10 +19383,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek 2% fat apricot chobani": {
@@ -18996,10 +19404,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek 2% fat key lime blend chobani": {
@@ -19017,10 +19425,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek 2% fat mango chobani": {
@@ -19038,10 +19446,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek 2% fat mixed berry blend chobani": {
@@ -19059,10 +19467,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek 2% fat pineapple chobani": {
@@ -19080,10 +19488,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek 2% fat strawberry banana chobani": {
@@ -19101,10 +19509,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek 2%fat coconut blend chobani": {
@@ -19122,10 +19530,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek blueberry chobani": {
@@ -19143,10 +19551,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek fruit whole milk": {
@@ -19164,10 +19572,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat fruit on bottom blackberry chobani": {
@@ -19185,10 +19593,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat fruit on bottom pomegranate chobani": {
@@ -19206,10 +19614,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat fruit on bottom strawberry chobani": {
@@ -19227,10 +19635,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat lemon blend chobani": {
@@ -19248,10 +19656,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat peach chobani": {
@@ -19269,10 +19677,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat plain chobani": {
@@ -19290,10 +19698,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat raspberry chobani": {
@@ -19311,10 +19719,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat strawberry dannon oikos": {
@@ -19332,10 +19740,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat vanilla chobani": {
@@ -19353,10 +19761,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek nonfat vanilla dannon oikos": {
@@ -19374,10 +19782,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek plain lowfat": {
@@ -19395,33 +19803,36 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "yogurt greek plain nonfat includes foods for usda's food distribution program": {
-    canonicalName: "yogurt greek plain nonfat includes foods for usda's food distribution program",
-    displayName: "Yogurt Greek Plain Nonfat Includes Foods For Usda's Food Distribution Program",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.59,
-      protein_g: 0.10,
-      carbs_g: 0.04,
-      fat_g: 0.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "yogurt greek plain nonfat includes foods for usda's food distribution program":
+    {
+      canonicalName:
+        "yogurt greek plain nonfat includes foods for usda's food distribution program",
+      displayName:
+        "Yogurt Greek Plain Nonfat Includes Foods For Usda's Food Distribution Program",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.59,
+        protein_g: 0.10,
+        carbs_g: 0.04,
+        fat_g: 0.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "yogurt greek plain whole milk": {
     canonicalName: "yogurt greek plain whole milk",
     displayName: "Yogurt Greek Plain Whole Milk",
@@ -19437,10 +19848,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek strawberry dannon oikos": {
@@ -19458,10 +19869,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek strawberry lowfat": {
@@ -19479,10 +19890,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek strawberry nonfat": {
@@ -19500,10 +19911,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek vanilla lowfat": {
@@ -19521,10 +19932,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek vanilla nonfat": {
@@ -19542,10 +19953,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt greek whole plain chobani": {
@@ -19563,10 +19974,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt plain low fat": {
@@ -19584,10 +19995,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt plain skim milk": {
@@ -19605,10 +20016,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt plain whole milk": {
@@ -19626,15 +20037,17 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt vanilla flavor lowfat milk sweetened with low calorie sweetener": {
-    canonicalName: "yogurt vanilla flavor lowfat milk sweetened with low calorie sweetener",
-    displayName: "Yogurt Vanilla Flavor Lowfat Milk Sweetened With Low Calorie Sweetener",
+    canonicalName:
+      "yogurt vanilla flavor lowfat milk sweetened with low calorie sweetener",
+    displayName:
+      "Yogurt Vanilla Flavor Lowfat Milk Sweetened With Low Calorie Sweetener",
     baseUnit: "g",
     gramsPerUnit: 1,
     nutrition: {
@@ -19647,10 +20060,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt vanilla low fat fortified with vitamin d": {
@@ -19668,10 +20081,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt vanilla low fat.": {
@@ -19689,10 +20102,10 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
   "yogurt vanilla non-fat": {
@@ -19710,54 +20123,60 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+      "isAnimalProduct": true,
+      "isVegetarian": true,
+      "isVegan": false,
+      "isDairy": true,
     },
   },
-  "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener": {
-    canonicalName: "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener",
-    displayName: "Yogurt Vanilla Or Lemon Flavor Nonfat Milk Sweetened With Low-calorie Sweetener",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.43,
-      protein_g: 0.04,
-      carbs_g: 0.07,
-      fat_g: 0.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
+  "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener":
+    {
+      canonicalName:
+        "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener",
+      displayName:
+        "Yogurt Vanilla Or Lemon Flavor Nonfat Milk Sweetened With Low-calorie Sweetener",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.43,
+        protein_g: 0.04,
+        carbs_g: 0.07,
+        fat_g: 0.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
+  "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener fortified with vitamin d":
+    {
+      canonicalName:
+        "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener fortified with vitamin d",
+      displayName:
+        "Yogurt Vanilla Or Lemon Flavor Nonfat Milk Sweetened With Low-calorie Sweetener Fortified With Vitamin D",
+      baseUnit: "g",
+      gramsPerUnit: 1,
+      nutrition: {
+        calories: 0.43,
+        protein_g: 0.04,
+        carbs_g: 0.07,
+        fat_g: 0.00,
+        fiber_g: 0.00,
+        sugar_g: 0.00,
+        sodium_mg: 0.00,
+      },
+      flags: {
+        "isAnimalProduct": true,
+        "isVegetarian": true,
+        "isVegan": false,
+        "isDairy": true,
+      },
     },
-  },
-  "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener fortified with vitamin d": {
-    canonicalName: "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener fortified with vitamin d",
-    displayName: "Yogurt Vanilla Or Lemon Flavor Nonfat Milk Sweetened With Low-calorie Sweetener Fortified With Vitamin D",
-    baseUnit: "g",
-    gramsPerUnit: 1,
-    nutrition: {
-      calories: 0.43,
-      protein_g: 0.04,
-      carbs_g: 0.07,
-      fat_g: 0.00,
-      fiber_g: 0.00,
-      sugar_g: 0.00,
-      sodium_mg: 0.00,
-    },
-    flags: {
-          "isAnimalProduct": true,
-          "isVegetarian": true,
-          "isVegan": false,
-          "isDairy": true
-    },
-  },
   "zucchini": {
     canonicalName: "zucchini",
     displayName: "Zucchini",
@@ -19773,9 +20192,9 @@ export const FOOD_DATABASE: Record<string, FoodEntry> = {
       sodium_mg: 0.00,
     },
     flags: {
-          "isVegan": true,
-          "isVegetarian": true,
-          "isGlutenFree": true
+      "isVegan": true,
+      "isVegetarian": true,
+      "isGlutenFree": true,
     },
   },
 };
@@ -19799,8 +20218,10 @@ export const SYNONYM_MAP: Record<string, string> = {
   "beef (lean)s": "beef lean",
   "beef leans": "beef lean",
   "bell peppers": "bell pepper",
-  "beverage instant breakfast powder chocolate not reconstituteds": "beverage instant breakfast powder chocolate not reconstituted",
-  "beverage instant breakfast powder chocolate sugar-free not reconstituteds": "beverage instant breakfast powder chocolate sugar-free not reconstituted",
+  "beverage instant breakfast powder chocolate not reconstituteds":
+    "beverage instant breakfast powder chocolate not reconstituted",
+  "beverage instant breakfast powder chocolate sugar-free not reconstituteds":
+    "beverage instant breakfast powder chocolate sugar-free not reconstituted",
   "blueberrieses": "blueberries",
   "blueberriess": "blueberries",
   "broccolis": "broccoli",
@@ -19812,15 +20233,18 @@ export const SYNONYM_MAP: Record<string, string> = {
   "butter light stick without salts": "butter light stick without salt",
   "butter oil anhydrouses": "butter oil anhydrous",
   "butter oil anhydrouss": "butter oil anhydrous",
-  "butter replacement without fat powders": "butter replacement without fat powder",
+  "butter replacement without fat powders":
+    "butter replacement without fat powder",
   "butter salteds": "butter salted",
   "butter whipped with salts": "butter whipped with salt",
   "butter without salts": "butter without salt",
   "butters": "butter",
   "caesar salads": "caesar salad",
   "cakes": "cake",
-  "canada goose breast meat only skinlesses": "canada goose breast meat only skinless",
-  "canada goose breast meat only skinlesss": "canada goose breast meat only skinless",
+  "canada goose breast meat only skinlesses":
+    "canada goose breast meat only skinless",
+  "canada goose breast meat only skinlesss":
+    "canada goose breast meat only skinless",
   "caperses": "capers",
   "caperss": "capers",
   "carrotses": "carrots",
@@ -19838,22 +20262,30 @@ export const SYNONYM_MAP: Record<string, string> = {
   "cheese bries": "cheese brie",
   "cheese camemberts": "cheese camembert",
   "cheese caraways": "cheese caraway",
-  "cheese cheddar includes foods for usda's food distribution programs": "cheese cheddar includes foods for usda's food distribution program",
+  "cheese cheddar includes foods for usda's food distribution programs":
+    "cheese cheddar includes foods for usda's food distribution program",
   "cheese cheddar nonfat or fat frees": "cheese cheddar nonfat or fat free",
-  "cheese cheddar reduced fat includes foods for usda's food distribution programs": "cheese cheddar reduced fat includes foods for usda's food distribution program",
+  "cheese cheddar reduced fat includes foods for usda's food distribution programs":
+    "cheese cheddar reduced fat includes foods for usda's food distribution program",
   "cheese cheddar sharp sliceds": "cheese cheddar sharp sliced",
   "cheese cheshires": "cheese cheshire",
   "cheese colbies": "cheese colby",
   "cheese colbys": "cheese colby",
-  "cheese cottage creamed large or small curds": "cheese cottage creamed large or small curd",
+  "cheese cottage creamed large or small curds":
+    "cheese cottage creamed large or small curd",
   "cheese cottage creamed with fruits": "cheese cottage creamed with fruit",
-  "cheese cottage lowfat 1% milkfat lactose reduceds": "cheese cottage lowfat 1% milkfat lactose reduced",
-  "cheese cottage lowfat 1% milkfat no sodium addeds": "cheese cottage lowfat 1% milkfat no sodium added",
-  "cheese cottage lowfat 1% milkfat with vegetableses": "cheese cottage lowfat 1% milkfat with vegetables",
-  "cheese cottage lowfat 1% milkfat with vegetabless": "cheese cottage lowfat 1% milkfat with vegetables",
+  "cheese cottage lowfat 1% milkfat lactose reduceds":
+    "cheese cottage lowfat 1% milkfat lactose reduced",
+  "cheese cottage lowfat 1% milkfat no sodium addeds":
+    "cheese cottage lowfat 1% milkfat no sodium added",
+  "cheese cottage lowfat 1% milkfat with vegetableses":
+    "cheese cottage lowfat 1% milkfat with vegetables",
+  "cheese cottage lowfat 1% milkfat with vegetabless":
+    "cheese cottage lowfat 1% milkfat with vegetables",
   "cheese cottage lowfat 1% milkfats": "cheese cottage lowfat 1% milkfat",
   "cheese cottage lowfat 2% milkfats": "cheese cottage lowfat 2% milkfat",
-  "cheese cottage nonfat uncreamed dry large or small curds": "cheese cottage nonfat uncreamed dry large or small curd",
+  "cheese cottage nonfat uncreamed dry large or small curds":
+    "cheese cottage nonfat uncreamed dry large or small curd",
   "cheese cottage with vegetableses": "cheese cottage with vegetables",
   "cheese cottage with vegetabless": "cheese cottage with vegetables",
   "cheese cream fat frees": "cheese cream fat free",
@@ -19864,10 +20296,14 @@ export const SYNONYM_MAP: Record<string, string> = {
   "cheese fetas": "cheese feta",
   "cheese fontinas": "cheese fontina",
   "cheese food cold pack americans": "cheese food cold pack american",
-  "cheese food pasteurized process american vitamin d fortifieds": "cheese food pasteurized process american vitamin d fortified",
-  "cheese food pasteurized process american without added vitamin ds": "cheese food pasteurized process american without added vitamin d",
-  "cheese food pasteurized process swisses": "cheese food pasteurized process swiss",
-  "cheese food pasteurized process swisss": "cheese food pasteurized process swiss",
+  "cheese food pasteurized process american vitamin d fortifieds":
+    "cheese food pasteurized process american vitamin d fortified",
+  "cheese food pasteurized process american without added vitamin ds":
+    "cheese food pasteurized process american without added vitamin d",
+  "cheese food pasteurized process swisses":
+    "cheese food pasteurized process swiss",
+  "cheese food pasteurized process swisss":
+    "cheese food pasteurized process swiss",
   "cheese gjetosts": "cheese gjetost",
   "cheese goat hard types": "cheese goat hard type",
   "cheese goat semisoft types": "cheese goat semisoft type",
@@ -19887,31 +20323,41 @@ export const SYNONYM_MAP: Record<string, string> = {
   "cheese mexican queso cotijas": "cheese mexican queso cotija",
   "cheese monterey low fats": "cheese monterey low fat",
   "cheese montereys": "cheese monterey",
-  "cheese mozzarella low moisture part-skim shreddeds": "cheese mozzarella low moisture part-skim shredded",
-  "cheese mozzarella low moisture part-skims": "cheese mozzarella low moisture part-skim",
+  "cheese mozzarella low moisture part-skim shreddeds":
+    "cheese mozzarella low moisture part-skim shredded",
+  "cheese mozzarella low moisture part-skims":
+    "cheese mozzarella low moisture part-skim",
   "cheese mozzarella low sodiums": "cheese mozzarella low sodium",
   "cheese mozzarella nonfats": "cheese mozzarella nonfat",
   "cheese mozzarella part skim milks": "cheese mozzarella part skim milk",
-  "cheese mozzarella whole milk low moistures": "cheese mozzarella whole milk low moisture",
+  "cheese mozzarella whole milk low moistures":
+    "cheese mozzarella whole milk low moisture",
   "cheese mozzarella whole milks": "cheese mozzarella whole milk",
   "cheese muenster low fats": "cheese muenster low fat",
   "cheese muensters": "cheese muenster",
   "cheese neufchatels": "cheese neufchatel",
-  "cheese parmesan dry grated reduced fats": "cheese parmesan dry grated reduced fat",
+  "cheese parmesan dry grated reduced fats":
+    "cheese parmesan dry grated reduced fat",
   "cheese parmesan grateds": "cheese parmesan grated",
   "cheese parmesan hards": "cheese parmesan hard",
   "cheese parmesan low sodiums": "cheese parmesan low sodium",
   "cheese parmesan shreddeds": "cheese parmesan shredded",
-  "cheese pasteurized process american fortified with vitamin ds": "cheese pasteurized process american fortified with vitamin d",
-  "cheese pasteurized process american low fats": "cheese pasteurized process american low fat",
-  "cheese pasteurized process american without added vitamin ds": "cheese pasteurized process american without added vitamin d",
-  "cheese pasteurized process cheddar or american low sodiums": "cheese pasteurized process cheddar or american low sodium",
+  "cheese pasteurized process american fortified with vitamin ds":
+    "cheese pasteurized process american fortified with vitamin d",
+  "cheese pasteurized process american low fats":
+    "cheese pasteurized process american low fat",
+  "cheese pasteurized process american without added vitamin ds":
+    "cheese pasteurized process american without added vitamin d",
+  "cheese pasteurized process cheddar or american low sodiums":
+    "cheese pasteurized process cheddar or american low sodium",
   "cheese pasteurized process pimentos": "cheese pasteurized process pimento",
   "cheese pasteurized process swisses": "cheese pasteurized process swiss",
   "cheese pasteurized process swisss": "cheese pasteurized process swiss",
   "cheese port de saluts": "cheese port de salut",
-  "cheese product pasteurized process american reduced fat fortified with vitamin ds": "cheese product pasteurized process american reduced fat fortified with vitamin d",
-  "cheese product pasteurized process american vitamin d fortifieds": "cheese product pasteurized process american vitamin d fortified",
+  "cheese product pasteurized process american reduced fat fortified with vitamin ds":
+    "cheese product pasteurized process american reduced fat fortified with vitamin d",
+  "cheese product pasteurized process american vitamin d fortifieds":
+    "cheese product pasteurized process american vitamin d fortified",
   "cheese provolone reduced fats": "cheese provolone reduced fat",
   "cheese provolones": "cheese provolone",
   "cheese ricotta part skim milks": "cheese ricotta part skim milk",
@@ -19919,9 +20365,11 @@ export const SYNONYM_MAP: Record<string, string> = {
   "cheese romanos": "cheese romano",
   "cheese roqueforts": "cheese roquefort",
   "cheese sauce prepared from recipes": "cheese sauce prepared from recipe",
-  "cheese spread american or cheddar cheese base reduced fats": "cheese spread american or cheddar cheese base reduced fat",
+  "cheese spread american or cheddar cheese base reduced fats":
+    "cheese spread american or cheddar cheese base reduced fat",
   "cheese spread cream cheese bases": "cheese spread cream cheese base",
-  "cheese spread pasteurized process americans": "cheese spread pasteurized process american",
+  "cheese spread pasteurized process americans":
+    "cheese spread pasteurized process american",
   "cheese substitute mozzarellas": "cheese substitute mozzarella",
   "cheese swiss low fats": "cheese swiss low fat",
   "cheese swiss low sodiums": "cheese swiss low sodium",
@@ -19934,246 +20382,448 @@ export const SYNONYM_MAP: Record<string, string> = {
   "chia seedss": "chia seeds",
   "chicken  meat only with broths": "chicken  meat only with broth",
   "chicken  no broths": "chicken  no broth",
-  "chicken breast tenders breaded  microwaveds": "chicken breast tenders breaded  microwaved",
-  "chicken breast tenders breaded uncookeds": "chicken breast tenders breaded uncooked",
+  "chicken breast tenders breaded  microwaveds":
+    "chicken breast tenders breaded  microwaved",
+  "chicken breast tenders breaded uncookeds":
+    "chicken breast tenders breaded uncooked",
   "chicken breasts": "chicken breast",
-  "chicken broiler or fryers breast skinless boneless meat onlies": "chicken broiler or fryers breast skinless boneless meat only",
-  "chicken broiler or fryers breast skinless boneless meat only  braiseds": "chicken broiler or fryers breast skinless boneless meat only  braised",
-  "chicken broiler or fryers breast skinless boneless meat only  grilleds": "chicken broiler or fryers breast skinless boneless meat only  grilled",
-  "chicken broiler or fryers breast skinless boneless meat only with added solution  braiseds": "chicken broiler or fryers breast skinless boneless meat only with added solution  braised",
-  "chicken broiler or fryers breast skinless boneless meat only with added solution  grilleds": "chicken broiler or fryers breast skinless boneless meat only with added solution  grilled",
-  "chicken broiler or fryers breast skinless boneless meat onlys": "chicken broiler or fryers breast skinless boneless meat only",
-  "chicken broiler rotisserie bbq back meat and skins": "chicken broiler rotisserie bbq back meat and skin",
-  "chicken broiler rotisserie bbq back meat onlies": "chicken broiler rotisserie bbq back meat only",
-  "chicken broiler rotisserie bbq back meat onlys": "chicken broiler rotisserie bbq back meat only",
-  "chicken broiler rotisserie bbq breast meat and skins": "chicken broiler rotisserie bbq breast meat and skin",
-  "chicken broiler rotisserie bbq breast meat onlies": "chicken broiler rotisserie bbq breast meat only",
-  "chicken broiler rotisserie bbq breast meat onlys": "chicken broiler rotisserie bbq breast meat only",
-  "chicken broiler rotisserie bbq drumstick meat and skins": "chicken broiler rotisserie bbq drumstick meat and skin",
-  "chicken broiler rotisserie bbq drumstick meat onlies": "chicken broiler rotisserie bbq drumstick meat only",
-  "chicken broiler rotisserie bbq drumstick meat onlys": "chicken broiler rotisserie bbq drumstick meat only",
+  "chicken broiler or fryers breast skinless boneless meat onlies":
+    "chicken broiler or fryers breast skinless boneless meat only",
+  "chicken broiler or fryers breast skinless boneless meat only  braiseds":
+    "chicken broiler or fryers breast skinless boneless meat only  braised",
+  "chicken broiler or fryers breast skinless boneless meat only  grilleds":
+    "chicken broiler or fryers breast skinless boneless meat only  grilled",
+  "chicken broiler or fryers breast skinless boneless meat only with added solution  braiseds":
+    "chicken broiler or fryers breast skinless boneless meat only with added solution  braised",
+  "chicken broiler or fryers breast skinless boneless meat only with added solution  grilleds":
+    "chicken broiler or fryers breast skinless boneless meat only with added solution  grilled",
+  "chicken broiler or fryers breast skinless boneless meat onlys":
+    "chicken broiler or fryers breast skinless boneless meat only",
+  "chicken broiler rotisserie bbq back meat and skins":
+    "chicken broiler rotisserie bbq back meat and skin",
+  "chicken broiler rotisserie bbq back meat onlies":
+    "chicken broiler rotisserie bbq back meat only",
+  "chicken broiler rotisserie bbq back meat onlys":
+    "chicken broiler rotisserie bbq back meat only",
+  "chicken broiler rotisserie bbq breast meat and skins":
+    "chicken broiler rotisserie bbq breast meat and skin",
+  "chicken broiler rotisserie bbq breast meat onlies":
+    "chicken broiler rotisserie bbq breast meat only",
+  "chicken broiler rotisserie bbq breast meat onlys":
+    "chicken broiler rotisserie bbq breast meat only",
+  "chicken broiler rotisserie bbq drumstick meat and skins":
+    "chicken broiler rotisserie bbq drumstick meat and skin",
+  "chicken broiler rotisserie bbq drumstick meat onlies":
+    "chicken broiler rotisserie bbq drumstick meat only",
+  "chicken broiler rotisserie bbq drumstick meat onlys":
+    "chicken broiler rotisserie bbq drumstick meat only",
   "chicken broiler rotisserie bbq skins": "chicken broiler rotisserie bbq skin",
-  "chicken broiler rotisserie bbq thigh meat and skins": "chicken broiler rotisserie bbq thigh meat and skin",
-  "chicken broiler rotisserie bbq thigh meat onlies": "chicken broiler rotisserie bbq thigh meat only",
-  "chicken broiler rotisserie bbq thigh meat onlys": "chicken broiler rotisserie bbq thigh meat only",
-  "chicken broiler rotisserie bbq wing meat and skins": "chicken broiler rotisserie bbq wing meat and skin",
-  "chicken broiler rotisserie bbq wing meat onlies": "chicken broiler rotisserie bbq wing meat only",
-  "chicken broiler rotisserie bbq wing meat onlys": "chicken broiler rotisserie bbq wing meat only",
-  "chicken broilers or fryers back meat and skin  fried batters": "chicken broilers or fryers back meat and skin  fried batter",
-  "chicken broilers or fryers back meat and skin  fried flours": "chicken broilers or fryers back meat and skin  fried flour",
-  "chicken broilers or fryers back meat and skin  roasteds": "chicken broilers or fryers back meat and skin  roasted",
-  "chicken broilers or fryers back meat and skin  steweds": "chicken broilers or fryers back meat and skin  stewed",
-  "chicken broilers or fryers back meat and skins": "chicken broilers or fryers back meat and skin",
-  "chicken broilers or fryers back meat onlies": "chicken broilers or fryers back meat only",
-  "chicken broilers or fryers back meat only  frieds": "chicken broilers or fryers back meat only  fried",
-  "chicken broilers or fryers back meat only  roasteds": "chicken broilers or fryers back meat only  roasted",
-  "chicken broilers or fryers back meat only  steweds": "chicken broilers or fryers back meat only  stewed",
-  "chicken broilers or fryers back meat onlys": "chicken broilers or fryers back meat only",
-  "chicken broilers or fryers breast meat and skin  fried batters": "chicken broilers or fryers breast meat and skin  fried batter",
-  "chicken broilers or fryers breast meat and skin  fried flours": "chicken broilers or fryers breast meat and skin  fried flour",
-  "chicken broilers or fryers breast meat and skin  roasteds": "chicken broilers or fryers breast meat and skin  roasted",
-  "chicken broilers or fryers breast meat and skin  steweds": "chicken broilers or fryers breast meat and skin  stewed",
-  "chicken broilers or fryers breast meat and skins": "chicken broilers or fryers breast meat and skin",
-  "chicken broilers or fryers breast meat only  frieds": "chicken broilers or fryers breast meat only  fried",
-  "chicken broilers or fryers breast meat only  roasteds": "chicken broilers or fryers breast meat only  roasted",
-  "chicken broilers or fryers breast meat only  steweds": "chicken broilers or fryers breast meat only  stewed",
-  "chicken broilers or fryers breast skinless boneless meat only with added solutions": "chicken broilers or fryers breast skinless boneless meat only with added solution",
-  "chicken broilers or fryers dark meat drumstick meat and skin  braiseds": "chicken broilers or fryers dark meat drumstick meat and skin  braised",
-  "chicken broilers or fryers dark meat drumstick meat onlies": "chicken broilers or fryers dark meat drumstick meat only",
-  "chicken broilers or fryers dark meat drumstick meat only  braiseds": "chicken broilers or fryers dark meat drumstick meat only  braised",
-  "chicken broilers or fryers dark meat drumstick meat only  roasteds": "chicken broilers or fryers dark meat drumstick meat only  roasted",
-  "chicken broilers or fryers dark meat drumstick meat onlys": "chicken broilers or fryers dark meat drumstick meat only",
-  "chicken broilers or fryers dark meat meat and skin  fried batters": "chicken broilers or fryers dark meat meat and skin  fried batter",
-  "chicken broilers or fryers dark meat meat and skin  fried flours": "chicken broilers or fryers dark meat meat and skin  fried flour",
-  "chicken broilers or fryers dark meat meat and skin  roasteds": "chicken broilers or fryers dark meat meat and skin  roasted",
-  "chicken broilers or fryers dark meat meat and skin  steweds": "chicken broilers or fryers dark meat meat and skin  stewed",
-  "chicken broilers or fryers dark meat meat and skins": "chicken broilers or fryers dark meat meat and skin",
-  "chicken broilers or fryers dark meat meat onlies": "chicken broilers or fryers dark meat meat only",
-  "chicken broilers or fryers dark meat meat only  frieds": "chicken broilers or fryers dark meat meat only  fried",
-  "chicken broilers or fryers dark meat meat only  roasteds": "chicken broilers or fryers dark meat meat only  roasted",
-  "chicken broilers or fryers dark meat meat only  steweds": "chicken broilers or fryers dark meat meat only  stewed",
-  "chicken broilers or fryers dark meat meat onlys": "chicken broilers or fryers dark meat meat only",
-  "chicken broilers or fryers dark meat thigh meat and skin  braiseds": "chicken broilers or fryers dark meat thigh meat and skin  braised",
-  "chicken broilers or fryers dark meat thigh meat onlies": "chicken broilers or fryers dark meat thigh meat only",
-  "chicken broilers or fryers dark meat thigh meat only  braiseds": "chicken broilers or fryers dark meat thigh meat only  braised",
-  "chicken broilers or fryers dark meat thigh meat onlys": "chicken broilers or fryers dark meat thigh meat only",
-  "chicken broilers or fryers drumstick meat and skin  fried batters": "chicken broilers or fryers drumstick meat and skin  fried batter",
-  "chicken broilers or fryers drumstick meat and skin  fried flours": "chicken broilers or fryers drumstick meat and skin  fried flour",
-  "chicken broilers or fryers drumstick meat and skin  roasteds": "chicken broilers or fryers drumstick meat and skin  roasted",
-  "chicken broilers or fryers drumstick meat and skin  steweds": "chicken broilers or fryers drumstick meat and skin  stewed",
-  "chicken broilers or fryers drumstick meat and skins": "chicken broilers or fryers drumstick meat and skin",
-  "chicken broilers or fryers drumstick meat only  frieds": "chicken broilers or fryers drumstick meat only  fried",
-  "chicken broilers or fryers drumstick meat only  steweds": "chicken broilers or fryers drumstick meat only  stewed",
-  "chicken broilers or fryers drumstick rotisserie original seasoning meat onlies": "chicken broilers or fryers drumstick rotisserie original seasoning meat only",
-  "chicken broilers or fryers drumstick rotisserie original seasoning meat onlys": "chicken broilers or fryers drumstick rotisserie original seasoning meat only",
-  "chicken broilers or fryers giblets  frieds": "chicken broilers or fryers giblets  fried",
-  "chicken broilers or fryers giblets  simmereds": "chicken broilers or fryers giblets  simmered",
+  "chicken broiler rotisserie bbq thigh meat and skins":
+    "chicken broiler rotisserie bbq thigh meat and skin",
+  "chicken broiler rotisserie bbq thigh meat onlies":
+    "chicken broiler rotisserie bbq thigh meat only",
+  "chicken broiler rotisserie bbq thigh meat onlys":
+    "chicken broiler rotisserie bbq thigh meat only",
+  "chicken broiler rotisserie bbq wing meat and skins":
+    "chicken broiler rotisserie bbq wing meat and skin",
+  "chicken broiler rotisserie bbq wing meat onlies":
+    "chicken broiler rotisserie bbq wing meat only",
+  "chicken broiler rotisserie bbq wing meat onlys":
+    "chicken broiler rotisserie bbq wing meat only",
+  "chicken broilers or fryers back meat and skin  fried batters":
+    "chicken broilers or fryers back meat and skin  fried batter",
+  "chicken broilers or fryers back meat and skin  fried flours":
+    "chicken broilers or fryers back meat and skin  fried flour",
+  "chicken broilers or fryers back meat and skin  roasteds":
+    "chicken broilers or fryers back meat and skin  roasted",
+  "chicken broilers or fryers back meat and skin  steweds":
+    "chicken broilers or fryers back meat and skin  stewed",
+  "chicken broilers or fryers back meat and skins":
+    "chicken broilers or fryers back meat and skin",
+  "chicken broilers or fryers back meat onlies":
+    "chicken broilers or fryers back meat only",
+  "chicken broilers or fryers back meat only  frieds":
+    "chicken broilers or fryers back meat only  fried",
+  "chicken broilers or fryers back meat only  roasteds":
+    "chicken broilers or fryers back meat only  roasted",
+  "chicken broilers or fryers back meat only  steweds":
+    "chicken broilers or fryers back meat only  stewed",
+  "chicken broilers or fryers back meat onlys":
+    "chicken broilers or fryers back meat only",
+  "chicken broilers or fryers breast meat and skin  fried batters":
+    "chicken broilers or fryers breast meat and skin  fried batter",
+  "chicken broilers or fryers breast meat and skin  fried flours":
+    "chicken broilers or fryers breast meat and skin  fried flour",
+  "chicken broilers or fryers breast meat and skin  roasteds":
+    "chicken broilers or fryers breast meat and skin  roasted",
+  "chicken broilers or fryers breast meat and skin  steweds":
+    "chicken broilers or fryers breast meat and skin  stewed",
+  "chicken broilers or fryers breast meat and skins":
+    "chicken broilers or fryers breast meat and skin",
+  "chicken broilers or fryers breast meat only  frieds":
+    "chicken broilers or fryers breast meat only  fried",
+  "chicken broilers or fryers breast meat only  roasteds":
+    "chicken broilers or fryers breast meat only  roasted",
+  "chicken broilers or fryers breast meat only  steweds":
+    "chicken broilers or fryers breast meat only  stewed",
+  "chicken broilers or fryers breast skinless boneless meat only with added solutions":
+    "chicken broilers or fryers breast skinless boneless meat only with added solution",
+  "chicken broilers or fryers dark meat drumstick meat and skin  braiseds":
+    "chicken broilers or fryers dark meat drumstick meat and skin  braised",
+  "chicken broilers or fryers dark meat drumstick meat onlies":
+    "chicken broilers or fryers dark meat drumstick meat only",
+  "chicken broilers or fryers dark meat drumstick meat only  braiseds":
+    "chicken broilers or fryers dark meat drumstick meat only  braised",
+  "chicken broilers or fryers dark meat drumstick meat only  roasteds":
+    "chicken broilers or fryers dark meat drumstick meat only  roasted",
+  "chicken broilers or fryers dark meat drumstick meat onlys":
+    "chicken broilers or fryers dark meat drumstick meat only",
+  "chicken broilers or fryers dark meat meat and skin  fried batters":
+    "chicken broilers or fryers dark meat meat and skin  fried batter",
+  "chicken broilers or fryers dark meat meat and skin  fried flours":
+    "chicken broilers or fryers dark meat meat and skin  fried flour",
+  "chicken broilers or fryers dark meat meat and skin  roasteds":
+    "chicken broilers or fryers dark meat meat and skin  roasted",
+  "chicken broilers or fryers dark meat meat and skin  steweds":
+    "chicken broilers or fryers dark meat meat and skin  stewed",
+  "chicken broilers or fryers dark meat meat and skins":
+    "chicken broilers or fryers dark meat meat and skin",
+  "chicken broilers or fryers dark meat meat onlies":
+    "chicken broilers or fryers dark meat meat only",
+  "chicken broilers or fryers dark meat meat only  frieds":
+    "chicken broilers or fryers dark meat meat only  fried",
+  "chicken broilers or fryers dark meat meat only  roasteds":
+    "chicken broilers or fryers dark meat meat only  roasted",
+  "chicken broilers or fryers dark meat meat only  steweds":
+    "chicken broilers or fryers dark meat meat only  stewed",
+  "chicken broilers or fryers dark meat meat onlys":
+    "chicken broilers or fryers dark meat meat only",
+  "chicken broilers or fryers dark meat thigh meat and skin  braiseds":
+    "chicken broilers or fryers dark meat thigh meat and skin  braised",
+  "chicken broilers or fryers dark meat thigh meat onlies":
+    "chicken broilers or fryers dark meat thigh meat only",
+  "chicken broilers or fryers dark meat thigh meat only  braiseds":
+    "chicken broilers or fryers dark meat thigh meat only  braised",
+  "chicken broilers or fryers dark meat thigh meat onlys":
+    "chicken broilers or fryers dark meat thigh meat only",
+  "chicken broilers or fryers drumstick meat and skin  fried batters":
+    "chicken broilers or fryers drumstick meat and skin  fried batter",
+  "chicken broilers or fryers drumstick meat and skin  fried flours":
+    "chicken broilers or fryers drumstick meat and skin  fried flour",
+  "chicken broilers or fryers drumstick meat and skin  roasteds":
+    "chicken broilers or fryers drumstick meat and skin  roasted",
+  "chicken broilers or fryers drumstick meat and skin  steweds":
+    "chicken broilers or fryers drumstick meat and skin  stewed",
+  "chicken broilers or fryers drumstick meat and skins":
+    "chicken broilers or fryers drumstick meat and skin",
+  "chicken broilers or fryers drumstick meat only  frieds":
+    "chicken broilers or fryers drumstick meat only  fried",
+  "chicken broilers or fryers drumstick meat only  steweds":
+    "chicken broilers or fryers drumstick meat only  stewed",
+  "chicken broilers or fryers drumstick rotisserie original seasoning meat onlies":
+    "chicken broilers or fryers drumstick rotisserie original seasoning meat only",
+  "chicken broilers or fryers drumstick rotisserie original seasoning meat onlys":
+    "chicken broilers or fryers drumstick rotisserie original seasoning meat only",
+  "chicken broilers or fryers giblets  frieds":
+    "chicken broilers or fryers giblets  fried",
+  "chicken broilers or fryers giblets  simmereds":
+    "chicken broilers or fryers giblets  simmered",
   "chicken broilers or fryers gibletses": "chicken broilers or fryers giblets",
   "chicken broilers or fryers gibletss": "chicken broilers or fryers giblets",
-  "chicken broilers or fryers leg meat and skin  fried batters": "chicken broilers or fryers leg meat and skin  fried batter",
-  "chicken broilers or fryers leg meat and skin  fried flours": "chicken broilers or fryers leg meat and skin  fried flour",
-  "chicken broilers or fryers leg meat and skin  roasteds": "chicken broilers or fryers leg meat and skin  roasted",
-  "chicken broilers or fryers leg meat and skin  steweds": "chicken broilers or fryers leg meat and skin  stewed",
-  "chicken broilers or fryers leg meat and skins": "chicken broilers or fryers leg meat and skin",
-  "chicken broilers or fryers leg meat onlies": "chicken broilers or fryers leg meat only",
-  "chicken broilers or fryers leg meat only  frieds": "chicken broilers or fryers leg meat only  fried",
-  "chicken broilers or fryers leg meat only  roasteds": "chicken broilers or fryers leg meat only  roasted",
-  "chicken broilers or fryers leg meat only  steweds": "chicken broilers or fryers leg meat only  stewed",
-  "chicken broilers or fryers leg meat onlys": "chicken broilers or fryers leg meat only",
-  "chicken broilers or fryers light meat meat and skin  fried batters": "chicken broilers or fryers light meat meat and skin  fried batter",
-  "chicken broilers or fryers light meat meat and skin  fried flours": "chicken broilers or fryers light meat meat and skin  fried flour",
-  "chicken broilers or fryers light meat meat and skin  roasteds": "chicken broilers or fryers light meat meat and skin  roasted",
-  "chicken broilers or fryers light meat meat and skin  steweds": "chicken broilers or fryers light meat meat and skin  stewed",
-  "chicken broilers or fryers light meat meat and skins": "chicken broilers or fryers light meat meat and skin",
-  "chicken broilers or fryers light meat meat onlies": "chicken broilers or fryers light meat meat only",
-  "chicken broilers or fryers light meat meat only  frieds": "chicken broilers or fryers light meat meat only  fried",
-  "chicken broilers or fryers light meat meat only  roasteds": "chicken broilers or fryers light meat meat only  roasted",
-  "chicken broilers or fryers light meat meat only  steweds": "chicken broilers or fryers light meat meat only  stewed",
-  "chicken broilers or fryers light meat meat onlys": "chicken broilers or fryers light meat meat only",
-  "chicken broilers or fryers meat and skin  fried batters": "chicken broilers or fryers meat and skin  fried batter",
-  "chicken broilers or fryers meat and skin  fried flours": "chicken broilers or fryers meat and skin  fried flour",
-  "chicken broilers or fryers meat and skin  roasteds": "chicken broilers or fryers meat and skin  roasted",
-  "chicken broilers or fryers meat and skin  steweds": "chicken broilers or fryers meat and skin  stewed",
-  "chicken broilers or fryers meat and skin and giblets and neck  fried batters": "chicken broilers or fryers meat and skin and giblets and neck  fried batter",
-  "chicken broilers or fryers meat and skin and giblets and neck  fried flours": "chicken broilers or fryers meat and skin and giblets and neck  fried flour",
-  "chicken broilers or fryers meat and skin and giblets and neck roasteds": "chicken broilers or fryers meat and skin and giblets and neck roasted",
-  "chicken broilers or fryers meat and skin and giblets and neck steweds": "chicken broilers or fryers meat and skin and giblets and neck stewed",
-  "chicken broilers or fryers meat and skin and giblets and necks": "chicken broilers or fryers meat and skin and giblets and neck",
-  "chicken broilers or fryers meat and skins": "chicken broilers or fryers meat and skin",
-  "chicken broilers or fryers meat onlies": "chicken broilers or fryers meat only",
-  "chicken broilers or fryers meat only  frieds": "chicken broilers or fryers meat only  fried",
-  "chicken broilers or fryers meat only  roasteds": "chicken broilers or fryers meat only  roasted",
-  "chicken broilers or fryers meat only  steweds": "chicken broilers or fryers meat only  stewed",
-  "chicken broilers or fryers meat onlys": "chicken broilers or fryers meat only",
-  "chicken broilers or fryers neck meat and skin  fried batters": "chicken broilers or fryers neck meat and skin  fried batter",
-  "chicken broilers or fryers neck meat and skin  fried flours": "chicken broilers or fryers neck meat and skin  fried flour",
-  "chicken broilers or fryers neck meat and skin  simmereds": "chicken broilers or fryers neck meat and skin  simmered",
-  "chicken broilers or fryers neck meat and skins": "chicken broilers or fryers neck meat and skin",
-  "chicken broilers or fryers neck meat onlies": "chicken broilers or fryers neck meat only",
-  "chicken broilers or fryers neck meat only  frieds": "chicken broilers or fryers neck meat only  fried",
-  "chicken broilers or fryers neck meat only  simmereds": "chicken broilers or fryers neck meat only  simmered",
-  "chicken broilers or fryers neck meat onlys": "chicken broilers or fryers neck meat only",
-  "chicken broilers or fryers rotisserie original seasoning back meat and skins": "chicken broilers or fryers rotisserie original seasoning back meat and skin",
-  "chicken broilers or fryers rotisserie original seasoning back meat onlies": "chicken broilers or fryers rotisserie original seasoning back meat only",
-  "chicken broilers or fryers rotisserie original seasoning back meat onlys": "chicken broilers or fryers rotisserie original seasoning back meat only",
-  "chicken broilers or fryers rotisserie original seasoning breast meat and skins": "chicken broilers or fryers rotisserie original seasoning breast meat and skin",
-  "chicken broilers or fryers rotisserie original seasoning breast meat onlies": "chicken broilers or fryers rotisserie original seasoning breast meat only",
-  "chicken broilers or fryers rotisserie original seasoning breast meat onlys": "chicken broilers or fryers rotisserie original seasoning breast meat only",
-  "chicken broilers or fryers rotisserie original seasoning drumstick meat and skins": "chicken broilers or fryers rotisserie original seasoning drumstick meat and skin",
-  "chicken broilers or fryers rotisserie original seasoning skin onlies": "chicken broilers or fryers rotisserie original seasoning skin only",
-  "chicken broilers or fryers rotisserie original seasoning skin onlys": "chicken broilers or fryers rotisserie original seasoning skin only",
-  "chicken broilers or fryers rotisserie original seasoning thigh meat and skins": "chicken broilers or fryers rotisserie original seasoning thigh meat and skin",
-  "chicken broilers or fryers rotisserie original seasoning thigh meat onlies": "chicken broilers or fryers rotisserie original seasoning thigh meat only",
-  "chicken broilers or fryers rotisserie original seasoning thigh meat onlys": "chicken broilers or fryers rotisserie original seasoning thigh meat only",
-  "chicken broilers or fryers rotisserie original seasoning wing meat and skins": "chicken broilers or fryers rotisserie original seasoning wing meat and skin",
-  "chicken broilers or fryers rotisserie original seasoning wing meat onlies": "chicken broilers or fryers rotisserie original seasoning wing meat only",
-  "chicken broilers or fryers rotisserie original seasoning wing meat onlys": "chicken broilers or fryers rotisserie original seasoning wing meat only",
-  "chicken broilers or fryers separable fats": "chicken broilers or fryers separable fat",
-  "chicken broilers or fryers skin onlies": "chicken broilers or fryers skin only",
-  "chicken broilers or fryers skin only  fried batters": "chicken broilers or fryers skin only  fried batter",
-  "chicken broilers or fryers skin only  fried flours": "chicken broilers or fryers skin only  fried flour",
-  "chicken broilers or fryers skin only  roasteds": "chicken broilers or fryers skin only  roasted",
-  "chicken broilers or fryers skin only  steweds": "chicken broilers or fryers skin only  stewed",
-  "chicken broilers or fryers skin onlys": "chicken broilers or fryers skin only",
-  "chicken broilers or fryers thigh meat and skin  fried batters": "chicken broilers or fryers thigh meat and skin  fried batter",
-  "chicken broilers or fryers thigh meat and skin  fried flours": "chicken broilers or fryers thigh meat and skin  fried flour",
-  "chicken broilers or fryers thigh meat and skin  roasteds": "chicken broilers or fryers thigh meat and skin  roasted",
-  "chicken broilers or fryers thigh meat and skin  steweds": "chicken broilers or fryers thigh meat and skin  stewed",
-  "chicken broilers or fryers thigh meat and skins": "chicken broilers or fryers thigh meat and skin",
-  "chicken broilers or fryers thigh meat only  frieds": "chicken broilers or fryers thigh meat only  fried",
-  "chicken broilers or fryers thigh meat only  roasteds": "chicken broilers or fryers thigh meat only  roasted",
-  "chicken broilers or fryers thigh meat only  steweds": "chicken broilers or fryers thigh meat only  stewed",
-  "chicken broilers or fryers wing meat and skin  fried batters": "chicken broilers or fryers wing meat and skin  fried batter",
-  "chicken broilers or fryers wing meat and skin  fried flours": "chicken broilers or fryers wing meat and skin  fried flour",
-  "chicken broilers or fryers wing meat and skin  roasteds": "chicken broilers or fryers wing meat and skin  roasted",
-  "chicken broilers or fryers wing meat and skin  steweds": "chicken broilers or fryers wing meat and skin  stewed",
-  "chicken broilers or fryers wing meat and skins": "chicken broilers or fryers wing meat and skin",
-  "chicken broilers or fryers wing meat onlies": "chicken broilers or fryers wing meat only",
-  "chicken broilers or fryers wing meat only  frieds": "chicken broilers or fryers wing meat only  fried",
-  "chicken broilers or fryers wing meat only  roasteds": "chicken broilers or fryers wing meat only  roasted",
-  "chicken broilers or fryers wing meat only  steweds": "chicken broilers or fryers wing meat only  stewed",
-  "chicken broilers or fryers wing meat onlys": "chicken broilers or fryers wing meat only",
+  "chicken broilers or fryers leg meat and skin  fried batters":
+    "chicken broilers or fryers leg meat and skin  fried batter",
+  "chicken broilers or fryers leg meat and skin  fried flours":
+    "chicken broilers or fryers leg meat and skin  fried flour",
+  "chicken broilers or fryers leg meat and skin  roasteds":
+    "chicken broilers or fryers leg meat and skin  roasted",
+  "chicken broilers or fryers leg meat and skin  steweds":
+    "chicken broilers or fryers leg meat and skin  stewed",
+  "chicken broilers or fryers leg meat and skins":
+    "chicken broilers or fryers leg meat and skin",
+  "chicken broilers or fryers leg meat onlies":
+    "chicken broilers or fryers leg meat only",
+  "chicken broilers or fryers leg meat only  frieds":
+    "chicken broilers or fryers leg meat only  fried",
+  "chicken broilers or fryers leg meat only  roasteds":
+    "chicken broilers or fryers leg meat only  roasted",
+  "chicken broilers or fryers leg meat only  steweds":
+    "chicken broilers or fryers leg meat only  stewed",
+  "chicken broilers or fryers leg meat onlys":
+    "chicken broilers or fryers leg meat only",
+  "chicken broilers or fryers light meat meat and skin  fried batters":
+    "chicken broilers or fryers light meat meat and skin  fried batter",
+  "chicken broilers or fryers light meat meat and skin  fried flours":
+    "chicken broilers or fryers light meat meat and skin  fried flour",
+  "chicken broilers or fryers light meat meat and skin  roasteds":
+    "chicken broilers or fryers light meat meat and skin  roasted",
+  "chicken broilers or fryers light meat meat and skin  steweds":
+    "chicken broilers or fryers light meat meat and skin  stewed",
+  "chicken broilers or fryers light meat meat and skins":
+    "chicken broilers or fryers light meat meat and skin",
+  "chicken broilers or fryers light meat meat onlies":
+    "chicken broilers or fryers light meat meat only",
+  "chicken broilers or fryers light meat meat only  frieds":
+    "chicken broilers or fryers light meat meat only  fried",
+  "chicken broilers or fryers light meat meat only  roasteds":
+    "chicken broilers or fryers light meat meat only  roasted",
+  "chicken broilers or fryers light meat meat only  steweds":
+    "chicken broilers or fryers light meat meat only  stewed",
+  "chicken broilers or fryers light meat meat onlys":
+    "chicken broilers or fryers light meat meat only",
+  "chicken broilers or fryers meat and skin  fried batters":
+    "chicken broilers or fryers meat and skin  fried batter",
+  "chicken broilers or fryers meat and skin  fried flours":
+    "chicken broilers or fryers meat and skin  fried flour",
+  "chicken broilers or fryers meat and skin  roasteds":
+    "chicken broilers or fryers meat and skin  roasted",
+  "chicken broilers or fryers meat and skin  steweds":
+    "chicken broilers or fryers meat and skin  stewed",
+  "chicken broilers or fryers meat and skin and giblets and neck  fried batters":
+    "chicken broilers or fryers meat and skin and giblets and neck  fried batter",
+  "chicken broilers or fryers meat and skin and giblets and neck  fried flours":
+    "chicken broilers or fryers meat and skin and giblets and neck  fried flour",
+  "chicken broilers or fryers meat and skin and giblets and neck roasteds":
+    "chicken broilers or fryers meat and skin and giblets and neck roasted",
+  "chicken broilers or fryers meat and skin and giblets and neck steweds":
+    "chicken broilers or fryers meat and skin and giblets and neck stewed",
+  "chicken broilers or fryers meat and skin and giblets and necks":
+    "chicken broilers or fryers meat and skin and giblets and neck",
+  "chicken broilers or fryers meat and skins":
+    "chicken broilers or fryers meat and skin",
+  "chicken broilers or fryers meat onlies":
+    "chicken broilers or fryers meat only",
+  "chicken broilers or fryers meat only  frieds":
+    "chicken broilers or fryers meat only  fried",
+  "chicken broilers or fryers meat only  roasteds":
+    "chicken broilers or fryers meat only  roasted",
+  "chicken broilers or fryers meat only  steweds":
+    "chicken broilers or fryers meat only  stewed",
+  "chicken broilers or fryers meat onlys":
+    "chicken broilers or fryers meat only",
+  "chicken broilers or fryers neck meat and skin  fried batters":
+    "chicken broilers or fryers neck meat and skin  fried batter",
+  "chicken broilers or fryers neck meat and skin  fried flours":
+    "chicken broilers or fryers neck meat and skin  fried flour",
+  "chicken broilers or fryers neck meat and skin  simmereds":
+    "chicken broilers or fryers neck meat and skin  simmered",
+  "chicken broilers or fryers neck meat and skins":
+    "chicken broilers or fryers neck meat and skin",
+  "chicken broilers or fryers neck meat onlies":
+    "chicken broilers or fryers neck meat only",
+  "chicken broilers or fryers neck meat only  frieds":
+    "chicken broilers or fryers neck meat only  fried",
+  "chicken broilers or fryers neck meat only  simmereds":
+    "chicken broilers or fryers neck meat only  simmered",
+  "chicken broilers or fryers neck meat onlys":
+    "chicken broilers or fryers neck meat only",
+  "chicken broilers or fryers rotisserie original seasoning back meat and skins":
+    "chicken broilers or fryers rotisserie original seasoning back meat and skin",
+  "chicken broilers or fryers rotisserie original seasoning back meat onlies":
+    "chicken broilers or fryers rotisserie original seasoning back meat only",
+  "chicken broilers or fryers rotisserie original seasoning back meat onlys":
+    "chicken broilers or fryers rotisserie original seasoning back meat only",
+  "chicken broilers or fryers rotisserie original seasoning breast meat and skins":
+    "chicken broilers or fryers rotisserie original seasoning breast meat and skin",
+  "chicken broilers or fryers rotisserie original seasoning breast meat onlies":
+    "chicken broilers or fryers rotisserie original seasoning breast meat only",
+  "chicken broilers or fryers rotisserie original seasoning breast meat onlys":
+    "chicken broilers or fryers rotisserie original seasoning breast meat only",
+  "chicken broilers or fryers rotisserie original seasoning drumstick meat and skins":
+    "chicken broilers or fryers rotisserie original seasoning drumstick meat and skin",
+  "chicken broilers or fryers rotisserie original seasoning skin onlies":
+    "chicken broilers or fryers rotisserie original seasoning skin only",
+  "chicken broilers or fryers rotisserie original seasoning skin onlys":
+    "chicken broilers or fryers rotisserie original seasoning skin only",
+  "chicken broilers or fryers rotisserie original seasoning thigh meat and skins":
+    "chicken broilers or fryers rotisserie original seasoning thigh meat and skin",
+  "chicken broilers or fryers rotisserie original seasoning thigh meat onlies":
+    "chicken broilers or fryers rotisserie original seasoning thigh meat only",
+  "chicken broilers or fryers rotisserie original seasoning thigh meat onlys":
+    "chicken broilers or fryers rotisserie original seasoning thigh meat only",
+  "chicken broilers or fryers rotisserie original seasoning wing meat and skins":
+    "chicken broilers or fryers rotisserie original seasoning wing meat and skin",
+  "chicken broilers or fryers rotisserie original seasoning wing meat onlies":
+    "chicken broilers or fryers rotisserie original seasoning wing meat only",
+  "chicken broilers or fryers rotisserie original seasoning wing meat onlys":
+    "chicken broilers or fryers rotisserie original seasoning wing meat only",
+  "chicken broilers or fryers separable fats":
+    "chicken broilers or fryers separable fat",
+  "chicken broilers or fryers skin onlies":
+    "chicken broilers or fryers skin only",
+  "chicken broilers or fryers skin only  fried batters":
+    "chicken broilers or fryers skin only  fried batter",
+  "chicken broilers or fryers skin only  fried flours":
+    "chicken broilers or fryers skin only  fried flour",
+  "chicken broilers or fryers skin only  roasteds":
+    "chicken broilers or fryers skin only  roasted",
+  "chicken broilers or fryers skin only  steweds":
+    "chicken broilers or fryers skin only  stewed",
+  "chicken broilers or fryers skin onlys":
+    "chicken broilers or fryers skin only",
+  "chicken broilers or fryers thigh meat and skin  fried batters":
+    "chicken broilers or fryers thigh meat and skin  fried batter",
+  "chicken broilers or fryers thigh meat and skin  fried flours":
+    "chicken broilers or fryers thigh meat and skin  fried flour",
+  "chicken broilers or fryers thigh meat and skin  roasteds":
+    "chicken broilers or fryers thigh meat and skin  roasted",
+  "chicken broilers or fryers thigh meat and skin  steweds":
+    "chicken broilers or fryers thigh meat and skin  stewed",
+  "chicken broilers or fryers thigh meat and skins":
+    "chicken broilers or fryers thigh meat and skin",
+  "chicken broilers or fryers thigh meat only  frieds":
+    "chicken broilers or fryers thigh meat only  fried",
+  "chicken broilers or fryers thigh meat only  roasteds":
+    "chicken broilers or fryers thigh meat only  roasted",
+  "chicken broilers or fryers thigh meat only  steweds":
+    "chicken broilers or fryers thigh meat only  stewed",
+  "chicken broilers or fryers wing meat and skin  fried batters":
+    "chicken broilers or fryers wing meat and skin  fried batter",
+  "chicken broilers or fryers wing meat and skin  fried flours":
+    "chicken broilers or fryers wing meat and skin  fried flour",
+  "chicken broilers or fryers wing meat and skin  roasteds":
+    "chicken broilers or fryers wing meat and skin  roasted",
+  "chicken broilers or fryers wing meat and skin  steweds":
+    "chicken broilers or fryers wing meat and skin  stewed",
+  "chicken broilers or fryers wing meat and skins":
+    "chicken broilers or fryers wing meat and skin",
+  "chicken broilers or fryers wing meat onlies":
+    "chicken broilers or fryers wing meat only",
+  "chicken broilers or fryers wing meat only  frieds":
+    "chicken broilers or fryers wing meat only  fried",
+  "chicken broilers or fryers wing meat only  roasteds":
+    "chicken broilers or fryers wing meat only  roasted",
+  "chicken broilers or fryers wing meat only  steweds":
+    "chicken broilers or fryers wing meat only  stewed",
+  "chicken broilers or fryers wing meat onlys":
+    "chicken broilers or fryers wing meat only",
   "chicken capons giblets  simmereds": "chicken capons giblets  simmered",
   "chicken capons gibletses": "chicken capons giblets",
   "chicken capons gibletss": "chicken capons giblets",
-  "chicken capons meat and skin  roasteds": "chicken capons meat and skin  roasted",
-  "chicken capons meat and skin and giblets and neck  roasteds": "chicken capons meat and skin and giblets and neck  roasted",
-  "chicken capons meat and skin and giblets and necks": "chicken capons meat and skin and giblets and neck",
+  "chicken capons meat and skin  roasteds":
+    "chicken capons meat and skin  roasted",
+  "chicken capons meat and skin and giblets and neck  roasteds":
+    "chicken capons meat and skin and giblets and neck  roasted",
+  "chicken capons meat and skin and giblets and necks":
+    "chicken capons meat and skin and giblets and neck",
   "chicken capons meat and skins": "chicken capons meat and skin",
-  "chicken cornish game hens meat and skin  roasteds": "chicken cornish game hens meat and skin  roasted",
-  "chicken cornish game hens meat and skins": "chicken cornish game hens meat and skin",
-  "chicken cornish game hens meat onlies": "chicken cornish game hens meat only",
-  "chicken cornish game hens meat only  roasteds": "chicken cornish game hens meat only  roasted",
+  "chicken cornish game hens meat and skin  roasteds":
+    "chicken cornish game hens meat and skin  roasted",
+  "chicken cornish game hens meat and skins":
+    "chicken cornish game hens meat and skin",
+  "chicken cornish game hens meat onlies":
+    "chicken cornish game hens meat only",
+  "chicken cornish game hens meat only  roasteds":
+    "chicken cornish game hens meat only  roasted",
   "chicken cornish game hens meat onlys": "chicken cornish game hens meat only",
-  "chicken dark meat drumstick meat and skin with added solution  braiseds": "chicken dark meat drumstick meat and skin with added solution  braised",
-  "chicken dark meat drumstick meat and skin with added solution  roasteds": "chicken dark meat drumstick meat and skin with added solution  roasted",
-  "chicken dark meat drumstick meat and skin with added solutions": "chicken dark meat drumstick meat and skin with added solution",
-  "chicken dark meat drumstick meat only with added solution  braiseds": "chicken dark meat drumstick meat only with added solution  braised",
-  "chicken dark meat drumstick meat only with added solution  roasteds": "chicken dark meat drumstick meat only with added solution  roasted",
-  "chicken dark meat drumstick meat only with added solutions": "chicken dark meat drumstick meat only with added solution",
-  "chicken dark meat thigh meat and skin with added solution  braiseds": "chicken dark meat thigh meat and skin with added solution  braised",
-  "chicken dark meat thigh meat and skin with added solution  roasteds": "chicken dark meat thigh meat and skin with added solution  roasted",
-  "chicken dark meat thigh meat and skin with added solutions": "chicken dark meat thigh meat and skin with added solution",
-  "chicken dark meat thigh meat only with added solution  braiseds": "chicken dark meat thigh meat only with added solution  braised",
-  "chicken dark meat thigh meat only with added solution  roasteds": "chicken dark meat thigh meat only with added solution  roasted",
-  "chicken dark meat thigh meat only with added solutions": "chicken dark meat thigh meat only with added solution",
+  "chicken dark meat drumstick meat and skin with added solution  braiseds":
+    "chicken dark meat drumstick meat and skin with added solution  braised",
+  "chicken dark meat drumstick meat and skin with added solution  roasteds":
+    "chicken dark meat drumstick meat and skin with added solution  roasted",
+  "chicken dark meat drumstick meat and skin with added solutions":
+    "chicken dark meat drumstick meat and skin with added solution",
+  "chicken dark meat drumstick meat only with added solution  braiseds":
+    "chicken dark meat drumstick meat only with added solution  braised",
+  "chicken dark meat drumstick meat only with added solution  roasteds":
+    "chicken dark meat drumstick meat only with added solution  roasted",
+  "chicken dark meat drumstick meat only with added solutions":
+    "chicken dark meat drumstick meat only with added solution",
+  "chicken dark meat thigh meat and skin with added solution  braiseds":
+    "chicken dark meat thigh meat and skin with added solution  braised",
+  "chicken dark meat thigh meat and skin with added solution  roasteds":
+    "chicken dark meat thigh meat and skin with added solution  roasted",
+  "chicken dark meat thigh meat and skin with added solutions":
+    "chicken dark meat thigh meat and skin with added solution",
+  "chicken dark meat thigh meat only with added solution  braiseds":
+    "chicken dark meat thigh meat only with added solution  braised",
+  "chicken dark meat thigh meat only with added solution  roasteds":
+    "chicken dark meat thigh meat only with added solution  roasted",
+  "chicken dark meat thigh meat only with added solutions":
+    "chicken dark meat thigh meat only with added solution",
   "chicken feet boileds": "chicken feet boiled",
-  "chicken gizzard all classes  simmereds": "chicken gizzard all classes  simmered",
+  "chicken gizzard all classes  simmereds":
+    "chicken gizzard all classes  simmered",
   "chicken gizzard all classeses": "chicken gizzard all classes",
   "chicken gizzard all classess": "chicken gizzard all classes",
-  "chicken ground crumbles  pan-browneds": "chicken ground crumbles  pan-browned",
+  "chicken ground crumbles  pan-browneds":
+    "chicken ground crumbles  pan-browned",
   "chicken grounds": "chicken ground",
   "chicken heart all classes  simmereds": "chicken heart all classes  simmered",
   "chicken heart all classeses": "chicken heart all classes",
   "chicken heart all classess": "chicken heart all classes",
-  "chicken liver all classes  pan-frieds": "chicken liver all classes  pan-fried",
+  "chicken liver all classes  pan-frieds":
+    "chicken liver all classes  pan-fried",
   "chicken liver all classes  simmereds": "chicken liver all classes  simmered",
   "chicken liver all classeses": "chicken liver all classes",
   "chicken liver all classess": "chicken liver all classes",
   "chicken patties": "chicken patty",
   "chicken patty  uncookeds": "chicken patty  uncooked",
   "chicken pattys": "chicken patty",
-  "chicken roasting dark meat meat onlies": "chicken roasting dark meat meat only",
-  "chicken roasting dark meat meat only  roasteds": "chicken roasting dark meat meat only  roasted",
-  "chicken roasting dark meat meat onlys": "chicken roasting dark meat meat only",
+  "chicken roasting dark meat meat onlies":
+    "chicken roasting dark meat meat only",
+  "chicken roasting dark meat meat only  roasteds":
+    "chicken roasting dark meat meat only  roasted",
+  "chicken roasting dark meat meat onlys":
+    "chicken roasting dark meat meat only",
   "chicken roasting giblets  simmereds": "chicken roasting giblets  simmered",
   "chicken roasting gibletses": "chicken roasting giblets",
   "chicken roasting gibletss": "chicken roasting giblets",
-  "chicken roasting light meat meat onlies": "chicken roasting light meat meat only",
-  "chicken roasting light meat meat only  roasteds": "chicken roasting light meat meat only  roasted",
-  "chicken roasting light meat meat onlys": "chicken roasting light meat meat only",
-  "chicken roasting meat and skin  roasteds": "chicken roasting meat and skin  roasted",
-  "chicken roasting meat and skin and giblets and neck  roasteds": "chicken roasting meat and skin and giblets and neck  roasted",
-  "chicken roasting meat and skin and giblets and necks": "chicken roasting meat and skin and giblets and neck",
+  "chicken roasting light meat meat onlies":
+    "chicken roasting light meat meat only",
+  "chicken roasting light meat meat only  roasteds":
+    "chicken roasting light meat meat only  roasted",
+  "chicken roasting light meat meat onlys":
+    "chicken roasting light meat meat only",
+  "chicken roasting meat and skin  roasteds":
+    "chicken roasting meat and skin  roasted",
+  "chicken roasting meat and skin and giblets and neck  roasteds":
+    "chicken roasting meat and skin and giblets and neck  roasted",
+  "chicken roasting meat and skin and giblets and necks":
+    "chicken roasting meat and skin and giblets and neck",
   "chicken roasting meat onlies": "chicken roasting meat only",
   "chicken roasting meat only  roasteds": "chicken roasting meat only  roasted",
   "chicken roasting meat onlys": "chicken roasting meat only",
-  "chicken skin drumsticks and thighs  braiseds": "chicken skin drumsticks and thighs  braised",
-  "chicken skin drumsticks and thighs  roasteds": "chicken skin drumsticks and thighs  roasted",
-  "chicken skin drumsticks and thighs with added solution  braiseds": "chicken skin drumsticks and thighs with added solution  braised",
-  "chicken skin drumsticks and thighs with added solution  roasteds": "chicken skin drumsticks and thighs with added solution  roasted",
-  "chicken skin drumsticks and thighs with added solutions": "chicken skin drumsticks and thighs with added solution",
+  "chicken skin drumsticks and thighs  braiseds":
+    "chicken skin drumsticks and thighs  braised",
+  "chicken skin drumsticks and thighs  roasteds":
+    "chicken skin drumsticks and thighs  roasted",
+  "chicken skin drumsticks and thighs with added solution  braiseds":
+    "chicken skin drumsticks and thighs with added solution  braised",
+  "chicken skin drumsticks and thighs with added solution  roasteds":
+    "chicken skin drumsticks and thighs with added solution  roasted",
+  "chicken skin drumsticks and thighs with added solutions":
+    "chicken skin drumsticks and thighs with added solution",
   "chicken skin drumsticks and thighses": "chicken skin drumsticks and thighs",
   "chicken skin drumsticks and thighss": "chicken skin drumsticks and thighs",
-  "chicken stewing dark meat meat onlies": "chicken stewing dark meat meat only",
-  "chicken stewing dark meat meat only  steweds": "chicken stewing dark meat meat only  stewed",
+  "chicken stewing dark meat meat onlies":
+    "chicken stewing dark meat meat only",
+  "chicken stewing dark meat meat only  steweds":
+    "chicken stewing dark meat meat only  stewed",
   "chicken stewing dark meat meat onlys": "chicken stewing dark meat meat only",
   "chicken stewing giblets  simmereds": "chicken stewing giblets  simmered",
   "chicken stewing gibletses": "chicken stewing giblets",
   "chicken stewing gibletss": "chicken stewing giblets",
-  "chicken stewing light meat meat onlies": "chicken stewing light meat meat only",
-  "chicken stewing light meat meat only  steweds": "chicken stewing light meat meat only  stewed",
-  "chicken stewing light meat meat onlys": "chicken stewing light meat meat only",
-  "chicken stewing meat and skin  steweds": "chicken stewing meat and skin  stewed",
-  "chicken stewing meat and skin and giblets and neck  steweds": "chicken stewing meat and skin and giblets and neck  stewed",
-  "chicken stewing meat and skin and giblets and necks": "chicken stewing meat and skin and giblets and neck",
+  "chicken stewing light meat meat onlies":
+    "chicken stewing light meat meat only",
+  "chicken stewing light meat meat only  steweds":
+    "chicken stewing light meat meat only  stewed",
+  "chicken stewing light meat meat onlys":
+    "chicken stewing light meat meat only",
+  "chicken stewing meat and skin  steweds":
+    "chicken stewing meat and skin  stewed",
+  "chicken stewing meat and skin and giblets and neck  steweds":
+    "chicken stewing meat and skin and giblets and neck  stewed",
+  "chicken stewing meat and skin and giblets and necks":
+    "chicken stewing meat and skin and giblets and neck",
   "chicken stewing meat and skins": "chicken stewing meat and skin",
   "chicken stewing meat onlies": "chicken stewing meat only",
   "chicken stewing meat only  steweds": "chicken stewing meat only  stewed",
   "chicken stewing meat onlys": "chicken stewing meat only",
-  "chicken wing  glazed barbecue flavored heated conventional ovens": "chicken wing  glazed barbecue flavored heated conventional oven",
-  "chicken wing  glazed barbecue flavored heated microwaves": "chicken wing  glazed barbecue flavored heated microwave",
-  "chicken wing  glazed barbecue flavoreds": "chicken wing  glazed barbecue flavored",
+  "chicken wing  glazed barbecue flavored heated conventional ovens":
+    "chicken wing  glazed barbecue flavored heated conventional oven",
+  "chicken wing  glazed barbecue flavored heated microwaves":
+    "chicken wing  glazed barbecue flavored heated microwave",
+  "chicken wing  glazed barbecue flavoreds":
+    "chicken wing  glazed barbecue flavored",
   "coconut waters": "coconut water",
   "coffee (black)s": "coffee black",
   "coffee blacks": "coffee black",
@@ -20183,7 +20833,8 @@ export const SYNONYM_MAP: Record<string, string> = {
   "cream fluid half and halfs": "cream fluid half and half",
   "cream fluid half and halves": "cream fluid half and half",
   "cream fluid heavy whippings": "cream fluid heavy whipping",
-  "cream fluid light coffee cream or table creams": "cream fluid light coffee cream or table cream",
+  "cream fluid light coffee cream or table creams":
+    "cream fluid light coffee cream or table cream",
   "cream fluid light whippings": "cream fluid light whipping",
   "cream half and half fat frees": "cream half and half fat free",
   "cream half and half lowfats": "cream half and half lowfat",
@@ -20192,17 +20843,24 @@ export const SYNONYM_MAP: Record<string, string> = {
   "cream substitute flavored liquids": "cream substitute flavored liquid",
   "cream substitute flavored powdereds": "cream substitute flavored powdered",
   "cream substitute liquid lights": "cream substitute liquid light",
-  "cream substitute liquid with hydrogenated vegetable oil and soy proteins": "cream substitute liquid with hydrogenated vegetable oil and soy protein",
-  "cream substitute liquid with lauric acid oil and sodium caseinates": "cream substitute liquid with lauric acid oil and sodium caseinate",
+  "cream substitute liquid with hydrogenated vegetable oil and soy proteins":
+    "cream substitute liquid with hydrogenated vegetable oil and soy protein",
+  "cream substitute liquid with lauric acid oil and sodium caseinates":
+    "cream substitute liquid with lauric acid oil and sodium caseinate",
   "cream substitute powdered lights": "cream substitute powdered light",
   "cream substitute powdereds": "cream substitute powdered",
-  "cream whipped cream topping pressurizeds": "cream whipped cream topping pressurized",
-  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie cholesterol-frees": "creamy dressing made with sour cream and or buttermilk and oil reduced calorie cholesterol-free",
-  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie fat-frees": "creamy dressing made with sour cream and or buttermilk and oil reduced calorie fat-free",
-  "creamy dressing made with sour cream and or buttermilk and oil reduced calories": "creamy dressing made with sour cream and or buttermilk and oil reduced calorie",
+  "cream whipped cream topping pressurizeds":
+    "cream whipped cream topping pressurized",
+  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie cholesterol-frees":
+    "creamy dressing made with sour cream and or buttermilk and oil reduced calorie cholesterol-free",
+  "creamy dressing made with sour cream and or buttermilk and oil reduced calorie fat-frees":
+    "creamy dressing made with sour cream and or buttermilk and oil reduced calorie fat-free",
+  "creamy dressing made with sour cream and or buttermilk and oil reduced calories":
+    "creamy dressing made with sour cream and or buttermilk and oil reduced calorie",
   "cucumbers": "cucumber",
   "dark chocolates": "dark chocolate",
-  "dessert topping powdered 1.5 ounce prepared with 1 2 cup milks": "dessert topping powdered 1.5 ounce prepared with 1 2 cup milk",
+  "dessert topping powdered 1.5 ounce prepared with 1 2 cup milks":
+    "dessert topping powdered 1.5 ounce prepared with 1 2 cup milk",
   "dessert topping powdereds": "dessert topping powdered",
   "dessert topping pressurizeds": "dessert topping pressurized",
   "dessert topping semi solids": "dessert topping semi solid",
@@ -20211,18 +20869,24 @@ export const SYNONYM_MAP: Record<string, string> = {
   "dove  includes squabs": "dove  includes squab",
   "dressing honey mustard fat-frees": "dressing honey mustard fat-free",
   "duck domesticated livers": "duck domesticated liver",
-  "duck domesticated meat and skin  roasteds": "duck domesticated meat and skin  roasted",
+  "duck domesticated meat and skin  roasteds":
+    "duck domesticated meat and skin  roasted",
   "duck domesticated meat and skins": "duck domesticated meat and skin",
   "duck domesticated meat onlies": "duck domesticated meat only",
-  "duck domesticated meat only  roasteds": "duck domesticated meat only  roasted",
+  "duck domesticated meat only  roasteds":
+    "duck domesticated meat only  roasted",
   "duck domesticated meat onlys": "duck domesticated meat only",
   "duck wild breast meat onlies": "duck wild breast meat only",
   "duck wild breast meat onlys": "duck wild breast meat only",
   "duck wild meat and skins": "duck wild meat and skin",
-  "duck young duckling domesticated white pekin breast meat and skin boneless  roasteds": "duck young duckling domesticated white pekin breast meat and skin boneless  roasted",
-  "duck young duckling domesticated white pekin breast meat only boneless  without skin broileds": "duck young duckling domesticated white pekin breast meat only boneless  without skin broiled",
-  "duck young duckling domesticated white pekin leg meat and skin bone in  roasteds": "duck young duckling domesticated white pekin leg meat and skin bone in  roasted",
-  "duck young duckling domesticated white pekin leg meat only bone in  without skin braiseds": "duck young duckling domesticated white pekin leg meat only bone in  without skin braised",
+  "duck young duckling domesticated white pekin breast meat and skin boneless  roasteds":
+    "duck young duckling domesticated white pekin breast meat and skin boneless  roasted",
+  "duck young duckling domesticated white pekin breast meat only boneless  without skin broileds":
+    "duck young duckling domesticated white pekin breast meat only boneless  without skin broiled",
+  "duck young duckling domesticated white pekin leg meat and skin bone in  roasteds":
+    "duck young duckling domesticated white pekin leg meat and skin bone in  roasted",
+  "duck young duckling domesticated white pekin leg meat only bone in  without skin braiseds":
+    "duck young duckling domesticated white pekin leg meat only bone in  without skin braised",
   "ducks": "duck",
   "dulce de leches": "dulce de leche",
   "egg duck wholes": "egg duck whole",
@@ -20232,18 +20896,23 @@ export const SYNONYM_MAP: Record<string, string> = {
   "egg substitute powders": "egg substitute powder",
   "egg turkey wholes": "egg turkey whole",
   "egg white   pasteurizeds": "egg white   pasteurized",
-  "egg white  flakes stabilized glucose reduceds": "egg white  flakes stabilized glucose reduced",
-  "egg white  powder stabilized glucose reduceds": "egg white  powder stabilized glucose reduced",
-  "egg white  stabilized glucose reduceds": "egg white  stabilized glucose reduced",
+  "egg white  flakes stabilized glucose reduceds":
+    "egg white  flakes stabilized glucose reduced",
+  "egg white  powder stabilized glucose reduceds":
+    "egg white  powder stabilized glucose reduced",
+  "egg white  stabilized glucose reduceds":
+    "egg white  stabilized glucose reduced",
   "egg whites": "egg white",
-  "egg whole   pasteurized includes foods for usda's food distribution programs": "egg whole   pasteurized includes foods for usda's food distribution program",
+  "egg whole   pasteurized includes foods for usda's food distribution programs":
+    "egg whole   pasteurized includes foods for usda's food distribution program",
   "egg whole   salted pasteurizeds": "egg whole   salted pasteurized",
   "egg whole  frieds": "egg whole  fried",
   "egg whole  hard-boileds": "egg whole  hard-boiled",
   "egg whole  omelets": "egg whole  omelet",
   "egg whole  poacheds": "egg whole  poached",
   "egg whole  scrambleds": "egg whole  scrambled",
-  "egg whole  stabilized glucose reduceds": "egg whole  stabilized glucose reduced",
+  "egg whole  stabilized glucose reduceds":
+    "egg whole  stabilized glucose reduced",
   "egg wholes": "egg whole",
   "egg yolk   pasteurizeds": "egg yolk   pasteurized",
   "egg yolk   salted pasteurizeds": "egg yolk   salted pasteurized",
@@ -20268,12 +20937,14 @@ export const SYNONYM_MAP: Record<string, string> = {
   "energy drinks": "energy drink",
   "fat beef tallows": "fat beef tallow",
   "fat chickens": "fat chicken",
-  "fat free ice cream no sugar added flavors other than chocolates": "fat free ice cream no sugar added flavors other than chocolate",
+  "fat free ice cream no sugar added flavors other than chocolates":
+    "fat free ice cream no sugar added flavors other than chocolate",
   "fat gooses": "fat goose",
   "fat turkeys": "fat turkey",
   "fish oil cod livers": "fish oil cod liver",
   "fish oil herrings": "fish oil herring",
-  "fish oil menhaden fully hydrogenateds": "fish oil menhaden fully hydrogenated",
+  "fish oil menhaden fully hydrogenateds":
+    "fish oil menhaden fully hydrogenated",
   "fish oil menhadens": "fish oil menhaden",
   "fish oil salmons": "fish oil salmon",
   "fish oil sardines": "fish oil sardine",
@@ -20281,10 +20952,12 @@ export const SYNONYM_MAP: Record<string, string> = {
   "flax seedss": "flax seeds",
   "french frieses": "french fries",
   "french friess": "french fries",
-  "goose domesticated meat and skin  roasteds": "goose domesticated meat and skin  roasted",
+  "goose domesticated meat and skin  roasteds":
+    "goose domesticated meat and skin  roasted",
   "goose domesticated meat and skins": "goose domesticated meat and skin",
   "goose domesticated meat onlies": "goose domesticated meat only",
-  "goose domesticated meat only  roasteds": "goose domesticated meat only  roasted",
+  "goose domesticated meat only  roasteds":
+    "goose domesticated meat only  roasted",
   "goose domesticated meat onlys": "goose domesticated meat only",
   "goose livers": "goose liver",
   "granola bars": "granola bar",
@@ -20301,156 +20974,262 @@ export const SYNONYM_MAP: Record<string, string> = {
   "hot dogs": "hot dog",
   "hummuses": "hummus",
   "hummuss": "hummus",
-  "ice cream bar covered with chocolate and nutses": "ice cream bar covered with chocolate and nuts",
-  "ice cream bar covered with chocolate and nutss": "ice cream bar covered with chocolate and nuts",
-  "ice cream bar or stick chocolate covereds": "ice cream bar or stick chocolate covered",
-  "ice cream bar stick or nugget with crunch coatings": "ice cream bar stick or nugget with crunch coating",
-  "ice cream cone chocolate covered with nuts flavors other than chocolates": "ice cream cone chocolate covered with nuts flavors other than chocolate",
+  "ice cream bar covered with chocolate and nutses":
+    "ice cream bar covered with chocolate and nuts",
+  "ice cream bar covered with chocolate and nutss":
+    "ice cream bar covered with chocolate and nuts",
+  "ice cream bar or stick chocolate covereds":
+    "ice cream bar or stick chocolate covered",
+  "ice cream bar stick or nugget with crunch coatings":
+    "ice cream bar stick or nugget with crunch coating",
+  "ice cream cone chocolate covered with nuts flavors other than chocolates":
+    "ice cream cone chocolate covered with nuts flavors other than chocolate",
   "ice cream cookie sandwiches": "ice cream cookie sandwich",
   "ice cream cookie sandwichs": "ice cream cookie sandwich",
-  "ice cream light soft serve chocolates": "ice cream light soft serve chocolate",
-  "ice cream lowfat no sugar added cone added peanuts and chocolate sauces": "ice cream lowfat no sugar added cone added peanuts and chocolate sauce",
-  "ice cream sandwich made with light ice cream vanillas": "ice cream sandwich made with light ice cream vanilla",
-  "ice cream sandwich vanilla light no sugar addeds": "ice cream sandwich vanilla light no sugar added",
+  "ice cream light soft serve chocolates":
+    "ice cream light soft serve chocolate",
+  "ice cream lowfat no sugar added cone added peanuts and chocolate sauces":
+    "ice cream lowfat no sugar added cone added peanuts and chocolate sauce",
+  "ice cream sandwich made with light ice cream vanillas":
+    "ice cream sandwich made with light ice cream vanilla",
+  "ice cream sandwich vanilla light no sugar addeds":
+    "ice cream sandwich vanilla light no sugar added",
   "ice cream sandwiches": "ice cream sandwich",
   "ice cream sandwichs": "ice cream sandwich",
   "ice cream soft serve chocolates": "ice cream soft serve chocolate",
   "ice cream sundae cones": "ice cream sundae cone",
   "ice creams": "ice cream",
-  "imitation cheese american or cheddar low cholesterols": "imitation cheese american or cheddar low cholesterol",
+  "imitation cheese american or cheddar low cholesterols":
+    "imitation cheese american or cheddar low cholesterol",
   "jams": "jam",
   "kales": "kale",
   "kefir lowfat plain lifeways": "kefir lowfat plain lifeway",
   "kefir lowfat strawberry lifeways": "kefir lowfat strawberry lifeway",
   "ketchups": "ketchup",
-  "kraft breakstone's free fat free sour creams": "kraft breakstone's free fat free sour cream",
-  "kraft breakstone's reduced fat sour creams": "kraft breakstone's reduced fat sour cream",
-  "kraft cheez whiz light pasteurized process cheese products": "kraft cheez whiz light pasteurized process cheese product",
-  "kraft cheez whiz pasteurized process cheese sauces": "kraft cheez whiz pasteurized process cheese sauce",
-  "kraft free singles american nonfat pasteurized process cheese products": "kraft free singles american nonfat pasteurized process cheese product",
-  "kraft velveeta light reduced fat pasteurized process cheese products": "kraft velveeta light reduced fat pasteurized process cheese product",
-  "kraft velveeta pasteurized process cheese spreads": "kraft velveeta pasteurized process cheese spread",
+  "kraft breakstone's free fat free sour creams":
+    "kraft breakstone's free fat free sour cream",
+  "kraft breakstone's reduced fat sour creams":
+    "kraft breakstone's reduced fat sour cream",
+  "kraft cheez whiz light pasteurized process cheese products":
+    "kraft cheez whiz light pasteurized process cheese product",
+  "kraft cheez whiz pasteurized process cheese sauces":
+    "kraft cheez whiz pasteurized process cheese sauce",
+  "kraft free singles american nonfat pasteurized process cheese products":
+    "kraft free singles american nonfat pasteurized process cheese product",
+  "kraft velveeta light reduced fat pasteurized process cheese products":
+    "kraft velveeta light reduced fat pasteurized process cheese product",
+  "kraft velveeta pasteurized process cheese spreads":
+    "kraft velveeta pasteurized process cheese spread",
   "lambs": "lamb",
   "lards": "lard",
   "lettuces": "lettuce",
   "light ice cream creamsicles": "light ice cream creamsicle",
   "mangos": "mango",
   "maple syrups": "maple syrup",
-  "margarine 80% fat stick includes regular and hydrogenated corn and soybean oilses": "margarine 80% fat stick includes regular and hydrogenated corn and soybean oils",
-  "margarine 80% fat stick includes regular and hydrogenated corn and soybean oilss": "margarine 80% fat stick includes regular and hydrogenated corn and soybean oils",
-  "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oilses": "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oils",
-  "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oilss": "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oils",
-  "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastrieses": "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastries",
-  "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastriess": "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastries",
-  "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candies": "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candy",
-  "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candys": "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candy",
-  "margarine margarine-like vegetable oil spread 67-70% fat tubs": "margarine margarine-like vegetable oil spread 67-70% fat tub",
-  "margarine margarine-type vegetable oil spread 70% fat soybean and partially hydrogenated soybean sticks": "margarine margarine-type vegetable oil spread 70% fat soybean and partially hydrogenated soybean stick",
-  "margarine regular 80% fat composite stick with salt with added vitamin ds": "margarine regular 80% fat composite stick with salt with added vitamin d",
-  "margarine regular 80% fat composite stick with salts": "margarine regular 80% fat composite stick with salt",
-  "margarine regular 80% fat composite stick without salt with added vitamin ds": "margarine regular 80% fat composite stick without salt with added vitamin d",
-  "margarine regular 80% fat composite stick without salts": "margarine regular 80% fat composite stick without salt",
-  "margarine regular 80% fat composite tub with salt with added vitamin ds": "margarine regular 80% fat composite tub with salt with added vitamin d",
-  "margarine regular 80% fat composite tub with salts": "margarine regular 80% fat composite tub with salt",
-  "margarine regular 80% fat composite tub without salts": "margarine regular 80% fat composite tub without salt",
-  "margarine regular hard soybean hydrogenateds": "margarine regular hard soybean hydrogenated",
+  "margarine 80% fat stick includes regular and hydrogenated corn and soybean oilses":
+    "margarine 80% fat stick includes regular and hydrogenated corn and soybean oils",
+  "margarine 80% fat stick includes regular and hydrogenated corn and soybean oilss":
+    "margarine 80% fat stick includes regular and hydrogenated corn and soybean oils",
+  "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oilses":
+    "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oils",
+  "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oilss":
+    "margarine 80% fat tub canola harvest soft spread canola palm and palm kernel oils",
+  "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastrieses":
+    "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastries",
+  "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastriess":
+    "margarine industrial non-dairy cottonseed soy oil partially hydrogenated for flaky pastries",
+  "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candies":
+    "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candy",
+  "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candys":
+    "margarine industrial soy and partially hydrogenated soy oil use for baking sauces and candy",
+  "margarine margarine-like vegetable oil spread 67-70% fat tubs":
+    "margarine margarine-like vegetable oil spread 67-70% fat tub",
+  "margarine margarine-type vegetable oil spread 70% fat soybean and partially hydrogenated soybean sticks":
+    "margarine margarine-type vegetable oil spread 70% fat soybean and partially hydrogenated soybean stick",
+  "margarine regular 80% fat composite stick with salt with added vitamin ds":
+    "margarine regular 80% fat composite stick with salt with added vitamin d",
+  "margarine regular 80% fat composite stick with salts":
+    "margarine regular 80% fat composite stick with salt",
+  "margarine regular 80% fat composite stick without salt with added vitamin ds":
+    "margarine regular 80% fat composite stick without salt with added vitamin d",
+  "margarine regular 80% fat composite stick without salts":
+    "margarine regular 80% fat composite stick without salt",
+  "margarine regular 80% fat composite tub with salt with added vitamin ds":
+    "margarine regular 80% fat composite tub with salt with added vitamin d",
+  "margarine regular 80% fat composite tub with salts":
+    "margarine regular 80% fat composite tub with salt",
+  "margarine regular 80% fat composite tub without salts":
+    "margarine regular 80% fat composite tub without salt",
+  "margarine regular hard soybean hydrogenateds":
+    "margarine regular hard soybean hydrogenated",
   "margarine spread 35-39% fat tubs": "margarine spread 35-39% fat tub",
   "margarine spread 40-49% fat tubs": "margarine spread 40-49% fat tub",
-  "margarine-like butter-margarine blend 80% fat stick without salts": "margarine-like butter-margarine blend 80% fat stick without salt",
-  "margarine-like margarine-butter blend soybean oil and butters": "margarine-like margarine-butter blend soybean oil and butter",
-  "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastrieses": "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastries",
-  "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastriess": "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastries",
-  "margarine-like spread benecol light spreads": "margarine-like spread benecol light spread",
-  "margarine-like spread smart balance light buttery spreads": "margarine-like spread smart balance light buttery spread",
-  "margarine-like spread smart balance omega plus spread with plant sterols & fish oils": "margarine-like spread smart balance omega plus spread with plant sterols & fish oil",
-  "margarine-like spread smart balance regular buttery spread with flax oils": "margarine-like spread smart balance regular buttery spread with flax oil",
-  "margarine-like spread smart beat smart squeezes": "margarine-like spread smart beat smart squeeze",
-  "margarine-like spread smart beat super light without saturated fats": "margarine-like spread smart beat super light without saturated fat",
-  "margarine-like spread with yogurt 70% fat stick with salts": "margarine-like spread with yogurt 70% fat stick with salt",
-  "margarine-like spread with yogurt approximately 40% fat tub with salts": "margarine-like spread with yogurt approximately 40% fat tub with salt",
-  "margarine-like vegetable oil spread 20% fat with salts": "margarine-like vegetable oil spread 20% fat with salt",
-  "margarine-like vegetable oil spread 20% fat without salts": "margarine-like vegetable oil spread 20% fat without salt",
-  "margarine-like vegetable oil spread 60% fat stick tub bottle with salts": "margarine-like vegetable oil spread 60% fat stick tub bottle with salt",
-  "margarine-like vegetable oil spread 60% fat stick tub bottle without salt with added vitamin ds": "margarine-like vegetable oil spread 60% fat stick tub bottle without salt with added vitamin d",
-  "margarine-like vegetable oil spread 60% fat stick tub bottle without salts": "margarine-like vegetable oil spread 60% fat stick tub bottle without salt",
-  "margarine-like vegetable oil spread 60% fat stick with salt with added vitamin ds": "margarine-like vegetable oil spread 60% fat stick with salt with added vitamin d",
-  "margarine-like vegetable oil spread 60% fat stick with salts": "margarine-like vegetable oil spread 60% fat stick with salt",
-  "margarine-like vegetable oil spread 60% fat tub with salt with added vitamin ds": "margarine-like vegetable oil spread 60% fat tub with salt with added vitamin d",
-  "margarine-like vegetable oil spread 60% fat tub with salts": "margarine-like vegetable oil spread 60% fat tub with salt",
-  "margarine-like vegetable oil spread approximately 37% fat unspecified oils with salt with added vitamin ds": "margarine-like vegetable oil spread approximately 37% fat unspecified oils with salt with added vitamin d",
-  "margarine-like vegetable oil spread fat free liquid with salts": "margarine-like vegetable oil spread fat free liquid with salt",
-  "margarine-like vegetable oil spread fat-free tubs": "margarine-like vegetable oil spread fat-free tub",
-  "margarine-like vegetable oil spread stick or tub sweeteneds": "margarine-like vegetable oil spread stick or tub sweetened",
-  "margarine-like vegetable oil-butter spread reduced calorie tub with salts": "margarine-like vegetable oil-butter spread reduced calorie tub with salt",
-  "margarine-like vegetable oil-butter spread tub with salts": "margarine-like vegetable oil-butter spread tub with salt",
-  "margarine-like vegetable-oil spread stick tub bottle 60% fat with added vitamin ds": "margarine-like vegetable-oil spread stick tub bottle 60% fat with added vitamin d",
+  "margarine-like butter-margarine blend 80% fat stick without salts":
+    "margarine-like butter-margarine blend 80% fat stick without salt",
+  "margarine-like margarine-butter blend soybean oil and butters":
+    "margarine-like margarine-butter blend soybean oil and butter",
+  "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastrieses":
+    "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastries",
+  "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastriess":
+    "margarine-like shortening industrial soy partially hydrogenated cottonseed and soy principal use flaky pastries",
+  "margarine-like spread benecol light spreads":
+    "margarine-like spread benecol light spread",
+  "margarine-like spread smart balance light buttery spreads":
+    "margarine-like spread smart balance light buttery spread",
+  "margarine-like spread smart balance omega plus spread with plant sterols & fish oils":
+    "margarine-like spread smart balance omega plus spread with plant sterols & fish oil",
+  "margarine-like spread smart balance regular buttery spread with flax oils":
+    "margarine-like spread smart balance regular buttery spread with flax oil",
+  "margarine-like spread smart beat smart squeezes":
+    "margarine-like spread smart beat smart squeeze",
+  "margarine-like spread smart beat super light without saturated fats":
+    "margarine-like spread smart beat super light without saturated fat",
+  "margarine-like spread with yogurt 70% fat stick with salts":
+    "margarine-like spread with yogurt 70% fat stick with salt",
+  "margarine-like spread with yogurt approximately 40% fat tub with salts":
+    "margarine-like spread with yogurt approximately 40% fat tub with salt",
+  "margarine-like vegetable oil spread 20% fat with salts":
+    "margarine-like vegetable oil spread 20% fat with salt",
+  "margarine-like vegetable oil spread 20% fat without salts":
+    "margarine-like vegetable oil spread 20% fat without salt",
+  "margarine-like vegetable oil spread 60% fat stick tub bottle with salts":
+    "margarine-like vegetable oil spread 60% fat stick tub bottle with salt",
+  "margarine-like vegetable oil spread 60% fat stick tub bottle without salt with added vitamin ds":
+    "margarine-like vegetable oil spread 60% fat stick tub bottle without salt with added vitamin d",
+  "margarine-like vegetable oil spread 60% fat stick tub bottle without salts":
+    "margarine-like vegetable oil spread 60% fat stick tub bottle without salt",
+  "margarine-like vegetable oil spread 60% fat stick with salt with added vitamin ds":
+    "margarine-like vegetable oil spread 60% fat stick with salt with added vitamin d",
+  "margarine-like vegetable oil spread 60% fat stick with salts":
+    "margarine-like vegetable oil spread 60% fat stick with salt",
+  "margarine-like vegetable oil spread 60% fat tub with salt with added vitamin ds":
+    "margarine-like vegetable oil spread 60% fat tub with salt with added vitamin d",
+  "margarine-like vegetable oil spread 60% fat tub with salts":
+    "margarine-like vegetable oil spread 60% fat tub with salt",
+  "margarine-like vegetable oil spread approximately 37% fat unspecified oils with salt with added vitamin ds":
+    "margarine-like vegetable oil spread approximately 37% fat unspecified oils with salt with added vitamin d",
+  "margarine-like vegetable oil spread fat free liquid with salts":
+    "margarine-like vegetable oil spread fat free liquid with salt",
+  "margarine-like vegetable oil spread fat-free tubs":
+    "margarine-like vegetable oil spread fat-free tub",
+  "margarine-like vegetable oil spread stick or tub sweeteneds":
+    "margarine-like vegetable oil spread stick or tub sweetened",
+  "margarine-like vegetable oil-butter spread reduced calorie tub with salts":
+    "margarine-like vegetable oil-butter spread reduced calorie tub with salt",
+  "margarine-like vegetable oil-butter spread tub with salts":
+    "margarine-like vegetable oil-butter spread tub with salt",
+  "margarine-like vegetable-oil spread stick tub bottle 60% fat with added vitamin ds":
+    "margarine-like vegetable-oil spread stick tub bottle 60% fat with added vitamin d",
   "mayonnaise dressing no cholesterols": "mayonnaise dressing no cholesterol",
-  "mayonnaise low sodium low calorie or diets": "mayonnaise low sodium low calorie or diet",
+  "mayonnaise low sodium low calorie or diets":
+    "mayonnaise low sodium low calorie or diet",
   "mayonnaise made with tofus": "mayonnaise made with tofu",
-  "mayonnaise reduced fat with olive oils": "mayonnaise reduced fat with olive oil",
-  "mayonnaise reduced-calorie or diet cholesterol-frees": "mayonnaise reduced-calorie or diet cholesterol-free",
+  "mayonnaise reduced fat with olive oils":
+    "mayonnaise reduced fat with olive oil",
+  "mayonnaise reduced-calorie or diet cholesterol-frees":
+    "mayonnaise reduced-calorie or diet cholesterol-free",
   "mayonnaises": "mayonnaise",
   "milk  condensed sweeteneds": "milk  condensed sweetened",
-  "milk  evaporated nonfat with added vitamin a and vitamin ds": "milk  evaporated nonfat with added vitamin a and vitamin d",
-  "milk  evaporated with added vitamin as": "milk  evaporated with added vitamin a",
-  "milk  evaporated with added vitamin d and without added vitamin as": "milk  evaporated with added vitamin d and without added vitamin a",
+  "milk  evaporated nonfat with added vitamin a and vitamin ds":
+    "milk  evaporated nonfat with added vitamin a and vitamin d",
+  "milk  evaporated with added vitamin as":
+    "milk  evaporated with added vitamin a",
+  "milk  evaporated with added vitamin d and without added vitamin as":
+    "milk  evaporated with added vitamin d and without added vitamin a",
   "milk (skim)s": "milk skim",
   "milk (whole)s": "milk whole",
-  "milk buttermilk fluid cultured lowfats": "milk buttermilk fluid cultured lowfat",
-  "milk buttermilk fluid cultured reduced fats": "milk buttermilk fluid cultured reduced fat",
+  "milk buttermilk fluid cultured lowfats":
+    "milk buttermilk fluid cultured lowfat",
+  "milk buttermilk fluid cultured reduced fats":
+    "milk buttermilk fluid cultured reduced fat",
   "milk buttermilk fluid wholes": "milk buttermilk fluid whole",
   "milk buttermilks": "milk buttermilk",
-  "milk chocolate beverage hot cocoa homemades": "milk chocolate beverage hot cocoa homemade",
-  "milk chocolate fat free with added vitamin a and vitamin ds": "milk chocolate fat free with added vitamin a and vitamin d",
-  "milk chocolate fluid commercial reduced fat with added calciums": "milk chocolate fluid commercial reduced fat with added calcium",
-  "milk chocolate fluid commercial reduced fat with added vitamin a and vitamin ds": "milk chocolate fluid commercial reduced fat with added vitamin a and vitamin d",
-  "milk chocolate fluid commercial whole with added vitamin a and vitamin ds": "milk chocolate fluid commercial whole with added vitamin a and vitamin d",
+  "milk chocolate beverage hot cocoa homemades":
+    "milk chocolate beverage hot cocoa homemade",
+  "milk chocolate fat free with added vitamin a and vitamin ds":
+    "milk chocolate fat free with added vitamin a and vitamin d",
+  "milk chocolate fluid commercial reduced fat with added calciums":
+    "milk chocolate fluid commercial reduced fat with added calcium",
+  "milk chocolate fluid commercial reduced fat with added vitamin a and vitamin ds":
+    "milk chocolate fluid commercial reduced fat with added vitamin a and vitamin d",
+  "milk chocolate fluid commercial whole with added vitamin a and vitamin ds":
+    "milk chocolate fluid commercial whole with added vitamin a and vitamin d",
   "milk chocolate lowfat reduced sugars": "milk chocolate lowfat reduced sugar",
-  "milk chocolate lowfat with added vitamin a and vitamin ds": "milk chocolate lowfat with added vitamin a and vitamin d",
-  "milk dessert bar  made from lowfat milks": "milk dessert bar  made from lowfat milk",
+  "milk chocolate lowfat with added vitamin a and vitamin ds":
+    "milk chocolate lowfat with added vitamin a and vitamin d",
+  "milk dessert bar  made from lowfat milks":
+    "milk dessert bar  made from lowfat milk",
   "milk dry nonfat calcium reduceds": "milk dry nonfat calcium reduced",
-  "milk dry nonfat instant with added vitamin a and vitamin ds": "milk dry nonfat instant with added vitamin a and vitamin d",
-  "milk dry nonfat instant without added vitamin a and vitamin ds": "milk dry nonfat instant without added vitamin a and vitamin d",
-  "milk dry nonfat regular with added vitamin a and vitamin ds": "milk dry nonfat regular with added vitamin a and vitamin d",
-  "milk dry nonfat regular without added vitamin a and vitamin ds": "milk dry nonfat regular without added vitamin a and vitamin d",
+  "milk dry nonfat instant with added vitamin a and vitamin ds":
+    "milk dry nonfat instant with added vitamin a and vitamin d",
+  "milk dry nonfat instant without added vitamin a and vitamin ds":
+    "milk dry nonfat instant without added vitamin a and vitamin d",
+  "milk dry nonfat regular with added vitamin a and vitamin ds":
+    "milk dry nonfat regular with added vitamin a and vitamin d",
+  "milk dry nonfat regular without added vitamin a and vitamin ds":
+    "milk dry nonfat regular without added vitamin a and vitamin d",
   "milk dry whole with added vitamin ds": "milk dry whole with added vitamin d",
-  "milk dry whole without added vitamin ds": "milk dry whole without added vitamin d",
-  "milk evaporated 2% fat with added vitamin a and vitamin ds": "milk evaporated 2% fat with added vitamin a and vitamin d",
-  "milk filled fluid with blend of hydrogenated vegetable oilses": "milk filled fluid with blend of hydrogenated vegetable oils",
-  "milk filled fluid with blend of hydrogenated vegetable oilss": "milk filled fluid with blend of hydrogenated vegetable oils",
-  "milk filled fluid with lauric acid oils": "milk filled fluid with lauric acid oil",
-  "milk fluid 1% fat without added vitamin a and vitamin ds": "milk fluid 1% fat without added vitamin a and vitamin d",
-  "milk fluid nonfat calcium fortified fat free or skims": "milk fluid nonfat calcium fortified fat free or skim",
-  "milk goat fluid with added vitamin ds": "milk goat fluid with added vitamin d",
+  "milk dry whole without added vitamin ds":
+    "milk dry whole without added vitamin d",
+  "milk evaporated 2% fat with added vitamin a and vitamin ds":
+    "milk evaporated 2% fat with added vitamin a and vitamin d",
+  "milk filled fluid with blend of hydrogenated vegetable oilses":
+    "milk filled fluid with blend of hydrogenated vegetable oils",
+  "milk filled fluid with blend of hydrogenated vegetable oilss":
+    "milk filled fluid with blend of hydrogenated vegetable oils",
+  "milk filled fluid with lauric acid oils":
+    "milk filled fluid with lauric acid oil",
+  "milk fluid 1% fat without added vitamin a and vitamin ds":
+    "milk fluid 1% fat without added vitamin a and vitamin d",
+  "milk fluid nonfat calcium fortified fat free or skims":
+    "milk fluid nonfat calcium fortified fat free or skim",
+  "milk goat fluid with added vitamin ds":
+    "milk goat fluid with added vitamin d",
   "milk human mature fluids": "milk human mature fluid",
   "milk imitation non-soys": "milk imitation non-soy",
   "milk indian buffalo fluids": "milk indian buffalo fluid",
   "milk low sodium fluids": "milk low sodium fluid",
-  "milk lowfat fluid 1% milkfat protein fortified with added vitamin a and vitamin ds": "milk lowfat fluid 1% milkfat protein fortified with added vitamin a and vitamin d",
-  "milk lowfat fluid 1% milkfat with added nonfat milk solids vitamin a and vitamin ds": "milk lowfat fluid 1% milkfat with added nonfat milk solids vitamin a and vitamin d",
-  "milk lowfat fluid 1% milkfat with added vitamin a and vitamin ds": "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d",
-  "milk nonfat fluid protein fortified with added vitamin a and vitamin d fat free and skims": "milk nonfat fluid protein fortified with added vitamin a and vitamin d fat free and skim",
-  "milk nonfat fluid with added nonfat milk solids vitamin a and vitamin d fat free or skims": "milk nonfat fluid with added nonfat milk solids vitamin a and vitamin d fat free or skim",
-  "milk nonfat fluid with added vitamin a and vitamin d fat free or skims": "milk nonfat fluid with added vitamin a and vitamin d fat free or skim",
-  "milk nonfat fluid without added vitamin a and vitamin d fat free or skims": "milk nonfat fluid without added vitamin a and vitamin d fat free or skim",
+  "milk lowfat fluid 1% milkfat protein fortified with added vitamin a and vitamin ds":
+    "milk lowfat fluid 1% milkfat protein fortified with added vitamin a and vitamin d",
+  "milk lowfat fluid 1% milkfat with added nonfat milk solids vitamin a and vitamin ds":
+    "milk lowfat fluid 1% milkfat with added nonfat milk solids vitamin a and vitamin d",
+  "milk lowfat fluid 1% milkfat with added vitamin a and vitamin ds":
+    "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d",
+  "milk nonfat fluid protein fortified with added vitamin a and vitamin d fat free and skims":
+    "milk nonfat fluid protein fortified with added vitamin a and vitamin d fat free and skim",
+  "milk nonfat fluid with added nonfat milk solids vitamin a and vitamin d fat free or skims":
+    "milk nonfat fluid with added nonfat milk solids vitamin a and vitamin d fat free or skim",
+  "milk nonfat fluid with added vitamin a and vitamin d fat free or skims":
+    "milk nonfat fluid with added vitamin a and vitamin d fat free or skim",
+  "milk nonfat fluid without added vitamin a and vitamin d fat free or skims":
+    "milk nonfat fluid without added vitamin a and vitamin d fat free or skim",
   "milk producer fluid 3.7% milkfats": "milk producer fluid 3.7% milkfat",
-  "milk reduced fat fluid 2% milkfat protein fortified with added vitamin a and vitamin ds": "milk reduced fat fluid 2% milkfat protein fortified with added vitamin a and vitamin d",
-  "milk reduced fat fluid 2% milkfat with added nonfat milk solids and vitamin a and vitamin ds": "milk reduced fat fluid 2% milkfat with added nonfat milk solids and vitamin a and vitamin d",
-  "milk reduced fat fluid 2% milkfat with added nonfat milk solids without added vitamin as": "milk reduced fat fluid 2% milkfat with added nonfat milk solids without added vitamin a",
-  "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin ds": "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin d",
-  "milk reduced fat fluid 2% milkfat without added vitamin a and vitamin ds": "milk reduced fat fluid 2% milkfat without added vitamin a and vitamin d",
+  "milk reduced fat fluid 2% milkfat protein fortified with added vitamin a and vitamin ds":
+    "milk reduced fat fluid 2% milkfat protein fortified with added vitamin a and vitamin d",
+  "milk reduced fat fluid 2% milkfat with added nonfat milk solids and vitamin a and vitamin ds":
+    "milk reduced fat fluid 2% milkfat with added nonfat milk solids and vitamin a and vitamin d",
+  "milk reduced fat fluid 2% milkfat with added nonfat milk solids without added vitamin as":
+    "milk reduced fat fluid 2% milkfat with added nonfat milk solids without added vitamin a",
+  "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin ds":
+    "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin d",
+  "milk reduced fat fluid 2% milkfat without added vitamin a and vitamin ds":
+    "milk reduced fat fluid 2% milkfat without added vitamin a and vitamin d",
   "milk shakes thick chocolates": "milk shakes thick chocolate",
   "milk shakes thick vanillas": "milk shakes thick vanilla",
   "milk sheep fluids": "milk sheep fluid",
   "milk skims": "milk skim",
-  "milk substitutes fluid with lauric acid oils": "milk substitutes fluid with lauric acid oil",
-  "milk whole 3.25% milkfat with added vitamin ds": "milk whole 3.25% milkfat with added vitamin d",
-  "milk whole 3.25% milkfat without added vitamin a and vitamin ds": "milk whole 3.25% milkfat without added vitamin a and vitamin d",
+  "milk substitutes fluid with lauric acid oils":
+    "milk substitutes fluid with lauric acid oil",
+  "milk whole 3.25% milkfat with added vitamin ds":
+    "milk whole 3.25% milkfat with added vitamin d",
+  "milk whole 3.25% milkfat without added vitamin a and vitamin ds":
+    "milk whole 3.25% milkfat without added vitamin a and vitamin d",
   "milk wholes": "milk whole",
   "muffins": "muffin",
   "mustard prepared yellows": "mustard prepared yellow",
   "mustards": "mustard",
-  "nutritional supplement for people with diabetes liquids": "nutritional supplement for people with diabetes liquid",
+  "nutritional supplement for people with diabetes liquids":
+    "nutritional supplement for people with diabetes liquid",
   "oat milks": "oat milk",
   "oatmeals": "oatmeal",
   "oil almonds": "oil almond",
@@ -20460,49 +21239,82 @@ export const SYNONYM_MAP: Record<string, string> = {
   "oil canolas": "oil canola",
   "oil cocoa butters": "oil cocoa butter",
   "oil coconuts": "oil coconut",
-  "oil cooking and salad enova 80% diglycerideses": "oil cooking and salad enova 80% diglycerides",
-  "oil cooking and salad enova 80% diglyceridess": "oil cooking and salad enova 80% diglycerides",
+  "oil cooking and salad enova 80% diglycerideses":
+    "oil cooking and salad enova 80% diglycerides",
+  "oil cooking and salad enova 80% diglyceridess":
+    "oil cooking and salad enova 80% diglycerides",
   "oil corn and canolas": "oil corn and canola",
-  "oil corn industrial and retail all purpose salad or cookings": "oil corn industrial and retail all purpose salad or cooking",
+  "oil corn industrial and retail all purpose salad or cookings":
+    "oil corn industrial and retail all purpose salad or cooking",
   "oil corn peanut and olives": "oil corn peanut and olive",
   "oil cottonseed salad or cookings": "oil cottonseed salad or cooking",
   "oil cupu assus": "oil cupu assu",
   "oil flaxseed cold presseds": "oil flaxseed cold pressed",
-  "oil flaxseed contains added sliced flaxseeds": "oil flaxseed contains added sliced flaxseed",
+  "oil flaxseed contains added sliced flaxseeds":
+    "oil flaxseed contains added sliced flaxseed",
   "oil grapeseeds": "oil grapeseed",
   "oil hazelnuts": "oil hazelnut",
-  "oil industrial canola for salads woks and light fryings": "oil industrial canola for salads woks and light frying",
+  "oil industrial canola for salads woks and light fryings":
+    "oil industrial canola for salads woks and light frying",
   "oil industrial canola high oleics": "oil industrial canola high oleic",
-  "oil industrial canola partially hydrogenated oil for deep fat fryings": "oil industrial canola partially hydrogenated oil for deep fat frying",
-  "oil industrial canola with antifoaming agent principal uses salads woks and light fryings": "oil industrial canola with antifoaming agent principal uses salads woks and light frying",
-  "oil industrial coconut confection fat typical basis for ice cream coatingses": "oil industrial coconut confection fat typical basis for ice cream coatings",
-  "oil industrial coconut confection fat typical basis for ice cream coatingss": "oil industrial coconut confection fat typical basis for ice cream coatings",
-  "oil industrial coconut hydrogenated used for whipped toppings and coffee whitenerses": "oil industrial coconut hydrogenated used for whipped toppings and coffee whiteners",
-  "oil industrial coconut hydrogenated used for whipped toppings and coffee whitenerss": "oil industrial coconut hydrogenated used for whipped toppings and coffee whiteners",
-  "oil industrial coconut principal uses candy coatings oil sprays roasting nutses": "oil industrial coconut principal uses candy coatings oil sprays roasting nuts",
-  "oil industrial coconut principal uses candy coatings oil sprays roasting nutss": "oil industrial coconut principal uses candy coatings oil sprays roasting nuts",
-  "oil industrial cottonseed fully hydrogenateds": "oil industrial cottonseed fully hydrogenated",
+  "oil industrial canola partially hydrogenated oil for deep fat fryings":
+    "oil industrial canola partially hydrogenated oil for deep fat frying",
+  "oil industrial canola with antifoaming agent principal uses salads woks and light fryings":
+    "oil industrial canola with antifoaming agent principal uses salads woks and light frying",
+  "oil industrial coconut confection fat typical basis for ice cream coatingses":
+    "oil industrial coconut confection fat typical basis for ice cream coatings",
+  "oil industrial coconut confection fat typical basis for ice cream coatingss":
+    "oil industrial coconut confection fat typical basis for ice cream coatings",
+  "oil industrial coconut hydrogenated used for whipped toppings and coffee whitenerses":
+    "oil industrial coconut hydrogenated used for whipped toppings and coffee whiteners",
+  "oil industrial coconut hydrogenated used for whipped toppings and coffee whitenerss":
+    "oil industrial coconut hydrogenated used for whipped toppings and coffee whiteners",
+  "oil industrial coconut principal uses candy coatings oil sprays roasting nutses":
+    "oil industrial coconut principal uses candy coatings oil sprays roasting nuts",
+  "oil industrial coconut principal uses candy coatings oil sprays roasting nutss":
+    "oil industrial coconut principal uses candy coatings oil sprays roasting nuts",
+  "oil industrial cottonseed fully hydrogenateds":
+    "oil industrial cottonseed fully hydrogenated",
   "oil industrial mid-oleic sunflowers": "oil industrial mid-oleic sunflower",
-  "oil industrial palm and palm kernel filling fat non-hydrogenateds": "oil industrial palm and palm kernel filling fat non-hydrogenated",
-  "oil industrial palm kernel confection fat uses similar to high quality cocoa butters": "oil industrial palm kernel confection fat uses similar to high quality cocoa butter",
-  "oil industrial palm kernel hydrogenated confection fat intermediate grade products": "oil industrial palm kernel hydrogenated confection fat intermediate grade product",
-  "oil industrial palm kernel hydrogenated confection fat uses similar to 95 degree hard butters": "oil industrial palm kernel hydrogenated confection fat uses similar to 95 degree hard butter",
-  "oil industrial palm kernel hydrogenated filling fats": "oil industrial palm kernel hydrogenated filling fat",
-  "oil industrial palm kernel hydrogenated used for whipped toppings non-dairies": "oil industrial palm kernel hydrogenated used for whipped toppings non-dairy",
-  "oil industrial palm kernel hydrogenated used for whipped toppings non-dairys": "oil industrial palm kernel hydrogenated used for whipped toppings non-dairy",
-  "oil industrial soy fully hydrogenateds": "oil industrial soy fully hydrogenated",
+  "oil industrial palm and palm kernel filling fat non-hydrogenateds":
+    "oil industrial palm and palm kernel filling fat non-hydrogenated",
+  "oil industrial palm kernel confection fat uses similar to high quality cocoa butters":
+    "oil industrial palm kernel confection fat uses similar to high quality cocoa butter",
+  "oil industrial palm kernel hydrogenated confection fat intermediate grade products":
+    "oil industrial palm kernel hydrogenated confection fat intermediate grade product",
+  "oil industrial palm kernel hydrogenated confection fat uses similar to 95 degree hard butters":
+    "oil industrial palm kernel hydrogenated confection fat uses similar to 95 degree hard butter",
+  "oil industrial palm kernel hydrogenated filling fats":
+    "oil industrial palm kernel hydrogenated filling fat",
+  "oil industrial palm kernel hydrogenated used for whipped toppings non-dairies":
+    "oil industrial palm kernel hydrogenated used for whipped toppings non-dairy",
+  "oil industrial palm kernel hydrogenated used for whipped toppings non-dairys":
+    "oil industrial palm kernel hydrogenated used for whipped toppings non-dairy",
+  "oil industrial soy fully hydrogenateds":
+    "oil industrial soy fully hydrogenated",
   "oil industrial soy low linolenics": "oil industrial soy low linolenic",
-  "oil industrial soy partially hydrogenated all purposes": "oil industrial soy partially hydrogenated all purpose",
-  "oil industrial soy partially hydrogenated and cottonseed principal use as a tortilla shortenings": "oil industrial soy partially hydrogenated and cottonseed principal use as a tortilla shortening",
-  "oil industrial soy partially hydrogenated and soy winterized pourable clear fries": "oil industrial soy partially hydrogenated and soy winterized pourable clear fry",
-  "oil industrial soy partially hydrogenated and soy winterized pourable clear frys": "oil industrial soy partially hydrogenated and soy winterized pourable clear fry",
-  "oil industrial soy partially hydrogenated multiuse for non-dairy butter flavors": "oil industrial soy partially hydrogenated multiuse for non-dairy butter flavor",
-  "oil industrial soy partially hydrogenated palm principal uses icings and fillingses": "oil industrial soy partially hydrogenated palm principal uses icings and fillings",
-  "oil industrial soy partially hydrogenated palm principal uses icings and fillingss": "oil industrial soy partially hydrogenated palm principal uses icings and fillings",
-  "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetableses": "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetables",
-  "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetabless": "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetables",
-  "oil industrial soy refined for woks and light fryings": "oil industrial soy refined for woks and light frying",
-  "oil industrial soy ultra low linolenics": "oil industrial soy ultra low linolenic",
+  "oil industrial soy partially hydrogenated all purposes":
+    "oil industrial soy partially hydrogenated all purpose",
+  "oil industrial soy partially hydrogenated and cottonseed principal use as a tortilla shortenings":
+    "oil industrial soy partially hydrogenated and cottonseed principal use as a tortilla shortening",
+  "oil industrial soy partially hydrogenated and soy winterized pourable clear fries":
+    "oil industrial soy partially hydrogenated and soy winterized pourable clear fry",
+  "oil industrial soy partially hydrogenated and soy winterized pourable clear frys":
+    "oil industrial soy partially hydrogenated and soy winterized pourable clear fry",
+  "oil industrial soy partially hydrogenated multiuse for non-dairy butter flavors":
+    "oil industrial soy partially hydrogenated multiuse for non-dairy butter flavor",
+  "oil industrial soy partially hydrogenated palm principal uses icings and fillingses":
+    "oil industrial soy partially hydrogenated palm principal uses icings and fillings",
+  "oil industrial soy partially hydrogenated palm principal uses icings and fillingss":
+    "oil industrial soy partially hydrogenated palm principal uses icings and fillings",
+  "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetableses":
+    "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetables",
+  "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetabless":
+    "oil industrial soy partially hydrogenated principal uses popcorn and flavoring vegetables",
+  "oil industrial soy refined for woks and light fryings":
+    "oil industrial soy refined for woks and light frying",
+  "oil industrial soy ultra low linolenics":
+    "oil industrial soy ultra low linolenic",
   "oil mustards": "oil mustard",
   "oil nutmeg butters": "oil nutmeg butter",
   "oil oats": "oil oat",
@@ -20512,22 +21324,30 @@ export const SYNONYM_MAP: Record<string, string> = {
   "oil peanut salad or cookings": "oil peanut salad or cooking",
   "oil poppyseeds": "oil poppyseed",
   "oil rice brans": "oil rice bran",
-  "oil safflower salad or cooking high oleic primary safflower oil of commerces": "oil safflower salad or cooking high oleic primary safflower oil of commerce",
-  "oil safflower salad or cooking linoleic over 70%s": "oil safflower salad or cooking linoleic over 70%",
+  "oil safflower salad or cooking high oleic primary safflower oil of commerces":
+    "oil safflower salad or cooking high oleic primary safflower oil of commerce",
+  "oil safflower salad or cooking linoleic over 70%s":
+    "oil safflower salad or cooking linoleic over 70%",
   "oil sesame salad or cookings": "oil sesame salad or cooking",
   "oil sheanuts": "oil sheanut",
   "oil soybean lecithins": "oil soybean lecithin",
-  "oil soybean salad or cooking partially hydrogenated and cottonseeds": "oil soybean salad or cooking partially hydrogenated and cottonseed",
-  "oil soybean salad or cooking partially hydrogenateds": "oil soybean salad or cooking partially hydrogenated",
+  "oil soybean salad or cooking partially hydrogenated and cottonseeds":
+    "oil soybean salad or cooking partially hydrogenated and cottonseed",
+  "oil soybean salad or cooking partially hydrogenateds":
+    "oil soybean salad or cooking partially hydrogenated",
   "oil soybean salad or cookings": "oil soybean salad or cooking",
-  "oil sunflower high oleic 70% and overs": "oil sunflower high oleic 70% and over",
+  "oil sunflower high oleic 70% and overs":
+    "oil sunflower high oleic 70% and over",
   "oil sunflower linoleic approx. 65%s": "oil sunflower linoleic approx. 65%",
-  "oil sunflower linoleic less than 60%s": "oil sunflower linoleic less than 60%",
-  "oil sunflower linoleic partially hydrogenateds": "oil sunflower linoleic partially hydrogenated",
+  "oil sunflower linoleic less than 60%s":
+    "oil sunflower linoleic less than 60%",
+  "oil sunflower linoleic partially hydrogenateds":
+    "oil sunflower linoleic partially hydrogenated",
   "oil teaseeds": "oil teaseed",
   "oil tomatoseeds": "oil tomatoseed",
   "oil ucuhuba butters": "oil ucuhuba butter",
-  "oil vegetable natreon canola high stability non trans high oleic 70%s": "oil vegetable natreon canola high stability non trans high oleic 70%",
+  "oil vegetable natreon canola high stability non trans high oleic 70%s":
+    "oil vegetable natreon canola high stability non trans high oleic 70%",
   "oil vegetable soybean refineds": "oil vegetable soybean refined",
   "oil walnuts": "oil walnut",
   "oil wheat germs": "oil wheat germ",
@@ -20550,7 +21370,8 @@ export const SYNONYM_MAP: Record<string, string> = {
   "pancakess": "pancakes",
   "parmesan cheese topping fat frees": "parmesan cheese topping fat free",
   "pastas": "pasta",
-  "pate de foie gras  goose liver pate smokeds": "pate de foie gras  goose liver pate smoked",
+  "pate de foie gras  goose liver pate smokeds":
+    "pate de foie gras  goose liver pate smoked",
   "peanut butters": "peanut butter",
   "peanutses": "peanuts",
   "peanutss": "peanuts",
@@ -20573,16 +21394,22 @@ export const SYNONYM_MAP: Record<string, string> = {
   "potato chipses": "potato chips",
   "potato chipss": "potato chips",
   "potatos": "potato",
-  "poultry mechanically deboned from backs and necks with skins": "poultry mechanically deboned from backs and necks with skin",
-  "poultry mechanically deboned from backs and necks without skins": "poultry mechanically deboned from backs and necks without skin",
-  "poultry mechanically deboned from mature henses": "poultry mechanically deboned from mature hens",
-  "poultry mechanically deboned from mature henss": "poultry mechanically deboned from mature hens",
+  "poultry mechanically deboned from backs and necks with skins":
+    "poultry mechanically deboned from backs and necks with skin",
+  "poultry mechanically deboned from backs and necks without skins":
+    "poultry mechanically deboned from backs and necks without skin",
+  "poultry mechanically deboned from mature henses":
+    "poultry mechanically deboned from mature hens",
+  "poultry mechanically deboned from mature henss":
+    "poultry mechanically deboned from mature hens",
   "pretzelses": "pretzels",
   "pretzelss": "pretzels",
   "protein bars": "protein bar",
   "protein shakes": "protein shake",
-  "protein supplement milk based muscle milk light powders": "protein supplement milk based muscle milk light powder",
-  "protein supplement milk based muscle milk powders": "protein supplement milk based muscle milk powder",
+  "protein supplement milk based muscle milk light powders":
+    "protein supplement milk based muscle milk light powder",
+  "protein supplement milk based muscle milk powders":
+    "protein supplement milk based muscle milk powder",
   "quail  total edibles": "quail  total edible",
   "quail breast meat onlies": "quail breast meat only",
   "quail breast meat onlys": "quail breast meat only",
@@ -20597,92 +21424,160 @@ export const SYNONYM_MAP: Record<string, string> = {
   "ruffed grouse breast meat skinlesses": "ruffed grouse breast meat skinless",
   "ruffed grouse breast meat skinlesss": "ruffed grouse breast meat skinless",
   "salad dressing bacon and tomatos": "salad dressing bacon and tomato",
-  "salad dressing blue or roquefort cheese dressing commercial regulars": "salad dressing blue or roquefort cheese dressing commercial regular",
-  "salad dressing blue or roquefort cheese dressing fat-frees": "salad dressing blue or roquefort cheese dressing fat-free",
-  "salad dressing blue or roquefort cheese dressing lights": "salad dressing blue or roquefort cheese dressing light",
-  "salad dressing blue or roquefort cheese low calories": "salad dressing blue or roquefort cheese low calorie",
+  "salad dressing blue or roquefort cheese dressing commercial regulars":
+    "salad dressing blue or roquefort cheese dressing commercial regular",
+  "salad dressing blue or roquefort cheese dressing fat-frees":
+    "salad dressing blue or roquefort cheese dressing fat-free",
+  "salad dressing blue or roquefort cheese dressing lights":
+    "salad dressing blue or roquefort cheese dressing light",
+  "salad dressing blue or roquefort cheese low calories":
+    "salad dressing blue or roquefort cheese low calorie",
   "salad dressing buttermilk lites": "salad dressing buttermilk lite",
-  "salad dressing caesar dressing regulars": "salad dressing caesar dressing regular",
+  "salad dressing caesar dressing regulars":
+    "salad dressing caesar dressing regular",
   "salad dressing caesar fat-frees": "salad dressing caesar fat-free",
   "salad dressing caesar low calories": "salad dressing caesar low calorie",
   "salad dressing coleslaw reduced fats": "salad dressing coleslaw reduced fat",
   "salad dressing coleslaws": "salad dressing coleslaw",
-  "salad dressing french cottonseed oil home recipes": "salad dressing french cottonseed oil home recipe",
-  "salad dressing french dressing commercial regular without salts": "salad dressing french dressing commercial regular without salt",
-  "salad dressing french dressing commercial regulars": "salad dressing french dressing commercial regular",
-  "salad dressing french dressing fat-frees": "salad dressing french dressing fat-free",
-  "salad dressing french dressing reduced calories": "salad dressing french dressing reduced calorie",
-  "salad dressing french dressing reduced fat without salts": "salad dressing french dressing reduced fat without salt",
-  "salad dressing french dressing reduced fats": "salad dressing french dressing reduced fat",
+  "salad dressing french cottonseed oil home recipes":
+    "salad dressing french cottonseed oil home recipe",
+  "salad dressing french dressing commercial regular without salts":
+    "salad dressing french dressing commercial regular without salt",
+  "salad dressing french dressing commercial regulars":
+    "salad dressing french dressing commercial regular",
+  "salad dressing french dressing fat-frees":
+    "salad dressing french dressing fat-free",
+  "salad dressing french dressing reduced calories":
+    "salad dressing french dressing reduced calorie",
+  "salad dressing french dressing reduced fat without salts":
+    "salad dressing french dressing reduced fat without salt",
+  "salad dressing french dressing reduced fats":
+    "salad dressing french dressing reduced fat",
   "salad dressing french home recipes": "salad dressing french home recipe",
-  "salad dressing green goddess regulars": "salad dressing green goddess regular",
-  "salad dressing home recipe vinegar and oils": "salad dressing home recipe vinegar and oil",
-  "salad dressing honey mustard dressing reduced calories": "salad dressing honey mustard dressing reduced calorie",
-  "salad dressing honey mustard regulars": "salad dressing honey mustard regular",
-  "salad dressing italian dressing commercial reduced fats": "salad dressing italian dressing commercial reduced fat",
-  "salad dressing italian dressing commercial regular without salts": "salad dressing italian dressing commercial regular without salt",
-  "salad dressing italian dressing commercial regulars": "salad dressing italian dressing commercial regular",
-  "salad dressing italian dressing fat-frees": "salad dressing italian dressing fat-free",
-  "salad dressing italian dressing reduced calories": "salad dressing italian dressing reduced calorie",
-  "salad dressing italian dressing reduced fat without salts": "salad dressing italian dressing reduced fat without salt",
-  "salad dressing kraft mayo fat free mayonnaise dressings": "salad dressing kraft mayo fat free mayonnaise dressing",
-  "salad dressing kraft mayo light mayonnaises": "salad dressing kraft mayo light mayonnaise",
-  "salad dressing kraft miracle whip free nonfat dressings": "salad dressing kraft miracle whip free nonfat dressing",
-  "salad dressing mayonnaise and mayonnaise-type low calories": "salad dressing mayonnaise and mayonnaise-type low calorie",
-  "salad dressing mayonnaise imitation milk creams": "salad dressing mayonnaise imitation milk cream",
-  "salad dressing mayonnaise imitation soybean without cholesterols": "salad dressing mayonnaise imitation soybean without cholesterol",
-  "salad dressing mayonnaise imitation soybeans": "salad dressing mayonnaise imitation soybean",
-  "salad dressing mayonnaise light smart balance omega plus lights": "salad dressing mayonnaise light smart balance omega plus light",
+  "salad dressing green goddess regulars":
+    "salad dressing green goddess regular",
+  "salad dressing home recipe vinegar and oils":
+    "salad dressing home recipe vinegar and oil",
+  "salad dressing honey mustard dressing reduced calories":
+    "salad dressing honey mustard dressing reduced calorie",
+  "salad dressing honey mustard regulars":
+    "salad dressing honey mustard regular",
+  "salad dressing italian dressing commercial reduced fats":
+    "salad dressing italian dressing commercial reduced fat",
+  "salad dressing italian dressing commercial regular without salts":
+    "salad dressing italian dressing commercial regular without salt",
+  "salad dressing italian dressing commercial regulars":
+    "salad dressing italian dressing commercial regular",
+  "salad dressing italian dressing fat-frees":
+    "salad dressing italian dressing fat-free",
+  "salad dressing italian dressing reduced calories":
+    "salad dressing italian dressing reduced calorie",
+  "salad dressing italian dressing reduced fat without salts":
+    "salad dressing italian dressing reduced fat without salt",
+  "salad dressing kraft mayo fat free mayonnaise dressings":
+    "salad dressing kraft mayo fat free mayonnaise dressing",
+  "salad dressing kraft mayo light mayonnaises":
+    "salad dressing kraft mayo light mayonnaise",
+  "salad dressing kraft miracle whip free nonfat dressings":
+    "salad dressing kraft miracle whip free nonfat dressing",
+  "salad dressing mayonnaise and mayonnaise-type low calories":
+    "salad dressing mayonnaise and mayonnaise-type low calorie",
+  "salad dressing mayonnaise imitation milk creams":
+    "salad dressing mayonnaise imitation milk cream",
+  "salad dressing mayonnaise imitation soybean without cholesterols":
+    "salad dressing mayonnaise imitation soybean without cholesterol",
+  "salad dressing mayonnaise imitation soybeans":
+    "salad dressing mayonnaise imitation soybean",
+  "salad dressing mayonnaise light smart balance omega plus lights":
+    "salad dressing mayonnaise light smart balance omega plus light",
   "salad dressing mayonnaise lights": "salad dressing mayonnaise light",
   "salad dressing mayonnaise regulars": "salad dressing mayonnaise regular",
-  "salad dressing mayonnaise soybean and safflower oil with salts": "salad dressing mayonnaise soybean and safflower oil with salt",
-  "salad dressing mayonnaise soybean oil without salts": "salad dressing mayonnaise soybean oil without salt",
-  "salad dressing mayonnaise type regular with salts": "salad dressing mayonnaise type regular with salt",
-  "salad dressing mayonnaise-like fat-frees": "salad dressing mayonnaise-like fat-free",
-  "salad dressing mayonnaise-type lights": "salad dressing mayonnaise-type light",
-  "salad dressing peppercorn dressing commercial regulars": "salad dressing peppercorn dressing commercial regular",
+  "salad dressing mayonnaise soybean and safflower oil with salts":
+    "salad dressing mayonnaise soybean and safflower oil with salt",
+  "salad dressing mayonnaise soybean oil without salts":
+    "salad dressing mayonnaise soybean oil without salt",
+  "salad dressing mayonnaise type regular with salts":
+    "salad dressing mayonnaise type regular with salt",
+  "salad dressing mayonnaise-like fat-frees":
+    "salad dressing mayonnaise-like fat-free",
+  "salad dressing mayonnaise-type lights":
+    "salad dressing mayonnaise-type light",
+  "salad dressing peppercorn dressing commercial regulars":
+    "salad dressing peppercorn dressing commercial regular",
   "salad dressing poppyseed creamies": "salad dressing poppyseed creamy",
   "salad dressing poppyseed creamys": "salad dressing poppyseed creamy",
-  "salad dressing ranch dressing fat-frees": "salad dressing ranch dressing fat-free",
-  "salad dressing ranch dressing reduced fats": "salad dressing ranch dressing reduced fat",
-  "salad dressing ranch dressing regulars": "salad dressing ranch dressing regular",
-  "salad dressing russian dressing low calories": "salad dressing russian dressing low calorie",
+  "salad dressing ranch dressing fat-frees":
+    "salad dressing ranch dressing fat-free",
+  "salad dressing ranch dressing reduced fats":
+    "salad dressing ranch dressing reduced fat",
+  "salad dressing ranch dressing regulars":
+    "salad dressing ranch dressing regular",
+  "salad dressing russian dressing low calories":
+    "salad dressing russian dressing low calorie",
   "salad dressing russian dressings": "salad dressing russian dressing",
-  "salad dressing sesame seed dressing regulars": "salad dressing sesame seed dressing regular",
-  "salad dressing spray-style dressing assorted flavorses": "salad dressing spray-style dressing assorted flavors",
-  "salad dressing spray-style dressing assorted flavorss": "salad dressing spray-style dressing assorted flavors",
+  "salad dressing sesame seed dressing regulars":
+    "salad dressing sesame seed dressing regular",
+  "salad dressing spray-style dressing assorted flavorses":
+    "salad dressing spray-style dressing assorted flavors",
+  "salad dressing spray-style dressing assorted flavorss":
+    "salad dressing spray-style dressing assorted flavors",
   "salad dressing sweet and sours": "salad dressing sweet and sour",
-  "salad dressing thousand island commercial regulars": "salad dressing thousand island commercial regular",
-  "salad dressing thousand island dressing fat-frees": "salad dressing thousand island dressing fat-free",
-  "salad dressing thousand island dressing reduced fats": "salad dressing thousand island dressing reduced fat",
+  "salad dressing thousand island commercial regulars":
+    "salad dressing thousand island commercial regular",
+  "salad dressing thousand island dressing fat-frees":
+    "salad dressing thousand island dressing fat-free",
+  "salad dressing thousand island dressing reduced fats":
+    "salad dressing thousand island dressing reduced fat",
   "salamis": "salami",
   "salmons": "salmon",
   "salsas": "salsa",
-  "sandwich spread with chopped pickle regular unspecified oilses": "sandwich spread with chopped pickle regular unspecified oils",
-  "sandwich spread with chopped pickle regular unspecified oilss": "sandwich spread with chopped pickle regular unspecified oils",
+  "sandwich spread with chopped pickle regular unspecified oilses":
+    "sandwich spread with chopped pickle regular unspecified oils",
+  "sandwich spread with chopped pickle regular unspecified oilss":
+    "sandwich spread with chopped pickle regular unspecified oils",
   "sausages": "sausage",
   "seasoning mix dry chili originals": "seasoning mix dry chili original",
   "seasoning mix dry taco originals": "seasoning mix dry taco original",
-  "shortening bread soybean hydrogenated and cottonseeds": "shortening bread soybean hydrogenated and cottonseed",
-  "shortening cake mix soybean hydrogenated and cottonseed hydrogenateds": "shortening cake mix soybean hydrogenated and cottonseed hydrogenated",
-  "shortening confectionery coconut hydrogenated and or palm kernel hydrogenateds": "shortening confectionery coconut hydrogenated and or palm kernel hydrogenated",
-  "shortening confectionery fractionated palms": "shortening confectionery fractionated palm",
-  "shortening frying heavy duty beef tallow and cottonseeds": "shortening frying heavy duty beef tallow and cottonseed",
-  "shortening frying heavy duty palm hydrogenateds": "shortening frying heavy duty palm hydrogenated",
-  "shortening frying heavy duty soybean hydrogenated linoleic less than 1%s": "shortening frying heavy duty soybean hydrogenated linoleic less than 1%",
-  "shortening household lard and vegetable oils": "shortening household lard and vegetable oil",
-  "shortening household soybean hydrogenated and palms": "shortening household soybean hydrogenated and palm",
-  "shortening household soybean partially hydrogenated -cottonseed partially hydrogenateds": "shortening household soybean partially hydrogenated -cottonseed partially hydrogenated",
-  "shortening industrial lard and vegetable oils": "shortening industrial lard and vegetable oil",
-  "shortening industrial soy partially hydrogenated and corn for fryings": "shortening industrial soy partially hydrogenated and corn for frying",
-  "shortening industrial soy partially hydrogenated for baking and confectionses": "shortening industrial soy partially hydrogenated for baking and confections",
-  "shortening industrial soy partially hydrogenated for baking and confectionss": "shortening industrial soy partially hydrogenated for baking and confections",
-  "shortening industrial soy partially hydrogenated pourable liquid fry shortenings": "shortening industrial soy partially hydrogenated pourable liquid fry shortening",
-  "shortening industrial soybean hydrogenated and cottonseeds": "shortening industrial soybean hydrogenated and cottonseed",
-  "shortening multipurpose soybean hydrogenated and palm hydrogenateds": "shortening multipurpose soybean hydrogenated and palm hydrogenated",
-  "shortening special purpose for baking soybean hydrogenated palm and cottonseeds": "shortening special purpose for baking soybean hydrogenated palm and cottonseed",
-  "shortening special purpose for cakes and frostings soybean hydrogenateds": "shortening special purpose for cakes and frostings soybean hydrogenated",
-  "shortening vegetable household composites": "shortening vegetable household composite",
+  "shortening bread soybean hydrogenated and cottonseeds":
+    "shortening bread soybean hydrogenated and cottonseed",
+  "shortening cake mix soybean hydrogenated and cottonseed hydrogenateds":
+    "shortening cake mix soybean hydrogenated and cottonseed hydrogenated",
+  "shortening confectionery coconut hydrogenated and or palm kernel hydrogenateds":
+    "shortening confectionery coconut hydrogenated and or palm kernel hydrogenated",
+  "shortening confectionery fractionated palms":
+    "shortening confectionery fractionated palm",
+  "shortening frying heavy duty beef tallow and cottonseeds":
+    "shortening frying heavy duty beef tallow and cottonseed",
+  "shortening frying heavy duty palm hydrogenateds":
+    "shortening frying heavy duty palm hydrogenated",
+  "shortening frying heavy duty soybean hydrogenated linoleic less than 1%s":
+    "shortening frying heavy duty soybean hydrogenated linoleic less than 1%",
+  "shortening household lard and vegetable oils":
+    "shortening household lard and vegetable oil",
+  "shortening household soybean hydrogenated and palms":
+    "shortening household soybean hydrogenated and palm",
+  "shortening household soybean partially hydrogenated -cottonseed partially hydrogenateds":
+    "shortening household soybean partially hydrogenated -cottonseed partially hydrogenated",
+  "shortening industrial lard and vegetable oils":
+    "shortening industrial lard and vegetable oil",
+  "shortening industrial soy partially hydrogenated and corn for fryings":
+    "shortening industrial soy partially hydrogenated and corn for frying",
+  "shortening industrial soy partially hydrogenated for baking and confectionses":
+    "shortening industrial soy partially hydrogenated for baking and confections",
+  "shortening industrial soy partially hydrogenated for baking and confectionss":
+    "shortening industrial soy partially hydrogenated for baking and confections",
+  "shortening industrial soy partially hydrogenated pourable liquid fry shortenings":
+    "shortening industrial soy partially hydrogenated pourable liquid fry shortening",
+  "shortening industrial soybean hydrogenated and cottonseeds":
+    "shortening industrial soybean hydrogenated and cottonseed",
+  "shortening multipurpose soybean hydrogenated and palm hydrogenateds":
+    "shortening multipurpose soybean hydrogenated and palm hydrogenated",
+  "shortening special purpose for baking soybean hydrogenated palm and cottonseeds":
+    "shortening special purpose for baking soybean hydrogenated palm and cottonseed",
+  "shortening special purpose for cakes and frostings soybean hydrogenateds":
+    "shortening special purpose for cakes and frostings soybean hydrogenated",
+  "shortening vegetable household composites":
+    "shortening vegetable household composite",
   "shrimps": "shrimp",
   "smoothies": "smoothie",
   "sodas": "soda",
@@ -20690,7 +21585,8 @@ export const SYNONYM_MAP: Record<string, string> = {
   "sour cream imitation cultureds": "sour cream imitation cultured",
   "sour cream lights": "sour cream light",
   "sour cream reduced fats": "sour cream reduced fat",
-  "sour dressing non-butterfat cultured filled cream-types": "sour dressing non-butterfat cultured filled cream-type",
+  "sour dressing non-butterfat cultured filled cream-types":
+    "sour dressing non-butterfat cultured filled cream-type",
   "soy milks": "soy milk",
   "spearmints": "spearmint",
   "spices allspice grounds": "spices allspice ground",
@@ -20743,7 +21639,8 @@ export const SYNONYM_MAP: Record<string, string> = {
   "spinaches": "spinach",
   "spinachs": "spinach",
   "sports drinks": "sports drink",
-  "squab pigeon light meat without skins": "squab pigeon light meat without skin",
+  "squab pigeon light meat without skins":
+    "squab pigeon light meat without skin",
   "squab pigeon meat and skins": "squab pigeon meat and skin",
   "squab pigeon meat onlies": "squab pigeon meat only",
   "squab pigeon meat onlys": "squab pigeon meat only",
@@ -20761,84 +21658,145 @@ export const SYNONYM_MAP: Record<string, string> = {
   "tortillas": "tortilla",
   "tunas": "tuna",
   "turkey  meat only with broths": "turkey  meat only with broth",
-  "turkey all classes back meat and skin  roasteds": "turkey all classes back meat and skin  roasted",
-  "turkey all classes breast meat and skin  roasteds": "turkey all classes breast meat and skin  roasted",
-  "turkey all classes breast meat and skins": "turkey all classes breast meat and skin",
-  "turkey all classes gizzard  simmereds": "turkey all classes gizzard  simmered",
+  "turkey all classes back meat and skin  roasteds":
+    "turkey all classes back meat and skin  roasted",
+  "turkey all classes breast meat and skin  roasteds":
+    "turkey all classes breast meat and skin  roasted",
+  "turkey all classes breast meat and skins":
+    "turkey all classes breast meat and skin",
+  "turkey all classes gizzard  simmereds":
+    "turkey all classes gizzard  simmered",
   "turkey all classes heart  simmereds": "turkey all classes heart  simmered",
   "turkey all classes hearts": "turkey all classes heart",
-  "turkey all classes leg meat and skin  roasteds": "turkey all classes leg meat and skin  roasted",
-  "turkey all classes leg meat and skins": "turkey all classes leg meat and skin",
-  "turkey all classes light meat  roasteds": "turkey all classes light meat  roasted",
+  "turkey all classes leg meat and skin  roasteds":
+    "turkey all classes leg meat and skin  roasted",
+  "turkey all classes leg meat and skins":
+    "turkey all classes leg meat and skin",
+  "turkey all classes light meat  roasteds":
+    "turkey all classes light meat  roasted",
   "turkey all classes liver  simmereds": "turkey all classes liver  simmered",
   "turkey all classes livers": "turkey all classes liver",
-  "turkey all classes wing meat and skin  roasteds": "turkey all classes wing meat and skin  roasted",
-  "turkey all classes wing meat and skins": "turkey all classes wing meat and skin",
+  "turkey all classes wing meat and skin  roasteds":
+    "turkey all classes wing meat and skin  roasted",
+  "turkey all classes wing meat and skins":
+    "turkey all classes wing meat and skin",
   "turkey and gravies": "turkey and gravy",
   "turkey and gravys": "turkey and gravy",
-  "turkey back from whole bird meat and skin with added solution roasteds": "turkey back from whole bird meat and skin with added solution roasted",
-  "turkey back from whole bird meat and skin with added solutions": "turkey back from whole bird meat and skin with added solution",
-  "turkey back from whole bird meat only with added solution roasteds": "turkey back from whole bird meat only with added solution roasted",
-  "turkey back from whole bird meat only with added solutions": "turkey back from whole bird meat only with added solution",
-  "turkey breast from whole bird meat only with added solution roasteds": "turkey breast from whole bird meat only with added solution roasted",
-  "turkey breast from whole bird meat only with added solutions": "turkey breast from whole bird meat only with added solution",
-  "turkey breast pre-basted meat and skin  roasteds": "turkey breast pre-basted meat and skin  roasted",
+  "turkey back from whole bird meat and skin with added solution roasteds":
+    "turkey back from whole bird meat and skin with added solution roasted",
+  "turkey back from whole bird meat and skin with added solutions":
+    "turkey back from whole bird meat and skin with added solution",
+  "turkey back from whole bird meat only with added solution roasteds":
+    "turkey back from whole bird meat only with added solution roasted",
+  "turkey back from whole bird meat only with added solutions":
+    "turkey back from whole bird meat only with added solution",
+  "turkey breast from whole bird meat only with added solution roasteds":
+    "turkey breast from whole bird meat only with added solution roasted",
+  "turkey breast from whole bird meat only with added solutions":
+    "turkey breast from whole bird meat only with added solution",
+  "turkey breast pre-basted meat and skin  roasteds":
+    "turkey breast pre-basted meat and skin  roasted",
   "turkey breasts": "turkey breast",
-  "turkey dark meat from whole meat and skin with added solution  roasteds": "turkey dark meat from whole meat and skin with added solution  roasted",
-  "turkey dark meat from whole meat and skin with added solutions": "turkey dark meat from whole meat and skin with added solution",
-  "turkey dark meat from whole meat only with added solutions": "turkey dark meat from whole meat only with added solution",
+  "turkey dark meat from whole meat and skin with added solution  roasteds":
+    "turkey dark meat from whole meat and skin with added solution  roasted",
+  "turkey dark meat from whole meat and skin with added solutions":
+    "turkey dark meat from whole meat and skin with added solution",
+  "turkey dark meat from whole meat only with added solutions":
+    "turkey dark meat from whole meat only with added solution",
   "turkey dark meat meat and skins": "turkey dark meat meat and skin",
-  "turkey dark meat meat only with added solution  roasteds": "turkey dark meat meat only with added solution  roasted",
-  "turkey diced light and dark meat seasoneds": "turkey diced light and dark meat seasoned",
-  "turkey drumstick from whole bird meat onlies": "turkey drumstick from whole bird meat only",
-  "turkey drumstick from whole bird meat only roasteds": "turkey drumstick from whole bird meat only roasted",
-  "turkey drumstick from whole bird meat only with added solution roasteds": "turkey drumstick from whole bird meat only with added solution roasted",
-  "turkey drumstick from whole bird meat only with added solutions": "turkey drumstick from whole bird meat only with added solution",
-  "turkey drumstick from whole bird meat onlys": "turkey drumstick from whole bird meat only",
-  "turkey drumstick smoked  with skin bone removeds": "turkey drumstick smoked  with skin bone removed",
-  "turkey from whole light meat meat and skin with added solution  roasteds": "turkey from whole light meat meat and skin with added solution  roasted",
-  "turkey from whole light meat meat and skin with added solutions": "turkey from whole light meat meat and skin with added solution",
-  "turkey from whole light meat meat only with added solution  roasteds": "turkey from whole light meat meat only with added solution  roasted",
-  "turkey from whole light meat meat only with added solutions": "turkey from whole light meat meat only with added solution",
-  "turkey fryer-roasters meat and skin  roasteds": "turkey fryer-roasters meat and skin  roasted",
+  "turkey dark meat meat only with added solution  roasteds":
+    "turkey dark meat meat only with added solution  roasted",
+  "turkey diced light and dark meat seasoneds":
+    "turkey diced light and dark meat seasoned",
+  "turkey drumstick from whole bird meat onlies":
+    "turkey drumstick from whole bird meat only",
+  "turkey drumstick from whole bird meat only roasteds":
+    "turkey drumstick from whole bird meat only roasted",
+  "turkey drumstick from whole bird meat only with added solution roasteds":
+    "turkey drumstick from whole bird meat only with added solution roasted",
+  "turkey drumstick from whole bird meat only with added solutions":
+    "turkey drumstick from whole bird meat only with added solution",
+  "turkey drumstick from whole bird meat onlys":
+    "turkey drumstick from whole bird meat only",
+  "turkey drumstick smoked  with skin bone removeds":
+    "turkey drumstick smoked  with skin bone removed",
+  "turkey from whole light meat meat and skin with added solution  roasteds":
+    "turkey from whole light meat meat and skin with added solution  roasted",
+  "turkey from whole light meat meat and skin with added solutions":
+    "turkey from whole light meat meat and skin with added solution",
+  "turkey from whole light meat meat only with added solution  roasteds":
+    "turkey from whole light meat meat only with added solution  roasted",
+  "turkey from whole light meat meat only with added solutions":
+    "turkey from whole light meat meat only with added solution",
+  "turkey fryer-roasters meat and skin  roasteds":
+    "turkey fryer-roasters meat and skin  roasted",
   "turkey gizzard all classeses": "turkey gizzard all classes",
   "turkey gizzard all classess": "turkey gizzard all classes",
-  "turkey ground 85% lean 15% fat pan-broiled crumbleses": "turkey ground 85% lean 15% fat pan-broiled crumbles",
-  "turkey ground 85% lean 15% fat pan-broiled crumbless": "turkey ground 85% lean 15% fat pan-broiled crumbles",
-  "turkey ground 85% lean 15% fat patties broileds": "turkey ground 85% lean 15% fat patties broiled",
+  "turkey ground 85% lean 15% fat pan-broiled crumbleses":
+    "turkey ground 85% lean 15% fat pan-broiled crumbles",
+  "turkey ground 85% lean 15% fat pan-broiled crumbless":
+    "turkey ground 85% lean 15% fat pan-broiled crumbles",
+  "turkey ground 85% lean 15% fat patties broileds":
+    "turkey ground 85% lean 15% fat patties broiled",
   "turkey ground 85% lean 15% fats": "turkey ground 85% lean 15% fat",
-  "turkey ground 93% lean 7% fat pan-broiled crumbleses": "turkey ground 93% lean 7% fat pan-broiled crumbles",
-  "turkey ground 93% lean 7% fat pan-broiled crumbless": "turkey ground 93% lean 7% fat pan-broiled crumbles",
-  "turkey ground 93% lean 7% fat patties broileds": "turkey ground 93% lean 7% fat patties broiled",
+  "turkey ground 93% lean 7% fat pan-broiled crumbleses":
+    "turkey ground 93% lean 7% fat pan-broiled crumbles",
+  "turkey ground 93% lean 7% fat pan-broiled crumbless":
+    "turkey ground 93% lean 7% fat pan-broiled crumbles",
+  "turkey ground 93% lean 7% fat patties broileds":
+    "turkey ground 93% lean 7% fat patties broiled",
   "turkey ground 93% lean 7% fats": "turkey ground 93% lean 7% fat",
-  "turkey ground fat free pan-broiled crumbleses": "turkey ground fat free pan-broiled crumbles",
-  "turkey ground fat free pan-broiled crumbless": "turkey ground fat free pan-broiled crumbles",
-  "turkey ground fat free patties broileds": "turkey ground fat free patties broiled",
+  "turkey ground fat free pan-broiled crumbleses":
+    "turkey ground fat free pan-broiled crumbles",
+  "turkey ground fat free pan-broiled crumbless":
+    "turkey ground fat free pan-broiled crumbles",
+  "turkey ground fat free patties broileds":
+    "turkey ground fat free patties broiled",
   "turkey ground fat frees": "turkey ground fat free",
   "turkey grounds": "turkey ground",
-  "turkey light or dark meat smoked  skin and bone removeds": "turkey light or dark meat smoked  skin and bone removed",
-  "turkey light or dark meat smoked  with skin bone removeds": "turkey light or dark meat smoked  with skin bone removed",
-  "turkey mechanically deboned from turkey frameses": "turkey mechanically deboned from turkey frames",
-  "turkey mechanically deboned from turkey framess": "turkey mechanically deboned from turkey frames",
-  "turkey retail parts breast meat and skin  roasteds": "turkey retail parts breast meat and skin  roasted",
-  "turkey retail parts breast meat and skin with added solutions": "turkey retail parts breast meat and skin with added solution",
-  "turkey retail parts breast meat and skins": "turkey retail parts breast meat and skin",
-  "turkey retail parts breast meat onlies": "turkey retail parts breast meat only",
-  "turkey retail parts breast meat only  roasteds": "turkey retail parts breast meat only  roasted",
-  "turkey retail parts breast meat only with added solution  roasteds": "turkey retail parts breast meat only with added solution  roasted",
-  "turkey retail parts breast meat only with added solutions": "turkey retail parts breast meat only with added solution",
-  "turkey retail parts breast meat onlys": "turkey retail parts breast meat only",
-  "turkey retail parts drumstick meat and skin  roasteds": "turkey retail parts drumstick meat and skin  roasted",
-  "turkey retail parts drumstick meat and skins": "turkey retail parts drumstick meat and skin",
-  "turkey retail parts drumstick meat only  roasteds": "turkey retail parts drumstick meat only  roasted",
-  "turkey roast boneless  seasoned light and dark meats": "turkey roast boneless  seasoned light and dark meat",
-  "turkey sticks breaded battered frieds": "turkey sticks breaded battered fried",
-  "turkey thigh pre-basted meat and skin  roasteds": "turkey thigh pre-basted meat and skin  roasted",
+  "turkey light or dark meat smoked  skin and bone removeds":
+    "turkey light or dark meat smoked  skin and bone removed",
+  "turkey light or dark meat smoked  with skin bone removeds":
+    "turkey light or dark meat smoked  with skin bone removed",
+  "turkey mechanically deboned from turkey frameses":
+    "turkey mechanically deboned from turkey frames",
+  "turkey mechanically deboned from turkey framess":
+    "turkey mechanically deboned from turkey frames",
+  "turkey retail parts breast meat and skin  roasteds":
+    "turkey retail parts breast meat and skin  roasted",
+  "turkey retail parts breast meat and skin with added solutions":
+    "turkey retail parts breast meat and skin with added solution",
+  "turkey retail parts breast meat and skins":
+    "turkey retail parts breast meat and skin",
+  "turkey retail parts breast meat onlies":
+    "turkey retail parts breast meat only",
+  "turkey retail parts breast meat only  roasteds":
+    "turkey retail parts breast meat only  roasted",
+  "turkey retail parts breast meat only with added solution  roasteds":
+    "turkey retail parts breast meat only with added solution  roasted",
+  "turkey retail parts breast meat only with added solutions":
+    "turkey retail parts breast meat only with added solution",
+  "turkey retail parts breast meat onlys":
+    "turkey retail parts breast meat only",
+  "turkey retail parts drumstick meat and skin  roasteds":
+    "turkey retail parts drumstick meat and skin  roasted",
+  "turkey retail parts drumstick meat and skins":
+    "turkey retail parts drumstick meat and skin",
+  "turkey retail parts drumstick meat only  roasteds":
+    "turkey retail parts drumstick meat only  roasted",
+  "turkey roast boneless  seasoned light and dark meats":
+    "turkey roast boneless  seasoned light and dark meat",
+  "turkey sticks breaded battered frieds":
+    "turkey sticks breaded battered fried",
+  "turkey thigh pre-basted meat and skin  roasteds":
+    "turkey thigh pre-basted meat and skin  roasted",
   "vanilla extract imitation alcohols": "vanilla extract imitation alcohol",
-  "vanilla extract imitation no alcohols": "vanilla extract imitation no alcohol",
+  "vanilla extract imitation no alcohols":
+    "vanilla extract imitation no alcohol",
   "vanilla extracts": "vanilla extract",
   "vegetable oil palm kernels": "vegetable oil palm kernel",
-  "vegetable oil-butter spread reduced calories": "vegetable oil-butter spread reduced calorie",
+  "vegetable oil-butter spread reduced calories":
+    "vegetable oil-butter spread reduced calorie",
   "vinegar balsamics": "vinegar balsamic",
   "vinegar ciders": "vinegar cider",
   "vinegar distilleds": "vinegar distilled",
@@ -20852,52 +21810,84 @@ export const SYNONYM_MAP: Record<string, string> = {
   "whey acids": "whey acid",
   "whey sweet fluids": "whey sweet fluid",
   "whey sweets": "whey sweet",
-  "whipped cream substitute dietetic made from powdered mixes": "whipped cream substitute dietetic made from powdered mix",
-  "whipped cream substitute dietetic made from powdered mixs": "whipped cream substitute dietetic made from powdered mix",
+  "whipped cream substitute dietetic made from powdered mixes":
+    "whipped cream substitute dietetic made from powdered mix",
+  "whipped cream substitute dietetic made from powdered mixs":
+    "whipped cream substitute dietetic made from powdered mix",
   "whipped topping  low fats": "whipped topping  low fat",
   "white rices": "white rice",
   "whole wheat breads": "whole wheat bread",
-  "yogurt  flavors not chocolate nonfat milk with low-calorie sweeteners": "yogurt  flavors not chocolate nonfat milk with low-calorie sweetener",
-  "yogurt  flavors other than chocolate lowfats": "yogurt  flavors other than chocolate lowfat",
-  "yogurt chocolate nonfat milk fortified with vitamin ds": "yogurt chocolate nonfat milk fortified with vitamin d",
+  "yogurt  flavors not chocolate nonfat milk with low-calorie sweeteners":
+    "yogurt  flavors not chocolate nonfat milk with low-calorie sweetener",
+  "yogurt  flavors other than chocolate lowfats":
+    "yogurt  flavors other than chocolate lowfat",
+  "yogurt chocolate nonfat milk fortified with vitamin ds":
+    "yogurt chocolate nonfat milk fortified with vitamin d",
   "yogurt chocolate nonfat milks": "yogurt chocolate nonfat milk",
-  "yogurt fruit low fat 10 grams protein per 8 ounce fortified with vitamin ds": "yogurt fruit low fat 10 grams protein per 8 ounce fortified with vitamin d",
-  "yogurt fruit low fat 10 grams protein per 8 ounces": "yogurt fruit low fat 10 grams protein per 8 ounce",
-  "yogurt fruit low fat 11g protein 8 ozes": "yogurt fruit low fat 11g protein 8 oz",
-  "yogurt fruit low fat 11g protein 8 ozs": "yogurt fruit low fat 11g protein 8 oz",
-  "yogurt fruit low fat 9 g protein 8 ozes": "yogurt fruit low fat 9 g protein 8 oz",
-  "yogurt fruit low fat 9 g protein 8 ozs": "yogurt fruit low fat 9 g protein 8 oz",
-  "yogurt fruit low fat 9 grams protein per 8 ounce fortified with vitamin ds": "yogurt fruit low fat 9 grams protein per 8 ounce fortified with vitamin d",
-  "yogurt fruit lowfat with low calorie sweetener fortified with vitamin ds": "yogurt fruit lowfat with low calorie sweetener fortified with vitamin d",
-  "yogurt fruit lowfat with low calorie sweeteners": "yogurt fruit lowfat with low calorie sweetener",
-  "yogurt fruit variety nonfat fortified with vitamin ds": "yogurt fruit variety nonfat fortified with vitamin d",
+  "yogurt fruit low fat 10 grams protein per 8 ounce fortified with vitamin ds":
+    "yogurt fruit low fat 10 grams protein per 8 ounce fortified with vitamin d",
+  "yogurt fruit low fat 10 grams protein per 8 ounces":
+    "yogurt fruit low fat 10 grams protein per 8 ounce",
+  "yogurt fruit low fat 11g protein 8 ozes":
+    "yogurt fruit low fat 11g protein 8 oz",
+  "yogurt fruit low fat 11g protein 8 ozs":
+    "yogurt fruit low fat 11g protein 8 oz",
+  "yogurt fruit low fat 9 g protein 8 ozes":
+    "yogurt fruit low fat 9 g protein 8 oz",
+  "yogurt fruit low fat 9 g protein 8 ozs":
+    "yogurt fruit low fat 9 g protein 8 oz",
+  "yogurt fruit low fat 9 grams protein per 8 ounce fortified with vitamin ds":
+    "yogurt fruit low fat 9 grams protein per 8 ounce fortified with vitamin d",
+  "yogurt fruit lowfat with low calorie sweetener fortified with vitamin ds":
+    "yogurt fruit lowfat with low calorie sweetener fortified with vitamin d",
+  "yogurt fruit lowfat with low calorie sweeteners":
+    "yogurt fruit lowfat with low calorie sweetener",
+  "yogurt fruit variety nonfat fortified with vitamin ds":
+    "yogurt fruit variety nonfat fortified with vitamin d",
   "yogurt fruit variety nonfats": "yogurt fruit variety nonfat",
   "yogurt greek 2% fat apricot chobanis": "yogurt greek 2% fat apricot chobani",
-  "yogurt greek 2% fat key lime blend chobanis": "yogurt greek 2% fat key lime blend chobani",
+  "yogurt greek 2% fat key lime blend chobanis":
+    "yogurt greek 2% fat key lime blend chobani",
   "yogurt greek 2% fat mango chobanis": "yogurt greek 2% fat mango chobani",
-  "yogurt greek 2% fat mixed berry blend chobanis": "yogurt greek 2% fat mixed berry blend chobani",
-  "yogurt greek 2% fat pineapple chobanis": "yogurt greek 2% fat pineapple chobani",
-  "yogurt greek 2% fat strawberry banana chobanis": "yogurt greek 2% fat strawberry banana chobani",
-  "yogurt greek 2%fat coconut blend chobanis": "yogurt greek 2%fat coconut blend chobani",
+  "yogurt greek 2% fat mixed berry blend chobanis":
+    "yogurt greek 2% fat mixed berry blend chobani",
+  "yogurt greek 2% fat pineapple chobanis":
+    "yogurt greek 2% fat pineapple chobani",
+  "yogurt greek 2% fat strawberry banana chobanis":
+    "yogurt greek 2% fat strawberry banana chobani",
+  "yogurt greek 2%fat coconut blend chobanis":
+    "yogurt greek 2%fat coconut blend chobani",
   "yogurt greek blueberry chobanis": "yogurt greek blueberry chobani",
   "yogurt greek fruit whole milks": "yogurt greek fruit whole milk",
-  "yogurt greek nonfat fruit on bottom blackberry chobanis": "yogurt greek nonfat fruit on bottom blackberry chobani",
-  "yogurt greek nonfat fruit on bottom pomegranate chobanis": "yogurt greek nonfat fruit on bottom pomegranate chobani",
-  "yogurt greek nonfat fruit on bottom strawberry chobanis": "yogurt greek nonfat fruit on bottom strawberry chobani",
-  "yogurt greek nonfat lemon blend chobanis": "yogurt greek nonfat lemon blend chobani",
+  "yogurt greek nonfat fruit on bottom blackberry chobanis":
+    "yogurt greek nonfat fruit on bottom blackberry chobani",
+  "yogurt greek nonfat fruit on bottom pomegranate chobanis":
+    "yogurt greek nonfat fruit on bottom pomegranate chobani",
+  "yogurt greek nonfat fruit on bottom strawberry chobanis":
+    "yogurt greek nonfat fruit on bottom strawberry chobani",
+  "yogurt greek nonfat lemon blend chobanis":
+    "yogurt greek nonfat lemon blend chobani",
   "yogurt greek nonfat peach chobanis": "yogurt greek nonfat peach chobani",
   "yogurt greek nonfat plain chobanis": "yogurt greek nonfat plain chobani",
-  "yogurt greek nonfat raspberry chobanis": "yogurt greek nonfat raspberry chobani",
-  "yogurt greek nonfat strawberry dannon oikoses": "yogurt greek nonfat strawberry dannon oikos",
-  "yogurt greek nonfat strawberry dannon oikoss": "yogurt greek nonfat strawberry dannon oikos",
+  "yogurt greek nonfat raspberry chobanis":
+    "yogurt greek nonfat raspberry chobani",
+  "yogurt greek nonfat strawberry dannon oikoses":
+    "yogurt greek nonfat strawberry dannon oikos",
+  "yogurt greek nonfat strawberry dannon oikoss":
+    "yogurt greek nonfat strawberry dannon oikos",
   "yogurt greek nonfat vanilla chobanis": "yogurt greek nonfat vanilla chobani",
-  "yogurt greek nonfat vanilla dannon oikoses": "yogurt greek nonfat vanilla dannon oikos",
-  "yogurt greek nonfat vanilla dannon oikoss": "yogurt greek nonfat vanilla dannon oikos",
+  "yogurt greek nonfat vanilla dannon oikoses":
+    "yogurt greek nonfat vanilla dannon oikos",
+  "yogurt greek nonfat vanilla dannon oikoss":
+    "yogurt greek nonfat vanilla dannon oikos",
   "yogurt greek plain lowfats": "yogurt greek plain lowfat",
-  "yogurt greek plain nonfat includes foods for usda's food distribution programs": "yogurt greek plain nonfat includes foods for usda's food distribution program",
+  "yogurt greek plain nonfat includes foods for usda's food distribution programs":
+    "yogurt greek plain nonfat includes foods for usda's food distribution program",
   "yogurt greek plain whole milks": "yogurt greek plain whole milk",
-  "yogurt greek strawberry dannon oikoses": "yogurt greek strawberry dannon oikos",
-  "yogurt greek strawberry dannon oikoss": "yogurt greek strawberry dannon oikos",
+  "yogurt greek strawberry dannon oikoses":
+    "yogurt greek strawberry dannon oikos",
+  "yogurt greek strawberry dannon oikoss":
+    "yogurt greek strawberry dannon oikos",
   "yogurt greek strawberry lowfats": "yogurt greek strawberry lowfat",
   "yogurt greek strawberry nonfats": "yogurt greek strawberry nonfat",
   "yogurt greek vanilla lowfats": "yogurt greek vanilla lowfat",
@@ -20906,12 +21896,16 @@ export const SYNONYM_MAP: Record<string, string> = {
   "yogurt plain low fats": "yogurt plain low fat",
   "yogurt plain skim milks": "yogurt plain skim milk",
   "yogurt plain whole milks": "yogurt plain whole milk",
-  "yogurt vanilla flavor lowfat milk sweetened with low calorie sweeteners": "yogurt vanilla flavor lowfat milk sweetened with low calorie sweetener",
-  "yogurt vanilla low fat fortified with vitamin ds": "yogurt vanilla low fat fortified with vitamin d",
+  "yogurt vanilla flavor lowfat milk sweetened with low calorie sweeteners":
+    "yogurt vanilla flavor lowfat milk sweetened with low calorie sweetener",
+  "yogurt vanilla low fat fortified with vitamin ds":
+    "yogurt vanilla low fat fortified with vitamin d",
   "yogurt vanilla low fat.s": "yogurt vanilla low fat.",
   "yogurt vanilla non-fats": "yogurt vanilla non-fat",
-  "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener fortified with vitamin ds": "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener fortified with vitamin d",
-  "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweeteners": "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener",
+  "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener fortified with vitamin ds":
+    "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener fortified with vitamin d",
+  "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweeteners":
+    "yogurt vanilla or lemon flavor nonfat milk sweetened with low-calorie sweetener",
   "yogurts": "yogurt",
   "zucchinis": "zucchini",
 };
@@ -20922,7 +21916,7 @@ export const SYNONYM_MAP: Record<string, string> = {
 
 /**
  * Normalize ingredient name to canonical form
- * 
+ *
  * Steps:
  * 1. Lowercase and trim
  * 2. Check synonym map

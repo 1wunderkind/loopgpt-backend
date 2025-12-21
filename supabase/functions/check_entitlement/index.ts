@@ -1,11 +1,11 @@
 /**
  * Check User Entitlement
- * 
+ *
  * Purpose: Validate if user has premium access (active subscription or trial)
- * 
+ *
  * Input:
  * - chatgpt_user_id: User identifier
- * 
+ *
  * Output:
  * - has_access: boolean
  * - tier: 'free' | 'premium' | 'family'
@@ -22,10 +22,10 @@ import { createAuthenticatedClient } from "../_lib/auth.ts";
 import { createClient } from "@supabase/supabase-js";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 interface EntitlementRequest {
@@ -46,60 +46,31 @@ const handler = async (req) => {
     if (!chatgpt_user_id) {
       return new Response(
         JSON.stringify({ error: "chatgpt_user_id is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
     // Get authenticated Supabase client (enforces RLS)
 
-
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-
-    
-
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: authError }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     if (!userId) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
@@ -130,23 +101,27 @@ const handler = async (req) => {
           renewal_date: null,
           credits: 0,
           upgrade_url: `${appUrl}/upgrade`,
-          message: "No active subscription. Upgrade to Premium for unlimited access!",
+          message:
+            "No active subscription. Upgrade to Premium for unlimited access!",
         }),
         {
           status: 200,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
     // Check if trial is active
     const now = new Date();
-    const trialEnd = subscription.trial_end ? new Date(subscription.trial_end) : null;
+    const trialEnd = subscription.trial_end
+      ? new Date(subscription.trial_end)
+      : null;
     const trialActive = trialEnd ? trialEnd > now : false;
 
     // Determine if user has access
-    const hasAccess = 
-      (subscription.status === "active" || subscription.status === "trialing" || trialActive) &&
+    const hasAccess =
+      (subscription.status === "active" || subscription.status === "trialing" ||
+        trialActive) &&
       (subscription.tier === "premium" || subscription.tier === "family");
 
     // Build response
@@ -156,8 +131,10 @@ const handler = async (req) => {
       status: subscription.status,
       trial_active: trialActive,
       trial_end: subscription.trial_end,
-      trial_days_remaining: trialActive && trialEnd 
-        ? Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      trial_days_remaining: trialActive && trialEnd
+        ? Math.ceil(
+          (trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+        )
         : 0,
       renewal_date: subscription.renewal_date,
       credits: entitlement?.credits || 0,
@@ -181,7 +158,7 @@ const handler = async (req) => {
         {
           status: 200,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -198,7 +175,11 @@ const handler = async (req) => {
       },
     });
 
-    console.log(`✅ Entitlement check for ${chatgpt_user_id}: ${hasAccess ? 'GRANTED' : 'DENIED'}`);
+    console.log(
+      `✅ Entitlement check for ${chatgpt_user_id}: ${
+        hasAccess ? "GRANTED" : "DENIED"
+      }`,
+    );
 
     return new Response(
       JSON.stringify({
@@ -210,7 +191,7 @@ const handler = async (req) => {
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("❌ Error checking entitlement:", error);
@@ -222,11 +203,10 @@ const handler = async (req) => {
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withStandardAPI(handler));
-

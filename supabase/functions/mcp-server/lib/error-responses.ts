@@ -1,4 +1,4 @@
-import { corsHeaders } from "../../_shared/cors.ts";
+import { getCorsHeaders } from "../../_shared/cors.ts";
 
 export interface ToolErrorDetails {
   code: string;
@@ -19,7 +19,8 @@ export function createToolErrorResponse(
   code: string,
   message: string,
   retryable: boolean,
-  details?: Record<string, unknown>
+  details?: Record<string, unknown>,
+  origin?: string | null,
 ): Response {
   const responseBody: ToolErrorResponse = {
     success: false,
@@ -29,15 +30,15 @@ export function createToolErrorResponse(
       message,
       toolName,
       retryable,
-      details
-    }
+      details,
+    },
   };
 
   return new Response(JSON.stringify(responseBody), {
     status: 200, // Always 200 for tool errors
     headers: {
-      ...corsHeaders,
-      "Content-Type": "application/json"
-    }
+      ...getCorsHeaders(origin || null),
+      "Content-Type": "application/json",
+    },
   });
 }

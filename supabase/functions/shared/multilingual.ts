@@ -1,9 +1,9 @@
 /**
  * Multilingual Formatting Utility
- * 
+ *
  * Provides formatting functions that use GPT-4.1-mini to generate
  * responses in the user's native language.
- * 
+ *
  * Pattern: "SAME LANGUAGE" instruction from LeftoverGPT Ecosystem
  */
 
@@ -11,7 +11,7 @@ import { getOpenAIClient } from "./openai.ts";
 
 /**
  * Language detection helper
- * 
+ *
  * Detects language from user input (recipe name, goals, etc.)
  * Returns ISO language code or "en" as default
  */
@@ -22,13 +22,13 @@ export function detectLanguage(text: string): string {
   const hasKorean = /[\uac00-\ud7af]/.test(text);
   const hasArabic = /[\u0600-\u06ff]/.test(text);
   const hasCyrillic = /[\u0400-\u04ff]/.test(text);
-  
+
   if (hasChinese) return "zh";
   if (hasJapanese) return "ja";
   if (hasKorean) return "ko";
   if (hasArabic) return "ar";
   if (hasCyrillic) return "ru";
-  
+
   // Default to English
   return "en";
 }
@@ -52,25 +52,26 @@ export function getLanguageName(code: string): string {
     hi: "Hindi",
     th: "Thai",
   };
-  
+
   return languages[code] || "English";
 }
 
 /**
  * Format meal plan in user's language
- * 
+ *
  * @param mealPlan - Structured meal plan data
  * @param userInput - Original user input (for language detection)
  * @returns Formatted meal plan in user's language
  */
 export async function formatMealPlan(
   mealPlan: any,
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
-  
-  const systemPrompt = `You are a professional meal planning expert. Format the following meal plan into a beautiful, easy-to-read markdown response. Use emojis and clear headers to make it engaging and user-friendly.`;
-  
+
+  const systemPrompt =
+    `You are a professional meal planning expert. Format the following meal plan into a beautiful, easy-to-read markdown response. Use emojis and clear headers to make it engaging and user-friendly.`;
+
   const userPrompt = `
 User Input: "${userInput}"
 
@@ -88,7 +89,7 @@ Format the meal plan with:
 - Shopping list with affiliate links
 - Engaging emojis and formatting
 `;
-  
+
   const completion = await client.chat.completions.create({
     model: "gpt-4.1-mini",
     messages: [
@@ -96,25 +97,26 @@ Format the meal plan with:
       { role: "user", content: userPrompt },
     ],
   });
-  
+
   return completion.choices[0].message.content || "";
 }
 
 /**
  * Format delivery recommendations in user's language
- * 
+ *
  * @param recommendations - Delivery partner recommendations
  * @param userInput - Original user input (cuisine, diet, etc.)
  * @returns Formatted recommendations in user's language
  */
 export async function formatDeliveryRecommendations(
   recommendations: any[],
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
-  
-  const systemPrompt = `You are a helpful food delivery assistant. Format the following delivery partner recommendations into a friendly, easy-to-read response.`;
-  
+
+  const systemPrompt =
+    `You are a helpful food delivery assistant. Format the following delivery partner recommendations into a friendly, easy-to-read response.`;
+
   const userPrompt = `
 User Input: "${userInput}"
 
@@ -130,7 +132,7 @@ Format the recommendations with:
 - Affiliate links with call-to-action
 - Disclosure about affiliate partnership
 `;
-  
+
   const completion = await client.chat.completions.create({
     model: "gpt-4.1-mini",
     messages: [
@@ -138,25 +140,26 @@ Format the recommendations with:
       { role: "user", content: userPrompt },
     ],
   });
-  
+
   return completion.choices[0].message.content || "";
 }
 
 /**
  * Format shopping list in user's language
- * 
+ *
  * @param shoppingList - Shopping list with affiliate links
  * @param userInput - Original user input
  * @returns Formatted shopping list in user's language
  */
 export async function formatShoppingList(
   shoppingList: any,
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
-  
-  const systemPrompt = `You are a helpful shopping assistant. Format the following shopping list into a clear, organized response.`;
-  
+
+  const systemPrompt =
+    `You are a helpful shopping assistant. Format the following shopping list into a clear, organized response.`;
+
   const userPrompt = `
 User Input: "${userInput}"
 
@@ -172,7 +175,7 @@ Format the shopping list with:
 - Affiliate links for easy ordering
 - Helpful shopping tips
 `;
-  
+
   const completion = await client.chat.completions.create({
     model: "gpt-4.1-mini",
     messages: [
@@ -180,13 +183,13 @@ Format the shopping list with:
       { role: "user", content: userPrompt },
     ],
   });
-  
+
   return completion.choices[0].message.content || "";
 }
 
 /**
  * Format confirmation message in user's language
- * 
+ *
  * @param action - Action performed (e.g., "meal_logged", "plan_created")
  * @param data - Data related to the action
  * @param userInput - Original user input
@@ -195,12 +198,13 @@ Format the shopping list with:
 export async function formatConfirmation(
   action: string,
   data: any,
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
-  
-  const systemPrompt = `You are a helpful assistant. Provide a brief, friendly confirmation message.`;
-  
+
+  const systemPrompt =
+    `You are a helpful assistant. Provide a brief, friendly confirmation message.`;
+
   const userPrompt = `
 User Input: "${userInput}"
 Action: ${action}
@@ -211,7 +215,7 @@ All text and labels must be in that language.
 
 Provide a brief, friendly confirmation (1-2 sentences) that the action was successful.
 `;
-  
+
   const completion = await client.chat.completions.create({
     model: "gpt-4.1-mini",
     messages: [
@@ -219,27 +223,28 @@ Provide a brief, friendly confirmation (1-2 sentences) that the action was succe
       { role: "user", content: userPrompt },
     ],
   });
-  
+
   return completion.choices[0].message.content || "";
 }
 
 /**
  * Format error message in user's language
- * 
+ *
  * @param error - Error message or object
  * @param userInput - Original user input
  * @returns Formatted error message in user's language
  */
 export async function formatError(
   error: string | Error,
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
-  
+
   const errorMessage = typeof error === "string" ? error : error.message;
-  
-  const systemPrompt = `You are a helpful assistant. Provide a friendly error message that helps the user understand what went wrong.`;
-  
+
+  const systemPrompt =
+    `You are a helpful assistant. Provide a friendly error message that helps the user understand what went wrong.`;
+
   const userPrompt = `
 User Input: "${userInput}"
 Error: ${errorMessage}
@@ -249,7 +254,7 @@ All text and labels must be in that language.
 
 Provide a friendly error message (1-2 sentences) that explains what went wrong and suggests what to do next.
 `;
-  
+
   const completion = await client.chat.completions.create({
     model: "gpt-4.1-mini",
     messages: [
@@ -257,7 +262,6 @@ Provide a friendly error message (1-2 sentences) that explains what went wrong a
       { role: "user", content: userPrompt },
     ],
   });
-  
+
   return completion.choices[0].message.content || "";
 }
-

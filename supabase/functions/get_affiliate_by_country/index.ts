@@ -1,11 +1,11 @@
 /**
  * Get Affiliate By Country Edge Function
- * 
+ *
  * Returns prioritized list of affiliate partners for a given country.
- * 
+ *
  * Purpose: Enable correct affiliate routing based on user location
  * Pattern: Query affiliate_partner_map by country, order by priority
- * 
+ *
  * Use Cases:
  * - Get US affiliates for Hindi speaker in US
  * - Get Spain affiliates for Brazilian in Madrid
@@ -14,7 +14,11 @@
 
 import { serve } from "std@0.168.0/http/server.ts";
 import { withLogging } from "../../middleware/logging.ts";
-import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  validateRequired,
+} from "../../middleware/errorHandler.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
@@ -56,60 +60,30 @@ async function handler(req: Request): Promise<Response> {
     // Validate country code format (2-letter ISO code)
     if (!/^[A-Z]{2}$/.test(country)) {
       return createErrorResponse(
-        new Error(`Invalid country code: ${country}. Must be 2-letter ISO code (e.g., US, IN, ES)`)
+        new Error(
+          `Invalid country code: ${country}. Must be 2-letter ISO code (e.g., US, IN, ES)`,
+        ),
       );
     }
 
     // Get authenticated Supabase client (enforces RLS)
 
-
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-
-    
-
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: authError }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     if (!userId) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
@@ -134,7 +108,10 @@ async function handler(req: Request): Promise<Response> {
       .limit(limit);
 
     if (error) {
-      console.error("[GetAffiliateByCountry] Error querying affiliates:", error);
+      console.error(
+        "[GetAffiliateByCountry] Error querying affiliates:",
+        error,
+      );
       throw error;
     }
 
@@ -150,11 +127,15 @@ async function handler(req: Request): Promise<Response> {
       diet_tags: item.delivery_partners?.diet_tags || [],
     }));
 
-    console.log(`[GetAffiliateByCountry] Found ${affiliates.length} affiliates for ${country}`);
+    console.log(
+      `[GetAffiliateByCountry] Found ${affiliates.length} affiliates for ${country}`,
+    );
 
     // If no affiliates found, return empty list with helpful message
     if (affiliates.length === 0) {
-      console.log(`[GetAffiliateByCountry] No affiliates found for country: ${country}`);
+      console.log(
+        `[GetAffiliateByCountry] No affiliates found for country: ${country}`,
+      );
     }
 
     return createSuccessResponse<GetAffiliateByCountryResponse>({
@@ -163,7 +144,6 @@ async function handler(req: Request): Promise<Response> {
       affiliates,
       count: affiliates.length,
     });
-
   } catch (error) {
     console.error("[GetAffiliateByCountry] Error:", error);
     return createErrorResponse(error);
@@ -172,4 +152,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export handler with logging middleware
 serve(withStandardAPI(withLogging(handler)));
-

@@ -1,8 +1,10 @@
 # Commerce & Flywheel Reporting
 
-These SQL queries provide insights into the economic performance of the LoopGPT agent.
+These SQL queries provide insights into the economic performance of the LoopGPT
+agent.
 
 ## 1. GMV by Provider (Daily)
+
 ```sql
 SELECT 
     date_trunc('day', timestamp) as day,
@@ -16,6 +18,7 @@ ORDER BY 1 DESC, 3 DESC;
 ```
 
 ## 2. Conversion Funnel
+
 ```sql
 WITH funnel AS (
     SELECT 
@@ -36,6 +39,7 @@ FROM funnel;
 ```
 
 ## 3. Provider ROI (Latency vs Success vs Commission)
+
 ```sql
 SELECT 
     provider,

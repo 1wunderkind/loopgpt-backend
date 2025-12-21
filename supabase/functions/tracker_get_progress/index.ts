@@ -1,13 +1,13 @@
 /**
  * weekly_trend Edge Function
- * 
+ *
  * Returns weight trend data with EWMA (Exponentially Weighted Moving Average) smoothing.
  * Fetches last 14-28 days of weight data and calculates smoothed trend.
- * 
+ *
  * @param {string} chatgpt_user_id - User identifier
  * @param {number} days - Number of days to fetch (default: 28)
  * @param {number} alpha - EWMA smoothing factor (default: 0.3)
- * 
+ *
  * @returns {object} { ok: true, series: [...], trend: [...], latest_trend_kg: number }
  */
 
@@ -38,7 +38,7 @@ interface WeightDataPoint {
  */
 function ewma(values: number[], alpha = 0.3): number[] {
   if (values.length === 0) return [];
-  
+
   let s = values[0]; // Initialize with first value
   return values.map((v) => {
     s = alpha * v + (1 - alpha) * s;
@@ -50,13 +50,14 @@ async function handler(req: Request): Promise<Response> {
   try {
     // Parse request body
     const body: WeeklyTrendRequest = await req.json();
-    const { chatgpt_user_id, days = 28, alpha = 0.3, language, unit = "kg" } = body;
+    const { chatgpt_user_id, days = 28, alpha = 0.3, language, unit = "kg" } =
+      body;
 
     // Validation
     if (!chatgpt_user_id) {
       return new Response(
         JSON.stringify({ ok: false, error: "chatgpt_user_id is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -66,7 +67,7 @@ async function handler(req: Request): Promise<Response> {
           ok: false,
           error: "days must be between 7 and 90",
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -76,41 +77,28 @@ async function handler(req: Request): Promise<Response> {
           ok: false,
           error: "alpha must be between 0.1 and 0.9",
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     // Create Supabase client
     // Get authenticated Supabase client (enforces RLS)
 
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-    
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: authError }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
-    
-
     if (!userId) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
     // Calculate date range
@@ -130,7 +118,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("Database error:", error);
       return new Response(
         JSON.stringify({ ok: false, error: error.message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -144,7 +132,7 @@ async function handler(req: Request): Promise<Response> {
           latest_trend_kg: null,
           message: "No weight data found for the specified period",
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -161,9 +149,10 @@ async function handler(req: Request): Promise<Response> {
           series,
           trend: [],
           latest_trend_kg: series[0].kg,
-          message: "Insufficient data for trend calculation (need at least 2 data points)",
+          message:
+            "Insufficient data for trend calculation (need at least 2 data points)",
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -203,7 +192,7 @@ async function handler(req: Request): Promise<Response> {
         change_rate_kg_per_week: weekly_change_kg || 0,
         unit,
       },
-      userInput
+      userInput,
     );
 
     // Return trend data
@@ -225,7 +214,7 @@ async function handler(req: Request): Promise<Response> {
         },
         formatted_message, // Multilingual!
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
     return handleError(error);
@@ -234,4 +223,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export with logging middleware
 export default withStandardAPI(withLogging(handler));
-

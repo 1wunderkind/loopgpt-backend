@@ -1,9 +1,9 @@
 /**
  * LoopKitchen Meal Planner Tool
- * 
+ *
  * Weekly meal plan generation using MealPlannerGPT from shared module.
  * Returns WeekPlanner widget for UI-ready meal planning.
- * 
+ *
  * Features:
  * - 7-day meal plan generation (configurable)
  * - Breakfast, lunch, dinner for each day
@@ -12,19 +12,28 @@
  * - Ingredient reuse optimization
  * - Weekly summary with aggregated grocery list
  * - Commerce layer integration ready
- * 
+ *
  * Phase 4 of LoopKitchen Integration
  */
 
 import { callModel } from "../_shared/loopkitchen/callModel.ts";
 import { getCached } from "../_shared/loopkitchen/cache.ts";
-import { logMealPlanGenerated, logAffiliateClick } from "../_shared/analytics/index.ts";
-import { MEALPLANNERGPT_SYSTEM, MEALPLANNERGPT_USER } from "../_shared/loopkitchen/prompts.ts";
-import { getUserIngredientProfile, getUserRecipePreferences } from "../_shared/recommendations/index.ts";
+import {
+  logAffiliateClick,
+  logMealPlanGenerated,
+} from "../_shared/analytics/index.ts";
+import {
+  MEALPLANNERGPT_SYSTEM,
+  MEALPLANNERGPT_USER,
+} from "../_shared/loopkitchen/prompts.ts";
+import {
+  getUserIngredientProfile,
+  getUserRecipePreferences,
+} from "../_shared/recommendations/index.ts";
 import type {
-  WeekPlanner,
   GroceryList,
   InfoMessage,
+  WeekPlanner,
 } from "../_shared/loopkitchen/types/index.ts";
 
 // ============================================================================
@@ -34,19 +43,19 @@ import type {
 interface MealPlanInput {
   // Base ingredients user often has
   ingredients?: string[];
-  
+
   // Calorie target per day (null for no target)
   caloriesPerDay?: number | null;
-  
+
   // Diet style notes (e.g., "high-protein", "vegetarian", "budget-friendly")
   dietNotes?: string;
-  
+
   // Number of days to plan (1-14, defaults to 7)
   days?: number;
-  
+
   // Start date (ISO string, defaults to today)
   startDate?: string;
-  
+
   // Include grocery list aggregation
   includeGroceryList?: boolean;
 }
@@ -100,13 +109,15 @@ function validateMealPlanInput(params: Record<string, unknown>): MealPlanInput {
   ];
 
   return {
-    ingredients: Array.isArray(params.ingredients) && params.ingredients.length > 0
-      ? params.ingredients as string[]
-      : defaultIngredients,
+    ingredients:
+      Array.isArray(params.ingredients) && params.ingredients.length > 0
+        ? params.ingredients as string[]
+        : defaultIngredients,
     caloriesPerDay: (params.caloriesPerDay as number) || null,
     dietNotes: (params.dietNotes as string) || "balanced, home-cooked meals",
     days: Math.min(Math.max((params.days as number) || 7, 1), 14), // 1-14 days
-    startDate: (params.startDate as string) || new Date().toISOString().split('T')[0],
+    startDate: (params.startDate as string) ||
+      new Date().toISOString().split("T")[0],
     includeGroceryList: params.includeGroceryList !== false, // Default true
   };
 }
@@ -188,7 +199,9 @@ const mealPlannerSchema = {
 // Main Function
 // ============================================================================
 
-export async function generateMealPlan(params: Record<string, unknown>): Promise<WeekPlanner | InfoMessage> {
+export async function generateMealPlan(
+  params: Record<string, unknown>,
+): Promise<WeekPlanner | InfoMessage> {
   const startTime = Date.now();
 
   try {
@@ -204,35 +217,41 @@ export async function generateMealPlan(params: Record<string, unknown>): Promise
     // ========================================================================
     // RECOMMENDATION ENGINE CONTEXT ENRICHMENT
     // ========================================================================
-    
-    let userContext = '';
-    
+
+    let userContext = "";
+
     if (params.userId) {
-      console.log('[loopkitchen.mealplan] Fetching user preferences...');
-      
+      console.log("[loopkitchen.mealplan] Fetching user preferences...");
+
       // Get user's ingredient profile
-      const ingredientProfile = await getUserIngredientProfile(params.userId as string);
+      const ingredientProfile = await getUserIngredientProfile(
+        params.userId as string,
+      );
       if (ingredientProfile && ingredientProfile.length > 0) {
         const topIngredients = ingredientProfile
           .slice(0, 10)
           .map((ing: { ingredient_name: string }) => ing.ingredient_name)
-          .join(', ');
-        userContext += `\n\nUser's frequently used ingredients: ${topIngredients}`;
+          .join(", ");
+        userContext +=
+          `\n\nUser's frequently used ingredients: ${topIngredients}`;
       }
-      
+
       // Get user's recipe preferences
-      const recipePrefs = await getUserRecipePreferences(params.userId as string);
+      const recipePrefs = await getUserRecipePreferences(
+        params.userId as string,
+      );
       if (recipePrefs) {
         userContext += `\n\nUser's recipe preferences:`;
         if (recipePrefs.acceptance_rate) {
           userContext += `\n- Acceptance rate: ${recipePrefs.acceptance_rate}%`;
         }
         if (recipePrefs.preferred_persona) {
-          userContext += `\n- Preferred style: ${recipePrefs.preferred_persona}`;
+          userContext +=
+            `\n- Preferred style: ${recipePrefs.preferred_persona}`;
         }
       }
-      
-      console.log('[loopkitchen.mealplan] User context enriched');
+
+      console.log("[loopkitchen.mealplan] User context enriched");
     }
 
     // Build user message using MealPlannerGPT prompt (with user context)
@@ -241,7 +260,7 @@ export async function generateMealPlan(params: Record<string, unknown>): Promise
       input.caloriesPerDay || null,
       input.dietNotes!,
       input.days!,
-      input.startDate!
+      input.startDate!,
     ) + userContext;
 
     console.log("[loopkitchen.mealplan] Calling MealPlannerGPT...");
@@ -249,16 +268,21 @@ export async function generateMealPlan(params: Record<string, unknown>): Promise
     // Call GPT with caching
     const { value: result, cached } = await getCached(
       "mealplan.generate",
-      { days: input.days, calorieTarget: input.caloriesPerDay, preferences: input.dietNotes }, // Cache by key params
-      () => callModel<MealPlannerGPTResponse>(
-        MEALPLANNERGPT_SYSTEM,
-        userMessage,
-        {
-          temperature: 0.7, // Slightly higher for variety
-          maxTokens: 2500,
-        }
-      ),
-      3600000 // 1 hour TTL for meal plans
+      {
+        days: input.days,
+        calorieTarget: input.caloriesPerDay,
+        preferences: input.dietNotes,
+      }, // Cache by key params
+      () =>
+        callModel<MealPlannerGPTResponse>(
+          MEALPLANNERGPT_SYSTEM,
+          userMessage,
+          {
+            temperature: 0.7, // Slightly higher for variety
+            maxTokens: 2500,
+          },
+        ),
+      3600000, // 1 hour TTL for meal plans
     );
 
     if (cached) {
@@ -276,9 +300,10 @@ export async function generateMealPlan(params: Record<string, unknown>): Promise
     logMealPlanGenerated({
       userId: (params.userId as string) || null,
       sessionId: (params.sessionId as string) || null,
-      sourceGpt: 'MealPlannerGPT',
+      sourceGpt: "MealPlannerGPT",
       title: `${input.days}-day ${input.dietNotes} plan`,
-      description: `Meal plan for ${input.days} days starting ${input.startDate}`,
+      description:
+        `Meal plan for ${input.days} days starting ${input.startDate}`,
       daysPlanned: input.days!,
       vibe: input.dietNotes,
       targetCaloriesPerDay: input.caloriesPerDay,
@@ -286,40 +311,49 @@ export async function generateMealPlan(params: Record<string, unknown>): Promise
         avgDailyCalories: result.weeklySummary.avgDailyCalories,
         totalCalories: result.weeklySummary.totalCalories,
       },
-    }).catch(err => console.error('[Analytics] Failed to log meal plan:', err));
-    
+    }).catch((err) =>
+      console.error("[Analytics] Failed to log meal plan:", err)
+    );
+
     // Build WeekPlanner widget
     const widgetId = `week-planner-${result.startDate}`;
     const shareTitle = `My ${input.days}-day meal plan from LoopKitchen`;
-    const shareDescription = `${input.dietNotes ? input.dietNotes + ' ' : ''}Meal plan for ${input.days} days. Avg ${Math.round(result.weeklySummary.avgDailyCalories)} cal/day.`;
-    const suggestedCaption = `Just got my ${input.days}-day meal plan from LoopKitchen! 📅 ${Math.round(result.weeklySummary.avgDailyCalories)} cal/day. #LoopGPT #MealPlan`;
-    
+    const shareDescription = `${
+      input.dietNotes ? input.dietNotes + " " : ""
+    }Meal plan for ${input.days} days. Avg ${
+      Math.round(result.weeklySummary.avgDailyCalories)
+    } cal/day.`;
+    const suggestedCaption =
+      `Just got my ${input.days}-day meal plan from LoopKitchen! 📅 ${
+        Math.round(result.weeklySummary.avgDailyCalories)
+      } cal/day. #LoopGPT #MealPlan`;
+
     const widget: WeekPlanner = {
       type: "WeekPlanner",
       id: widgetId,
       startDate: result.startDate,
       days: result.days.map((day) => ({
-          date: day.date,
-          dayName: day.dayName,
-          meals: {
-            breakfast: {
-              recipeId: day.meals.breakfast.recipeId,
-              title: day.meals.breakfast.title,
-              approxCalories: day.meals.breakfast.approxCalories,
-            },
-            lunch: {
-              recipeId: day.meals.lunch.recipeId,
-              title: day.meals.lunch.title,
-              approxCalories: day.meals.lunch.approxCalories,
-            },
-            dinner: {
-              recipeId: day.meals.dinner.recipeId,
-              title: day.meals.dinner.title,
-              approxCalories: day.meals.dinner.approxCalories,
-            },
+        date: day.date,
+        dayName: day.dayName,
+        meals: {
+          breakfast: {
+            recipeId: day.meals.breakfast.recipeId,
+            title: day.meals.breakfast.title,
+            approxCalories: day.meals.breakfast.approxCalories,
           },
-          dayTotalCalories: day.dayTotalCalories,
-        })),
+          lunch: {
+            recipeId: day.meals.lunch.recipeId,
+            title: day.meals.lunch.title,
+            approxCalories: day.meals.lunch.approxCalories,
+          },
+          dinner: {
+            recipeId: day.meals.dinner.recipeId,
+            title: day.meals.dinner.title,
+            approxCalories: day.meals.dinner.approxCalories,
+          },
+        },
+        dayTotalCalories: day.dayTotalCalories,
+      })),
       weeklySummary: {
         avgDailyCalories: result.weeklySummary.avgDailyCalories,
         totalCalories: result.weeklySummary.totalCalories,
@@ -358,10 +392,10 @@ export async function generateMealPlan(params: Record<string, unknown>): Promise
 
 /**
  * Generate aggregated grocery list from meal plan
- * 
+ *
  * This extracts all unique recipes from the meal plan, fetches their
  * ingredient details, and generates a consolidated grocery list.
- * 
+ *
  * Features:
  * - Aggregates ingredients from all recipes in the plan
  * - Combines duplicate ingredients with quantity summation
@@ -370,7 +404,7 @@ export async function generateMealPlan(params: Record<string, unknown>): Promise
  */
 export async function generateGroceryListFromPlan(
   mealPlan: WeekPlanner,
-  pantryIngredients?: string[]
+  pantryIngredients?: string[],
 ): Promise<GroceryList | InfoMessage> {
   const startTime = Date.now();
 
@@ -402,7 +436,7 @@ export async function generateGroceryListFromPlan(
 
     // For now, use GroceryGPT with estimated ingredients based on recipe titles
     const estimatedIngredients = estimateIngredientsFromRecipes(
-      Array.from(recipeCount.entries())
+      Array.from(recipeCount.entries()),
     );
 
     // Call GroceryGPT to organize ingredients
@@ -442,13 +476,15 @@ export async function generateGroceryListFromPlan(
       additionalProperties: false,
     };
 
-    const groceryResult = await callModel<{ categories: GroceryList["categories"] }>(
+    const groceryResult = await callModel<
+      { categories: GroceryList["categories"] }
+    >(
       GROCERYGPT_SYSTEM,
       GROCERYGPT_USER("Weekly Meal Plan", estimatedIngredients),
       {
         temperature: 0.3,
         maxTokens: 1500,
-      }
+      },
     );
 
     // Filter out pantry ingredients if provided
@@ -458,12 +494,15 @@ export async function generateGroceryListFromPlan(
       categories = categories.map((cat: any) => ({
         ...cat,
         items: cat.items.filter(
-          (item: any) => !pantrySet.has(item.name.toLowerCase())
+          (item: any) => !pantrySet.has(item.name.toLowerCase()),
         ),
       })).filter((cat: any) => cat.items.length > 0);
     }
 
-    const totalItems = categories.reduce((sum: number, cat: any) => sum + cat.items.length, 0);
+    const totalItems = categories.reduce(
+      (sum: number, cat: any) => sum + cat.items.length,
+      0,
+    );
     const duration = Date.now() - startTime;
 
     console.log("[loopkitchen.mealplan] Grocery list generated", {
@@ -497,13 +536,13 @@ export async function generateGroceryListFromPlan(
 
 /**
  * Estimate ingredients from recipe titles
- * 
+ *
  * This is a helper function that generates reasonable ingredient estimates
  * based on recipe titles. In a full implementation, this would be replaced
  * by fetching actual recipe details.
  */
 function estimateIngredientsFromRecipes(
-  recipes: Array<[string, number]>
+  recipes: Array<[string, number]>,
 ): Array<{ name: string; quantity: string }> {
   const ingredients: Array<{ name: string; quantity: string }> = [];
 
@@ -513,7 +552,7 @@ function estimateIngredientsFromRecipes(
     { name: "salt", quantity: "1 container" },
     { name: "black pepper", quantity: "1 container" },
     { name: "garlic", quantity: "2 heads" },
-    { name: "onions", quantity: "3-4 medium" }
+    { name: "onions", quantity: "3-4 medium" },
   );
 
   // Analyze recipe titles for common ingredients
@@ -522,7 +561,10 @@ function estimateIngredientsFromRecipes(
 
     // Proteins
     if (titleLower.includes("chicken")) {
-      ingredients.push({ name: "chicken breast", quantity: `${count * 2} lbs` });
+      ingredients.push({
+        name: "chicken breast",
+        quantity: `${count * 2} lbs`,
+      });
     }
     if (titleLower.includes("beef")) {
       ingredients.push({ name: "beef", quantity: `${count * 1.5} lbs` });
@@ -574,16 +616,23 @@ function estimateIngredientsFromRecipes(
 
 /**
  * Generate meal plan with grocery list in one call
- * 
+ *
  * Returns both WeekPlanner and GroceryList widgets
  */
 export async function generateMealPlanWithGrocery(
-  params: any
-): Promise<{ mealPlan: WeekPlanner | InfoMessage; groceryList: GroceryList | InfoMessage }> {
+  params: any,
+): Promise<
+  {
+    mealPlan: WeekPlanner | InfoMessage;
+    groceryList: GroceryList | InfoMessage;
+  }
+> {
   const startTime = Date.now();
 
   try {
-    console.log("[loopkitchen.mealplan] Generating meal plan with grocery list...");
+    console.log(
+      "[loopkitchen.mealplan] Generating meal plan with grocery list...",
+    );
 
     // Generate meal plan
     const mealPlan = await generateMealPlan(params);
@@ -600,9 +649,12 @@ export async function generateMealPlanWithGrocery(
     const groceryList = await generateGroceryListFromPlan(mealPlan);
 
     const duration = Date.now() - startTime;
-    console.log("[loopkitchen.mealplan] Complete meal plan with grocery list generated", {
-      duration,
-    });
+    console.log(
+      "[loopkitchen.mealplan] Complete meal plan with grocery list generated",
+      {
+        duration,
+      },
+    );
 
     return {
       mealPlan,
@@ -617,7 +669,8 @@ export async function generateMealPlanWithGrocery(
       id: `error-${Date.now()}`,
       severity: "error",
       title: "Meal Plan Generation Error",
-      message: `Unable to generate meal plan with grocery list: ${error.message}`,
+      message:
+        `Unable to generate meal plan with grocery list: ${error.message}`,
     };
 
     return {
@@ -633,18 +686,20 @@ export async function generateMealPlanWithGrocery(
 
 /**
  * Prepare grocery order from meal plan
- * 
+ *
  * Integrates with the commerce layer to get provider quotes for
  * the grocery list generated from a meal plan.
- * 
+ *
  * This is a convenience function that:
  * 1. Generates grocery list from meal plan
  * 2. Calls commerce.prepareCart with the grocery list
  * 3. Returns provider quotes for user selection
- * 
+ *
  * Phase 4: Commerce integration ready
  */
-export async function prepareMealPlanOrder(params: Record<string, unknown>): Promise<unknown> {
+export async function prepareMealPlanOrder(
+  params: Record<string, unknown>,
+): Promise<unknown> {
   const startTime = Date.now();
 
   try {
@@ -668,7 +723,7 @@ export async function prepareMealPlanOrder(params: Record<string, unknown>): Pro
     // Generate grocery list from meal plan
     const groceryList = await generateGroceryListFromPlan(
       mealPlan,
-      params.pantryIngredients as string[]
+      params.pantryIngredients as string[],
     );
 
     // If grocery list generation failed, return error
@@ -692,17 +747,19 @@ export async function prepareMealPlanOrder(params: Record<string, unknown>): Pro
       duration,
       providers: commerceResult.provider ? 1 : 0,
     });
-    
+
     // Log affiliate event (analytics) - when user selects a provider
     if (commerceResult.provider) {
       // Log impression for provider
       logAffiliateClick({
         userId: params.userId || null,
         sessionId: params.sessionId || null,
-        eventType: 'impression',
+        eventType: "impression",
         provider: commerceResult.provider,
         url: commerceResult.checkoutUrl || null,
-      }).catch(err => console.error('[Analytics] Failed to log affiliate impression:', err));
+      }).catch((err) =>
+        console.error("[Analytics] Failed to log affiliate impression:", err)
+      );
     }
 
     // Return commerce result with grocery list attached
@@ -714,7 +771,10 @@ export async function prepareMealPlanOrder(params: Record<string, unknown>): Pro
   } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("[loopkitchen.mealplan] Order preparation error:", errorMessage);
+    console.error(
+      "[loopkitchen.mealplan] Order preparation error:",
+      errorMessage,
+    );
 
     const errorWidget: InfoMessage = {
       type: "InfoMessage",
@@ -730,15 +790,17 @@ export async function prepareMealPlanOrder(params: Record<string, unknown>): Pro
 
 /**
  * Complete meal planning flow with commerce integration
- * 
+ *
  * This is the ultimate convenience function that:
  * 1. Generates meal plan
  * 2. Generates grocery list
  * 3. Gets provider quotes for grocery delivery
- * 
+ *
  * Returns everything needed for a complete meal planning + ordering experience.
  */
-export async function generateMealPlanWithCommerce(params: Record<string, any>): Promise<unknown> {
+export async function generateMealPlanWithCommerce(
+  params: Record<string, any>,
+): Promise<unknown> {
   const startTime = Date.now();
 
   try {
@@ -762,7 +824,7 @@ export async function generateMealPlanWithCommerce(params: Record<string, any>):
     // Step 2: Generate grocery list
     const groceryList = await generateGroceryListFromPlan(
       mealPlan,
-      params.pantryIngredients
+      params.pantryIngredients,
     );
 
     if (groceryList.type === "InfoMessage") {

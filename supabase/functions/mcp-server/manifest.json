@@ -306,7 +306,13 @@
         "properties": {
           "outcome": {
             "type": "string",
-            "enum": ["exceeded_goal", "met_goal", "partial_progress", "no_progress", "opposite_direction"]
+            "enum": [
+              "exceeded_goal",
+              "met_goal",
+              "partial_progress",
+              "no_progress",
+              "opposite_direction"
+            ]
           },
           "weight_change": {
             "type": "number"
@@ -410,11 +416,22 @@
           },
           "activity_level": {
             "type": "string",
-            "enum": ["sedentary", "lightly_active", "moderately_active", "very_active", "extremely_active"]
+            "enum": [
+              "sedentary",
+              "lightly_active",
+              "moderately_active",
+              "very_active",
+              "extremely_active"
+            ]
           },
           "strategy": {
             "type": "string",
-            "enum": ["lose_weight", "gain_weight", "maintain_weight", "build_muscle"]
+            "enum": [
+              "lose_weight",
+              "gain_weight",
+              "maintain_weight",
+              "build_muscle"
+            ]
           }
         }
       }
@@ -441,11 +458,22 @@
           },
           "activity_level": {
             "type": "string",
-            "enum": ["sedentary", "lightly_active", "moderately_active", "very_active", "extremely_active"]
+            "enum": [
+              "sedentary",
+              "lightly_active",
+              "moderately_active",
+              "very_active",
+              "extremely_active"
+            ]
           },
           "strategy": {
             "type": "string",
-            "enum": ["lose_weight", "gain_weight", "maintain_weight", "build_muscle"]
+            "enum": [
+              "lose_weight",
+              "gain_weight",
+              "maintain_weight",
+              "build_muscle"
+            ]
           }
         },
         "required": ["user_id"]
@@ -760,7 +788,13 @@
         "properties": {
           "event_type": {
             "type": "string",
-            "enum": ["order_confirmed", "order_preparing", "order_out_for_delivery", "order_delivered", "order_cancelled"]
+            "enum": [
+              "order_confirmed",
+              "order_preparing",
+              "order_out_for_delivery",
+              "order_delivered",
+              "order_cancelled"
+            ]
           },
           "order_id": {
             "type": "string"
@@ -819,7 +853,12 @@
             "type": "object"
           }
         },
-        "required": ["plan_id", "user_id", "delivery_schedule", "delivery_address"]
+        "required": [
+          "plan_id",
+          "user_id",
+          "delivery_schedule",
+          "delivery_address"
+        ]
       },
       "output_schema": {
         "type": "object",
@@ -1348,4 +1387,3 @@
     }
   ]
 }
-

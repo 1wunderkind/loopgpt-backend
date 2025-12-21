@@ -1,0 +1,57 @@
+supabase/functions/_lib/rateLimit.ts:210: * export default withRateLimit(handler, "plan_create_meal_plan");
+supabase/functions/_lib/rateLimit.ts:213:export function withRateLimit(
+supabase/functions/_shared/monitoring/Logger.ts:332:export function withLogging(
+supabase/functions/_shared/monitoring/middleware.ts:6:import { Logger, withLogging } from './Logger.ts';
+supabase/functions/_shared/monitoring/middleware.ts:20:  const withLog = withLogging(handler, functionName);
+supabase/functions/_shared/monitoring/middleware.ts:94:export function withRateLimit(
+supabase/functions/_shared/monitoring/middleware.ts:145:export function withAuth(
+supabase/functions/_shared/monitoring/middleware.ts:231:    wrappedHandler = withRateLimit(wrappedHandler, options.rateLimitConfig || {
+supabase/functions/change_location/index.ts:9:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/change_location/index.ts:165:serve(withStandardAPI(withLogging(handler)));
+supabase/functions/delivery_get_menu/index.ts:6:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/delivery_get_menu/index.ts:202:export default withSearchAPI(withLogging(handler, "get_delivery_recommendations"));
+supabase/functions/delivery_get_menu/index_geolocation.ts:8:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/delivery_get_menu/index_geolocation.ts:283:serve(withLogging(handler));
+supabase/functions/delivery_get_menu/index_multilingual.ts:6:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/delivery_get_menu/index_multilingual.ts:80:export default withLogging(handler);
+supabase/functions/delivery_place_order/index.ts:10:import { withLogging, Logger } from "../../middleware/logging.ts";
+supabase/functions/delivery_place_order/index.ts:293:export default withOrderAPI(withLogging(handler, "mealme_order_plan"));
+supabase/functions/delivery_search_restaurants/index.ts:10:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/delivery_search_restaurants/index.ts:162:export default withSearchAPI(withLogging(handler, "mealme_search"));
+supabase/functions/get_affiliate_by_country/index.ts:16:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/get_affiliate_by_country/index.ts:174:serve(withStandardAPI(withLogging(handler)));
+supabase/functions/get_user_location/index.ts:13:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/get_user_location/index.ts:153:serve(withStandardAPI(withLogging(handler)));
+supabase/functions/loop_adjust_calories/index.ts:15:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/loop_adjust_calories/index.ts:165:export default withHeavyOperation(withLogging(handler));
+supabase/functions/loop_evaluate_plan/index.ts:17:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/loop_evaluate_plan/index.ts:258:export default withHeavyOperation(withLogging(handler));
+supabase/functions/mealme_checkout_url/index.ts:7:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/mealme_checkout_url/index.ts:71:// withLogging is not compatible with withOrderAPI in this context, using withOrderAPI directly
+supabase/functions/mealme_create_cart/index.ts:8:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/mealme_create_cart/index.ts:164:// withLogging is not compatible with withOrderAPI in this context, using withOrderAPI directly
+supabase/functions/mealme_get_quotes/index.ts:7:import { withLogging, Logger } from "../../middleware/logging.ts";
+supabase/functions/mealme_get_quotes/index.ts:187:// withLogging is not compatible with withSearchAPI in this context, using withSearchAPI directly
+supabase/functions/mealme_get_quotes/index.ts:188:// We need to wrap withLogging manually or update withSearchAPI to handle it
+supabase/functions/mealme_get_quotes/index.ts:190:export default withSearchAPI(withLogging(handler, "mealme_get_quotes"));
+supabase/functions/mealme_webhook/index.ts:7:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/mealme_webhook/index.ts:158:// withLogging is not compatible with withWebhook in this context, using withWebhook directly
+supabase/functions/nutrition_get_macros/index.ts:7:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/nutrition_get_macros/index.ts:85:// withLogging is not compatible with withStandardAPI in this context, using withStandardAPI directly
+supabase/functions/plan_create_meal_plan/index.ts:7:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/plan_create_meal_plan/index.ts:298:// withLogging is not compatible with withStandardAPI in this context, using withStandardAPI directly
+supabase/functions/plan_create_meal_plan/index_backup.ts:6:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/plan_create_meal_plan/index_backup.ts:215:export default withLogging(handler, "generate_week_plan");
+supabase/functions/plan_create_meal_plan/index_multilingual.ts:6:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/plan_create_meal_plan/index_multilingual.ts:169:export default withLogging(handler);
+supabase/functions/tracker_get_progress/index.ts:14:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/tracker_get_progress/index.ts:236:export default withStandardAPI(withLogging(handler));
+supabase/functions/tracker_log_weight/index.ts:17:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/tracker_log_weight/index.ts:188:export default withStandardAPI(withLogging(handler));
+supabase/functions/update_user_location/index.ts:16:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/update_user_location/index.ts:147:serve(withStandardAPI(withLogging(handler)));
+supabase/functions/user_get_profile/index.ts:12:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/user_get_profile/index.ts:119:export default withStandardAPI(withLogging(handler));
+supabase/functions/user_update_diet_preferences/index.ts:18:import { withLogging } from "../../middleware/logging.ts";
+supabase/functions/user_update_diet_preferences/index.ts:189:export default withStandardAPI(withLogging(handler));
+supabase/middleware/logging.ts:53:export const withLogging = (handler: (req: Request) => Promise<Response>) => {

@@ -23,12 +23,12 @@ export interface RateLimitConfig {
 
 /**
  * Checks if a user has exceeded rate limits for an endpoint
- * 
+ *
  * @param userId - The authenticated user's ID
  * @param endpoint - The endpoint name (e.g., "plan_create_meal_plan")
  * @param config - Optional rate limit configuration
  * @returns RateLimitResult with allowed status and metadata
- * 
+ *
  * @example
  * ```typescript
  * const result = await checkRateLimit(userId, "plan_create_meal_plan");
@@ -40,11 +40,11 @@ export interface RateLimitConfig {
 export async function checkRateLimit(
   userId: string,
   endpoint: string,
-  config: RateLimitConfig = {}
+  config: RateLimitConfig = {},
 ): Promise<RateLimitResult> {
   const {
     limit = 100,
-    windowMinutes = 60
+    windowMinutes = 60,
   } = config;
 
   // Create service client (rate limiting needs elevated privileges)
@@ -56,7 +56,7 @@ export async function checkRateLimit(
       p_user_id: userId,
       p_endpoint: endpoint,
       p_limit: limit,
-      p_window_minutes: windowMinutes
+      p_window_minutes: windowMinutes,
     });
 
     if (error) {
@@ -66,8 +66,9 @@ export async function checkRateLimit(
         allowed: true,
         remaining: limit,
         limit,
-        reset_at: new Date(Date.now() + windowMinutes * 60 * 1000).toISOString(),
-        current_count: 0
+        reset_at: new Date(Date.now() + windowMinutes * 60 * 1000)
+          .toISOString(),
+        current_count: 0,
       };
     }
 
@@ -80,17 +81,17 @@ export async function checkRateLimit(
       remaining: limit,
       limit,
       reset_at: new Date(Date.now() + windowMinutes * 60 * 1000).toISOString(),
-      current_count: 0
+      current_count: 0,
     };
   }
 }
 
 /**
  * Creates a rate limit exceeded response
- * 
+ *
  * @param result - The rate limit result from checkRateLimit
  * @returns HTTP Response with 429 status
- * 
+ *
  * @example
  * ```typescript
  * if (!result.allowed) {
@@ -111,8 +112,8 @@ export function createRateLimitResponse(result: RateLimitResult): Response {
         limit: result.limit,
         remaining: result.remaining,
         reset_at: result.reset_at,
-        retry_after_seconds: retryAfter
-      }
+        retry_after_seconds: retryAfter,
+      },
     }),
     {
       status: 429,
@@ -121,19 +122,19 @@ export function createRateLimitResponse(result: RateLimitResult): Response {
         "X-RateLimit-Limit": result.limit.toString(),
         "X-RateLimit-Remaining": result.remaining.toString(),
         "X-RateLimit-Reset": result.reset_at,
-        "Retry-After": retryAfter.toString()
-      }
-    }
+        "Retry-After": retryAfter.toString(),
+      },
+    },
   );
 }
 
 /**
  * Adds rate limit headers to a successful response
- * 
+ *
  * @param response - The original response
  * @param result - The rate limit result
  * @returns Response with added rate limit headers
- * 
+ *
  * @example
  * ```typescript
  * const response = createSuccessResponse(data);
@@ -142,7 +143,7 @@ export function createRateLimitResponse(result: RateLimitResult): Response {
  */
 export function addRateLimitHeaders(
   response: Response,
-  result: RateLimitResult
+  result: RateLimitResult,
 ): Response {
   const headers = new Headers(response.headers);
   headers.set("X-RateLimit-Limit", result.limit.toString());
@@ -152,7 +153,7 @@ export function addRateLimitHeaders(
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
-    headers
+    headers,
   });
 }
 
@@ -165,28 +166,28 @@ export const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
   "plan_create_meal_plan": { limit: 20, windowMinutes: 60 },
   "plan_generate_from_leftovers": { limit: 20, windowMinutes: 60 },
   "delivery_place_order": { limit: 10, windowMinutes: 60 },
-  
+
   // Medium operations
   "nutrition_analyze_food": { limit: 50, windowMinutes: 60 },
   "tracker_log_weight": { limit: 50, windowMinutes: 60 },
   "tracker_log_meal": { limit: 100, windowMinutes: 60 },
-  
+
   // Light operations (higher limits)
   "user_get_profile": { limit: 100, windowMinutes: 60 },
   "tracker_get_progress": { limit: 100, windowMinutes: 60 },
   "plan_get_active_plan": { limit: 100, windowMinutes: 60 },
-  
+
   // MCP server
   "mcp-server": { limit: 100, windowMinutes: 60 },
-  
+
   // Default for unlisted endpoints
-  "*": { limit: 100, windowMinutes: 60 }
+  "*": { limit: 100, windowMinutes: 60 },
 };
 
 /**
  * Gets rate limit configuration for an endpoint
  * Falls back to default if endpoint not configured
- * 
+ *
  * @param endpoint - The endpoint name
  * @returns RateLimitConfig for the endpoint
  */
@@ -196,39 +197,42 @@ export function getRateLimitConfig(endpoint: string): RateLimitConfig {
 
 /**
  * Middleware wrapper that adds rate limiting to a handler function
- * 
+ *
  * @param handler - The original request handler
  * @param endpoint - The endpoint name for rate limiting
  * @returns Wrapped handler with rate limiting
- * 
+ *
  * @example
  * ```typescript
  * async function handler(req: Request): Promise<Response> {
  *   // Your logic here
  * }
- * 
+ *
  * export default withRateLimit(handler, "plan_create_meal_plan");
  * ```
  */
 export function withRateLimit(
   handler: (req: Request) => Promise<Response>,
-  endpoint: string
+  endpoint: string,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     // Extract user ID from Authorization header
     const authHeader = req.headers.get("Authorization");
-    
+
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       // No auth, skip rate limiting (will be caught by auth middleware)
       return handler(req);
     }
 
     const token = authHeader.replace("Bearer ", "");
-    
+
     // Create temporary client to verify token and get user ID
-    const supabase = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!);
+    const supabase = createClient(
+      SUPABASE_URL,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+    );
     const { data: { user }, error } = await supabase.auth.getUser(token);
-    
+
     if (error || !user) {
       // Invalid token, skip rate limiting (will be caught by auth middleware)
       return handler(req);
@@ -239,7 +243,9 @@ export function withRateLimit(
     const result = await checkRateLimit(user.id, endpoint, config);
 
     if (!result.allowed) {
-      console.warn(`[RATE_LIMIT] User ${user.id} exceeded limit for ${endpoint}`);
+      console.warn(
+        `[RATE_LIMIT] User ${user.id} exceeded limit for ${endpoint}`,
+      );
       return createRateLimitResponse(result);
     }
 

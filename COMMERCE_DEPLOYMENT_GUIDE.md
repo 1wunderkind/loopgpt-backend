@@ -1,6 +1,7 @@
 # LoopGPT Commerce Layer - Deployment Guide
 
-Complete guide for deploying the production-grade multi-provider commerce routing system.
+Complete guide for deploying the production-grade multi-provider commerce
+routing system.
 
 ---
 
@@ -19,12 +20,14 @@ Complete guide for deploying the production-grade multi-provider commerce routin
 ## Prerequisites
 
 ### Required Services
+
 - ✅ Supabase project (production)
 - ✅ Deno runtime (v1.37+)
 - ✅ GitHub repository access
 - ✅ API credentials for providers
 
 ### Required Access
+
 - ✅ Supabase project admin
 - ✅ Environment variable management
 - ✅ Function deployment permissions
@@ -47,6 +50,7 @@ LOOPGPT_ENABLE_WALMART=true
 ### 2. Provider API Credentials
 
 #### Kroger API
+
 ```bash
 KROGER_CLIENT_ID=your-production-client-id
 KROGER_CLIENT_SECRET=your-production-secret
@@ -54,12 +58,14 @@ KROGER_ENV=production
 ```
 
 **How to obtain:**
+
 1. Register at [developer.kroger.com](https://developer.kroger.com)
 2. Create production application
 3. Request production API access
 4. Copy credentials to environment
 
 #### Walmart API
+
 ```bash
 WALMART_API_KEY=your-production-api-key
 WALMART_PARTNER_ID=your-partner-id
@@ -67,17 +73,20 @@ WALMART_ENV=production
 ```
 
 **How to obtain:**
+
 1. Register at [developer.walmart.com](https://developer.walmart.com)
 2. Apply for Affiliate Program
 3. Request API access
 4. Copy credentials to environment
 
 #### MealMe (Optional - if using real API)
+
 ```bash
 MEALME_API_KEY=your-mealme-key
 ```
 
 #### Instacart (Optional - if using real API)
+
 ```bash
 INSTACART_API_KEY=your-instacart-key
 ```
@@ -97,18 +106,21 @@ LOOPGPT_SCORE_RELIABILITY_WEIGHT=0.10
 **Optimization Strategies:**
 
 **Price-First** (maximize user savings):
+
 ```bash
 LOOPGPT_SCORE_PRICE_WEIGHT=0.50
 LOOPGPT_SCORE_COMMISSION_WEIGHT=0.10
 ```
 
 **Revenue-First** (maximize commission):
+
 ```bash
 LOOPGPT_SCORE_COMMISSION_WEIGHT=0.40
 LOOPGPT_SCORE_PRICE_WEIGHT=0.20
 ```
 
 **Speed-First** (fastest delivery):
+
 ```bash
 LOOPGPT_SCORE_SPEED_WEIGHT=0.40
 LOOPGPT_SCORE_PRICE_WEIGHT=0.20
@@ -161,11 +173,13 @@ git log -1
 ### Step 2: Set Environment Variables
 
 **Via Supabase Dashboard:**
+
 1. Navigate to Project Settings → Edge Functions
 2. Add environment variables from sections above
 3. Save configuration
 
 **Via Supabase CLI:**
+
 ```bash
 # Set all variables at once
 supabase secrets set \
@@ -208,6 +222,7 @@ supabase functions invoke loopgpt_route_order \
 ```
 
 **Expected Response:**
+
 ```json
 {
   "selectedProvider": {
@@ -238,6 +253,7 @@ supabase functions update loopgpt_route_order --no-verify-jwt
 ### Kroger API Setup
 
 **1. Authentication Test**
+
 ```bash
 # Test OAuth2 flow
 curl -X POST https://api.kroger.com/v1/connect/oauth2/token \
@@ -248,6 +264,7 @@ curl -X POST https://api.kroger.com/v1/connect/oauth2/token \
 ```
 
 **2. Store Locator Test**
+
 ```bash
 # Find stores by ZIP
 curl -X GET "https://api.kroger.com/v1/locations?filter.zipCode.near=94102" \
@@ -255,6 +272,7 @@ curl -X GET "https://api.kroger.com/v1/locations?filter.zipCode.near=94102" \
 ```
 
 **3. Product Search Test**
+
 ```bash
 # Search for products
 curl -X GET "https://api.kroger.com/v1/products?filter.term=chicken&filter.locationId=01400943" \
@@ -264,6 +282,7 @@ curl -X GET "https://api.kroger.com/v1/products?filter.term=chicken&filter.locat
 ### Walmart API Setup
 
 **1. Authentication Test**
+
 ```bash
 # Test API key
 curl -X GET "https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?query=chicken" \
@@ -273,6 +292,7 @@ curl -X GET "https://developer.api.walmart.com/api-proxy/service/affil/product/v
 ```
 
 **2. Product Search Test**
+
 ```bash
 # Search products
 curl -X GET "https://developer.api.walmart.com/api-proxy/service/affil/product/v2/search?query=chicken&numItems=5" \
@@ -295,6 +315,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/loopgpt_route_order \
 ```
 
 **Expected Response:**
+
 ```json
 {
   "providers": {
@@ -332,39 +353,41 @@ k6 run loadtest.js
 ```
 
 **loadtest.js:**
+
 ```javascript
-import http from 'k6/http';
-import { check } from 'k6';
+import http from "k6/http";
+import { check } from "k6";
 
 export const options = {
   vus: 10,
-  duration: '30s',
+  duration: "30s",
 };
 
 export default function () {
   const payload = JSON.stringify({
     items: [
-      { id: '1', name: 'Chicken', quantity: 2, unit: 'lbs' },
-      { id: '2', name: 'Rice', quantity: 1, unit: 'bag' },
+      { id: "1", name: "Chicken", quantity: 2, unit: "lbs" },
+      { id: "2", name: "Rice", quantity: 1, unit: "bag" },
     ],
     shippingAddress: {
-      street: '123 Main St',
-      city: 'San Francisco',
-      state: 'CA',
-      postalCode: '94102',
-      country: 'US',
+      street: "123 Main St",
+      city: "San Francisco",
+      state: "CA",
+      postalCode: "94102",
+      country: "US",
     },
   });
 
   const res = http.post(
-    'https://your-project.supabase.co/functions/v1/loopgpt_route_order',
+    "https://your-project.supabase.co/functions/v1/loopgpt_route_order",
     payload,
-    { headers: { 'Content-Type': 'application/json' } }
+    { headers: { "Content-Type": "application/json" } },
   );
 
   check(res, {
-    'status is 200': (r) => r.status === 200,
-    'has selectedProvider': (r) => JSON.parse(r.body).selectedProvider !== undefined,
+    "status is 200": (r) => r.status === 200,
+    "has selectedProvider": (r) =>
+      JSON.parse(r.body).selectedProvider !== undefined,
   });
 }
 ```
@@ -409,6 +432,7 @@ supabase functions deploy loopgpt_route_order
 ### Key Metrics
 
 **1. Provider Success Rate**
+
 ```sql
 -- Query Supabase logs
 SELECT
@@ -423,6 +447,7 @@ GROUP BY provider_id;
 ```
 
 **2. Provider Selection Distribution**
+
 ```sql
 -- Which providers are being selected?
 SELECT
@@ -438,6 +463,7 @@ ORDER BY selection_count DESC;
 ```
 
 **3. Latency P95**
+
 ```sql
 -- 95th percentile latency
 SELECT
@@ -453,6 +479,7 @@ GROUP BY provider_id;
 ### Alerts
 
 **Set up alerts for:**
+
 - ✅ Provider error rate > 10%
 - ✅ Average latency > 5 seconds
 - ✅ No successful quotes in 5 minutes
@@ -461,6 +488,7 @@ GROUP BY provider_id;
 ### Dashboards
 
 **Create dashboards for:**
+
 - Provider selection distribution (pie chart)
 - Provider latency over time (line chart)
 - Error rate by provider (bar chart)
@@ -473,6 +501,7 @@ GROUP BY provider_id;
 ### Issue: No Providers Return Quotes
 
 **Symptoms:**
+
 ```json
 {
   "error": "No providers returned valid quotes"
@@ -480,12 +509,14 @@ GROUP BY provider_id;
 ```
 
 **Diagnosis:**
+
 1. Check provider enablement: `LOOPGPT_ENABLE_*`
 2. Check API credentials
 3. Check provider health checks
 4. Review logs for errors
 
 **Solution:**
+
 ```bash
 # Enable mock mode temporarily
 supabase secrets set \
@@ -496,6 +527,7 @@ supabase secrets set \
 ### Issue: Kroger API Timeout
 
 **Symptoms:**
+
 ```json
 {
   "event": "provider_quote_error",
@@ -505,6 +537,7 @@ supabase secrets set \
 ```
 
 **Solution:**
+
 ```bash
 # Increase timeout
 supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
@@ -513,6 +546,7 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ### Issue: Walmart API 401 Unauthorized
 
 **Symptoms:**
+
 ```json
 {
   "event": "provider_quote_error",
@@ -522,6 +556,7 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ```
 
 **Solution:**
+
 1. Verify API key is correct
 2. Check API key hasn't expired
 3. Verify partner ID matches
@@ -547,10 +582,12 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ## Support
 
 **For deployment issues:**
+
 - Slack: #loopgpt-commerce
 - Email: devops@loopgpt.com
 - On-call: PagerDuty
 
 **For provider API issues:**
+
 - Kroger: developer.kroger.com/support
 - Walmart: developer.walmart.com/support

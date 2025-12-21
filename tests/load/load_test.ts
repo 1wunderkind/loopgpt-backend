@@ -74,7 +74,7 @@ class LoadTester {
     const rampUpDelay = (this.config.rampUp * 1000) / this.config.concurrency;
 
     for (let i = 0; i < this.config.concurrency; i++) {
-      await new Promise(resolve => setTimeout(resolve, rampUpDelay));
+      await new Promise((resolve) => setTimeout(resolve, rampUpDelay));
       workers.push(this.worker(endTime));
     }
 
@@ -149,10 +149,11 @@ class LoadTester {
         stats.errors.push(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      stats.avgResponseTime = (stats.avgResponseTime * (stats.requests - 1) + responseTime) / stats.requests;
+      stats.avgResponseTime =
+        (stats.avgResponseTime * (stats.requests - 1) + responseTime) /
+        stats.requests;
 
       this.endpointStats.set(endpoint.name, stats);
-
     } catch (error) {
       const responseTime = Date.now() - startTime;
       this.results.push(responseTime);
@@ -174,7 +175,9 @@ class LoadTester {
       stats.requests++;
       stats.failures++;
       stats.errors.push(error instanceof Error ? error.message : String(error));
-      stats.avgResponseTime = (stats.avgResponseTime * (stats.requests - 1) + responseTime) / stats.requests;
+      stats.avgResponseTime =
+        (stats.avgResponseTime * (stats.requests - 1) + responseTime) /
+        stats.requests;
 
       this.endpointStats.set(endpoint.name, stats);
     }
@@ -235,8 +238,16 @@ function printResults(results: LoadTestResult): void {
   console.log(`\n📊 Load Test Results\n`);
   console.log(`Duration: ${results.duration.toFixed(2)}s`);
   console.log(`Total Requests: ${results.totalRequests}`);
-  console.log(`Successful: ${results.successfulRequests} (${(results.successfulRequests / results.totalRequests * 100).toFixed(2)}%)`);
-  console.log(`Failed: ${results.failedRequests} (${(results.errorRate * 100).toFixed(2)}%)`);
+  console.log(
+    `Successful: ${results.successfulRequests} (${
+      (results.successfulRequests / results.totalRequests * 100).toFixed(2)
+    }%)`,
+  );
+  console.log(
+    `Failed: ${results.failedRequests} (${
+      (results.errorRate * 100).toFixed(2)
+    }%)`,
+  );
   console.log(`\nPerformance:`);
   console.log(`  Requests/sec: ${results.requestsPerSecond.toFixed(2)}`);
   console.log(`  Avg Response: ${results.averageResponseTime.toFixed(2)}ms`);
@@ -250,10 +261,12 @@ function printResults(results: LoadTestResult): void {
   for (const [name, stats] of results.endpointResults) {
     console.log(`${name}:`);
     console.log(`  Requests: ${stats.requests}`);
-    console.log(`  Success Rate: ${(stats.successes / stats.requests * 100).toFixed(2)}%`);
+    console.log(
+      `  Success Rate: ${(stats.successes / stats.requests * 100).toFixed(2)}%`,
+    );
     console.log(`  Avg Response: ${stats.avgResponseTime.toFixed(2)}ms`);
     if (stats.errors.length > 0) {
-      console.log(`  Errors: ${stats.errors.slice(0, 3).join(', ')}`);
+      console.log(`  Errors: ${stats.errors.slice(0, 3).join(", ")}`);
     }
     console.log();
   }
@@ -261,19 +274,37 @@ function printResults(results: LoadTestResult): void {
   // Pass/Fail criteria
   console.log(`\n✅ Pass/Fail Criteria:\n`);
   const checks = [
-    { name: 'Error rate < 1%', pass: results.errorRate < 0.01, value: `${(results.errorRate * 100).toFixed(2)}%` },
-    { name: 'P95 response < 2000ms', pass: results.p95ResponseTime < 2000, value: `${results.p95ResponseTime.toFixed(2)}ms` },
-    { name: 'P99 response < 5000ms', pass: results.p99ResponseTime < 5000, value: `${results.p99ResponseTime.toFixed(2)}ms` },
-    { name: 'Throughput > 10 req/s', pass: results.requestsPerSecond > 10, value: `${results.requestsPerSecond.toFixed(2)} req/s` },
+    {
+      name: "Error rate < 1%",
+      pass: results.errorRate < 0.01,
+      value: `${(results.errorRate * 100).toFixed(2)}%`,
+    },
+    {
+      name: "P95 response < 2000ms",
+      pass: results.p95ResponseTime < 2000,
+      value: `${results.p95ResponseTime.toFixed(2)}ms`,
+    },
+    {
+      name: "P99 response < 5000ms",
+      pass: results.p99ResponseTime < 5000,
+      value: `${results.p99ResponseTime.toFixed(2)}ms`,
+    },
+    {
+      name: "Throughput > 10 req/s",
+      pass: results.requestsPerSecond > 10,
+      value: `${results.requestsPerSecond.toFixed(2)} req/s`,
+    },
   ];
 
   for (const check of checks) {
-    const status = check.pass ? '✅' : '❌';
+    const status = check.pass ? "✅" : "❌";
     console.log(`${status} ${check.name}: ${check.value}`);
   }
 
-  const allPassed = checks.every(c => c.pass);
-  console.log(`\n${allPassed ? '✅ ALL CHECKS PASSED' : '❌ SOME CHECKS FAILED'}\n`);
+  const allPassed = checks.every((c) => c.pass);
+  console.log(
+    `\n${allPassed ? "✅ ALL CHECKS PASSED" : "❌ SOME CHECKS FAILED"}\n`,
+  );
 }
 
 /**
@@ -282,57 +313,57 @@ function printResults(results: LoadTestResult): void {
 
 // Scenario 1: Light Load (100 users)
 const lightLoadConfig: LoadTestConfig = {
-  baseUrl: 'https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1',
+  baseUrl: "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1",
   duration: 60, // 1 minute
   concurrency: 100,
   rampUp: 10,
   endpoints: [
     {
-      name: 'Health Check',
-      method: 'GET',
-      path: '/health',
+      name: "Health Check",
+      method: "GET",
+      path: "/health",
       weight: 0.1,
     },
     {
-      name: 'Food Search',
-      method: 'POST',
-      path: '/loopgpt_food_search',
+      name: "Food Search",
+      method: "POST",
+      path: "/loopgpt_food_search",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + Deno.env.get('SUPABASE_ANON_KEY'),
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + Deno.env.get("SUPABASE_ANON_KEY"),
       },
       body: {
-        query: 'chicken breast',
+        query: "chicken breast",
         limit: 10,
       },
       weight: 0.4,
     },
     {
-      name: 'Store Search',
-      method: 'POST',
-      path: '/loopgpt_store_search',
+      name: "Store Search",
+      method: "POST",
+      path: "/loopgpt_store_search",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + Deno.env.get('SUPABASE_ANON_KEY'),
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + Deno.env.get("SUPABASE_ANON_KEY"),
       },
       body: {
-        address: '123 Main St, San Francisco, CA 94102',
-        provider: 'instacart',
+        address: "123 Main St, San Francisco, CA 94102",
+        provider: "instacart",
       },
       weight: 0.3,
     },
     {
-      name: 'Product Search',
-      method: 'POST',
-      path: '/loopgpt_product_search',
+      name: "Product Search",
+      method: "POST",
+      path: "/loopgpt_product_search",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + Deno.env.get('SUPABASE_ANON_KEY'),
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + Deno.env.get("SUPABASE_ANON_KEY"),
       },
       body: {
-        query: 'milk',
-        storeId: 'store123',
-        provider: 'instacart',
+        query: "milk",
+        storeId: "store123",
+        provider: "instacart",
       },
       weight: 0.2,
     },
@@ -367,7 +398,7 @@ const stressTestConfig: LoadTestConfig = {
  * Run load tests
  */
 async function main() {
-  const scenario = Deno.args[0] || 'light';
+  const scenario = Deno.args[0] || "light";
 
   const configs: Record<string, LoadTestConfig> = {
     light: lightLoadConfig,
@@ -380,7 +411,7 @@ async function main() {
 
   if (!config) {
     console.error(`Unknown scenario: ${scenario}`);
-    console.log(`Available scenarios: ${Object.keys(configs).join(', ')}`);
+    console.log(`Available scenarios: ${Object.keys(configs).join(", ")}`);
     Deno.exit(1);
   }
 

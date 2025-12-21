@@ -1,8 +1,8 @@
 // ============================================================================
-// TheLoopGPT.ai - MCP Server
+// LooptOS - MCP Server
 // ============================================================================
 // Model Context Protocol server for ChatGPT App Store integration
-// 
+//
 // This service layer delegates tool execution to specialized Edge Functions
 // while providing MCP-compliant request/response handling, validation,
 // error handling, and logging.
@@ -16,12 +16,18 @@
 
 import { serve } from "std@0.177.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
-import { logToolInvocationToDb, inferGptNameFromTool, inferProviderFromTool, extractUserIdFromRequest } from "./lib/tool-metrics.ts";
+import {
+  extractUserIdFromRequest,
+  inferGptNameFromTool,
+  inferProviderFromTool,
+  logToolInvocationToDb,
+} from "./lib/tool-metrics.ts";
 import { createToolErrorResponse } from "./lib/error-responses.ts";
 import { MANIFEST } from "./manifest_embedded.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
 
-// TheLoopGPT metadata inlined below (to avoid bundling issues)
+// LooptOS metadata inlined below (to avoid bundling issues)
 
 // ============================================================================
 // INLINED METADATA
@@ -37,8 +43,8 @@ import { createAuthenticatedClient } from "../_lib/auth.ts";
 // TYPES
 // ============================================================================
 /**
- * TheLoopGPT Metadata Types
- * 
+ * LooptOS Metadata Types
+ *
  * Type definitions for centralized metadata configuration that powers:
  * - ChatGPT Apps SDK manifest
  * - MCP tool descriptions
@@ -101,31 +107,31 @@ export type ToolDescription = {
   // Identity
   toolId: string;
   displayName: string;
-  
+
   // What ChatGPT pattern-matches against
   primaryDescription: string;
-  
+
   // Detailed capabilities
   whenToUse: string[];
   whenNotToUse: string[];
-  
+
   // What makes this tool special
   uniqueCapabilities: string[];
-  
+
   // Parameters
   requiredParams: ToolParameter[];
   optionalParams: ToolParameter[];
-  
+
   // Output
   returnFormat: ToolReturnFormat;
-  
+
   // Integration
   chainsWith: string[]; // Other tools this commonly pairs with
-  
+
   // Branding
   brandedName: string; // TheLoopGPT branded name
   legacyName?: string; // Old name for backward compatibility
-  
+
   // Categorization
   category: string;
   subcategory?: string;
@@ -140,11 +146,11 @@ export type AppIdentity = {
   appId: string;
   displayName: string;
   shortName: string;
-  
+
   // Version control for metadata changes
   METADATA_VERSION: string;
   LAST_UPDATED: string;
-  
+
   // Legacy internal names (for backward compatibility)
   legacyNames: {
     recipes: string;
@@ -152,7 +158,7 @@ export type AppIdentity = {
     tracking: string;
     planning: string;
   };
-  
+
   // URLs
   website: string;
   statusPage: string;
@@ -190,24 +196,24 @@ export type TheLoopGPTMetadata = {
   // Identity
   identity: AppIdentity;
   titles: AppTitles;
-  
+
   // Descriptions
   shortDescription: string;
   longDescription: string;
-  
+
   // Tags & Keywords
   primaryTags: readonly string[];
   secondaryTags: readonly string[];
   searchKeywords: readonly string[];
   seasonalKeywords: SeasonalKeywords;
   differentiatorKeywords: readonly string[];
-  
+
   // Routing
   routing: RoutingMetadata;
-  
+
   // Tools
   tools: Record<string, ToolDescription>;
-  
+
   // Metadata
   version: string;
   lastUpdated: string;
@@ -247,17 +253,16 @@ export type MCPToolManifest = {
 // ============================================================================
 /**
  * TheLoopGPT Centralized Metadata Configuration
- * 
+ *
  * This file contains all metadata that powers:
  * - ChatGPT Apps SDK manifest (app identity, descriptions, routing)
  * - MCP tool descriptions (what ChatGPT sees when deciding to invoke tools)
  * - App Store submission metadata (titles, tags, keywords)
  * - Analytics event naming conventions
- * 
+ *
  * Version: 2.0.0
  * Last Updated: 2025-12-03
  */
-
 
 // ============================================================================
 // Part 1: App Identity & Branding
@@ -268,43 +273,45 @@ export const APP_IDENTITY: AppIdentity = {
   appId: "theloopgpt",
   displayName: "TheLoopGPT",
   shortName: "LoopGPT",
-  
+
   // Version control for metadata changes
   METADATA_VERSION: "2.0.0",
   LAST_UPDATED: "2025-12-03",
-  
+
   // Legacy internal names (for backward compatibility)
   legacyNames: {
     recipes: "LeftoverGPT",
-    nutrition: "NutritionGPT", 
+    nutrition: "NutritionGPT",
     tracking: "KCal GPT",
-    planning: "MealPlannerGPT"
+    planning: "MealPlannerGPT",
   },
-  
+
   // URLs
   website: "https://theloopgpt.ai",
   statusPage: "https://status.theloopgpt.ai",
-  supportEmail: "support@theloopgpt.ai"
+  supportEmail: "support@theloopgpt.ai",
 } as const;
 
 export const APP_TITLES: AppTitles = {
   primary: "TheLoopGPT — AI Cooking, Nutrition & Meal Planning Assistant",
-  
+
   variants: [
     "TheLoopGPT — Turn Leftovers into Delicious Meals",
     "TheLoopGPT — Your AI Kitchen Companion",
     "TheLoopGPT — Meal Planning Made Effortless",
-    "TheLoopGPT — From Fridge Chaos to Dinner Gold"
+    "TheLoopGPT — From Fridge Chaos to Dinner Gold",
   ],
-  
-  subtitle: "Recipes • Nutrition • Calorie Tracking • Meal Plans • Grocery Lists"
+
+  subtitle:
+    "Recipes • Nutrition • Calorie Tracking • Meal Plans • Grocery Lists",
 } as const;
 
 // ============================================================================
 // Part 2: Descriptions
 // ============================================================================
 
-export const SHORT_DESCRIPTION = `All-in-one AI cooking assistant. Generate creative recipes from whatever's in your fridge, calculate nutrition and macros, track calories, build personalized meal plans, and create smart grocery lists. Your complete food ecosystem inside ChatGPT.`;
+export const SHORT_DESCRIPTION =
+  `All-in-one AI cooking assistant. Generate creative recipes from whatever's in your fridge, calculate nutrition and macros, track calories, build personalized meal plans, and create smart grocery lists. Your complete food ecosystem inside ChatGPT.`;
 
 export const LONG_DESCRIPTION = `
 ## What TheLoopGPT Does
@@ -349,7 +356,7 @@ This is the complete nutrition system that competitors can't replicate.
 
 export const PRIMARY_TAGS = [
   "recipes",
-  "cooking", 
+  "cooking",
   "nutrition",
   "calories",
   "macros",
@@ -357,7 +364,7 @@ export const PRIMARY_TAGS = [
   "grocery lists",
   "food tracking",
   "diet",
-  "health"
+  "health",
 ] as const;
 
 export const SECONDARY_TAGS = [
@@ -375,7 +382,7 @@ export const SECONDARY_TAGS = [
   "weight loss",
   "muscle building",
   "TDEE",
-  "CICO"
+  "CICO",
 ] as const;
 
 export const SEARCH_KEYWORDS = [
@@ -387,7 +394,7 @@ export const SEARCH_KEYWORDS = [
   "quick dinner ideas",
   "easy meals with",
   "what should I cook",
-  
+
   // Nutrition intent
   "calories in",
   "how many calories",
@@ -396,7 +403,7 @@ export const SEARCH_KEYWORDS = [
   "is this healthy",
   "protein in",
   "carbs in",
-  
+
   // Planning intent
   "meal plan for",
   "weekly meal plan",
@@ -404,26 +411,26 @@ export const SEARCH_KEYWORDS = [
   "plan my meals",
   "diet plan",
   "eating schedule",
-  
+
   // Tracking intent
   "track my food",
   "log my meal",
   "calorie counter",
   "food diary",
   "what I ate today",
-  
+
   // Shopping intent
   "grocery list for",
   "shopping list",
   "what to buy",
   "ingredients I need",
-  
+
   // Goal-based intent
   "lose weight",
   "build muscle",
   "eat healthier",
   "stay under calories",
-  "hit my protein goal"
+  "hit my protein goal",
 ] as const;
 
 export const SEASONAL_KEYWORDS: SeasonalKeywords = {
@@ -432,35 +439,35 @@ export const SEASONAL_KEYWORDS: SeasonalKeywords = {
     "comfort food",
     "slow cooker meals",
     "warm dishes",
-    "holiday cooking"
+    "holiday cooking",
   ],
   spring: [
     "light meals",
     "salad recipes",
     "fresh ingredients",
-    "detox meals"
+    "detox meals",
   ],
   summer: [
     "grilling recipes",
     "BBQ ideas",
     "no-cook meals",
     "cold dishes",
-    "picnic food"
+    "picnic food",
   ],
   fall: [
     "pumpkin recipes",
     "harvest meals",
     "thanksgiving planning",
-    "apple recipes"
+    "apple recipes",
   ],
-  
+
   // Time-of-day context
   timeOfDay: {
     morning: ["breakfast ideas", "quick breakfast", "meal prep breakfast"],
     afternoon: ["lunch recipes", "work lunch", "light lunch"],
     evening: ["dinner ideas", "quick dinner", "family dinner"],
-    lateNight: ["snack ideas", "midnight snack", "light snack"]
-  }
+    lateNight: ["snack ideas", "midnight snack", "light snack"],
+  },
 } as const;
 
 export const DIFFERENTIATOR_KEYWORDS = [
@@ -469,18 +476,18 @@ export const DIFFERENTIATOR_KEYWORDS = [
   "creative recipe ideas",
   "unique meal combinations",
   "not just database search",
-  
+
   // vs MyFitnessPal (standalone tracking)
   "recipes AND tracking",
   "meal plan that adjusts",
   "connected nutrition system",
   "plan to plate to progress",
-  
+
   // vs generic recipe apps
   "chaos rating",
   "leftover magic",
   "fridge to feast",
-  "reduce food waste AI"
+  "reduce food waste AI",
 ] as const;
 
 // ============================================================================
@@ -498,16 +505,16 @@ export const THELOOPGPT_METADATA = {
   shortName: APP_IDENTITY.shortName,
   version: APP_IDENTITY.METADATA_VERSION,
   lastUpdated: APP_IDENTITY.LAST_UPDATED,
-  
+
   // Titles
   tagline: APP_TITLES.primary,
   subtitle: APP_TITLES.subtitle,
   titleVariants: APP_TITLES.variants,
-  
+
   // Descriptions
   shortDescription: SHORT_DESCRIPTION,
   longDescription: LONG_DESCRIPTION,
-  
+
   // Keywords
   keywords: [
     ...PRIMARY_TAGS,
@@ -521,29 +528,29 @@ export const THELOOPGPT_METADATA = {
     ...SEASONAL_KEYWORDS.timeOfDay.morning,
     ...SEASONAL_KEYWORDS.timeOfDay.afternoon,
     ...SEASONAL_KEYWORDS.timeOfDay.evening,
-    ...SEASONAL_KEYWORDS.timeOfDay.lateNight
+    ...SEASONAL_KEYWORDS.timeOfDay.lateNight,
   ].filter((v, i, a) => a.indexOf(v) === i), // Remove duplicates
   primaryTags: [...PRIMARY_TAGS],
   secondaryTags: [...SECONDARY_TAGS],
   searchKeywords: [...SEARCH_KEYWORDS],
   differentiatorKeywords: [...DIFFERENTIATOR_KEYWORDS],
-  
+
   // Categories
   categories: [
     "Food & Drink",
     "Health & Fitness",
     "Lifestyle",
-    "Productivity"
+    "Productivity",
   ],
-  
+
   // URLs
   website: APP_IDENTITY.website,
   statusPage: APP_IDENTITY.statusPage,
   supportEmail: APP_IDENTITY.supportEmail,
-  
+
   // Legacy names
   legacyNames: APP_IDENTITY.legacyNames,
-  
+
   // Feature highlights
   features: [
     "AI Recipe Generation from Leftovers",
@@ -553,9 +560,9 @@ export const THELOOPGPT_METADATA = {
     "Smart Grocery Lists",
     "Weight Goal Tracking",
     "Macro Calculator",
-    "Delivery Integration"
+    "Delivery Integration",
   ],
-  
+
   // Use cases
   useCases: [
     "Reduce food waste by cooking with leftovers",
@@ -563,9 +570,9 @@ export const THELOOPGPT_METADATA = {
     "Plan weekly meals based on dietary preferences",
     "Calculate nutrition for any recipe",
     "Create organized grocery lists",
-    "Monitor progress toward fitness goals"
+    "Monitor progress toward fitness goals",
   ],
-  
+
   // Target users
   targetUsers: [
     "Home cooks",
@@ -573,8 +580,8 @@ export const THELOOPGPT_METADATA = {
     "Busy professionals",
     "Families",
     "Budget-conscious shoppers",
-    "Health-conscious individuals"
-  ]
+    "Health-conscious individuals",
+  ],
 } as const;
 
 // ============================================================================
@@ -595,7 +602,7 @@ export function generateAppStoreSubmission(): AppStoreSubmission {
     searchKeywords: [...SEARCH_KEYWORDS],
     website: APP_IDENTITY.website,
     supportEmail: APP_IDENTITY.supportEmail,
-    version: APP_IDENTITY.METADATA_VERSION
+    version: APP_IDENTITY.METADATA_VERSION,
   };
 }
 
@@ -615,9 +622,9 @@ export function getAllKeywords(): string[] {
     ...SEASONAL_KEYWORDS.timeOfDay.morning,
     ...SEASONAL_KEYWORDS.timeOfDay.afternoon,
     ...SEASONAL_KEYWORDS.timeOfDay.evening,
-    ...SEASONAL_KEYWORDS.timeOfDay.lateNight
+    ...SEASONAL_KEYWORDS.timeOfDay.lateNight,
   ];
-  
+
   // Remove duplicates
   return [...new Set(allKeywords)];
 }
@@ -627,18 +634,18 @@ export function getAllKeywords(): string[] {
  */
 export function getContextualKeywords(
   season?: "winter" | "spring" | "summer" | "fall",
-  timeOfDay?: "morning" | "afternoon" | "evening" | "lateNight"
+  timeOfDay?: "morning" | "afternoon" | "evening" | "lateNight",
 ): string[] {
   const keywords: string[] = [];
-  
+
   if (season) {
     keywords.push(...SEASONAL_KEYWORDS[season]);
   }
-  
+
   if (timeOfDay) {
     keywords.push(...SEASONAL_KEYWORDS.timeOfDay[timeOfDay]);
   }
-  
+
   return keywords;
 }
 
@@ -647,7 +654,7 @@ export function getContextualKeywords(
  */
 export function getCurrentSeason(): "winter" | "spring" | "summer" | "fall" {
   const month = new Date().getMonth(); // 0-11
-  
+
   if (month >= 11 || month <= 1) return "winter";
   if (month >= 2 && month <= 4) return "spring";
   if (month >= 5 && month <= 7) return "summer";
@@ -657,9 +664,13 @@ export function getCurrentSeason(): "winter" | "spring" | "summer" | "fall" {
 /**
  * Get current time of day
  */
-export function getCurrentTimeOfDay(): "morning" | "afternoon" | "evening" | "lateNight" {
+export function getCurrentTimeOfDay():
+  | "morning"
+  | "afternoon"
+  | "evening"
+  | "lateNight" {
   const hour = new Date().getHours();
-  
+
   if (hour >= 5 && hour < 12) return "morning";
   if (hour >= 12 && hour < 17) return "afternoon";
   if (hour >= 17 && hour < 22) return "evening";
@@ -671,10 +682,10 @@ export function getCurrentTimeOfDay(): "morning" | "afternoon" | "evening" | "la
 // ============================================================================
 /**
  * TheLoopGPT Tool Descriptions
- * 
+ *
  * Comprehensive descriptions for all 50 edge functions.
  * Each tool description tells ChatGPT exactly when and how to use it.
- * 
+ *
  * Categories:
  * - Recipe Generation (4 tools)
  * - Nutrition Analysis (4 tools)
@@ -689,7 +700,6 @@ export function getCurrentTimeOfDay(): "morning" | "afternoon" | "evening" | "la
  * - System & Monitoring (6 tools)
  */
 
-
 // ============================================================================
 // RECIPE GENERATION TOOLS
 // ============================================================================
@@ -700,9 +710,10 @@ export const TOOL_PLAN_GENERATE_FROM_LEFTOVERS: ToolDescription = {
   brandedName: "TheLoopGPT Recipes",
   legacyName: "LeftoverGPT",
   category: "recipes",
-  
-  primaryDescription: `Generates creative, practical recipes from whatever ingredients the user has available. Ideal when users say things like "I have leftover chicken, rice, and vegetables — what can I make?" or "What recipes can I create with these ingredients?" This tool specializes in converting random leftover ingredients into complete, delicious meals with a "Chaos Rating" showing how experimental the combination is.`,
-  
+
+  primaryDescription:
+    `Generates creative, practical recipes from whatever ingredients the user has available. Ideal when users say things like "I have leftover chicken, rice, and vegetables — what can I make?" or "What recipes can I create with these ingredients?" This tool specializes in converting random leftover ingredients into complete, delicious meals with a "Chaos Rating" showing how experimental the combination is.`,
+
   whenToUse: [
     "User lists specific ingredients they have and asks what to cook",
     "User mentions 'leftovers' or 'using up' food",
@@ -711,16 +722,16 @@ export const TOOL_PLAN_GENERATE_FROM_LEFTOVERS: ToolDescription = {
     "User asks 'what can I make with...'",
     "User wants to reduce food waste",
     "User has random ingredients and needs meal ideas",
-    "User wants a recipe with a specific chaos/creativity level"
+    "User wants a recipe with a specific chaos/creativity level",
   ],
-  
+
   whenNotToUse: [
     "User asks for a specific named recipe (e.g., 'how do I make lasagna') - answer directly",
     "User asks general cooking technique questions - answer directly",
     "User wants restaurant recommendations - not our domain",
-    "User asks about nutrition without wanting a recipe - use nutrition tools instead"
+    "User asks about nutrition without wanting a recipe - use nutrition tools instead",
   ],
-  
+
   uniqueCapabilities: [
     "AI-generated novel recipes (not just database lookups)",
     "Chaos Rating (1-10) indicating how experimental the recipe is",
@@ -729,56 +740,57 @@ export const TOOL_PLAN_GENERATE_FROM_LEFTOVERS: ToolDescription = {
     "Creative recipe names that are screenshot-worthy",
     "Difficulty ratings (Beginner/Intermediate/Advanced)",
     "Cooking time estimates",
-    "Missing ingredients suggestions"
+    "Missing ingredients suggestions",
   ],
-  
+
   requiredParams: [
     {
       name: "ingredients",
       type: "string | string[]",
       description: "List of ingredients the user has available",
-      example: '["chicken breast", "brown rice", "broccoli", "soy sauce"] or "chicken, rice, broccoli, soy sauce"'
-    }
+      example:
+        '["chicken breast", "brown rice", "broccoli", "soy sauce"] or "chicken, rice, broccoli, soy sauce"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "vibe",
       type: "string",
       description: "Desired flavor profile or cuisine style",
       example: '"Asian-inspired", "comfort food", "Mediterranean"',
-      default: "any"
+      default: "any",
     },
     {
       name: "diet",
       type: "string",
       description: "Dietary requirements to respect",
       example: '"vegetarian", "keto", "gluten-free"',
-      default: "none"
+      default: "none",
     },
     {
       name: "chaos_level",
       type: "number (1-10)",
       description: "How experimental the recipe should be",
       example: "7",
-      default: "5"
+      default: "5",
     },
     {
       name: "max_time",
       type: "number (minutes)",
       description: "Maximum cooking time",
       example: "30",
-      default: "no limit"
+      default: "no limit",
     },
     {
       name: "servings",
       type: "number",
       description: "Number of servings needed",
       example: "4",
-      default: "2"
-    }
+      default: "2",
+    },
   ],
-  
+
   returnFormat: {
     description: "Complete recipe with instructions and metadata",
     fields: [
@@ -794,7 +806,7 @@ export const TOOL_PLAN_GENERATE_FROM_LEFTOVERS: ToolDescription = {
       "instructions (step-by-step)",
       "nutrition_highlights (key macros)",
       "tips (optional cooking tips)",
-      "missing_ingredients (what user might need to buy)"
+      "missing_ingredients (what user might need to buy)",
     ],
     example: `{
   "recipe_name": "Teriyaki Thunder Bowl",
@@ -807,10 +819,10 @@ export const TOOL_PLAN_GENERATE_FROM_LEFTOVERS: ToolDescription = {
   "ingredients": [...],
   "instructions": [...],
   "nutrition_highlights": { "calories": 450, "protein": 35, "carbs": 45, "fat": 12 }
-}`
+}`,
   },
-  
-  chainsWith: ["nutrition_analyze_food", "tracker_log_meal"]
+
+  chainsWith: ["nutrition_analyze_food", "tracker_log_meal"],
 };
 
 export const TOOL_PLAN_CREATE_MEAL_PLAN: ToolDescription = {
@@ -819,9 +831,10 @@ export const TOOL_PLAN_CREATE_MEAL_PLAN: ToolDescription = {
   brandedName: "TheLoopGPT Meal Planning",
   legacyName: "MealPlannerGPT",
   category: "planning",
-  
-  primaryDescription: `Creates personalized multi-day meal plans based on calorie targets, dietary preferences, and lifestyle. Use when users ask for weekly meal plans, diet plans, or structured eating schedules. Generates breakfast, lunch, dinner, and snacks for 1-7 days with complete nutrition tracking.`,
-  
+
+  primaryDescription:
+    `Creates personalized multi-day meal plans based on calorie targets, dietary preferences, and lifestyle. Use when users ask for weekly meal plans, diet plans, or structured eating schedules. Generates breakfast, lunch, dinner, and snacks for 1-7 days with complete nutrition tracking.`,
+
   whenToUse: [
     "User wants a meal plan for multiple days (3-7 days typical)",
     "User asks to 'plan my meals for the week'",
@@ -829,15 +842,15 @@ export const TOOL_PLAN_CREATE_MEAL_PLAN: ToolDescription = {
     "User needs meal prep guidance",
     "User asks for diet-specific meal plans (keto, vegan, etc.)",
     "User wants calorie-controlled meal planning",
-    "User needs family meal planning"
+    "User needs family meal planning",
   ],
-  
+
   whenNotToUse: [
     "User wants a single meal idea - use plan_random_meal instead",
     "User wants to cook with specific ingredients - use plan_generate_from_leftovers",
-    "User just wants nutrition info - use nutrition tools"
+    "User just wants nutrition info - use nutrition tools",
   ],
-  
+
   uniqueCapabilities: [
     "Multi-day planning (1-7 days)",
     "Automatic calorie distribution across meals",
@@ -846,55 +859,55 @@ export const TOOL_PLAN_CREATE_MEAL_PLAN: ToolDescription = {
     "Family-size meal planning",
     "Meal prep optimization",
     "Automatic grocery list generation",
-    "Nutrition balance across the week"
+    "Nutrition balance across the week",
   ],
-  
+
   requiredParams: [
     {
       name: "days",
       type: "number (1-7)",
       description: "Number of days to plan",
-      example: "7"
+      example: "7",
     },
     {
       name: "calories_per_day",
       type: "number",
       description: "Target daily calories",
-      example: "2000"
-    }
+      example: "2000",
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "dietary_preferences",
       type: "string[]",
       description: "Dietary requirements",
       example: '["vegetarian", "high-protein"]',
-      default: "none"
+      default: "none",
     },
     {
       name: "excluded_ingredients",
       type: "string[]",
       description: "Ingredients to avoid",
       example: '["mushrooms", "shellfish"]',
-      default: "none"
+      default: "none",
     },
     {
       name: "budget",
       type: "string",
       description: "Budget level",
       example: '"low", "medium", "high"',
-      default: "medium"
+      default: "medium",
     },
     {
       name: "servings",
       type: "number",
       description: "Number of people",
       example: "4",
-      default: "1"
-    }
+      default: "1",
+    },
   ],
-  
+
   returnFormat: {
     description: "Complete meal plan with daily breakdowns",
     fields: [
@@ -904,7 +917,7 @@ export const TOOL_PLAN_CREATE_MEAL_PLAN: ToolDescription = {
       "weekly_summary (total nutrition)",
       "grocery_list (ingredients needed)",
       "meal_prep_tips",
-      "estimated_cost"
+      "estimated_cost",
     ],
     example: `{
   "plan_id": "mp_abc123",
@@ -923,10 +936,10 @@ export const TOOL_PLAN_CREATE_MEAL_PLAN: ToolDescription = {
   ],
   "grocery_list": [...],
   "estimated_cost": "$85"
-}`
+}`,
   },
-  
-  chainsWith: ["nutrition_analyze_food", "tracker_log_meal"]
+
+  chainsWith: ["nutrition_analyze_food", "tracker_log_meal"],
 };
 
 export const TOOL_PLAN_RANDOM_MEAL: ToolDescription = {
@@ -934,50 +947,51 @@ export const TOOL_PLAN_RANDOM_MEAL: ToolDescription = {
   displayName: "Random Meal Suggester",
   brandedName: "TheLoopGPT Quick Ideas",
   category: "planning",
-  
-  primaryDescription: `Generates a single random meal suggestion based on meal type and dietary preferences. Use for quick meal ideas when users ask "What should I have for dinner?" or "Give me a lunch idea." Fast, simple, no multi-day planning.`,
-  
+
+  primaryDescription:
+    `Generates a single random meal suggestion based on meal type and dietary preferences. Use for quick meal ideas when users ask "What should I have for dinner?" or "Give me a lunch idea." Fast, simple, no multi-day planning.`,
+
   whenToUse: [
     "User wants a quick single meal idea",
     "User asks 'what should I eat for [meal]?'",
     "User wants inspiration without specific ingredients",
     "User asks for breakfast/lunch/dinner/snack suggestions",
-    "User wants a random meal within dietary constraints"
+    "User wants a random meal within dietary constraints",
   ],
-  
+
   whenNotToUse: [
     "User wants multi-day planning - use plan_create_meal_plan",
     "User has specific ingredients - use plan_generate_from_leftovers",
-    "User wants detailed nutrition - use nutrition tools after"
+    "User wants detailed nutrition - use nutrition tools after",
   ],
-  
+
   uniqueCapabilities: [
     "Fast single-meal suggestions",
     "Meal-type specific (breakfast, lunch, dinner, snack)",
     "Dietary filter support",
     "No complex planning overhead",
-    "Good for decision fatigue"
+    "Good for decision fatigue",
   ],
-  
+
   requiredParams: [
     {
       name: "meal_type",
       type: "string",
       description: "Type of meal",
-      example: '"breakfast", "lunch", "dinner", "snack"'
-    }
+      example: '"breakfast", "lunch", "dinner", "snack"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "dietary_preferences",
       type: "string[]",
       description: "Dietary requirements",
       example: '["vegetarian", "low-carb"]',
-      default: "none"
-    }
+      default: "none",
+    },
   ],
-  
+
   returnFormat: {
     description: "Single meal suggestion",
     fields: [
@@ -986,7 +1000,7 @@ export const TOOL_PLAN_RANDOM_MEAL: ToolDescription = {
       "ingredients",
       "quick_instructions",
       "nutrition_estimate",
-      "prep_time"
+      "prep_time",
     ],
     example: `{
   "meal_name": "Mediterranean Chickpea Bowl",
@@ -994,10 +1008,10 @@ export const TOOL_PLAN_RANDOM_MEAL: ToolDescription = {
   "ingredients": [...],
   "prep_time": 15,
   "nutrition_estimate": { "calories": 420, "protein": 18 }
-}`
+}`,
   },
-  
-  chainsWith: ["nutrition_analyze_food", "tracker_log_meal"]
+
+  chainsWith: ["nutrition_analyze_food", "tracker_log_meal"],
 };
 
 export const TOOL_PLAN_GET_ACTIVE_PLAN: ToolDescription = {
@@ -1005,39 +1019,40 @@ export const TOOL_PLAN_GET_ACTIVE_PLAN: ToolDescription = {
   displayName: "Get Active Meal Plan",
   brandedName: "TheLoopGPT Plan Retrieval",
   category: "planning",
-  
-  primaryDescription: `Retrieves the user's currently active meal plan. Use when users ask "What's my meal plan?" or "What should I eat today according to my plan?" Returns the active plan with today's meals highlighted.`,
-  
+
+  primaryDescription:
+    `Retrieves the user's currently active meal plan. Use when users ask "What's my meal plan?" or "What should I eat today according to my plan?" Returns the active plan with today's meals highlighted.`,
+
   whenToUse: [
     "User asks about their current meal plan",
     "User wants to know what to eat today",
     "User asks 'what's on my plan for today?'",
-    "User wants to review their meal plan"
+    "User wants to review their meal plan",
   ],
-  
+
   whenNotToUse: [
     "User wants to create a new plan - use plan_create_meal_plan",
-    "User has no active plan - suggest creating one"
+    "User has no active plan - suggest creating one",
   ],
-  
+
   uniqueCapabilities: [
     "Retrieves active plan from database",
     "Highlights today's meals",
     "Shows remaining days in plan",
-    "Includes progress tracking"
+    "Includes progress tracking",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Active meal plan with today highlighted",
     fields: [
@@ -1046,16 +1061,16 @@ export const TOOL_PLAN_GET_ACTIVE_PLAN: ToolDescription = {
       "end_date",
       "today_meals",
       "remaining_days",
-      "adherence_rate"
+      "adherence_rate",
     ],
     example: `{
   "plan_id": "mp_xyz",
   "today_meals": { "breakfast": {...}, "lunch": {...}, "dinner": {...} },
   "adherence_rate": 0.85
-}`
+}`,
   },
-  
-  chainsWith: ["tracker_log_meal", "tracker_summary"]
+
+  chainsWith: ["tracker_log_meal", "tracker_summary"],
 };
 
 // ============================================================================
@@ -1068,9 +1083,10 @@ export const TOOL_NUTRITION_ANALYZE_FOOD: ToolDescription = {
   brandedName: "TheLoopGPT Nutrition",
   legacyName: "NutritionGPT",
   category: "nutrition",
-  
-  primaryDescription: `Calculates detailed nutritional information for any food, meal, or recipe. Use when users ask "How many calories in...?", "What are the macros for...?", or want to know if a meal fits their dietary goals. Supports 800,000+ foods including international ingredients and handles complex multi-ingredient meals.`,
-  
+
+  primaryDescription:
+    `Calculates detailed nutritional information for any food, meal, or recipe. Use when users ask "How many calories in...?", "What are the macros for...?", or want to know if a meal fits their dietary goals. Supports 800,000+ foods including international ingredients and handles complex multi-ingredient meals.`,
+
   whenToUse: [
     "User asks about calories in a food or meal",
     "User wants macro breakdown (protein, carbs, fat)",
@@ -1078,16 +1094,16 @@ export const TOOL_NUTRITION_ANALYZE_FOOD: ToolDescription = {
     "User wants nutrition facts for a recipe",
     "User asks 'is this healthy?'",
     "After generating a recipe to provide detailed nutrition",
-    "User wants to analyze a meal before logging it"
+    "User wants to analyze a meal before logging it",
   ],
-  
+
   whenNotToUse: [
     "User wants general nutrition advice (not specific food) - answer directly",
     "User asks about supplements or vitamins - out of scope",
     "User asks medical nutrition questions - refer to professional",
-    "User wants recipe suggestions - use recipe tool first"
+    "User wants recipe suggestions - use recipe tool first",
   ],
-  
+
   uniqueCapabilities: [
     "800,000+ food database (USDA + international)",
     "Handles complex recipes with multiple ingredients",
@@ -1095,40 +1111,41 @@ export const TOOL_NUTRITION_ANALYZE_FOOD: ToolDescription = {
     "Validates recipes for dietary compliance (keto, vegan, etc.)",
     "Calculates per-serving and total nutrition",
     "Micronutrient breakdown available",
-    "Diet tag generation (high-protein, low-carb, etc.)"
+    "Diet tag generation (high-protein, low-carb, etc.)",
   ],
-  
+
   requiredParams: [
     {
       name: "recipeName",
       type: "string",
       description: "Name of the food or meal",
-      example: '"Grilled Chicken Salad"'
+      example: '"Grilled Chicken Salad"',
     },
     {
       name: "servings",
       type: "number",
       description: "Number of servings",
-      example: "2"
+      example: "2",
     },
     {
       name: "ingredients",
       type: "array",
       description: "List of ingredients with quantities",
-      example: '[{"name": "chicken breast", "quantity": 200, "unit": "g"}, {"name": "lettuce", "quantity": 2, "unit": "cups"}]'
-    }
+      example:
+        '[{"name": "chicken breast", "quantity": 200, "unit": "g"}, {"name": "lettuce", "quantity": 2, "unit": "cups"}]',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "include_micronutrients",
       type: "boolean",
       description: "Include vitamins and minerals",
       example: "true",
-      default: "false"
-    }
+      default: "false",
+    },
   ],
-  
+
   returnFormat: {
     description: "Detailed nutritional breakdown",
     fields: [
@@ -1142,7 +1159,7 @@ export const TOOL_NUTRITION_ANALYZE_FOOD: ToolDescription = {
       "sodium_mg",
       "micronutrients (optional)",
       "dietary_flags (keto-friendly, high-protein, etc.)",
-      "confidence_level"
+      "confidence_level",
     ],
     example: `{
   "nutrition_data": {
@@ -1154,10 +1171,10 @@ export const TOOL_NUTRITION_ANALYZE_FOOD: ToolDescription = {
     },
     "dietTags": ["high-protein", "low-carb", "keto-friendly"]
   }
-}`
+}`,
   },
-  
-  chainsWith: ["tracker_log_meal", "nutrition_compare_foods"]
+
+  chainsWith: ["tracker_log_meal", "nutrition_compare_foods"],
 };
 
 export const TOOL_NUTRITION_COMPARE_FOODS: ToolDescription = {
@@ -1165,56 +1182,57 @@ export const TOOL_NUTRITION_COMPARE_FOODS: ToolDescription = {
   displayName: "Food Comparator",
   brandedName: "TheLoopGPT Compare",
   category: "nutrition",
-  
-  primaryDescription: `Compares nutritional values of two or more foods side-by-side. Use when users ask "Which has more protein: chicken or tofu?" or "Is brown rice healthier than white rice?" Provides clear comparison with recommendations.`,
-  
+
+  primaryDescription:
+    `Compares nutritional values of two or more foods side-by-side. Use when users ask "Which has more protein: chicken or tofu?" or "Is brown rice healthier than white rice?" Provides clear comparison with recommendations.`,
+
   whenToUse: [
     "User wants to compare nutrition of different foods",
     "User asks 'which is healthier...'",
     "User wants to choose between food options",
     "User asks 'which has more protein/carbs/calories...'",
-    "User is deciding between alternatives"
+    "User is deciding between alternatives",
   ],
-  
+
   whenNotToUse: [
     "User wants nutrition for a single food - use nutrition_analyze_food",
-    "User wants recipe suggestions - use recipe tools"
+    "User wants recipe suggestions - use recipe tools",
   ],
-  
+
   uniqueCapabilities: [
     "Side-by-side nutrition comparison",
     "Percentage difference calculations",
     "Recommendation based on user goals",
     "Supports 2+ foods at once",
-    "Highlights key differences"
+    "Highlights key differences",
   ],
-  
+
   requiredParams: [
     {
       name: "foods",
       type: "string[]",
       description: "List of foods to compare",
-      example: '["chicken breast", "tofu", "salmon"]'
-    }
+      example: '["chicken breast", "tofu", "salmon"]',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "focus",
       type: "string",
       description: "What to prioritize in comparison",
       example: '"protein", "calories", "overall"',
-      default: "overall"
-    }
+      default: "overall",
+    },
   ],
-  
+
   returnFormat: {
     description: "Comparison table with recommendations",
     fields: [
       "comparison_table (nutrition for each food)",
       "winner (best choice based on focus)",
       "key_differences",
-      "recommendation"
+      "recommendation",
     ],
     example: `{
   "comparison": {
@@ -1223,10 +1241,10 @@ export const TOOL_NUTRITION_COMPARE_FOODS: ToolDescription = {
   },
   "winner": "chicken breast",
   "reason": "Higher protein density"
-}`
+}`,
   },
-  
-  chainsWith: ["nutrition_analyze_food", "food_search"]
+
+  chainsWith: ["nutrition_analyze_food", "food_search"],
 };
 
 export const TOOL_NUTRITION_GET_MACROS: ToolDescription = {
@@ -1234,60 +1252,61 @@ export const TOOL_NUTRITION_GET_MACROS: ToolDescription = {
   displayName: "Macro Calculator",
   brandedName: "TheLoopGPT Macros",
   category: "nutrition",
-  
-  primaryDescription: `Calculates recommended macro targets (protein, carbs, fat) based on user goals, activity level, and body stats. Use when users ask "What should my macros be?" or "Calculate my macros for weight loss."`,
-  
+
+  primaryDescription:
+    `Calculates recommended macro targets (protein, carbs, fat) based on user goals, activity level, and body stats. Use when users ask "What should my macros be?" or "Calculate my macros for weight loss."`,
+
   whenToUse: [
     "User wants personalized macro targets",
     "User asks 'what should my macros be?'",
     "User is starting a diet and needs macro guidance",
-    "User wants to optimize macros for goals"
+    "User wants to optimize macros for goals",
   ],
-  
+
   whenNotToUse: [
     "User wants nutrition for specific food - use nutrition_analyze_food",
-    "User wants meal planning - use meal planning tools"
+    "User wants meal planning - use meal planning tools",
   ],
-  
+
   uniqueCapabilities: [
     "Goal-based macro calculation (weight loss, muscle gain, maintenance)",
     "Activity level adjustment",
     "Multiple macro distribution strategies (balanced, high-protein, keto, etc.)",
-    "TDEE calculation included"
+    "TDEE calculation included",
   ],
-  
+
   requiredParams: [
     {
       name: "weight_kg",
       type: "number",
       description: "Current weight in kg",
-      example: "75"
+      example: "75",
     },
     {
       name: "goal",
       type: "string",
       description: "Fitness goal",
-      example: '"weight_loss", "muscle_gain", "maintenance"'
-    }
+      example: '"weight_loss", "muscle_gain", "maintenance"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "activity_level",
       type: "string",
       description: "Activity level",
       example: '"sedentary", "moderate", "active"',
-      default: "moderate"
+      default: "moderate",
     },
     {
       name: "diet_type",
       type: "string",
       description: "Preferred macro distribution",
       example: '"balanced", "high_protein", "keto"',
-      default: "balanced"
-    }
+      default: "balanced",
+    },
   ],
-  
+
   returnFormat: {
     description: "Recommended macro targets",
     fields: [
@@ -1298,7 +1317,7 @@ export const TOOL_NUTRITION_GET_MACROS: ToolDescription = {
       "protein_percent",
       "carbs_percent",
       "fat_percent",
-      "tdee"
+      "tdee",
     ],
     example: `{
   "daily_calories": 1800,
@@ -1306,10 +1325,10 @@ export const TOOL_NUTRITION_GET_MACROS: ToolDescription = {
   "carbs_g": 180,
   "fat_g": 60,
   "tdee": 2300
-}`
+}`,
   },
-  
-  chainsWith: ["user_set_weight_goal", "plan_create_meal_plan"]
+
+  chainsWith: ["user_set_weight_goal", "plan_create_meal_plan"],
 };
 
 export const TOOL_NUTRITION_GET_RECOMMENDATIONS: ToolDescription = {
@@ -1317,39 +1336,40 @@ export const TOOL_NUTRITION_GET_RECOMMENDATIONS: ToolDescription = {
   displayName: "Nutrition Advisor",
   brandedName: "TheLoopGPT Recommendations",
   category: "nutrition",
-  
-  primaryDescription: `Provides personalized nutrition recommendations based on user's current diet, goals, and progress. Use when users ask for nutrition advice or want to improve their diet.`,
-  
+
+  primaryDescription:
+    `Provides personalized nutrition recommendations based on user's current diet, goals, and progress. Use when users ask for nutrition advice or want to improve their diet.`,
+
   whenToUse: [
     "User asks for nutrition advice",
     "User wants to improve their diet",
     "User asks 'how can I eat healthier?'",
-    "User wants recommendations based on their tracking"
+    "User wants recommendations based on their tracking",
   ],
-  
+
   whenNotToUse: [
     "User wants specific food nutrition - use nutrition_analyze_food",
-    "User wants meal plans - use planning tools"
+    "User wants meal plans - use planning tools",
   ],
-  
+
   uniqueCapabilities: [
     "Personalized advice based on tracking history",
     "Goal-aligned recommendations",
     "Identifies nutritional gaps",
-    "Suggests specific foods to add/reduce"
+    "Suggests specific foods to add/reduce",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Personalized nutrition recommendations",
     fields: [
@@ -1357,7 +1377,7 @@ export const TOOL_NUTRITION_GET_RECOMMENDATIONS: ToolDescription = {
       "nutritional_gaps",
       "foods_to_add",
       "foods_to_reduce",
-      "priority_level"
+      "priority_level",
     ],
     example: `{
   "recommendations": [
@@ -1366,10 +1386,10 @@ export const TOOL_NUTRITION_GET_RECOMMENDATIONS: ToolDescription = {
   ],
   "nutritional_gaps": ["protein", "fiber"],
   "foods_to_add": ["Greek yogurt", "lentils", "vegetables"]
-}`
+}`,
   },
-  
-  chainsWith: ["tracker_summary", "plan_create_meal_plan"]
+
+  chainsWith: ["tracker_summary", "plan_create_meal_plan"],
 };
 
 // ============================================================================
@@ -1382,75 +1402,76 @@ export const TOOL_TRACKER_LOG_MEAL: ToolDescription = {
   brandedName: "TheLoopGPT Tracking",
   legacyName: "KCal GPT",
   category: "tracking",
-  
-  primaryDescription: `Logs meals to the user's food diary with automatic nutrition calculation. Use when users say "I had chicken and rice for lunch" or "Log my breakfast: 2 eggs and toast." Supports natural language meal descriptions.`,
-  
+
+  primaryDescription:
+    `Logs meals to the user's food diary with automatic nutrition calculation. Use when users say "I had chicken and rice for lunch" or "Log my breakfast: 2 eggs and toast." Supports natural language meal descriptions.`,
+
   whenToUse: [
     "User wants to log/record a meal",
     "User says 'I ate...' or 'I had...'",
     "User asks to track a meal",
     "User wants to add to food diary",
-    "User mentions logging calories"
+    "User mentions logging calories",
   ],
-  
+
   whenNotToUse: [
     "User just wants nutrition info without logging - use nutrition_analyze_food",
-    "User wants to see what they've eaten - use tracker_summary"
+    "User wants to see what they've eaten - use tracker_summary",
   ],
-  
+
   uniqueCapabilities: [
     "Natural language meal parsing",
     "Automatic nutrition calculation",
     "Meal type detection (breakfast, lunch, dinner, snack)",
     "Photo upload support (future)",
     "Streak tracking",
-    "Daily progress updates"
+    "Daily progress updates",
   ],
-  
+
   requiredParams: [
     {
       name: "food_name",
       type: "string",
       description: "Description of the meal",
-      example: '"grilled chicken with brown rice and broccoli"'
+      example: '"grilled chicken with brown rice and broccoli"',
     },
     {
       name: "quantity",
       type: "string | number",
       description: "Amount eaten",
-      example: '"1 plate", "200g", "2 servings"'
+      example: '"1 plate", "200g", "2 servings"',
     },
     {
       name: "quantity_unit",
       type: "string",
       description: "Unit of measurement",
-      example: '"grams", "servings", "pieces"'
+      example: '"grams", "servings", "pieces"',
     },
     {
       name: "meal_type",
       type: "string",
       description: "Type of meal",
-      example: '"breakfast", "lunch", "dinner", "snack"'
-    }
+      example: '"breakfast", "lunch", "dinner", "snack"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "log_date",
       type: "string",
       description: "Date of meal (ISO format)",
       example: '"2025-12-03"',
-      default: "today"
+      default: "today",
     },
     {
       name: "notes",
       type: "string",
       description: "Additional notes",
       example: '"Ate at restaurant"',
-      default: "none"
-    }
+      default: "none",
+    },
   ],
-  
+
   returnFormat: {
     description: "Logged meal confirmation with nutrition",
     fields: [
@@ -1460,7 +1481,7 @@ export const TOOL_TRACKER_LOG_MEAL: ToolDescription = {
       "nutrition (calories, protein, carbs, fat)",
       "daily_totals (updated totals for the day)",
       "remaining_calories",
-      "streak_count"
+      "streak_count",
     ],
     example: `{
   "log_id": "log_abc123",
@@ -1469,10 +1490,10 @@ export const TOOL_TRACKER_LOG_MEAL: ToolDescription = {
   "daily_totals": { "calories": 1200, "protein": 85 },
   "remaining_calories": 600,
   "streak_count": 7
-}`
+}`,
   },
-  
-  chainsWith: ["nutrition_analyze_food", "tracker_summary"]
+
+  chainsWith: ["nutrition_analyze_food", "tracker_summary"],
 };
 
 export const TOOL_TRACKER_SUMMARY: ToolDescription = {
@@ -1480,49 +1501,50 @@ export const TOOL_TRACKER_SUMMARY: ToolDescription = {
   displayName: "Daily Summary",
   brandedName: "TheLoopGPT Progress",
   category: "tracking",
-  
-  primaryDescription: `Provides a summary of the user's food intake for a specific day. Use when users ask "What have I eaten today?" or "Show my food log." Returns all logged meals with nutrition totals.`,
-  
+
+  primaryDescription:
+    `Provides a summary of the user's food intake for a specific day. Use when users ask "What have I eaten today?" or "Show my food log." Returns all logged meals with nutrition totals.`,
+
   whenToUse: [
     "User wants to see what they've eaten",
     "User asks 'how many calories have I had today?'",
     "User wants daily nutrition summary",
     "User asks 'show my food log'",
-    "User wants to review their tracking"
+    "User wants to review their tracking",
   ],
-  
+
   whenNotToUse: [
     "User wants to log a new meal - use tracker_log_meal",
-    "User wants weekly/monthly progress - use tracker_get_progress"
+    "User wants weekly/monthly progress - use tracker_get_progress",
   ],
-  
+
   uniqueCapabilities: [
     "Daily meal list with timestamps",
     "Nutrition totals (calories, macros)",
     "Goal comparison (calories remaining)",
     "Meal type breakdown",
-    "Streak information"
+    "Streak information",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "date",
       type: "string",
       description: "Date to summarize (ISO format)",
       example: '"2025-12-03"',
-      default: "today"
-    }
+      default: "today",
+    },
   ],
-  
+
   returnFormat: {
     description: "Daily food log summary",
     fields: [
@@ -1532,7 +1554,7 @@ export const TOOL_TRACKER_SUMMARY: ToolDescription = {
       "goal_comparison (target vs actual)",
       "remaining_calories",
       "meal_count",
-      "streak_count"
+      "streak_count",
     ],
     example: `{
   "date": "2025-12-03",
@@ -1543,10 +1565,10 @@ export const TOOL_TRACKER_SUMMARY: ToolDescription = {
   "daily_totals": { "calories": 750, "protein": 55, "carbs": 80, "fat": 20 },
   "remaining_calories": 1050,
   "streak_count": 7
-}`
+}`,
   },
-  
-  chainsWith: ["tracker_log_meal", "tracker_get_progress"]
+
+  chainsWith: ["tracker_log_meal", "tracker_get_progress"],
 };
 
 export const TOOL_TRACKER_LOG_WEIGHT: ToolDescription = {
@@ -1554,53 +1576,54 @@ export const TOOL_TRACKER_LOG_WEIGHT: ToolDescription = {
   displayName: "Weight Logger",
   brandedName: "TheLoopGPT Weight Tracking",
   category: "tracking",
-  
-  primaryDescription: `Logs the user's weight measurement. Use when users say "I weigh 165 lbs" or "Log my weight: 75kg." Tracks weight over time for progress monitoring.`,
-  
+
+  primaryDescription:
+    `Logs the user's weight measurement. Use when users say "I weigh 165 lbs" or "Log my weight: 75kg." Tracks weight over time for progress monitoring.`,
+
   whenToUse: [
     "User wants to log their weight",
     "User says 'I weigh...'",
     "User asks to record weight",
-    "User mentions weight measurement"
+    "User mentions weight measurement",
   ],
-  
+
   whenNotToUse: [
     "User wants to see weight progress - use tracker_get_progress",
-    "User wants to set weight goal - use user_set_weight_goal"
+    "User wants to set weight goal - use user_set_weight_goal",
   ],
-  
+
   uniqueCapabilities: [
     "Weight tracking over time",
     "Automatic unit conversion (lbs/kg)",
     "Trend analysis",
-    "Goal progress calculation"
+    "Goal progress calculation",
   ],
-  
+
   requiredParams: [
     {
       name: "weight",
       type: "number",
       description: "Weight measurement",
-      example: "75"
+      example: "75",
     },
     {
       name: "unit",
       type: "string",
       description: "Unit of measurement",
-      example: '"kg" or "lbs"'
-    }
+      example: '"kg" or "lbs"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "log_date",
       type: "string",
       description: "Date of measurement",
       example: '"2025-12-03"',
-      default: "today"
-    }
+      default: "today",
+    },
   ],
-  
+
   returnFormat: {
     description: "Weight log confirmation with trend",
     fields: [
@@ -1610,7 +1633,7 @@ export const TOOL_TRACKER_LOG_WEIGHT: ToolDescription = {
       "date",
       "change_from_last (difference from previous log)",
       "progress_to_goal (percentage)",
-      "trend (gaining/losing/maintaining)"
+      "trend (gaining/losing/maintaining)",
     ],
     example: `{
   "log_id": "weight_abc123",
@@ -1619,10 +1642,10 @@ export const TOOL_TRACKER_LOG_WEIGHT: ToolDescription = {
   "change_from_last": -0.5,
   "progress_to_goal": 0.25,
   "trend": "losing"
-}`
+}`,
   },
-  
-  chainsWith: ["tracker_get_progress", "loop_predict_outcome"]
+
+  chainsWith: ["tracker_get_progress", "loop_predict_outcome"],
 };
 
 export const TOOL_TRACKER_QUICK_ADD_CALORIES: ToolDescription = {
@@ -1630,82 +1653,83 @@ export const TOOL_TRACKER_QUICK_ADD_CALORIES: ToolDescription = {
   displayName: "Quick Calorie Add",
   brandedName: "TheLoopGPT Quick Log",
   category: "tracking",
-  
-  primaryDescription: `Quickly adds calories to the daily log without detailed meal information. Use when users know the calorie count but don't want to specify ingredients. Useful for packaged foods or restaurant meals with known calories.`,
-  
+
+  primaryDescription:
+    `Quickly adds calories to the daily log without detailed meal information. Use when users know the calorie count but don't want to specify ingredients. Useful for packaged foods or restaurant meals with known calories.`,
+
   whenToUse: [
     "User knows exact calorie count",
     "User wants to log calories without details",
     "User ate packaged food with label",
-    "User wants quick logging"
+    "User wants quick logging",
   ],
-  
+
   whenNotToUse: [
     "User wants detailed meal logging - use tracker_log_meal",
-    "User doesn't know calories - use nutrition_analyze_food first"
+    "User doesn't know calories - use nutrition_analyze_food first",
   ],
-  
+
   uniqueCapabilities: [
     "Fast calorie logging",
     "No ingredient details required",
     "Updates daily totals",
-    "Supports manual macro entry"
+    "Supports manual macro entry",
   ],
-  
+
   requiredParams: [
     {
       name: "calories",
       type: "number",
       description: "Calorie amount",
-      example: "350"
-    }
+      example: "350",
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "meal_type",
       type: "string",
       description: "Type of meal",
       example: '"snack", "lunch"',
-      default: "snack"
+      default: "snack",
     },
     {
       name: "protein_g",
       type: "number",
       description: "Protein grams (if known)",
-      example: "25"
+      example: "25",
     },
     {
       name: "carbs_g",
       type: "number",
       description: "Carb grams (if known)",
-      example: "40"
+      example: "40",
     },
     {
       name: "fat_g",
       type: "number",
       description: "Fat grams (if known)",
-      example: "12"
-    }
+      example: "12",
+    },
   ],
-  
+
   returnFormat: {
     description: "Quick log confirmation",
     fields: [
       "log_id",
       "calories_added",
       "daily_totals",
-      "remaining_calories"
+      "remaining_calories",
     ],
     example: `{
   "log_id": "quick_abc123",
   "calories_added": 350,
   "daily_totals": { "calories": 1450 },
   "remaining_calories": 350
-}`
+}`,
   },
-  
-  chainsWith: ["tracker_summary"]
+
+  chainsWith: ["tracker_summary"],
 };
 
 export const TOOL_TRACKER_GET_PROGRESS: ToolDescription = {
@@ -1713,50 +1737,51 @@ export const TOOL_TRACKER_GET_PROGRESS: ToolDescription = {
   displayName: "Progress Analytics",
   brandedName: "TheLoopGPT Progress",
   category: "tracking",
-  
-  primaryDescription: `Provides comprehensive progress analytics including weight trends, calorie adherence, and goal progress. Use when users ask "How am I doing?" or "Show my progress this week."`,
-  
+
+  primaryDescription:
+    `Provides comprehensive progress analytics including weight trends, calorie adherence, and goal progress. Use when users ask "How am I doing?" or "Show my progress this week."`,
+
   whenToUse: [
     "User wants to see progress over time",
     "User asks 'how am I doing?'",
     "User wants weekly/monthly summary",
     "User asks about weight loss progress",
-    "User wants adherence statistics"
+    "User wants adherence statistics",
   ],
-  
+
   whenNotToUse: [
     "User wants today's summary only - use tracker_summary",
-    "User wants to log something - use logging tools"
+    "User wants to log something - use logging tools",
   ],
-  
+
   uniqueCapabilities: [
     "Multi-day progress analysis",
     "Weight trend visualization data",
     "Calorie adherence rate",
     "Goal progress percentage",
     "Streak tracking",
-    "Weekly/monthly averages"
+    "Weekly/monthly averages",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "timeframe",
       type: "string",
       description: "Analysis period",
       example: '"week", "month", "all"',
-      default: "week"
-    }
+      default: "week",
+    },
   ],
-  
+
   returnFormat: {
     description: "Comprehensive progress report",
     fields: [
@@ -1767,7 +1792,7 @@ export const TOOL_TRACKER_GET_PROGRESS: ToolDescription = {
       "goal_progress (% to goal)",
       "streak_count",
       "trends (gaining/losing/maintaining)",
-      "recommendations"
+      "recommendations",
     ],
     example: `{
   "timeframe": "week",
@@ -1778,10 +1803,10 @@ export const TOOL_TRACKER_GET_PROGRESS: ToolDescription = {
   "streak_count": 12,
   "trend": "losing",
   "recommendations": ["Keep up the consistency!"]
-}`
+}`,
   },
-  
-  chainsWith: ["loop_predict_outcome", "loop_adjust_calories"]
+
+  chainsWith: ["loop_predict_outcome", "loop_adjust_calories"],
 };
 
 // Export all tool descriptions as a record
@@ -1791,29 +1816,33 @@ export const ALL_TOOL_DESCRIPTIONS: Record<string, ToolDescription> = {
   plan_create_meal_plan: TOOL_PLAN_CREATE_MEAL_PLAN,
   plan_random_meal: TOOL_PLAN_RANDOM_MEAL,
   plan_get_active_plan: TOOL_PLAN_GET_ACTIVE_PLAN,
-  
+
   // Nutrition Analysis
   nutrition_analyze_food: TOOL_NUTRITION_ANALYZE_FOOD,
   nutrition_compare_foods: TOOL_NUTRITION_COMPARE_FOODS,
   nutrition_get_macros: TOOL_NUTRITION_GET_MACROS,
   nutrition_get_recommendations: TOOL_NUTRITION_GET_RECOMMENDATIONS,
-  
+
   // Food Tracking
   tracker_log_meal: TOOL_TRACKER_LOG_MEAL,
   tracker_summary: TOOL_TRACKER_SUMMARY,
   tracker_log_weight: TOOL_TRACKER_LOG_WEIGHT,
   tracker_quick_add_calories: TOOL_TRACKER_QUICK_ADD_CALORIES,
-  tracker_get_progress: TOOL_TRACKER_GET_PROGRESS
+  tracker_get_progress: TOOL_TRACKER_GET_PROGRESS,
 };
 
 // Helper function to get tool description by ID
-export function getToolDescription(toolId: string): ToolDescription | undefined {
+export function getToolDescription(
+  toolId: string,
+): ToolDescription | undefined {
   return ALL_TOOL_DESCRIPTIONS[toolId];
 }
 
 // Helper function to get all tools in a category
 export function getToolsByCategory(category: string): ToolDescription[] {
-  return Object.values(ALL_TOOL_DESCRIPTIONS).filter(tool => tool.category === category);
+  return Object.values(ALL_TOOL_DESCRIPTIONS).filter((tool) =>
+    tool.category === category
+  );
 }
 
 // ============================================================================
@@ -1825,40 +1854,41 @@ export const TOOL_USER_GET_PROFILE: ToolDescription = {
   displayName: "Get User Profile",
   brandedName: "TheLoopGPT Profile",
   category: "user",
-  
-  primaryDescription: `Retrieves the user's profile including goals, preferences, and settings. Use when you need to personalize responses based on user data.`,
-  
+
+  primaryDescription:
+    `Retrieves the user's profile including goals, preferences, and settings. Use when you need to personalize responses based on user data.`,
+
   whenToUse: [
     "Need user's dietary preferences",
     "Need user's calorie goals",
     "Need user's weight goal",
-    "Personalizing recommendations"
+    "Personalizing recommendations",
   ],
-  
+
   whenNotToUse: [
     "User wants to update profile - use update tools",
-    "User wants progress - use tracker_get_progress"
+    "User wants progress - use tracker_get_progress",
   ],
-  
+
   uniqueCapabilities: [
     "Complete user profile data",
     "Dietary preferences",
     "Goal information",
     "Activity level",
-    "Allergies and restrictions"
+    "Allergies and restrictions",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "User profile data",
     fields: [
@@ -1868,7 +1898,7 @@ export const TOOL_USER_GET_PROFILE: ToolDescription = {
       "weight_goal",
       "activity_level",
       "excluded_ingredients",
-      "created_at"
+      "created_at",
     ],
     example: `{
   "user_id": "user_abc123",
@@ -1876,10 +1906,10 @@ export const TOOL_USER_GET_PROFILE: ToolDescription = {
   "calorie_goal": 1800,
   "weight_goal": 70,
   "activity_level": "moderate"
-}`
+}`,
   },
-  
-  chainsWith: ["plan_create_meal_plan", "nutrition_get_recommendations"]
+
+  chainsWith: ["plan_create_meal_plan", "nutrition_get_recommendations"],
 };
 
 export const TOOL_USER_SET_WEIGHT_GOAL: ToolDescription = {
@@ -1887,52 +1917,53 @@ export const TOOL_USER_SET_WEIGHT_GOAL: ToolDescription = {
   displayName: "Set Weight Goal",
   brandedName: "TheLoopGPT Goals",
   category: "user",
-  
-  primaryDescription: `Sets or updates the user's weight goal. Use when users say "I want to lose 10 pounds" or "My goal weight is 70kg."`,
-  
+
+  primaryDescription:
+    `Sets or updates the user's weight goal. Use when users say "I want to lose 10 pounds" or "My goal weight is 70kg."`,
+
   whenToUse: [
     "User states a weight goal",
     "User wants to lose/gain weight",
     "User asks to set goal weight",
-    "User mentions target weight"
+    "User mentions target weight",
   ],
-  
+
   whenNotToUse: [
     "User wants to log current weight - use tracker_log_weight",
-    "User wants to see progress - use tracker_get_progress"
+    "User wants to see progress - use tracker_get_progress",
   ],
-  
+
   uniqueCapabilities: [
     "Goal weight setting",
     "Automatic timeline calculation",
     "Recommended calorie adjustment",
-    "Goal type detection (loss/gain/maintain)"
+    "Goal type detection (loss/gain/maintain)",
   ],
-  
+
   requiredParams: [
     {
       name: "target_weight",
       type: "number",
       description: "Goal weight",
-      example: "70"
+      example: "70",
     },
     {
       name: "unit",
       type: "string",
       description: "Weight unit",
-      example: '"kg" or "lbs"'
-    }
+      example: '"kg" or "lbs"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "target_date",
       type: "string",
       description: "Target date to reach goal",
-      example: '"2026-06-01"'
-    }
+      example: '"2026-06-01"',
+    },
   ],
-  
+
   returnFormat: {
     description: "Goal confirmation with recommendations",
     fields: [
@@ -1942,7 +1973,7 @@ export const TOOL_USER_SET_WEIGHT_GOAL: ToolDescription = {
       "weight_to_lose_or_gain",
       "recommended_timeline",
       "recommended_daily_calories",
-      "goal_type"
+      "goal_type",
     ],
     example: `{
   "goal_id": "goal_abc123",
@@ -1952,10 +1983,10 @@ export const TOOL_USER_SET_WEIGHT_GOAL: ToolDescription = {
   "recommended_timeline": "10-15 weeks",
   "recommended_daily_calories": 1800,
   "goal_type": "weight_loss"
-}`
+}`,
   },
-  
-  chainsWith: ["plan_create_meal_plan", "nutrition_get_macros"]
+
+  chainsWith: ["plan_create_meal_plan", "nutrition_get_macros"],
 };
 
 export const TOOL_USER_UPDATE_DIET_PREFERENCES: ToolDescription = {
@@ -1963,62 +1994,63 @@ export const TOOL_USER_UPDATE_DIET_PREFERENCES: ToolDescription = {
   displayName: "Update Diet Preferences",
   brandedName: "TheLoopGPT Preferences",
   category: "user",
-  
-  primaryDescription: `Updates the user's dietary preferences and restrictions. Use when users say "I'm vegetarian" or "I don't eat dairy."`,
-  
+
+  primaryDescription:
+    `Updates the user's dietary preferences and restrictions. Use when users say "I'm vegetarian" or "I don't eat dairy."`,
+
   whenToUse: [
     "User states dietary preference",
     "User mentions food allergies",
     "User wants to exclude ingredients",
-    "User changes diet type"
+    "User changes diet type",
   ],
-  
+
   whenNotToUse: [
-    "User wants meal suggestions - use planning tools after updating"
+    "User wants meal suggestions - use planning tools after updating",
   ],
-  
+
   uniqueCapabilities: [
     "Multiple preference types",
     "Allergy tracking",
     "Ingredient exclusion",
-    "Diet type selection (keto, vegan, etc.)"
+    "Diet type selection (keto, vegan, etc.)",
   ],
-  
+
   requiredParams: [
     {
       name: "preferences",
       type: "string[]",
       description: "Dietary preferences",
-      example: '["vegetarian", "gluten-free"]'
-    }
+      example: '["vegetarian", "gluten-free"]',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "excluded_ingredients",
       type: "string[]",
       description: "Ingredients to avoid",
-      example: '["mushrooms", "shellfish"]'
-    }
+      example: '["mushrooms", "shellfish"]',
+    },
   ],
-  
+
   returnFormat: {
     description: "Updated preferences confirmation",
     fields: [
       "user_id",
       "dietary_preferences",
       "excluded_ingredients",
-      "updated_at"
+      "updated_at",
     ],
     example: `{
   "user_id": "user_abc123",
   "dietary_preferences": ["vegetarian", "high-protein"],
   "excluded_ingredients": ["mushrooms"],
   "updated_at": "2025-12-03T18:00:00Z"
-}`
+}`,
   },
-  
-  chainsWith: ["plan_create_meal_plan", "plan_generate_from_leftovers"]
+
+  chainsWith: ["plan_create_meal_plan", "plan_generate_from_leftovers"],
 };
 
 export const TOOL_FOOD_SEARCH: ToolDescription = {
@@ -2026,46 +2058,47 @@ export const TOOL_FOOD_SEARCH: ToolDescription = {
   displayName: "Food Database Search",
   brandedName: "TheLoopGPT Search",
   category: "nutrition",
-  
-  primaryDescription: `Searches the food database for specific items. Use when users want to find foods by name or explore food options.`,
-  
+
+  primaryDescription:
+    `Searches the food database for specific items. Use when users want to find foods by name or explore food options.`,
+
   whenToUse: [
     "User wants to search for a specific food",
     "User asks 'do you have [food] in your database?'",
-    "User wants to explore food options"
+    "User wants to explore food options",
   ],
-  
+
   whenNotToUse: [
     "User wants nutrition for a specific food - use nutrition_analyze_food",
-    "User wants recipe ideas - use recipe tools"
+    "User wants recipe ideas - use recipe tools",
   ],
-  
+
   uniqueCapabilities: [
     "800,000+ food database search",
     "Fuzzy matching",
     "International foods",
-    "Brand name foods"
+    "Brand name foods",
   ],
-  
+
   requiredParams: [
     {
       name: "query",
       type: "string",
       description: "Search query",
-      example: '"chicken breast"'
-    }
+      example: '"chicken breast"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "limit",
       type: "number",
       description: "Max results",
       example: "10",
-      default: "5"
-    }
+      default: "5",
+    },
   ],
-  
+
   returnFormat: {
     description: "List of matching foods",
     fields: [
@@ -2073,17 +2106,17 @@ export const TOOL_FOOD_SEARCH: ToolDescription = {
       "food_id",
       "food_name",
       "brand (if applicable)",
-      "category"
+      "category",
     ],
     example: `{
   "results": [
     { "food_id": "f_123", "food_name": "Chicken Breast, Raw", "category": "Poultry" },
     { "food_id": "f_124", "food_name": "Chicken Breast, Grilled", "category": "Poultry" }
   ]
-}`
+}`,
   },
-  
-  chainsWith: ["nutrition_analyze_food", "nutrition_compare_foods"]
+
+  chainsWith: ["nutrition_analyze_food", "nutrition_compare_foods"],
 };
 
 // ============================================================================
@@ -2095,52 +2128,53 @@ export const TOOL_DELIVERY_SEARCH_RESTAURANTS: ToolDescription = {
   displayName: "Restaurant Search",
   brandedName: "TheLoopGPT Delivery",
   category: "delivery",
-  
-  primaryDescription: `Searches for restaurants near the user's location that offer delivery. Use when users want to order food or find healthy restaurant options nearby.`,
-  
+
+  primaryDescription:
+    `Searches for restaurants near the user's location that offer delivery. Use when users want to order food or find healthy restaurant options nearby.`,
+
   whenToUse: [
     "User wants to find restaurants",
     "User asks for delivery options",
     "User wants healthy food nearby",
-    "User asks 'where can I order from?'"
+    "User asks 'where can I order from?'",
   ],
-  
+
   whenNotToUse: [
     "User wants to cook at home - use recipe tools",
-    "User wants grocery delivery - use order tools"
+    "User wants grocery delivery - use order tools",
   ],
-  
+
   uniqueCapabilities: [
     "Location-based search",
     "Dietary filter support",
     "Delivery availability check",
-    "Rating and review data"
+    "Rating and review data",
   ],
-  
+
   requiredParams: [
     {
       name: "location",
       type: "string",
       description: "User location (address or coordinates)",
-      example: '"123 Main St, New York, NY" or "40.7128,-74.0060"'
-    }
+      example: '"123 Main St, New York, NY" or "40.7128,-74.0060"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "cuisine",
       type: "string",
       description: "Cuisine type",
-      example: '"Italian", "Asian", "Healthy"'
+      example: '"Italian", "Asian", "Healthy"',
     },
     {
       name: "dietary_filter",
       type: "string[]",
       description: "Dietary requirements",
-      example: '["vegetarian", "keto"]'
-    }
+      example: '["vegetarian", "keto"]',
+    },
   ],
-  
+
   returnFormat: {
     description: "List of restaurants",
     fields: [
@@ -2151,7 +2185,7 @@ export const TOOL_DELIVERY_SEARCH_RESTAURANTS: ToolDescription = {
       "rating",
       "delivery_time",
       "delivery_fee",
-      "distance"
+      "distance",
     ],
     example: `{
   "restaurants": [
@@ -2164,10 +2198,10 @@ export const TOOL_DELIVERY_SEARCH_RESTAURANTS: ToolDescription = {
       "delivery_fee": "$2.99"
     }
   ]
-}`
+}`,
   },
-  
-  chainsWith: ["delivery_get_menu", "loopgpt_route_order"]
+
+  chainsWith: ["delivery_get_menu", "loopgpt_route_order"],
 };
 
 export const TOOL_DELIVERY_GET_MENU: ToolDescription = {
@@ -2175,37 +2209,38 @@ export const TOOL_DELIVERY_GET_MENU: ToolDescription = {
   displayName: "Get Restaurant Menu",
   brandedName: "TheLoopGPT Menu",
   category: "delivery",
-  
-  primaryDescription: `Retrieves the menu for a specific restaurant. Use after finding restaurants to show available items.`,
-  
+
+  primaryDescription:
+    `Retrieves the menu for a specific restaurant. Use after finding restaurants to show available items.`,
+
   whenToUse: [
     "User wants to see menu",
     "User asks 'what can I order from [restaurant]?'",
-    "After restaurant search, user wants details"
+    "After restaurant search, user wants details",
   ],
-  
+
   whenNotToUse: [
-    "User hasn't selected a restaurant yet - use delivery_search_restaurants first"
+    "User hasn't selected a restaurant yet - use delivery_search_restaurants first",
   ],
-  
+
   uniqueCapabilities: [
     "Full menu with prices",
     "Nutrition info (when available)",
     "Dietary tags",
-    "Popular items highlighted"
+    "Popular items highlighted",
   ],
-  
+
   requiredParams: [
     {
       name: "restaurant_id",
       type: "string",
       description: "Restaurant identifier",
-      example: '"rest_123"'
-    }
+      example: '"rest_123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Restaurant menu",
     fields: [
@@ -2216,7 +2251,7 @@ export const TOOL_DELIVERY_GET_MENU: ToolDescription = {
       "description",
       "price",
       "calories (if available)",
-      "dietary_tags"
+      "dietary_tags",
     ],
     example: `{
   "restaurant_name": "Healthy Bites",
@@ -2229,10 +2264,10 @@ export const TOOL_DELIVERY_GET_MENU: ToolDescription = {
       "dietary_tags": ["high-protein", "gluten-free"]
     }
   ]
-}`
+}`,
   },
-  
-  chainsWith: ["loopgpt_route_order", "nutrition_analyze_food"]
+
+  chainsWith: ["loopgpt_route_order", "nutrition_analyze_food"],
 };
 
 export const TOOL_DELIVERY_PLACE_ORDER: ToolDescription = {
@@ -2240,57 +2275,58 @@ export const TOOL_DELIVERY_PLACE_ORDER: ToolDescription = {
   displayName: "Place Delivery Order",
   brandedName: "TheLoopGPT Order",
   category: "delivery",
-  
-  primaryDescription: `Places a food delivery order. Use after user selects menu items and confirms order.`,
-  
+
+  primaryDescription:
+    `Places a food delivery order. Use after user selects menu items and confirms order.`,
+
   whenToUse: [
     "User confirms order",
     "User says 'place the order'",
-    "User wants to complete checkout"
+    "User wants to complete checkout",
   ],
-  
+
   whenNotToUse: [
     "User is still browsing - wait for confirmation",
-    "User hasn't selected items yet"
+    "User hasn't selected items yet",
   ],
-  
+
   uniqueCapabilities: [
     "Order placement",
     "Payment processing",
     "Delivery tracking",
-    "Order confirmation"
+    "Order confirmation",
   ],
-  
+
   requiredParams: [
     {
       name: "restaurant_id",
       type: "string",
       description: "Restaurant identifier",
-      example: '"rest_123"'
+      example: '"rest_123"',
     },
     {
       name: "items",
       type: "array",
       description: "Order items",
-      example: '[{"item_id": "item_456", "quantity": 1}]'
+      example: '[{"item_id": "item_456", "quantity": 1}]',
     },
     {
       name: "delivery_address",
       type: "string",
       description: "Delivery address",
-      example: '"123 Main St, Apt 4B"'
-    }
+      example: '"123 Main St, Apt 4B"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "delivery_instructions",
       type: "string",
       description: "Special instructions",
-      example: '"Leave at door"'
-    }
+      example: '"Leave at door"',
+    },
   ],
-  
+
   returnFormat: {
     description: "Order confirmation",
     fields: [
@@ -2299,7 +2335,7 @@ export const TOOL_DELIVERY_PLACE_ORDER: ToolDescription = {
       "items",
       "total_price",
       "estimated_delivery_time",
-      "tracking_url"
+      "tracking_url",
     ],
     example: `{
   "order_id": "order_789",
@@ -2307,10 +2343,10 @@ export const TOOL_DELIVERY_PLACE_ORDER: ToolDescription = {
   "total_price": "$15.98",
   "estimated_delivery_time": "35 min",
   "tracking_url": "https://..."
-}`
+}`,
   },
-  
-  chainsWith: ["tracker_log_meal"]
+
+  chainsWith: ["tracker_log_meal"],
 };
 
 export const TOOL_LOOPGPT_ROUTE_ORDER: ToolDescription = {
@@ -2318,53 +2354,54 @@ export const TOOL_LOOPGPT_ROUTE_ORDER: ToolDescription = {
   displayName: "Smart Order Router",
   brandedName: "TheLoopGPT Commerce",
   category: "commerce",
-  
-  primaryDescription: `Intelligently routes orders to the best delivery service (Instacart, Amazon Fresh, MealMe, etc.) based on availability, price, and user preferences. Use when user wants to order groceries or ingredients.`,
-  
+
+  primaryDescription:
+    `Intelligently routes orders to the best delivery service (Instacart, Amazon Fresh, MealMe, etc.) based on availability, price, and user preferences. Use when user wants to order groceries or ingredients.`,
+
   whenToUse: [
     "User wants to order groceries",
     "User wants ingredients delivered",
     "User asks 'order these ingredients'",
-    "User wants to shop from meal plan"
+    "User wants to shop from meal plan",
   ],
-  
+
   whenNotToUse: [
     "User wants restaurant delivery - use delivery tools",
-    "User just wants shopping list - don't order yet"
+    "User just wants shopping list - don't order yet",
   ],
-  
+
   uniqueCapabilities: [
     "Multi-service routing",
     "Price comparison",
     "Availability checking",
     "Best deal selection",
-    "Affiliate link generation"
+    "Affiliate link generation",
   ],
-  
+
   requiredParams: [
     {
       name: "items",
       type: "string[]",
       description: "Items to order",
-      example: '["chicken breast", "brown rice", "broccoli"]'
+      example: '["chicken breast", "brown rice", "broccoli"]',
     },
     {
       name: "location",
       type: "string",
       description: "Delivery address",
-      example: '"123 Main St, New York, NY"'
-    }
+      example: '"123 Main St, New York, NY"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "preferred_service",
       type: "string",
       description: "Preferred delivery service",
-      example: '"instacart", "amazon_fresh"'
-    }
+      example: '"instacart", "amazon_fresh"',
+    },
   ],
-  
+
   returnFormat: {
     description: "Order routing result",
     fields: [
@@ -2372,7 +2409,7 @@ export const TOOL_LOOPGPT_ROUTE_ORDER: ToolDescription = {
       "estimated_total",
       "delivery_time",
       "checkout_url",
-      "alternative_services (array)"
+      "alternative_services (array)",
     ],
     example: `{
   "recommended_service": "Instacart",
@@ -2380,10 +2417,10 @@ export const TOOL_LOOPGPT_ROUTE_ORDER: ToolDescription = {
   "delivery_time": "2 hours",
   "checkout_url": "https://...",
   "alternative_services": [...]
-}`
+}`,
   },
-  
-  chainsWith: ["loopgpt_confirm_order", "plan_create_meal_plan"]
+
+  chainsWith: ["loopgpt_confirm_order", "plan_create_meal_plan"],
 };
 
 export const TOOL_LOOPGPT_CONFIRM_ORDER: ToolDescription = {
@@ -2391,38 +2428,39 @@ export const TOOL_LOOPGPT_CONFIRM_ORDER: ToolDescription = {
   displayName: "Confirm Order",
   brandedName: "TheLoopGPT Checkout",
   category: "commerce",
-  
-  primaryDescription: `Confirms and finalizes an order after routing. Use when user approves the order and wants to proceed with checkout.`,
-  
+
+  primaryDescription:
+    `Confirms and finalizes an order after routing. Use when user approves the order and wants to proceed with checkout.`,
+
   whenToUse: [
     "User confirms order",
     "User says 'yes, order it'",
-    "User approves checkout"
+    "User approves checkout",
   ],
-  
+
   whenNotToUse: [
     "User is still deciding",
-    "User wants to modify order"
+    "User wants to modify order",
   ],
-  
+
   uniqueCapabilities: [
     "Order finalization",
     "Payment processing",
     "Confirmation email",
-    "Order tracking"
+    "Order tracking",
   ],
-  
+
   requiredParams: [
     {
       name: "order_id",
       type: "string",
       description: "Order identifier from routing",
-      example: '"order_abc123"'
-    }
+      example: '"order_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Order confirmation",
     fields: [
@@ -2430,7 +2468,7 @@ export const TOOL_LOOPGPT_CONFIRM_ORDER: ToolDescription = {
       "status",
       "confirmation_number",
       "tracking_url",
-      "estimated_delivery"
+      "estimated_delivery",
     ],
     example: `{
   "order_id": "order_abc123",
@@ -2438,10 +2476,10 @@ export const TOOL_LOOPGPT_CONFIRM_ORDER: ToolDescription = {
   "confirmation_number": "CONF-789",
   "tracking_url": "https://...",
   "estimated_delivery": "2025-12-04 14:00"
-}`
+}`,
   },
-  
-  chainsWith: ["loopgpt_record_outcome"]
+
+  chainsWith: ["loopgpt_record_outcome"],
 };
 
 export const TOOL_LOOPGPT_CANCEL_ORDER: ToolDescription = {
@@ -2449,61 +2487,62 @@ export const TOOL_LOOPGPT_CANCEL_ORDER: ToolDescription = {
   displayName: "Cancel Order",
   brandedName: "TheLoopGPT Cancel",
   category: "commerce",
-  
-  primaryDescription: `Cancels a pending order. Use when user changes their mind or wants to cancel.`,
-  
+
+  primaryDescription:
+    `Cancels a pending order. Use when user changes their mind or wants to cancel.`,
+
   whenToUse: [
     "User wants to cancel order",
     "User says 'cancel my order'",
-    "User changes mind before delivery"
+    "User changes mind before delivery",
   ],
-  
+
   whenNotToUse: [
     "Order already delivered",
-    "Order in transit (may not be cancellable)"
+    "Order in transit (may not be cancellable)",
   ],
-  
+
   uniqueCapabilities: [
     "Order cancellation",
     "Refund processing",
-    "Cancellation confirmation"
+    "Cancellation confirmation",
   ],
-  
+
   requiredParams: [
     {
       name: "order_id",
       type: "string",
       description: "Order identifier",
-      example: '"order_abc123"'
-    }
+      example: '"order_abc123"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "reason",
       type: "string",
       description: "Cancellation reason",
-      example: '"Changed mind"'
-    }
+      example: '"Changed mind"',
+    },
   ],
-  
+
   returnFormat: {
     description: "Cancellation confirmation",
     fields: [
       "order_id",
       "status",
       "refund_amount",
-      "refund_timeline"
+      "refund_timeline",
     ],
     example: `{
   "order_id": "order_abc123",
   "status": "cancelled",
   "refund_amount": "$45.99",
   "refund_timeline": "3-5 business days"
-}`
+}`,
   },
-  
-  chainsWith: []
+
+  chainsWith: [],
 };
 
 export const TOOL_LOOPGPT_RECORD_OUTCOME: ToolDescription = {
@@ -2511,72 +2550,73 @@ export const TOOL_LOOPGPT_RECORD_OUTCOME: ToolDescription = {
   displayName: "Record Order Outcome",
   brandedName: "TheLoopGPT Feedback",
   category: "commerce",
-  
-  primaryDescription: `Records the outcome of an order (delivered, issues, satisfaction). Use for tracking and improving service.`,
-  
+
+  primaryDescription:
+    `Records the outcome of an order (delivered, issues, satisfaction). Use for tracking and improving service.`,
+
   whenToUse: [
     "Order completed",
     "User reports delivery status",
-    "Collecting feedback"
+    "Collecting feedback",
   ],
-  
+
   whenNotToUse: [
     "Order not yet placed",
-    "Order still pending"
+    "Order still pending",
   ],
-  
+
   uniqueCapabilities: [
     "Outcome tracking",
     "Issue reporting",
     "Satisfaction scoring",
-    "Service improvement data"
+    "Service improvement data",
   ],
-  
+
   requiredParams: [
     {
       name: "order_id",
       type: "string",
       description: "Order identifier",
-      example: '"order_abc123"'
+      example: '"order_abc123"',
     },
     {
       name: "outcome",
       type: "string",
       description: "Order outcome",
-      example: '"delivered", "cancelled", "issue"'
-    }
+      example: '"delivered", "cancelled", "issue"',
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "satisfaction_rating",
       type: "number (1-5)",
       description: "User satisfaction",
-      example: "5"
+      example: "5",
     },
     {
       name: "notes",
       type: "string",
       description: "Additional feedback",
-      example: '"Great service!"'
-    }
+      example: '"Great service!"',
+    },
   ],
-  
+
   returnFormat: {
     description: "Outcome recorded confirmation",
     fields: [
       "order_id",
       "outcome",
-      "recorded_at"
+      "recorded_at",
     ],
     example: `{
   "order_id": "order_abc123",
   "outcome": "delivered",
   "recorded_at": "2025-12-04T15:00:00Z"
-}`
+}`,
   },
-  
-  chainsWith: []
+
+  chainsWith: [],
 };
 
 // MealMe Integration Tools
@@ -2585,17 +2625,27 @@ export const TOOL_MEALME_CREATE_CART: ToolDescription = {
   displayName: "Create MealMe Cart",
   brandedName: "TheLoopGPT MealMe",
   category: "delivery",
-  
-  primaryDescription: `Creates a shopping cart in MealMe for grocery delivery. Internal tool used by order routing.`,
-  
+
+  primaryDescription:
+    `Creates a shopping cart in MealMe for grocery delivery. Internal tool used by order routing.`,
+
   whenToUse: ["Internal use by order routing system"],
   whenNotToUse: ["Direct user interaction - use loopgpt_route_order instead"],
   uniqueCapabilities: ["MealMe cart creation", "Item mapping"],
-  requiredParams: [{ name: "items", type: "array", description: "Cart items", example: "[]" }],
+  requiredParams: [{
+    name: "items",
+    type: "array",
+    description: "Cart items",
+    example: "[]",
+  }],
   optionalParams: [],
-  returnFormat: { description: "Cart ID", fields: ["cart_id"], example: '{"cart_id": "cart_123"}' },
+  returnFormat: {
+    description: "Cart ID",
+    fields: ["cart_id"],
+    example: '{"cart_id": "cart_123"}',
+  },
   chainsWith: ["mealme_get_quotes"],
-  category: "delivery"
+  category: "delivery",
 };
 
 export const TOOL_MEALME_GET_QUOTES: ToolDescription = {
@@ -2603,16 +2653,26 @@ export const TOOL_MEALME_GET_QUOTES: ToolDescription = {
   displayName: "Get MealMe Quotes",
   brandedName: "TheLoopGPT MealMe",
   category: "delivery",
-  
-  primaryDescription: `Gets delivery quotes from MealMe. Internal tool used by order routing.`,
-  
+
+  primaryDescription:
+    `Gets delivery quotes from MealMe. Internal tool used by order routing.`,
+
   whenToUse: ["Internal use by order routing system"],
   whenNotToUse: ["Direct user interaction"],
   uniqueCapabilities: ["Price quotes", "Delivery time estimates"],
-  requiredParams: [{ name: "cart_id", type: "string", description: "Cart identifier", example: '"cart_123"' }],
+  requiredParams: [{
+    name: "cart_id",
+    type: "string",
+    description: "Cart identifier",
+    example: '"cart_123"',
+  }],
   optionalParams: [],
-  returnFormat: { description: "Quote details", fields: ["quote_id", "total", "delivery_time"], example: '{}' },
-  chainsWith: ["mealme_checkout_url"]
+  returnFormat: {
+    description: "Quote details",
+    fields: ["quote_id", "total", "delivery_time"],
+    example: "{}",
+  },
+  chainsWith: ["mealme_checkout_url"],
 };
 
 export const TOOL_MEALME_CHECKOUT_URL: ToolDescription = {
@@ -2620,16 +2680,26 @@ export const TOOL_MEALME_CHECKOUT_URL: ToolDescription = {
   displayName: "Get MealMe Checkout URL",
   brandedName: "TheLoopGPT MealMe",
   category: "delivery",
-  
-  primaryDescription: `Generates checkout URL for MealMe. Internal tool used by order routing.`,
-  
+
+  primaryDescription:
+    `Generates checkout URL for MealMe. Internal tool used by order routing.`,
+
   whenToUse: ["Internal use by order routing system"],
   whenNotToUse: ["Direct user interaction"],
   uniqueCapabilities: ["Checkout URL generation"],
-  requiredParams: [{ name: "quote_id", type: "string", description: "Quote identifier", example: '"quote_123"' }],
+  requiredParams: [{
+    name: "quote_id",
+    type: "string",
+    description: "Quote identifier",
+    example: '"quote_123"',
+  }],
   optionalParams: [],
-  returnFormat: { description: "Checkout URL", fields: ["checkout_url"], example: '{"checkout_url": "https://..."}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Checkout URL",
+    fields: ["checkout_url"],
+    example: '{"checkout_url": "https://..."}',
+  },
+  chainsWith: [],
 };
 
 // ============================================================================
@@ -2641,66 +2711,67 @@ export const TOOL_LOOP_PREDICT_OUTCOME: ToolDescription = {
   displayName: "Outcome Predictor",
   brandedName: "TheLoopGPT Intelligence",
   category: "intelligence",
-  
-  primaryDescription: `Predicts weight change outcomes based on meal plans and activity levels. Use when users ask "Will I lose weight with this plan?" or "How long to reach my goal?"`,
-  
+
+  primaryDescription:
+    `Predicts weight change outcomes based on meal plans and activity levels. Use when users ask "Will I lose weight with this plan?" or "How long to reach my goal?"`,
+
   whenToUse: [
     "User wants weight prediction",
     "User asks 'will this work?'",
     "User wants timeline to goal",
-    "User asks about expected results"
+    "User asks about expected results",
   ],
-  
+
   whenNotToUse: [
     "User wants current progress - use tracker_get_progress",
-    "User wants to adjust plan - use loop_adjust_calories"
+    "User wants to adjust plan - use loop_adjust_calories",
   ],
-  
+
   uniqueCapabilities: [
     "AI-powered weight prediction",
     "Timeline estimation",
     "Confidence scoring",
-    "Multiple scenario analysis"
+    "Multiple scenario analysis",
   ],
-  
+
   requiredParams: [
     {
       name: "current_weight_kg",
       type: "number",
       description: "Current weight",
-      example: "75"
+      example: "75",
     },
     {
       name: "goal_weight_kg",
       type: "number",
       description: "Goal weight",
-      example: "70"
+      example: "70",
     },
     {
       name: "daily_calories",
       type: "number",
       description: "Planned daily calories",
-      example: "1800"
-    }
+      example: "1800",
+    },
   ],
-  
+
   optionalParams: [
     {
       name: "activity_level",
       type: "string",
       description: "Activity level",
       example: '"sedentary", "moderate", "active"',
-      default: "moderate"
+      default: "moderate",
     },
     {
       name: "timeframe_days",
       type: "number",
       description: "Prediction timeframe",
       example: "30",
-      default: "30"
-    }
+      default: "30",
+    },
   ],
-  
+
   returnFormat: {
     description: "Weight prediction",
     fields: [
@@ -2708,7 +2779,7 @@ export const TOOL_LOOP_PREDICT_OUTCOME: ToolDescription = {
       "predicted_final_weight",
       "timeline_to_goal",
       "confidence_level",
-      "recommendations"
+      "recommendations",
     ],
     example: `{
   "predicted_weight_change": -2.5,
@@ -2716,10 +2787,10 @@ export const TOOL_LOOP_PREDICT_OUTCOME: ToolDescription = {
   "timeline_to_goal": "8-12 weeks",
   "confidence_level": 0.85,
   "recommendations": ["Increase protein intake", "Add strength training"]
-}`
+}`,
   },
-  
-  chainsWith: ["loop_adjust_calories", "plan_create_meal_plan"]
+
+  chainsWith: ["loop_adjust_calories", "plan_create_meal_plan"],
 };
 
 export const TOOL_LOOP_ADJUST_CALORIES: ToolDescription = {
@@ -2727,39 +2798,40 @@ export const TOOL_LOOP_ADJUST_CALORIES: ToolDescription = {
   displayName: "Calorie Adjuster",
   brandedName: "TheLoopGPT Optimization",
   category: "intelligence",
-  
-  primaryDescription: `AI-powered calorie adjustment based on progress and goals. Use when users aren't seeing results or want to optimize their plan.`,
-  
+
+  primaryDescription:
+    `AI-powered calorie adjustment based on progress and goals. Use when users aren't seeing results or want to optimize their plan.`,
+
   whenToUse: [
     "User not seeing progress",
     "User asks 'should I eat more/less?'",
     "User wants plan optimization",
-    "User asks to adjust calories"
+    "User asks to adjust calories",
   ],
-  
+
   whenNotToUse: [
     "User just started - need more data",
-    "User wants prediction - use loop_predict_outcome"
+    "User wants prediction - use loop_predict_outcome",
   ],
-  
+
   uniqueCapabilities: [
     "AI-powered adjustment",
     "Progress-based optimization",
     "Personalized recommendations",
-    "Plateau breaking strategies"
+    "Plateau breaking strategies",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Calorie adjustment recommendation",
     fields: [
@@ -2767,7 +2839,7 @@ export const TOOL_LOOP_ADJUST_CALORIES: ToolDescription = {
       "recommended_calories",
       "adjustment_amount",
       "reason",
-      "expected_impact"
+      "expected_impact",
     ],
     example: `{
   "current_calories": 1800,
@@ -2775,10 +2847,10 @@ export const TOOL_LOOP_ADJUST_CALORIES: ToolDescription = {
   "adjustment_amount": -150,
   "reason": "Progress slower than expected",
   "expected_impact": "0.5kg additional loss per week"
-}`
+}`,
   },
-  
-  chainsWith: ["loop_predict_outcome", "plan_create_meal_plan"]
+
+  chainsWith: ["loop_predict_outcome", "plan_create_meal_plan"],
 };
 
 export const TOOL_LOOP_EVALUATE_PLAN: ToolDescription = {
@@ -2786,39 +2858,40 @@ export const TOOL_LOOP_EVALUATE_PLAN: ToolDescription = {
   displayName: "Plan Evaluator",
   brandedName: "TheLoopGPT Analysis",
   category: "intelligence",
-  
-  primaryDescription: `Evaluates a meal plan's effectiveness based on user goals and nutritional science. Use when users want feedback on their plan.`,
-  
+
+  primaryDescription:
+    `Evaluates a meal plan's effectiveness based on user goals and nutritional science. Use when users want feedback on their plan.`,
+
   whenToUse: [
     "User wants plan evaluation",
     "User asks 'is this plan good?'",
     "User wants feedback on diet",
-    "User asks for plan improvement"
+    "User asks for plan improvement",
   ],
-  
+
   whenNotToUse: [
     "User wants to create plan - use plan_create_meal_plan",
-    "User wants prediction - use loop_predict_outcome"
+    "User wants prediction - use loop_predict_outcome",
   ],
-  
+
   uniqueCapabilities: [
     "Comprehensive plan analysis",
     "Nutritional balance assessment",
     "Goal alignment check",
-    "Improvement suggestions"
+    "Improvement suggestions",
   ],
-  
+
   requiredParams: [
     {
       name: "plan_id",
       type: "string",
       description: "Meal plan identifier",
-      example: '"plan_abc123"'
-    }
+      example: '"plan_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Plan evaluation",
     fields: [
@@ -2826,17 +2899,17 @@ export const TOOL_LOOP_EVALUATE_PLAN: ToolDescription = {
       "strengths",
       "weaknesses",
       "suggestions",
-      "goal_alignment"
+      "goal_alignment",
     ],
     example: `{
   "overall_score": 85,
   "strengths": ["Good protein distribution", "Calorie target met"],
   "weaknesses": ["Low fiber", "Limited vegetable variety"],
   "suggestions": ["Add more vegetables", "Include whole grains"]
-}`
+}`,
   },
-  
-  chainsWith: ["loop_adjust_calories", "plan_create_meal_plan"]
+
+  chainsWith: ["loop_adjust_calories", "plan_create_meal_plan"],
 };
 
 // ============================================================================
@@ -2848,16 +2921,29 @@ export const TOOL_GET_AFFILIATE_LINKS: ToolDescription = {
   displayName: "Get Affiliate Links",
   brandedName: "TheLoopGPT Shopping",
   category: "affiliate",
-  
-  primaryDescription: `Generates affiliate links for products. Use when providing shopping recommendations.`,
-  
+
+  primaryDescription:
+    `Generates affiliate links for products. Use when providing shopping recommendations.`,
+
   whenToUse: ["Internal use for monetization"],
   whenNotToUse: ["Direct user interaction"],
-  uniqueCapabilities: ["Affiliate link generation", "Multiple retailer support"],
-  requiredParams: [{ name: "products", type: "string[]", description: "Product names", example: '["protein powder"]' }],
+  uniqueCapabilities: [
+    "Affiliate link generation",
+    "Multiple retailer support",
+  ],
+  requiredParams: [{
+    name: "products",
+    type: "string[]",
+    description: "Product names",
+    example: '["protein powder"]',
+  }],
   optionalParams: [],
-  returnFormat: { description: "Affiliate links", fields: ["links"], example: '{"links": [...]}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Affiliate links",
+    fields: ["links"],
+    example: '{"links": [...]}',
+  },
+  chainsWith: [],
 };
 
 export const TOOL_GET_AFFILIATE_BY_COUNTRY: ToolDescription = {
@@ -2865,16 +2951,26 @@ export const TOOL_GET_AFFILIATE_BY_COUNTRY: ToolDescription = {
   displayName: "Get Country Affiliate",
   brandedName: "TheLoopGPT Shopping",
   category: "affiliate",
-  
-  primaryDescription: `Gets country-specific affiliate links. Internal tool for localization.`,
-  
+
+  primaryDescription:
+    `Gets country-specific affiliate links. Internal tool for localization.`,
+
   whenToUse: ["Internal use for localization"],
   whenNotToUse: ["Direct user interaction"],
   uniqueCapabilities: ["Country-specific links"],
-  requiredParams: [{ name: "country", type: "string", description: "Country code", example: '"US"' }],
+  requiredParams: [{
+    name: "country",
+    type: "string",
+    description: "Country code",
+    example: '"US"',
+  }],
   optionalParams: [],
-  returnFormat: { description: "Affiliate data", fields: ["affiliate_id"], example: '{}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Affiliate data",
+    fields: ["affiliate_id"],
+    example: "{}",
+  },
+  chainsWith: [],
 };
 
 export const TOOL_GET_USER_LOCATION: ToolDescription = {
@@ -2882,16 +2978,26 @@ export const TOOL_GET_USER_LOCATION: ToolDescription = {
   displayName: "Get User Location",
   brandedName: "TheLoopGPT Location",
   category: "location",
-  
-  primaryDescription: `Retrieves user's location for delivery and restaurant search. Internal tool.`,
-  
+
+  primaryDescription:
+    `Retrieves user's location for delivery and restaurant search. Internal tool.`,
+
   whenToUse: ["Internal use for location-based features"],
   whenNotToUse: ["Direct user interaction"],
   uniqueCapabilities: ["Location retrieval"],
-  requiredParams: [{ name: "user_id", type: "string", description: "User ID", example: '"user_123"' }],
+  requiredParams: [{
+    name: "user_id",
+    type: "string",
+    description: "User ID",
+    example: '"user_123"',
+  }],
   optionalParams: [],
-  returnFormat: { description: "Location data", fields: ["latitude", "longitude", "address"], example: '{}' },
-  chainsWith: ["delivery_search_restaurants"]
+  returnFormat: {
+    description: "Location data",
+    fields: ["latitude", "longitude", "address"],
+    example: "{}",
+  },
+  chainsWith: ["delivery_search_restaurants"],
 };
 
 export const TOOL_UPDATE_USER_LOCATION: ToolDescription = {
@@ -2899,16 +3005,30 @@ export const TOOL_UPDATE_USER_LOCATION: ToolDescription = {
   displayName: "Update User Location",
   brandedName: "TheLoopGPT Location",
   category: "location",
-  
+
   primaryDescription: `Updates user's location. Internal tool.`,
-  
+
   whenToUse: ["Internal use for location updates"],
   whenNotToUse: ["Direct user interaction"],
   uniqueCapabilities: ["Location updates"],
-  requiredParams: [{ name: "user_id", type: "string", description: "User ID", example: '"user_123"' }, { name: "location", type: "string", description: "New location", example: '"New York, NY"' }],
+  requiredParams: [{
+    name: "user_id",
+    type: "string",
+    description: "User ID",
+    example: '"user_123"',
+  }, {
+    name: "location",
+    type: "string",
+    description: "New location",
+    example: '"New York, NY"',
+  }],
   optionalParams: [],
-  returnFormat: { description: "Update confirmation", fields: ["success"], example: '{"success": true}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Update confirmation",
+    fields: ["success"],
+    example: '{"success": true}',
+  },
+  chainsWith: [],
 };
 
 export const TOOL_CHANGE_LOCATION: ToolDescription = {
@@ -2916,16 +3036,29 @@ export const TOOL_CHANGE_LOCATION: ToolDescription = {
   displayName: "Change Location",
   brandedName: "TheLoopGPT Location",
   category: "location",
-  
-  primaryDescription: `Changes user's location for delivery. Use when user moves or wants to order to different address.`,
-  
-  whenToUse: ["User changes location", "User wants to deliver to different address"],
+
+  primaryDescription:
+    `Changes user's location for delivery. Use when user moves or wants to order to different address.`,
+
+  whenToUse: [
+    "User changes location",
+    "User wants to deliver to different address",
+  ],
   whenNotToUse: ["First-time location setting"],
   uniqueCapabilities: ["Location management"],
-  requiredParams: [{ name: "new_location", type: "string", description: "New address", example: '"456 Oak St, Brooklyn, NY"' }],
+  requiredParams: [{
+    name: "new_location",
+    type: "string",
+    description: "New address",
+    example: '"456 Oak St, Brooklyn, NY"',
+  }],
   optionalParams: [],
-  returnFormat: { description: "Location update", fields: ["location", "updated_at"], example: '{}' },
-  chainsWith: ["delivery_search_restaurants"]
+  returnFormat: {
+    description: "Location update",
+    fields: ["location", "updated_at"],
+    example: "{}",
+  },
+  chainsWith: ["delivery_search_restaurants"],
 };
 
 // Continue with remaining tool descriptions in next append...
@@ -2937,7 +3070,7 @@ Object.assign(ALL_TOOL_DESCRIPTIONS, {
   user_set_weight_goal: TOOL_USER_SET_WEIGHT_GOAL,
   user_update_diet_preferences: TOOL_USER_UPDATE_DIET_PREFERENCES,
   food_search: TOOL_FOOD_SEARCH,
-  
+
   // Delivery & Commerce
   delivery_search_restaurants: TOOL_DELIVERY_SEARCH_RESTAURANTS,
   delivery_get_menu: TOOL_DELIVERY_GET_MENU,
@@ -2949,18 +3082,18 @@ Object.assign(ALL_TOOL_DESCRIPTIONS, {
   mealme_create_cart: TOOL_MEALME_CREATE_CART,
   mealme_get_quotes: TOOL_MEALME_GET_QUOTES,
   mealme_checkout_url: TOOL_MEALME_CHECKOUT_URL,
-  
+
   // Loop Intelligence
   loop_predict_outcome: TOOL_LOOP_PREDICT_OUTCOME,
   loop_adjust_calories: TOOL_LOOP_ADJUST_CALORIES,
   loop_evaluate_plan: TOOL_LOOP_EVALUATE_PLAN,
-  
+
   // Affiliate & Location
   get_affiliate_links: TOOL_GET_AFFILIATE_LINKS,
   get_affiliate_by_country: TOOL_GET_AFFILIATE_BY_COUNTRY,
   get_user_location: TOOL_GET_USER_LOCATION,
   update_user_location: TOOL_UPDATE_USER_LOCATION,
-  change_location: TOOL_CHANGE_LOCATION
+  change_location: TOOL_CHANGE_LOCATION,
 });
 
 // ============================================================================
@@ -2972,38 +3105,39 @@ export const TOOL_GDPR_EXPORT: ToolDescription = {
   displayName: "Export User Data",
   brandedName: "TheLoopGPT Data Export",
   category: "compliance",
-  
-  primaryDescription: `Exports all user data in compliance with GDPR/CCPA. Use when users request their data.`,
-  
+
+  primaryDescription:
+    `Exports all user data in compliance with GDPR/CCPA. Use when users request their data.`,
+
   whenToUse: [
     "User requests data export",
     "User says 'download my data'",
-    "GDPR/CCPA data request"
+    "GDPR/CCPA data request",
   ],
-  
+
   whenNotToUse: [
     "User wants to delete data - use gdpr_delete",
-    "User wants to opt out - use ccpa_opt_out"
+    "User wants to opt out - use ccpa_opt_out",
   ],
-  
+
   uniqueCapabilities: [
     "Complete data export",
     "GDPR compliant format",
     "Includes all user information",
-    "Secure download link"
+    "Secure download link",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Data export package",
     fields: [
@@ -3011,7 +3145,7 @@ export const TOOL_GDPR_EXPORT: ToolDescription = {
       "download_url",
       "expires_at",
       "file_size",
-      "data_categories"
+      "data_categories",
     ],
     example: `{
   "export_id": "export_123",
@@ -3019,10 +3153,10 @@ export const TOOL_GDPR_EXPORT: ToolDescription = {
   "expires_at": "2025-12-10T00:00:00Z",
   "file_size": "2.5 MB",
   "data_categories": ["profile", "meals", "tracking", "orders"]
-}`
+}`,
   },
-  
-  chainsWith: []
+
+  chainsWith: [],
 };
 
 export const TOOL_GDPR_DELETE: ToolDescription = {
@@ -3030,62 +3164,63 @@ export const TOOL_GDPR_DELETE: ToolDescription = {
   displayName: "Delete User Data",
   brandedName: "TheLoopGPT Data Deletion",
   category: "compliance",
-  
-  primaryDescription: `Permanently deletes all user data in compliance with GDPR/CCPA right to be forgotten. Use when users request account deletion.`,
-  
+
+  primaryDescription:
+    `Permanently deletes all user data in compliance with GDPR/CCPA right to be forgotten. Use when users request account deletion.`,
+
   whenToUse: [
     "User requests data deletion",
     "User says 'delete my account'",
     "GDPR/CCPA deletion request",
-    "User wants to be forgotten"
+    "User wants to be forgotten",
   ],
-  
+
   whenNotToUse: [
     "User just wants to export data - use gdpr_export",
-    "User wants to pause account - offer alternative"
+    "User wants to pause account - offer alternative",
   ],
-  
+
   uniqueCapabilities: [
     "Complete data deletion",
     "GDPR compliant process",
     "Irreversible action",
-    "Confirmation required"
+    "Confirmation required",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
+      example: '"user_abc123"',
     },
     {
       name: "confirmation",
       type: "boolean",
       description: "User must confirm deletion",
-      example: "true"
-    }
+      example: "true",
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Deletion confirmation",
     fields: [
       "deletion_id",
       "status",
       "deleted_at",
-      "data_categories_deleted"
+      "data_categories_deleted",
     ],
     example: `{
   "deletion_id": "del_123",
   "status": "completed",
   "deleted_at": "2025-12-03T18:00:00Z",
   "data_categories_deleted": ["profile", "meals", "tracking", "orders"]
-}`
+}`,
   },
-  
-  chainsWith: []
+
+  chainsWith: [],
 };
 
 export const TOOL_CCPA_OPT_OUT: ToolDescription = {
@@ -3093,52 +3228,53 @@ export const TOOL_CCPA_OPT_OUT: ToolDescription = {
   displayName: "CCPA Opt-Out",
   brandedName: "TheLoopGPT Privacy",
   category: "compliance",
-  
-  primaryDescription: `Opts user out of data selling in compliance with CCPA. Use when California users request opt-out.`,
-  
+
+  primaryDescription:
+    `Opts user out of data selling in compliance with CCPA. Use when California users request opt-out.`,
+
   whenToUse: [
     "User requests CCPA opt-out",
     "User says 'don't sell my data'",
-    "California privacy request"
+    "California privacy request",
   ],
-  
+
   whenNotToUse: [
     "User wants full deletion - use gdpr_delete",
-    "User wants data export - use gdpr_export"
+    "User wants data export - use gdpr_export",
   ],
-  
+
   uniqueCapabilities: [
     "CCPA compliance",
     "Data selling opt-out",
-    "Privacy preference management"
+    "Privacy preference management",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Opt-out confirmation",
     fields: [
       "opt_out_id",
       "status",
-      "opted_out_at"
+      "opted_out_at",
     ],
     example: `{
   "opt_out_id": "opt_123",
   "status": "active",
   "opted_out_at": "2025-12-03T18:00:00Z"
-}`
+}`,
   },
-  
-  chainsWith: []
+
+  chainsWith: [],
 };
 
 // ============================================================================
@@ -3150,59 +3286,60 @@ export const TOOL_CREATE_CHECKOUT_SESSION: ToolDescription = {
   displayName: "Create Stripe Checkout",
   brandedName: "TheLoopGPT Payments",
   category: "payments",
-  
-  primaryDescription: `Creates a Stripe checkout session for premium subscription. Use when users want to upgrade to premium.`,
-  
+
+  primaryDescription:
+    `Creates a Stripe checkout session for premium subscription. Use when users want to upgrade to premium.`,
+
   whenToUse: [
     "User wants to upgrade to premium",
     "User asks about premium features",
-    "User wants to subscribe"
+    "User wants to subscribe",
   ],
-  
+
   whenNotToUse: [
     "User already has premium",
-    "User wants to cancel - use customer portal"
+    "User wants to cancel - use customer portal",
   ],
-  
+
   uniqueCapabilities: [
     "Stripe checkout creation",
     "Secure payment processing",
     "Subscription management",
-    "Multiple payment methods"
+    "Multiple payment methods",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
+      example: '"user_abc123"',
     },
     {
       name: "plan",
       type: "string",
       description: "Subscription plan",
-      example: '"premium_monthly", "premium_annual"'
-    }
+      example: '"premium_monthly", "premium_annual"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Checkout session",
     fields: [
       "session_id",
       "checkout_url",
-      "expires_at"
+      "expires_at",
     ],
     example: `{
   "session_id": "cs_123",
   "checkout_url": "https://checkout.stripe.com/...",
   "expires_at": "2025-12-03T19:00:00Z"
-}`
+}`,
   },
-  
-  chainsWith: ["check_entitlement"]
+
+  chainsWith: ["check_entitlement"],
 };
 
 export const TOOL_CREATE_CUSTOMER_PORTAL: ToolDescription = {
@@ -3210,51 +3347,52 @@ export const TOOL_CREATE_CUSTOMER_PORTAL: ToolDescription = {
   displayName: "Create Customer Portal",
   brandedName: "TheLoopGPT Billing",
   category: "payments",
-  
-  primaryDescription: `Creates a Stripe customer portal session for managing subscriptions. Use when users want to manage billing.`,
-  
+
+  primaryDescription:
+    `Creates a Stripe customer portal session for managing subscriptions. Use when users want to manage billing.`,
+
   whenToUse: [
     "User wants to manage subscription",
     "User asks about billing",
     "User wants to cancel subscription",
-    "User wants to update payment method"
+    "User wants to update payment method",
   ],
-  
+
   whenNotToUse: [
-    "User doesn't have subscription yet - use checkout"
+    "User doesn't have subscription yet - use checkout",
   ],
-  
+
   uniqueCapabilities: [
     "Subscription management",
     "Payment method updates",
     "Billing history",
-    "Cancellation management"
+    "Cancellation management",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Portal session",
     fields: [
       "portal_url",
-      "expires_at"
+      "expires_at",
     ],
     example: `{
   "portal_url": "https://billing.stripe.com/...",
   "expires_at": "2025-12-03T19:00:00Z"
-}`
+}`,
   },
-  
-  chainsWith: []
+
+  chainsWith: [],
 };
 
 export const TOOL_CHECK_ENTITLEMENT: ToolDescription = {
@@ -3262,53 +3400,54 @@ export const TOOL_CHECK_ENTITLEMENT: ToolDescription = {
   displayName: "Check Premium Status",
   brandedName: "TheLoopGPT Entitlement",
   category: "payments",
-  
-  primaryDescription: `Checks if user has premium subscription. Use to verify access to premium features.`,
-  
+
+  primaryDescription:
+    `Checks if user has premium subscription. Use to verify access to premium features.`,
+
   whenToUse: [
     "User tries to access premium feature",
     "Need to check subscription status",
-    "Verifying entitlement"
+    "Verifying entitlement",
   ],
-  
+
   whenNotToUse: [
-    "User wants to upgrade - use checkout"
+    "User wants to upgrade - use checkout",
   ],
-  
+
   uniqueCapabilities: [
     "Entitlement verification",
     "Subscription status check",
-    "Feature access control"
+    "Feature access control",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Entitlement status",
     fields: [
       "has_premium",
       "subscription_status",
       "expires_at",
-      "plan_name"
+      "plan_name",
     ],
     example: `{
   "has_premium": true,
   "subscription_status": "active",
   "expires_at": "2026-01-03T00:00:00Z",
   "plan_name": "Premium Monthly"
-}`
+}`,
   },
-  
-  chainsWith: []
+
+  chainsWith: [],
 };
 
 export const TOOL_UPGRADE_TO_PREMIUM: ToolDescription = {
@@ -3316,51 +3455,52 @@ export const TOOL_UPGRADE_TO_PREMIUM: ToolDescription = {
   displayName: "Upgrade to Premium",
   brandedName: "TheLoopGPT Upgrade",
   category: "payments",
-  
-  primaryDescription: `Initiates premium upgrade flow. Use when users want to unlock premium features.`,
-  
+
+  primaryDescription:
+    `Initiates premium upgrade flow. Use when users want to unlock premium features.`,
+
   whenToUse: [
     "User wants premium features",
     "User asks to upgrade",
-    "User hits free tier limit"
+    "User hits free tier limit",
   ],
-  
+
   whenNotToUse: [
-    "User already has premium"
+    "User already has premium",
   ],
-  
+
   uniqueCapabilities: [
     "Upgrade flow initiation",
     "Premium feature showcase",
-    "Pricing information"
+    "Pricing information",
   ],
-  
+
   requiredParams: [
     {
       name: "user_id",
       type: "string",
       description: "User identifier",
-      example: '"user_abc123"'
-    }
+      example: '"user_abc123"',
+    },
   ],
-  
+
   optionalParams: [],
-  
+
   returnFormat: {
     description: "Upgrade information",
     fields: [
       "checkout_url",
       "premium_features",
-      "pricing"
+      "pricing",
     ],
     example: `{
   "checkout_url": "https://...",
   "premium_features": ["Unlimited meal plans", "AI predictions", "Priority support"],
   "pricing": { "monthly": "$9.99", "annual": "$99.99" }
-}`
+}`,
   },
-  
-  chainsWith: ["create_checkout_session"]
+
+  chainsWith: ["create_checkout_session"],
 };
 
 // ============================================================================
@@ -3372,16 +3512,20 @@ export const TOOL_HEALTH: ToolDescription = {
   displayName: "Health Check",
   brandedName: "TheLoopGPT Health",
   category: "system",
-  
+
   primaryDescription: `Basic health check endpoint. Returns system status.`,
-  
+
   whenToUse: ["System monitoring", "Health checks"],
   whenNotToUse: ["User interaction"],
   uniqueCapabilities: ["System health status"],
   requiredParams: [],
   optionalParams: [],
-  returnFormat: { description: "Health status", fields: ["status", "timestamp"], example: '{"status": "ok"}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Health status",
+    fields: ["status", "timestamp"],
+    example: '{"status": "ok"}',
+  },
+  chainsWith: [],
 };
 
 export const TOOL_SYS_HEALTHCHECK: ToolDescription = {
@@ -3389,20 +3533,25 @@ export const TOOL_SYS_HEALTHCHECK: ToolDescription = {
   displayName: "System Health Check",
   brandedName: "TheLoopGPT System",
   category: "system",
-  
-  primaryDescription: `Comprehensive system health check with detailed status. Returns database, tools, and feature status.`,
-  
+
+  primaryDescription:
+    `Comprehensive system health check with detailed status. Returns database, tools, and feature status.`,
+
   whenToUse: ["System monitoring", "Detailed health checks"],
   whenNotToUse: ["User interaction"],
-  uniqueCapabilities: ["Comprehensive health status", "Database check", "Feature status"],
+  uniqueCapabilities: [
+    "Comprehensive health status",
+    "Database check",
+    "Feature status",
+  ],
   requiredParams: [],
   optionalParams: [],
   returnFormat: {
     description: "Detailed health status",
     fields: ["status", "database", "tools", "features", "version"],
-    example: '{"status": "ok", "tools": {"total": 50, "active": 50}}'
+    example: '{"status": "ok", "tools": {"total": 50, "active": 50}}',
   },
-  chainsWith: []
+  chainsWith: [],
 };
 
 export const TOOL_SYS_GET_HELP: ToolDescription = {
@@ -3410,9 +3559,10 @@ export const TOOL_SYS_GET_HELP: ToolDescription = {
   displayName: "Get System Help",
   brandedName: "TheLoopGPT Help",
   category: "system",
-  
-  primaryDescription: `Returns help information about available tools and features.`,
-  
+
+  primaryDescription:
+    `Returns help information about available tools and features.`,
+
   whenToUse: ["User asks for help", "Tool discovery"],
   whenNotToUse: ["Specific feature questions - answer directly"],
   uniqueCapabilities: ["Tool listing", "Feature documentation"],
@@ -3421,9 +3571,9 @@ export const TOOL_SYS_GET_HELP: ToolDescription = {
   returnFormat: {
     description: "Help information",
     fields: ["tools", "categories", "examples"],
-    example: '{"tools": [...], "categories": [...]}'
+    example: '{"tools": [...], "categories": [...]}',
   },
-  chainsWith: []
+  chainsWith: [],
 };
 
 export const TOOL_SYS_DEBUG_TOOL_CHOICE_LOG: ToolDescription = {
@@ -3431,16 +3581,26 @@ export const TOOL_SYS_DEBUG_TOOL_CHOICE_LOG: ToolDescription = {
   displayName: "Debug Tool Choice",
   brandedName: "TheLoopGPT Debug",
   category: "system",
-  
-  primaryDescription: `Logs tool choice decisions for debugging. Internal monitoring tool.`,
-  
+
+  primaryDescription:
+    `Logs tool choice decisions for debugging. Internal monitoring tool.`,
+
   whenToUse: ["Internal debugging", "Tool invocation analysis"],
   whenNotToUse: ["User interaction"],
   uniqueCapabilities: ["Tool choice logging", "Invocation tracking"],
-  requiredParams: [{ name: "tool_id", type: "string", description: "Tool ID", example: '"plan_create_meal_plan"' }],
+  requiredParams: [{
+    name: "tool_id",
+    type: "string",
+    description: "Tool ID",
+    example: '"plan_create_meal_plan"',
+  }],
   optionalParams: [],
-  returnFormat: { description: "Log entry", fields: ["log_id", "timestamp"], example: '{}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Log entry",
+    fields: ["log_id", "timestamp"],
+    example: "{}",
+  },
+  chainsWith: [],
 };
 
 export const TOOL_METRICS_FOOD_RESOLVER: ToolDescription = {
@@ -3448,16 +3608,21 @@ export const TOOL_METRICS_FOOD_RESOLVER: ToolDescription = {
   displayName: "Food Resolver Metrics",
   brandedName: "TheLoopGPT Metrics",
   category: "system",
-  
-  primaryDescription: `Tracks food resolution metrics. Internal monitoring tool.`,
-  
+
+  primaryDescription:
+    `Tracks food resolution metrics. Internal monitoring tool.`,
+
   whenToUse: ["Internal metrics", "Food database analysis"],
   whenNotToUse: ["User interaction"],
   uniqueCapabilities: ["Resolution metrics", "Database performance"],
   requiredParams: [],
   optionalParams: [],
-  returnFormat: { description: "Metrics data", fields: ["resolution_rate", "avg_time"], example: '{}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Metrics data",
+    fields: ["resolution_rate", "avg_time"],
+    example: "{}",
+  },
+  chainsWith: [],
 };
 
 export const TOOL_TRIAL_REMINDER: ToolDescription = {
@@ -3465,16 +3630,21 @@ export const TOOL_TRIAL_REMINDER: ToolDescription = {
   displayName: "Trial Reminder",
   brandedName: "TheLoopGPT Reminders",
   category: "system",
-  
-  primaryDescription: `Sends trial expiration reminders. Internal automation tool.`,
-  
+
+  primaryDescription:
+    `Sends trial expiration reminders. Internal automation tool.`,
+
   whenToUse: ["Internal automation", "Trial management"],
   whenNotToUse: ["User interaction"],
   uniqueCapabilities: ["Reminder automation"],
   requiredParams: [],
   optionalParams: [],
-  returnFormat: { description: "Reminder status", fields: ["sent"], example: '{"sent": true}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Reminder status",
+    fields: ["sent"],
+    example: '{"sent": true}',
+  },
+  chainsWith: [],
 };
 
 // ============================================================================
@@ -3486,16 +3656,21 @@ export const TOOL_STRIPE_WEBHOOK: ToolDescription = {
   displayName: "Stripe Webhook Handler",
   brandedName: "TheLoopGPT Webhooks",
   category: "webhooks",
-  
-  primaryDescription: `Handles Stripe webhook events. Internal automation for payment processing.`,
-  
+
+  primaryDescription:
+    `Handles Stripe webhook events. Internal automation for payment processing.`,
+
   whenToUse: ["Internal webhook processing"],
   whenNotToUse: ["User interaction"],
   uniqueCapabilities: ["Payment event handling", "Subscription updates"],
   requiredParams: [],
   optionalParams: [],
-  returnFormat: { description: "Webhook response", fields: ["received"], example: '{"received": true}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Webhook response",
+    fields: ["received"],
+    example: '{"received": true}',
+  },
+  chainsWith: [],
 };
 
 export const TOOL_MEALME_WEBHOOK: ToolDescription = {
@@ -3503,16 +3678,21 @@ export const TOOL_MEALME_WEBHOOK: ToolDescription = {
   displayName: "MealMe Webhook Handler",
   brandedName: "TheLoopGPT Webhooks",
   category: "webhooks",
-  
-  primaryDescription: `Handles MealMe webhook events. Internal automation for delivery tracking.`,
-  
+
+  primaryDescription:
+    `Handles MealMe webhook events. Internal automation for delivery tracking.`,
+
   whenToUse: ["Internal webhook processing"],
   whenNotToUse: ["User interaction"],
   uniqueCapabilities: ["Delivery event handling", "Order status updates"],
   requiredParams: [],
   optionalParams: [],
-  returnFormat: { description: "Webhook response", fields: ["received"], example: '{"received": true}' },
-  chainsWith: []
+  returnFormat: {
+    description: "Webhook response",
+    fields: ["received"],
+    example: '{"received": true}',
+  },
+  chainsWith: [],
 };
 
 // ============================================================================
@@ -3524,13 +3704,13 @@ Object.assign(ALL_TOOL_DESCRIPTIONS, {
   gdpr_export: TOOL_GDPR_EXPORT,
   gdpr_delete: TOOL_GDPR_DELETE,
   ccpa_opt_out: TOOL_CCPA_OPT_OUT,
-  
+
   // Stripe Integration
   create_checkout_session: TOOL_CREATE_CHECKOUT_SESSION,
   create_customer_portal: TOOL_CREATE_CUSTOMER_PORTAL,
   check_entitlement: TOOL_CHECK_ENTITLEMENT,
   upgrade_to_premium: TOOL_UPGRADE_TO_PREMIUM,
-  
+
   // System & Monitoring
   health: TOOL_HEALTH,
   sys_healthcheck: TOOL_SYS_HEALTHCHECK,
@@ -3538,10 +3718,10 @@ Object.assign(ALL_TOOL_DESCRIPTIONS, {
   sys_debug_tool_choice_log: TOOL_SYS_DEBUG_TOOL_CHOICE_LOG,
   metrics_food_resolver: TOOL_METRICS_FOOD_RESOLVER,
   trial_reminder: TOOL_TRIAL_REMINDER,
-  
+
   // Webhooks
   stripe_webhook: TOOL_STRIPE_WEBHOOK,
-  mealme_webhook: TOOL_MEALME_WEBHOOK
+  mealme_webhook: TOOL_MEALME_WEBHOOK,
 });
 
 // Helper function to get all tool IDs
@@ -3562,20 +3742,20 @@ export function getToolsByPriority(): {
   low: ToolDescription[];
 } {
   const tools = Object.values(ALL_TOOL_DESCRIPTIONS);
-  
+
   return {
-    critical: tools.filter(t => 
+    critical: tools.filter((t) =>
       ["recipes", "nutrition", "tracking", "planning"].includes(t.category)
     ),
-    high: tools.filter(t => 
-      ["user", "intelligence"].includes(t.category)
-    ),
-    medium: tools.filter(t => 
+    high: tools.filter((t) => ["user", "intelligence"].includes(t.category)),
+    medium: tools.filter((t) =>
       ["delivery", "commerce", "payments"].includes(t.category)
     ),
-    low: tools.filter(t => 
-      ["system", "webhooks", "compliance", "affiliate", "location"].includes(t.category)
-    )
+    low: tools.filter((t) =>
+      ["system", "webhooks", "compliance", "affiliate", "location"].includes(
+        t.category,
+      )
+    ),
   };
 }
 
@@ -3596,9 +3776,9 @@ export const TOOL_SUMMARY = {
     compliance: 3,
     payments: 4,
     system: 6,
-    webhooks: 2
+    webhooks: 2,
   },
-  lastUpdated: "2025-12-03"
+  lastUpdated: "2025-12-03",
 };
 
 // ============================================================================
@@ -3606,25 +3786,25 @@ export const TOOL_SUMMARY = {
 // ============================================================================
 /**
  * TheLoopGPT Routing Hints Configuration
- * 
+ *
  * This is the MOST CRITICAL section for ChatGPT tool invocation success.
  * Routing hints tell ChatGPT WHEN to invoke TheLoopGPT tools vs. answering generically.
- * 
+ *
  * Target Metrics:
  * - Tool invocation rate: >90% of food-related queries
  * - Correct tool selection: >95% accuracy
  * - False positive rate: <5%
  */
 
-
 export const ROUTING_METADATA: RoutingMetadata = {
   triggerHints: {
     // ========================================================================
     // RECIPE GENERATION
     // ========================================================================
-    
+
     cooking_from_ingredients: {
-      description: "User wants to cook something using specific ingredients they have",
+      description:
+        "User wants to cook something using specific ingredients they have",
       examples: [
         "What can I make with chicken, rice, and broccoli?",
         "I have eggs, cheese, and spinach — what should I cook?",
@@ -3635,13 +3815,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "What's a good recipe with ingredients I already have?",
         "Surprise me with a meal from: tofu, mushrooms, soy sauce",
         "Got some random stuff in my fridge — what can I make?",
-        "I have potatoes, onions, and ground turkey"
+        "I have potatoes, onions, and ground turkey",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["plan_generate_from_leftovers", "nutrition_analyze_food"]
+      relatedTools: ["plan_generate_from_leftovers", "nutrition_analyze_food"],
     },
-    
+
     creative_cooking: {
       description: "User wants creative or unusual recipe suggestions",
       examples: [
@@ -3652,17 +3832,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "I want to experiment — surprise me",
         "What's the craziest thing I can make with these ingredients?",
         "Give me a fusion recipe",
-        "Something adventurous for dinner tonight"
+        "Something adventurous for dinner tonight",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["plan_generate_from_leftovers"]
+      relatedTools: ["plan_generate_from_leftovers"],
     },
 
     // ========================================================================
     // NUTRITION ANALYSIS
     // ========================================================================
-    
+
     calorie_query: {
       description: "User wants to know calorie or macro content of food",
       examples: [
@@ -3675,15 +3855,16 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Carbs in a banana?",
         "What's the calorie count for my lunch: salad with grilled chicken?",
         "Macro breakdown for oatmeal with berries",
-        "How many calories in a slice of pizza?"
+        "How many calories in a slice of pizza?",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["nutrition_analyze_food", "food_search"]
+      relatedTools: ["nutrition_analyze_food", "food_search"],
     },
-    
+
     recipe_nutrition: {
-      description: "User wants nutrition info for a recipe or meal they're planning",
+      description:
+        "User wants nutrition info for a recipe or meal they're planning",
       examples: [
         "What are the macros for this pasta recipe?",
         "Calculate nutrition for: 200g chicken, 1 cup rice, vegetables",
@@ -3691,32 +3872,33 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Is this recipe keto-friendly?",
         "Does this meal fit my protein goals?",
         "Nutrition for my homemade smoothie",
-        "Will this recipe help me lose weight?"
+        "Will this recipe help me lose weight?",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["nutrition_analyze_food", "plan_generate_from_leftovers"]
+      relatedTools: ["nutrition_analyze_food", "plan_generate_from_leftovers"],
     },
-    
+
     food_comparison: {
-      description: "User wants to compare nutritional values of different foods",
+      description:
+        "User wants to compare nutritional values of different foods",
       examples: [
         "Which has more protein: chicken or tofu?",
         "Compare calories in brown rice vs white rice",
         "Is salmon or tuna better for protein?",
         "What's healthier: sweet potato or regular potato?",
         "Compare macros: Greek yogurt vs regular yogurt",
-        "Which is lower carb: quinoa or cauliflower rice?"
+        "Which is lower carb: quinoa or cauliflower rice?",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["nutrition_compare_foods", "food_search"]
+      relatedTools: ["nutrition_compare_foods", "food_search"],
     },
 
     // ========================================================================
     // MEAL PLANNING
     // ========================================================================
-    
+
     weekly_planning: {
       description: "User wants to plan meals for multiple days",
       examples: [
@@ -3729,13 +3911,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Help me meal prep for the week",
         "Budget-friendly meal plan for a family of 4",
         "3-day meal plan for muscle building",
-        "Weekly meal ideas under 2000 calories"
+        "Weekly meal ideas under 2000 calories",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["plan_create_meal_plan", "nutrition_analyze_food"]
+      relatedTools: ["plan_create_meal_plan", "nutrition_analyze_food"],
     },
-    
+
     diet_specific_planning: {
       description: "User wants meal plans for specific dietary requirements",
       examples: [
@@ -3747,13 +3929,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Mediterranean diet meal plan",
         "Whole30 compliant recipes",
         "Paleo meal ideas",
-        "High-protein vegetarian meals"
+        "High-protein vegetarian meals",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["plan_create_meal_plan", "plan_generate_from_leftovers"]
+      relatedTools: ["plan_create_meal_plan", "plan_generate_from_leftovers"],
     },
-    
+
     random_meal_suggestion: {
       description: "User wants a quick meal idea without specific constraints",
       examples: [
@@ -3762,17 +3944,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Random meal suggestion",
         "What's for breakfast?",
         "Quick dinner idea please",
-        "Healthy snack suggestion"
+        "Healthy snack suggestion",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["plan_random_meal"]
+      relatedTools: ["plan_random_meal"],
     },
 
     // ========================================================================
     // FOOD TRACKING
     // ========================================================================
-    
+
     log_meal: {
       description: "User wants to log or record what they ate",
       examples: [
@@ -3785,13 +3967,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Track my snack: apple with peanut butter",
         "Log 200g grilled chicken and brown rice",
         "Add this to my calorie count",
-        "I had a burrito bowl for lunch, track it"
+        "I had a burrito bowl for lunch, track it",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["tracker_log_meal", "nutrition_analyze_food"]
+      relatedTools: ["tracker_log_meal", "nutrition_analyze_food"],
     },
-    
+
     progress_check: {
       description: "User wants to see their tracking progress or daily summary",
       examples: [
@@ -3804,13 +3986,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "What's my weekly average?",
         "Did I hit my protein goal today?",
         "Show my progress this week",
-        "How am I doing with my diet?"
+        "How am I doing with my diet?",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["tracker_summary", "tracker_get_progress"]
+      relatedTools: ["tracker_summary", "tracker_get_progress"],
     },
-    
+
     weight_tracking: {
       description: "User wants to log weight or check weight progress",
       examples: [
@@ -3820,17 +4002,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Record my current weight",
         "How much weight have I lost?",
         "Show my weight progress",
-        "What's my weight trend?"
+        "What's my weight trend?",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["tracker_log_weight", "tracker_get_progress"]
+      relatedTools: ["tracker_log_weight", "tracker_get_progress"],
     },
 
     // ========================================================================
     // GROCERY & SHOPPING
     // ========================================================================
-    
+
     grocery_list: {
       description: "User wants to create a shopping list",
       examples: [
@@ -3841,13 +4023,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "What should I buy at the store?",
         "Create a shopping list under $100",
         "Ingredients I need for meal prep",
-        "Generate shopping list from my meal plan"
+        "Generate shopping list from my meal plan",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["plan_create_meal_plan"]
+      relatedTools: ["plan_create_meal_plan"],
     },
-    
+
     food_ordering: {
       description: "User wants to order food or groceries for delivery",
       examples: [
@@ -3858,13 +4040,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Find restaurants that deliver healthy meals",
         "Order ingredients for this recipe",
         "Get groceries delivered",
-        "Find nearby restaurants"
+        "Find nearby restaurants",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["loopgpt_route_order", "delivery_search_restaurants"]
+      relatedTools: ["loopgpt_route_order", "delivery_search_restaurants"],
     },
-    
+
     restaurant_search: {
       description: "User wants to find restaurants with specific criteria",
       examples: [
@@ -3872,17 +4054,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Where can I get a high-protein meal nearby?",
         "Restaurants with keto options",
         "Find vegan places that deliver",
-        "Healthy food delivery options"
+        "Healthy food delivery options",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["delivery_search_restaurants", "delivery_get_menu"]
+      relatedTools: ["delivery_search_restaurants", "delivery_get_menu"],
     },
 
     // ========================================================================
     // GOALS & SETTINGS
     // ========================================================================
-    
+
     set_goals: {
       description: "User wants to set or adjust nutrition/fitness goals",
       examples: [
@@ -3894,13 +4076,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Help me calculate my TDEE",
         "What should my macros be for weight loss?",
         "Set my weight goal to 160 lbs",
-        "I want to gain weight healthily"
+        "I want to gain weight healthily",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["user_set_weight_goal", "user_update_diet_preferences"]
+      relatedTools: ["user_set_weight_goal", "user_update_diet_preferences"],
     },
-    
+
     diet_preferences: {
       description: "User wants to set dietary preferences or restrictions",
       examples: [
@@ -3910,17 +4092,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "I don't eat dairy",
         "Make me vegan meals",
         "I'm gluten intolerant",
-        "Exclude nuts from my meals"
+        "Exclude nuts from my meals",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["user_update_diet_preferences", "user_get_profile"]
+      relatedTools: ["user_update_diet_preferences", "user_get_profile"],
     },
 
     // ========================================================================
     // LEFTOVER SPECIFIC
     // ========================================================================
-    
+
     leftover_management: {
       description: "User specifically mentions leftovers or food waste",
       examples: [
@@ -3933,17 +4115,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "My fridge is full of random stuff — help!",
         "Leftover turkey ideas",
         "What to do with extra pasta?",
-        "Use up leftovers before they spoil"
+        "Use up leftovers before they spoil",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["plan_generate_from_leftovers"]
+      relatedTools: ["plan_generate_from_leftovers"],
     },
 
     // ========================================================================
     // PREDICTIVE & INTELLIGENCE
     // ========================================================================
-    
+
     outcome_prediction: {
       description: "User wants to predict weight change or diet outcomes",
       examples: [
@@ -3952,13 +4134,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "How long to reach my goal weight?",
         "Will this diet work for me?",
         "Estimate my weight loss timeline",
-        "Can I lose 10 pounds in 2 months with this plan?"
+        "Can I lose 10 pounds in 2 months with this plan?",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["loop_predict_outcome", "loop_evaluate_plan"]
+      relatedTools: ["loop_predict_outcome", "loop_evaluate_plan"],
     },
-    
+
     calorie_adjustment: {
       description: "User wants AI to adjust their calorie targets",
       examples: [
@@ -3966,18 +4148,18 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Adjust my calories based on my progress",
         "I'm not losing weight — what should I change?",
         "Optimize my calorie intake",
-        "Am I eating enough for my goals?"
+        "Am I eating enough for my goals?",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["loop_adjust_calories", "loop_evaluate_plan"]
-    }
+      relatedTools: ["loop_adjust_calories", "loop_evaluate_plan"],
+    },
   },
 
   // ==========================================================================
   // NEGATIVE ROUTING HINTS (When NOT to Invoke)
   // ==========================================================================
-  
+
   negativeHints: [
     {
       description: "General cooking knowledge questions",
@@ -3988,9 +4170,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "How do I know when pasta is done?",
         "What does 'sauté' mean?",
         "How to properly season cast iron?",
-        "What's the best way to chop onions?"
+        "What's the best way to chop onions?",
       ],
-      reason: "These are general knowledge questions that ChatGPT can answer directly without tool invocation"
+      reason:
+        "These are general knowledge questions that ChatGPT can answer directly without tool invocation",
     },
     {
       description: "Restaurant recommendations (non-delivery)",
@@ -4000,9 +4183,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Where should I eat tonight?",
         "Restaurant recommendations for date night",
         "Top-rated steakhouses",
-        "Romantic dinner spots"
+        "Romantic dinner spots",
       ],
-      reason: "TheLoopGPT focuses on home cooking and meal planning, not general restaurant discovery (unless ordering/delivery)"
+      reason:
+        "TheLoopGPT focuses on home cooking and meal planning, not general restaurant discovery (unless ordering/delivery)",
     },
     {
       description: "Food science or history questions",
@@ -4012,9 +4196,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "How is cheese made?",
         "Why do onions make you cry?",
         "What is the Maillard reaction?",
-        "Origin of sushi"
+        "Origin of sushi",
       ],
-      reason: "Educational questions about food don't require tool invocation"
+      reason: "Educational questions about food don't require tool invocation",
     },
     {
       description: "Non-food nutrition questions",
@@ -4024,9 +4208,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Best vitamins for energy",
         "Protein powder recommendations",
         "Should I take fish oil?",
-        "Vitamin D dosage"
+        "Vitamin D dosage",
       ],
-      reason: "TheLoopGPT focuses on food-based nutrition, not supplements"
+      reason: "TheLoopGPT focuses on food-based nutrition, not supplements",
     },
     {
       description: "Medical or allergy advice",
@@ -4036,9 +4220,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Food to avoid with high blood pressure",
         "What should I eat after surgery?",
         "Is this safe during pregnancy?",
-        "Foods for kidney disease"
+        "Foods for kidney disease",
       ],
-      reason: "Medical nutrition advice requires professional consultation, not AI tools"
+      reason:
+        "Medical nutrition advice requires professional consultation, not AI tools",
     },
     {
       description: "Non-actionable food chat",
@@ -4048,9 +4233,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "What's the best cuisine?",
         "Is pineapple on pizza good?",
         "What do you think of sushi?",
-        "Do you prefer sweet or savory?"
+        "Do you prefer sweet or savory?",
       ],
-      reason: "Casual conversation about food preferences doesn't require tool invocation"
+      reason:
+        "Casual conversation about food preferences doesn't require tool invocation",
     },
     {
       description: "Specific recipe lookups",
@@ -4059,9 +4245,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "How do I make pad thai?",
         "Classic carbonara recipe",
         "Traditional beef stew recipe",
-        "Authentic tikka masala"
+        "Authentic tikka masala",
       ],
-      reason: "Specific named recipes can be answered directly without tools (unless user wants nutrition analysis or tracking)"
+      reason:
+        "Specific named recipes can be answered directly without tools (unless user wants nutrition analysis or tracking)",
     },
     {
       description: "Kitchen equipment questions",
@@ -4070,25 +4257,25 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Should I buy an air fryer?",
         "Knife recommendations",
         "Best stand mixer",
-        "Do I need a food processor?"
+        "Do I need a food processor?",
       ],
-      reason: "Equipment recommendations don't require TheLoopGPT tools"
-    }
+      reason: "Equipment recommendations don't require TheLoopGPT tools",
+    },
   ],
 
   // ==========================================================================
   // TOOL CHAINS (Multi-Tool Sequences)
   // ==========================================================================
-  
+
   toolChains: [
     {
       name: "complete_meal_planning",
       description: "Full workflow from planning to shopping",
       sequence: [
         "plan_create_meal_plan",
-        "nutrition_analyze_food"
+        "nutrition_analyze_food",
       ],
-      trigger: "User asks for a complete meal plan with shopping list"
+      trigger: "User asks for a complete meal plan with shopping list",
     },
     {
       name: "recipe_to_tracking",
@@ -4096,36 +4283,36 @@ export const ROUTING_METADATA: RoutingMetadata = {
       sequence: [
         "plan_generate_from_leftovers",
         "nutrition_analyze_food",
-        "tracker_log_meal"
+        "tracker_log_meal",
       ],
-      trigger: "User wants to cook something AND track it"
+      trigger: "User wants to cook something AND track it",
     },
     {
       name: "leftover_rescue",
       description: "Turn leftovers into a proper meal with nutrition info",
       sequence: [
         "plan_generate_from_leftovers",
-        "nutrition_analyze_food"
+        "nutrition_analyze_food",
       ],
-      trigger: "User has random ingredients and wants options"
+      trigger: "User has random ingredients and wants options",
     },
     {
       name: "goal_based_planning",
       description: "Set goals then create matching meal plan",
       sequence: [
         "user_set_weight_goal",
-        "plan_create_meal_plan"
+        "plan_create_meal_plan",
       ],
-      trigger: "User wants to start a diet or change eating habits"
+      trigger: "User wants to start a diet or change eating habits",
     },
     {
       name: "daily_check_in",
       description: "Log meal and see daily progress",
       sequence: [
         "tracker_log_meal",
-        "tracker_summary"
+        "tracker_summary",
       ],
-      trigger: "User logs a meal and wants to know where they stand"
+      trigger: "User logs a meal and wants to know where they stand",
     },
     {
       name: "order_workflow",
@@ -4133,9 +4320,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
       sequence: [
         "delivery_search_restaurants",
         "delivery_get_menu",
-        "loopgpt_route_order"
+        "loopgpt_route_order",
       ],
-      trigger: "User wants to order food delivery"
+      trigger: "User wants to order food delivery",
     },
     {
       name: "progress_analysis",
@@ -4143,9 +4330,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
       sequence: [
         "tracker_get_progress",
         "loop_evaluate_plan",
-        "loop_adjust_calories"
+        "loop_adjust_calories",
       ],
-      trigger: "User wants to review progress and optimize their plan"
+      trigger: "User wants to review progress and optimize their plan",
     },
     {
       name: "nutrition_deep_dive",
@@ -4153,11 +4340,11 @@ export const ROUTING_METADATA: RoutingMetadata = {
       sequence: [
         "nutrition_analyze_food",
         "nutrition_compare_foods",
-        "nutrition_get_recommendations"
+        "nutrition_get_recommendations",
       ],
-      trigger: "User wants comprehensive nutrition analysis"
-    }
-  ]
+      trigger: "User wants comprehensive nutrition analysis",
+    },
+  ],
 };
 
 // ============================================================================
@@ -4175,8 +4362,8 @@ export function getCompleteMetadata() {
     summary: {
       toolCount: getToolCount(),
       categories: Object.keys(TOOL_SUMMARY.categories),
-      lastUpdated: TOOL_SUMMARY.lastUpdated
-    }
+      lastUpdated: TOOL_SUMMARY.lastUpdated,
+    },
   };
 }
 
@@ -4186,15 +4373,15 @@ export function getCompleteMetadata() {
 export function getToolWithRouting(toolId: string) {
   const tool = getToolDescription(toolId);
   if (!tool) return null;
-  
+
   // Find matching routing hints
   const routingHints = Object.entries(ROUTING_METADATA.triggerHints)
     .filter(([_, hint]) => hint.relatedTools?.includes(toolId))
     .map(([key, hint]) => ({ key, ...hint }));
-  
+
   return {
     ...tool,
-    routingHints
+    routingHints,
   };
 }
 
@@ -4203,7 +4390,7 @@ export function getToolWithRouting(toolId: string) {
  */
 export function searchTools(keyword: string): ToolDescription[] {
   const lowerKeyword = keyword.toLowerCase();
-  return Object.values(ALL_TOOL_DESCRIPTIONS).filter(tool => 
+  return Object.values(ALL_TOOL_DESCRIPTIONS).filter((tool) =>
     tool.displayName.toLowerCase().includes(lowerKeyword) ||
     tool.primaryDescription.toLowerCase().includes(lowerKeyword) ||
     tool.category.toLowerCase().includes(lowerKeyword)
@@ -4219,7 +4406,7 @@ export function getRecommendedTool(userQuery: string): {
   reason: string;
 } | null {
   const lowerQuery = userQuery.toLowerCase();
-  
+
   // Check trigger hints
   for (const [hintKey, hint] of Object.entries(ROUTING_METADATA.triggerHints)) {
     for (const example of hint.examples) {
@@ -4227,22 +4414,22 @@ export function getRecommendedTool(userQuery: string): {
         return {
           toolId: hint.relatedTools[0],
           confidence: hint.confidence,
-          reason: `Matched trigger hint: ${hintKey}`
+          reason: `Matched trigger hint: ${hintKey}`,
         };
       }
     }
   }
-  
+
   // Fallback to keyword search
   const matches = searchTools(userQuery);
   if (matches.length > 0) {
     return {
       toolId: matches[0].toolId,
       confidence: 0.5,
-      reason: "Keyword match"
+      reason: "Keyword match",
     };
   }
-  
+
   return null;
 }
 
@@ -4251,25 +4438,25 @@ export function getRecommendedTool(userQuery: string): {
  */
 export function validateToolInvocation(
   toolId: string,
-  params: Record<string, any>
+  params: Record<string, any>,
 ): { valid: boolean; errors: string[] } {
   const tool = getToolDescription(toolId);
   if (!tool) {
     return { valid: false, errors: [`Tool ${toolId} not found`] };
   }
-  
+
   const errors: string[] = [];
-  
+
   // Check required params
   for (const param of tool.requiredParams) {
     if (!(param.name in params)) {
       errors.push(`Missing required parameter: ${param.name}`);
     }
   }
-  
+
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -4293,8 +4480,8 @@ export const MCP_SERVER_INFO = {
     "meal_planning",
     "food_tracking",
     "grocery_ordering",
-    "ai_predictions"
-  ]
+    "ai_predictions",
+  ],
 };
 
 // ============================================================================
@@ -4306,7 +4493,9 @@ const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY"); // Optional for elevated privileges
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  throw new Error("Missing required environment variables: SUPABASE_URL and SUPABASE_ANON_KEY");
+  throw new Error(
+    "Missing required environment variables: SUPABASE_URL and SUPABASE_ANON_KEY",
+  );
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -4336,19 +4525,22 @@ const DEPRECATED_REDIRECTS: Record<string, string> = {
   "get_weight_history": "tracker_get_progress",
   "get_weight_trend": "tracker_get_progress",
   "order_meal_delivery": "delivery_place_order",
-  "mealme_search": "delivery_search_restaurants"
+  "mealme_search": "delivery_search_restaurants",
 };
 
 /**
  * Handles deprecated tool names by redirecting to new names
  * Logs usage for sunset tracking
  */
-async function handleDeprecatedTool(oldName: string, supabase: any): Promise<string | null> {
+async function handleDeprecatedTool(
+  oldName: string,
+  supabase: any,
+): Promise<string | null> {
   const newName = DEPRECATED_REDIRECTS[oldName];
-  
+
   if (newName) {
     console.warn(`[DEPRECATED] Tool '${oldName}' redirected to '${newName}'`);
-    
+
     // Log to tool_choice_log for sunset tracking
     try {
       await supabase
@@ -4357,15 +4549,15 @@ async function handleDeprecatedTool(oldName: string, supabase: any): Promise<str
           input_query: `[DEPRECATED_ALIAS] ${oldName}`,
           chosen_tool: newName,
           confidence: 1.0,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
     } catch (error) {
       console.error("Failed to log deprecated tool usage:", error);
     }
-    
+
     return newName;
   }
-  
+
   return null;
 }
 
@@ -4384,45 +4576,56 @@ function validateToolName(toolName: string, manifest: any): boolean {
  * Validates request body against tool's input schema
  * Returns { valid: boolean, errors: string[] }
  */
-function validateInput(toolName: string, body: Record<string, any>, manifest: any): { valid: boolean; errors: string[] } {
+function validateInput(
+  toolName: string,
+  body: Record<string, any>,
+  manifest: any,
+): { valid: boolean; errors: string[] } {
   const tool = manifest.tools.find((t: any) => t.name === toolName);
-  
+
   if (!tool) {
-    return { valid: false, errors: [`Tool '${toolName}' not found in manifest`] };
+    return {
+      valid: false,
+      errors: [`Tool '${toolName}' not found in manifest`],
+    };
   }
-  
+
   const schema = tool.input_schema;
   const errors: string[] = [];
-  
+
   // Check required fields
   if (schema.required && Array.isArray(schema.required)) {
     for (const field of schema.required) {
-      if (!(field in body) || body[field] === null || body[field] === undefined) {
+      if (
+        !(field in body) || body[field] === null || body[field] === undefined
+      ) {
         errors.push(`Missing required field: ${field}`);
       }
     }
   }
-  
+
   // Basic type checking for provided fields
   if (schema.properties) {
     for (const [key, value] of Object.entries(body)) {
       const propSchema = schema.properties[key];
       if (propSchema && propSchema.type) {
-        const actualType = Array.isArray(value) ? 'array' : typeof value;
+        const actualType = Array.isArray(value) ? "array" : typeof value;
         // Allow integer to be treated as number (JSON doesn't distinguish)
-        const isValidType = actualType === propSchema.type || 
-                           (propSchema.type === 'integer' && actualType === 'number') ||
-                           (propSchema.type === 'number' && actualType === 'number');
+        const isValidType = actualType === propSchema.type ||
+          (propSchema.type === "integer" && actualType === "number") ||
+          (propSchema.type === "number" && actualType === "number");
         if (!isValidType) {
-          errors.push(`Field '${key}' should be type '${propSchema.type}' but got '${actualType}'`);
+          errors.push(
+            `Field '${key}' should be type '${propSchema.type}' but got '${actualType}'`,
+          );
         }
       }
     }
   }
-  
+
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -4434,15 +4637,15 @@ interface LogEntry {
   timestamp: string;
   tool: string;
   duration_ms: number;
-  status: 'success' | 'error';
+  status: "success" | "error";
   error?: string;
 }
 
 function log(entry: LogEntry) {
   const logLine = JSON.stringify({
     ...entry,
-    service: 'mcp-server',
-    version: '1.0.0'
+    service: "mcp-server",
+    version: "1.0.0",
   });
   // console.log(logLine);
 }
@@ -4488,13 +4691,17 @@ export type McpToolEnvelope<T> =
 /**
  * Creates a standardized success response envelope
  */
-function successResponse<T>(toolName: string, data: T, duration_ms: number): McpToolSuccessEnvelope<T> {
+function successResponse<T>(
+  toolName: string,
+  data: T,
+  duration_ms: number,
+): McpToolSuccessEnvelope<T> {
   return {
     success: true,
     tool: toolName,
     data,
     timestamp: new Date().toISOString(),
-    duration_ms: Math.round(duration_ms * 100) / 100
+    duration_ms: Math.round(duration_ms * 100) / 100,
   };
 }
 
@@ -4506,7 +4713,7 @@ function errorResponse(
   toolName: string,
   message: string,
   details?: Record<string, unknown>,
-  duration_ms?: number
+  duration_ms?: number,
 ): McpToolErrorEnvelope {
   // Convert legacy error format to ToolErrorResponse
   const error: ToolErrorResponse = {
@@ -4522,7 +4729,7 @@ function errorResponse(
     tool: toolName,
     error,
     timestamp: new Date().toISOString(),
-    duration_ms: duration_ms ? Math.round(duration_ms * 100) / 100 : 0
+    duration_ms: duration_ms ? Math.round(duration_ms * 100) / 100 : 0,
   };
 }
 
@@ -4531,14 +4738,14 @@ function errorResponse(
  */
 function errorResponseFromToolError(
   error: ToolErrorResponse,
-  duration_ms: number
+  duration_ms: number,
 ): McpToolErrorEnvelope {
   return {
     success: false,
     tool: error.toolName,
     error,
     timestamp: new Date().toISOString(),
-    duration_ms: Math.round(duration_ms * 100) / 100
+    duration_ms: Math.round(duration_ms * 100) / 100,
   };
 }
 
@@ -4546,11 +4753,7 @@ function errorResponseFromToolError(
 // CORS Headers
 // ============================================================================
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-};
+
 
 // ============================================================================
 // Main Request Handler
@@ -4558,81 +4761,88 @@ const corsHeaders = {
 
 serve(async (req: Request) => {
   const url = new URL(req.url);
-  
+
   // Strip the function name prefix from pathname
   let pathname = url.pathname;
-  if (pathname.startsWith('/mcp-server')) {
-    pathname = pathname.replace('/mcp-server', '') || '/';
+  if (pathname.startsWith("/mcp-server")) {
+    pathname = pathname.replace("/mcp-server", "") || "/";
   }
-  
+
   // Debug logging
   // console.log(`[MCP] ${req.method} ${url.pathname} -> ${pathname}`);
-  
+
   // Update url.pathname for route matching
-  Object.defineProperty(url, 'pathname', { value: pathname, writable: true });
-  
+  Object.defineProperty(url, "pathname", { value: pathname, writable: true });
+
   // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: getCorsHeaders(req.headers.get("origin")) });
   }
-  
+
   // ========================================================================
   // OAuth Validation (for tool execution only, not manifest or metadata)
   // ========================================================================
-  if (req.method === 'POST' && !url.pathname.startsWith('/metadata')) {
+  if (req.method === "POST" && !url.pathname.startsWith("/metadata")) {
     // Validate OAuth token from ChatGPT
-    const authHeader = req.headers.get('Authorization');
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.error('[MCP] Missing or invalid Authorization header');
+    const authHeader = req.headers.get("Authorization");
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.error("[MCP] Missing or invalid Authorization header");
       // Extract tool name from URL if possible, otherwise default to 'unknown'
       const toolMatch = url.pathname.match(/\/tools\/([\w_]+)$/);
-      const toolName = toolMatch ? toolMatch[1] : 'unknown';
-      
-      return createToolErrorResponse(
-        toolName,
-        'UNAUTHORIZED',
-        'Please sign in to use this feature.',
-        false,
-        { reason: 'missing_or_invalid_token' }
-      );
-    }
-    
-    // We know authHeader is not null here because of the check above
-    const token = (authHeader as string).replace('Bearer ', '');
-    
-    // Verify token with Supabase Auth
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !user) {
-      console.error('[MCP] Token verification failed:', authError?.message);
-      // Extract tool name from URL if possible, otherwise default to 'unknown'
-      const toolMatch = url.pathname.match(/\/tools\/([\w_]+)$/);
-      const toolName = toolMatch ? toolMatch[1] : 'unknown';
+      const toolName = toolMatch ? toolMatch[1] : "unknown";
 
       return createToolErrorResponse(
         toolName,
-        'UNAUTHORIZED',
-        'Please sign in to use this feature.',
+        "UNAUTHORIZED",
+        "Please sign in to use this feature.",
         false,
-        { reason: 'invalid_token', originalError: authError?.message }
+        { reason: "missing_or_invalid_token" },
+        req.headers.get("origin"),
       );
     }
-    
+
+    // We know authHeader is not null here because of the check above
+    const token = (authHeader as string).replace("Bearer ", "");
+
+    // Verify token with Supabase Auth
+    const { data: { user }, error: authError } = await supabase.auth.getUser(
+      token,
+    );
+
+    if (authError || !user) {
+      console.error("[MCP] Token verification failed:", authError?.message);
+      // Extract tool name from URL if possible, otherwise default to 'unknown'
+      const toolMatch = url.pathname.match(/\/tools\/([\w_]+)$/);
+      const toolName = toolMatch ? toolMatch[1] : "unknown";
+
+      return createToolErrorResponse(
+        toolName,
+        "UNAUTHORIZED",
+        "Invalid or expired token.",
+        false,
+        { reason: "invalid_token" },
+        req.headers.get("origin"),
+      );
+    }
+
     // console.log(`[MCP] Authenticated user: ${user.id} (${user.email})`);
   }
-  
+
   // ========================================================================
   // ROUTE 1: Manifest Endpoint (GET / or GET /mcp-server)
   // ========================================================================
-  if (req.method === "GET" && (url.pathname === "/" || url.pathname === "") && !url.pathname.startsWith("/metadata")) {
+  if (
+    req.method === "GET" && (url.pathname === "/" || url.pathname === "") &&
+    !url.pathname.startsWith("/metadata")
+  ) {
     try {
       const manifest = await loadManifest();
       return new Response(JSON.stringify(manifest, null, 2), {
         status: 200,
         headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
+          ...getCorsHeaders(req.headers.get("origin")),
+          "Content-Type": "application/json",
         },
       });
     } catch (error) {
@@ -4642,33 +4852,33 @@ serve(async (req: Request) => {
         {
           status: 500,
           headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
       );
     }
   }
-  
+
   // ========================================================================
   // ROUTE 2: Tool Execution (POST /tools/:tool_name or POST /mcp-server/tools/:tool_name)
   // ========================================================================
   const toolMatch = url.pathname.match(/\/tools\/([\w_]+)$/);
-  
+
   if (req.method === "POST" && toolMatch) {
     let toolName = toolMatch[1];
-    
+
     // Handle deprecated tool redirects
     const redirectedName = await handleDeprecatedTool(toolName, supabase);
     if (redirectedName) {
       toolName = redirectedName;
     }
     const startTime = performance.now();
-    
+
     try {
       // Load manifest
       const manifest = await loadManifest();
-      
+
       // Validate tool exists
       if (!validateToolName(toolName, manifest)) {
         const duration = performance.now() - startTime;
@@ -4676,27 +4886,27 @@ serve(async (req: Request) => {
           timestamp: new Date().toISOString(),
           tool: toolName,
           duration_ms: duration,
-          status: 'error',
-          error: 'Tool not found'
+          status: "error",
+          error: "Tool not found",
         });
-        
+
         return new Response(
           JSON.stringify(errorResponse(
             toolName,
             `Tool '${toolName}' not found`,
             { available_tools: manifest.tools.map((t: any) => t.name) },
-            duration
+            duration,
           )),
           {
             status: 200, // Changed from 404 to 200
             headers: {
-              ...corsHeaders,
-              "Content-Type": "application/json"
-            }
-          }
+              ...getCorsHeaders(req.headers.get("origin")),
+              "Content-Type": "application/json",
+            },
+          },
         );
       }
-      
+
       // Parse request body
       let body: Record<string, unknown>;
       try {
@@ -4708,38 +4918,38 @@ serve(async (req: Request) => {
             toolName,
             "Invalid JSON in request body",
             { hint: "Ensure request body is valid JSON" },
-            duration
+            duration,
           )),
           {
             status: 200, // Changed from 400 to 200
             headers: {
-              ...corsHeaders,
-              "Content-Type": "application/json"
-            }
-          }
+              ...getCorsHeaders(req.headers.get("origin")),
+              "Content-Type": "application/json",
+            },
+          },
         );
       }
-      
+
       // Validate empty body
-      if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
+      if (!body || typeof body !== "object" || Object.keys(body).length === 0) {
         const duration = performance.now() - startTime;
         return new Response(
           JSON.stringify(errorResponse(
             toolName,
             "Empty request body",
             { hint: "Provide JSON parameters matching the manifest schema" },
-            duration
+            duration,
           )),
           {
             status: 200, // Changed from 400 to 200
             headers: {
-              ...corsHeaders,
-              "Content-Type": "application/json"
-            }
-          }
+              ...getCorsHeaders(req.headers.get("origin")),
+              "Content-Type": "application/json",
+            },
+          },
         );
       }
-      
+
       // Validate input against schema
       const validation = validateInput(toolName, body, manifest);
       if (!validation.valid) {
@@ -4748,27 +4958,27 @@ serve(async (req: Request) => {
           timestamp: new Date().toISOString(),
           tool: toolName,
           duration_ms: duration,
-          status: 'error',
-          error: 'Validation failed: ' + validation.errors.join(', ')
+          status: "error",
+          error: "Validation failed: " + validation.errors.join(", "),
         });
-        
+
         return new Response(
           JSON.stringify(errorResponse(
             toolName,
             "Input validation failed",
             { validation_errors: validation.errors },
-            duration
+            duration,
           )),
           {
             status: 200, // Changed from 400 to 200
             headers: {
-              ...corsHeaders,
-              "Content-Type": "application/json"
-            }
-          }
+              ...getCorsHeaders(req.headers.get("origin")),
+              "Content-Type": "application/json",
+            },
+          },
         );
       }
-      
+
       // Optional: Check for Bearer token authentication
       // Uncomment this block to enable authentication
       /*
@@ -4785,19 +4995,19 @@ serve(async (req: Request) => {
           {
             status: 401,
             headers: {
-              ...corsHeaders,
+              ...getCorsHeaders(req.headers.get("origin")),
               "Content-Type": "application/json"
             }
           }
         );
       }
       */
-      
+
       // ====================================================================
       // DELEGATION: Invoke the specialized Edge Function
       // ====================================================================
       // console.log(`[MCP] Invoking tool: ${toolName}`);
-      
+
       // Track timing for observability
       const invocationStart = performance.now();
       const startedAt = new Date();
@@ -4806,19 +5016,22 @@ serve(async (req: Request) => {
       });
       const invocationDuration = performance.now() - invocationStart;
       const finishedAt = new Date();
-      
+
       if (error) {
         const totalDuration = performance.now() - startTime;
-        console.error(`[MCP] ${toolName} failed after ${invocationDuration.toFixed(2)}ms:`, error);
-        
+        console.error(
+          `[MCP] ${toolName} failed after ${invocationDuration.toFixed(2)}ms:`,
+          error,
+        );
+
         log({
           timestamp: new Date().toISOString(),
           tool: toolName,
           duration_ms: totalDuration,
-          status: 'error',
-          error: error.message || 'Invocation failed'
+          status: "error",
+          error: error.message || "Invocation failed",
         });
-        
+
         // Log to analytics.tool_invocations (async, non-blocking)
         logToolInvocationToDb({
           toolName,
@@ -4829,9 +5042,9 @@ serve(async (req: Request) => {
           userId: extractUserIdFromRequest(req),
           gptName: inferGptNameFromTool(toolName),
           provider: inferProviderFromTool(toolName),
-          metadata: { error: error.message || 'Invocation failed' },
-        }).catch(e => console.error("Failed to log tool invocation:", e));
-        
+          metadata: { error: error.message || "Invocation failed" },
+        }).catch((e) => console.error("Failed to log tool invocation:", e));
+
         // Return HTTP 200 with error envelope (ChatGPT can parse the error)
         return new Response(
           JSON.stringify(errorResponse(
@@ -4839,31 +5052,32 @@ serve(async (req: Request) => {
             error.message || "Tool invocation failed",
             {
               error_details: error,
-              invocation_duration_ms: Math.round(invocationDuration * 100) / 100
+              invocation_duration_ms: Math.round(invocationDuration * 100) /
+                100,
             },
-            totalDuration
+            totalDuration,
           )),
           {
             status: 200, // Changed from 500 to 200
             headers: {
-              ...corsHeaders,
-              "Content-Type": "application/json"
-            }
-          }
+              ...getCorsHeaders(req.headers.get("origin")),
+              "Content-Type": "application/json",
+            },
+          },
         );
       }
-      
+
       // Success!
       const totalDuration = performance.now() - startTime;
       // console.log(`[MCP] ${toolName} succeeded in ${invocationDuration.toFixed(2)}ms`);
-      
+
       log({
         timestamp: new Date().toISOString(),
         tool: toolName,
         duration_ms: totalDuration,
-        status: 'success'
+        status: "success",
       });
-      
+
       // Log to analytics.tool_invocations (async, non-blocking)
       logToolInvocationToDb({
         toolName,
@@ -4873,31 +5087,30 @@ serve(async (req: Request) => {
         userId: extractUserIdFromRequest(req),
         gptName: inferGptNameFromTool(toolName),
         provider: inferProviderFromTool(toolName),
-      }).catch(e => console.error("Failed to log tool invocation:", e));
-      
+      }).catch((e) => console.error("Failed to log tool invocation:", e));
+
       return new Response(
         JSON.stringify(successResponse(toolName, data, totalDuration)),
         {
           status: 200,
           headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
       );
-      
     } catch (err) {
       const duration = performance.now() - startTime;
       console.error(`[MCP] Unexpected error in ${toolName}:`, err);
-      
+
       log({
         timestamp: new Date().toISOString(),
         tool: toolName,
         duration_ms: duration,
-        status: 'error',
-        error: err instanceof Error ? err.message : 'Unknown error'
+        status: "error",
+        error: err instanceof Error ? err.message : "Unknown error",
       });
-      
+
       // Log to analytics.tool_invocations (async, non-blocking)
       const catchFinishedAt = new Date();
       const startedAt = new Date(); // Fallback if not defined in scope
@@ -4913,30 +5126,30 @@ serve(async (req: Request) => {
         gptName: inferGptNameFromTool(toolName),
         provider: inferProviderFromTool(toolName),
         metadata: { error: err instanceof Error ? err.message : String(err) },
-      }).catch(e => console.error("Failed to log tool invocation:", e));
-      
+      }).catch((e) => console.error("Failed to log tool invocation:", e));
+
       return new Response(
         JSON.stringify(errorResponse(
           toolName,
           "Unexpected server error",
           { error: err instanceof Error ? err.message : String(err) },
-          duration
+          duration,
         )),
         {
           status: 200, // Changed from 500 to 200
           headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
       );
     }
   }
-  
+
   // ========================================================================
   // ROUTE 3: Enhanced Metadata Endpoints
   // ========================================================================
-  
+
   // GET /metadata - Complete metadata package
   if (req.method === "GET" && url.pathname === "/metadata") {
     try {
@@ -4944,28 +5157,28 @@ serve(async (req: Request) => {
       return new Response(JSON.stringify(metadata, null, 2), {
         status: 200,
         headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
-        }
+          ...getCorsHeaders(req.headers.get("origin")),
+          "Content-Type": "application/json",
+        },
       });
     } catch (error) {
-      console.error('[MCP] Error loading metadata:', error);
+      console.error("[MCP] Error loading metadata:", error);
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: "Failed to load metadata",
-          details: error instanceof Error ? error.message : String(error)
+          details: error instanceof Error ? error.message : String(error),
         }),
         {
           status: 500,
           headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
       );
     }
   }
-  
+
   // GET /metadata/tool/:tool_id - Tool description with routing hints
   const toolMetadataMatch = url.pathname.match(/\/metadata\/tool\/([\w_]+)$/);
   if (req.method === "GET" && toolMetadataMatch) {
@@ -4978,18 +5191,18 @@ serve(async (req: Request) => {
           {
             status: 404,
             headers: {
-              ...corsHeaders,
-              "Content-Type": "application/json"
-            }
-          }
+              ...getCorsHeaders(req.headers.get("origin")),
+              "Content-Type": "application/json",
+            },
+          },
         );
       }
       return new Response(JSON.stringify(toolWithRouting, null, 2), {
         status: 200,
         headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
-        }
+          ...getCorsHeaders(req.headers.get("origin")),
+          "Content-Type": "application/json",
+        },
       });
     } catch (error) {
       return new Response(
@@ -4997,64 +5210,71 @@ serve(async (req: Request) => {
         {
           status: 500,
           headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
       );
     }
   }
-  
+
   // POST /metadata/recommend - Get recommended tool for query
   if (req.method === "POST" && url.pathname === "/metadata/recommend") {
     try {
       const body = await req.json() as Record<string, unknown>;
       const query = (body.query as string) || (body.user_query as string) || "";
-      
+
       if (!query) {
         return new Response(
           JSON.stringify({ error: "Missing 'query' field in request body" }),
           {
             status: 400,
             headers: {
-              ...corsHeaders,
-              "Content-Type": "application/json"
-            }
-          }
+              ...getCorsHeaders(req.headers.get("origin")),
+              "Content-Type": "application/json",
+            },
+          },
         );
       }
-      
+
       const recommendation = getRecommendedTool(query);
-      return new Response(JSON.stringify(recommendation || { message: "No matching tool found" }, null, 2), {
-        status: 200,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
-        }
-      });
+      return new Response(
+        JSON.stringify(
+          recommendation || { message: "No matching tool found" },
+          null,
+          2,
+        ),
+        {
+          status: 200,
+          headers: {
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
+      );
     } catch (error) {
       return new Response(
         JSON.stringify({ error: "Failed to process recommendation request" }),
         {
           status: 500,
           headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
       );
     }
   }
-  
+
   // GET /metadata/routing - Routing hints and trigger examples
   if (req.method === "GET" && url.pathname === "/metadata/routing") {
     try {
       return new Response(JSON.stringify(ROUTING_METADATA, null, 2), {
         status: 200,
         headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
-        }
+          ...getCorsHeaders(req.headers.get("origin")),
+          "Content-Type": "application/json",
+        },
       });
     } catch (error) {
       return new Response(
@@ -5062,23 +5282,23 @@ serve(async (req: Request) => {
         {
           status: 500,
           headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
       );
     }
   }
-  
+
   // GET /metadata/app - App identity and description
   if (req.method === "GET" && url.pathname === "/metadata/app") {
     try {
       return new Response(JSON.stringify(THELOOPGPT_METADATA, null, 2), {
         status: 200,
         headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
-        }
+          ...getCorsHeaders(req.headers.get("origin")),
+          "Content-Type": "application/json",
+        },
       });
     } catch (error) {
       return new Response(
@@ -5086,21 +5306,22 @@ serve(async (req: Request) => {
         {
           status: 500,
           headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
+            ...getCorsHeaders(req.headers.get("origin")),
+            "Content-Type": "application/json",
+          },
+        },
       );
     }
   }
-  
+
   // ========================================================================
   // ROUTE 4: Fallback - Unknown Route
   // ========================================================================
   return new Response(
     JSON.stringify({
       error: "Not found",
-      hint: "Use GET / for manifest or POST /tools/{tool_name} to execute a tool",
+      hint:
+        "Use GET / for manifest or POST /tools/{tool_name} to execute a tool",
       debug_pathname: url.pathname,
       debug_method: req.method,
       available_routes: [
@@ -5110,17 +5331,15 @@ serve(async (req: Request) => {
         "GET /metadata/tool/:tool_id",
         "POST /metadata/recommend",
         "GET /metadata/routing",
-        "GET /metadata/app"
-      ]
+        "GET /metadata/app",
+      ],
     }),
     {
       status: 404,
       headers: {
-        ...corsHeaders,
-        "Content-Type": "application/json"
-      }
-    }
+        ...getCorsHeaders(req.headers.get("origin")),
+        "Content-Type": "application/json",
+      },
+    },
   );
 });
-
-

@@ -1,9 +1,9 @@
 /**
- * TheLoopGPT Routing Hints Configuration
- * 
+ * LooptOS Routing Hints Configuration
+ *
  * This is the MOST CRITICAL section for ChatGPT tool invocation success.
- * Routing hints tell ChatGPT WHEN to invoke TheLoopGPT tools vs. answering generically.
- * 
+ * Routing hints tell ChatGPT WHEN to invoke LooptOS tools vs. answering generically.
+ *
  * Target Metrics:
  * - Tool invocation rate: >90% of food-related queries
  * - Correct tool selection: >95% accuracy
@@ -17,9 +17,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
     // ========================================================================
     // RECIPE GENERATION
     // ========================================================================
-    
+
     cooking_from_ingredients: {
-      description: "User wants to cook something using specific ingredients they have",
+      description:
+        "User wants to cook something using specific ingredients they have",
       examples: [
         "What can I make with chicken, rice, and broccoli?",
         "I have eggs, cheese, and spinach — what should I cook?",
@@ -30,13 +31,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "What's a good recipe with ingredients I already have?",
         "Surprise me with a meal from: tofu, mushrooms, soy sauce",
         "Got some random stuff in my fridge — what can I make?",
-        "I have potatoes, onions, and ground turkey"
+        "I have potatoes, onions, and ground turkey",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["plan_generate_from_leftovers", "nutrition_analyze_food"]
+      relatedTools: ["plan_generate_from_leftovers", "nutrition_analyze_food"],
     },
-    
+
     creative_cooking: {
       description: "User wants creative or unusual recipe suggestions",
       examples: [
@@ -47,17 +48,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "I want to experiment — surprise me",
         "What's the craziest thing I can make with these ingredients?",
         "Give me a fusion recipe",
-        "Something adventurous for dinner tonight"
+        "Something adventurous for dinner tonight",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["plan_generate_from_leftovers"]
+      relatedTools: ["plan_generate_from_leftovers"],
     },
 
     // ========================================================================
     // NUTRITION ANALYSIS
     // ========================================================================
-    
+
     calorie_query: {
       description: "User wants to know calorie or macro content of food",
       examples: [
@@ -70,15 +71,16 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Carbs in a banana?",
         "What's the calorie count for my lunch: salad with grilled chicken?",
         "Macro breakdown for oatmeal with berries",
-        "How many calories in a slice of pizza?"
+        "How many calories in a slice of pizza?",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["nutrition_analyze_food", "food_search"]
+      relatedTools: ["nutrition_analyze_food", "food_search"],
     },
-    
+
     recipe_nutrition: {
-      description: "User wants nutrition info for a recipe or meal they're planning",
+      description:
+        "User wants nutrition info for a recipe or meal they're planning",
       examples: [
         "What are the macros for this pasta recipe?",
         "Calculate nutrition for: 200g chicken, 1 cup rice, vegetables",
@@ -86,32 +88,33 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Is this recipe keto-friendly?",
         "Does this meal fit my protein goals?",
         "Nutrition for my homemade smoothie",
-        "Will this recipe help me lose weight?"
+        "Will this recipe help me lose weight?",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["nutrition_analyze_food", "plan_generate_from_leftovers"]
+      relatedTools: ["nutrition_analyze_food", "plan_generate_from_leftovers"],
     },
-    
+
     food_comparison: {
-      description: "User wants to compare nutritional values of different foods",
+      description:
+        "User wants to compare nutritional values of different foods",
       examples: [
         "Which has more protein: chicken or tofu?",
         "Compare calories in brown rice vs white rice",
         "Is salmon or tuna better for protein?",
         "What's healthier: sweet potato or regular potato?",
         "Compare macros: Greek yogurt vs regular yogurt",
-        "Which is lower carb: quinoa or cauliflower rice?"
+        "Which is lower carb: quinoa or cauliflower rice?",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["nutrition_compare_foods", "food_search"]
+      relatedTools: ["nutrition_compare_foods", "food_search"],
     },
 
     // ========================================================================
     // MEAL PLANNING
     // ========================================================================
-    
+
     weekly_planning: {
       description: "User wants to plan meals for multiple days",
       examples: [
@@ -124,13 +127,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Help me meal prep for the week",
         "Budget-friendly meal plan for a family of 4",
         "3-day meal plan for muscle building",
-        "Weekly meal ideas under 2000 calories"
+        "Weekly meal ideas under 2000 calories",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["plan_create_meal_plan", "nutrition_analyze_food"]
+      relatedTools: ["plan_create_meal_plan", "nutrition_analyze_food"],
     },
-    
+
     diet_specific_planning: {
       description: "User wants meal plans for specific dietary requirements",
       examples: [
@@ -142,13 +145,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Mediterranean diet meal plan",
         "Whole30 compliant recipes",
         "Paleo meal ideas",
-        "High-protein vegetarian meals"
+        "High-protein vegetarian meals",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["plan_create_meal_plan", "plan_generate_from_leftovers"]
+      relatedTools: ["plan_create_meal_plan", "plan_generate_from_leftovers"],
     },
-    
+
     random_meal_suggestion: {
       description: "User wants a quick meal idea without specific constraints",
       examples: [
@@ -157,17 +160,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Random meal suggestion",
         "What's for breakfast?",
         "Quick dinner idea please",
-        "Healthy snack suggestion"
+        "Healthy snack suggestion",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["plan_random_meal"]
+      relatedTools: ["plan_random_meal"],
     },
 
     // ========================================================================
     // FOOD TRACKING
     // ========================================================================
-    
+
     log_meal: {
       description: "User wants to log or record what they ate",
       examples: [
@@ -180,13 +183,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Track my snack: apple with peanut butter",
         "Log 200g grilled chicken and brown rice",
         "Add this to my calorie count",
-        "I had a burrito bowl for lunch, track it"
+        "I had a burrito bowl for lunch, track it",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["tracker_log_meal", "nutrition_analyze_food"]
+      relatedTools: ["tracker_log_meal", "nutrition_analyze_food"],
     },
-    
+
     progress_check: {
       description: "User wants to see their tracking progress or daily summary",
       examples: [
@@ -199,13 +202,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "What's my weekly average?",
         "Did I hit my protein goal today?",
         "Show my progress this week",
-        "How am I doing with my diet?"
+        "How am I doing with my diet?",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["tracker_summary", "tracker_get_progress"]
+      relatedTools: ["tracker_summary", "tracker_get_progress"],
     },
-    
+
     weight_tracking: {
       description: "User wants to log weight or check weight progress",
       examples: [
@@ -215,17 +218,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Record my current weight",
         "How much weight have I lost?",
         "Show my weight progress",
-        "What's my weight trend?"
+        "What's my weight trend?",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["tracker_log_weight", "tracker_get_progress"]
+      relatedTools: ["tracker_log_weight", "tracker_get_progress"],
     },
 
     // ========================================================================
     // GROCERY & SHOPPING
     // ========================================================================
-    
+
     grocery_list: {
       description: "User wants to create a shopping list",
       examples: [
@@ -236,13 +239,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "What should I buy at the store?",
         "Create a shopping list under $100",
         "Ingredients I need for meal prep",
-        "Generate shopping list from my meal plan"
+        "Generate shopping list from my meal plan",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["plan_create_meal_plan"]
+      relatedTools: ["plan_create_meal_plan"],
     },
-    
+
     food_ordering: {
       description: "User wants to order food or groceries for delivery",
       examples: [
@@ -253,13 +256,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Find restaurants that deliver healthy meals",
         "Order ingredients for this recipe",
         "Get groceries delivered",
-        "Find nearby restaurants"
+        "Find nearby restaurants",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["loopgpt_route_order", "delivery_search_restaurants"]
+      relatedTools: ["loopgpt_route_order", "delivery_search_restaurants"],
     },
-    
+
     restaurant_search: {
       description: "User wants to find restaurants with specific criteria",
       examples: [
@@ -267,17 +270,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Where can I get a high-protein meal nearby?",
         "Restaurants with keto options",
         "Find vegan places that deliver",
-        "Healthy food delivery options"
+        "Healthy food delivery options",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["delivery_search_restaurants", "delivery_get_menu"]
+      relatedTools: ["delivery_search_restaurants", "delivery_get_menu"],
     },
 
     // ========================================================================
     // GOALS & SETTINGS
     // ========================================================================
-    
+
     set_goals: {
       description: "User wants to set or adjust nutrition/fitness goals",
       examples: [
@@ -289,13 +292,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Help me calculate my TDEE",
         "What should my macros be for weight loss?",
         "Set my weight goal to 160 lbs",
-        "I want to gain weight healthily"
+        "I want to gain weight healthily",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["user_set_weight_goal", "user_update_diet_preferences"]
+      relatedTools: ["user_set_weight_goal", "user_update_diet_preferences"],
     },
-    
+
     diet_preferences: {
       description: "User wants to set dietary preferences or restrictions",
       examples: [
@@ -305,17 +308,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "I don't eat dairy",
         "Make me vegan meals",
         "I'm gluten intolerant",
-        "Exclude nuts from my meals"
+        "Exclude nuts from my meals",
       ],
       priority: "high",
       confidence: 0.90,
-      relatedTools: ["user_update_diet_preferences", "user_get_profile"]
+      relatedTools: ["user_update_diet_preferences", "user_get_profile"],
     },
 
     // ========================================================================
     // LEFTOVER SPECIFIC
     // ========================================================================
-    
+
     leftover_management: {
       description: "User specifically mentions leftovers or food waste",
       examples: [
@@ -328,17 +331,17 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "My fridge is full of random stuff — help!",
         "Leftover turkey ideas",
         "What to do with extra pasta?",
-        "Use up leftovers before they spoil"
+        "Use up leftovers before they spoil",
       ],
       priority: "critical",
       confidence: 0.95,
-      relatedTools: ["plan_generate_from_leftovers"]
+      relatedTools: ["plan_generate_from_leftovers"],
     },
 
     // ========================================================================
     // PREDICTIVE & INTELLIGENCE
     // ========================================================================
-    
+
     outcome_prediction: {
       description: "User wants to predict weight change or diet outcomes",
       examples: [
@@ -347,13 +350,13 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "How long to reach my goal weight?",
         "Will this diet work for me?",
         "Estimate my weight loss timeline",
-        "Can I lose 10 pounds in 2 months with this plan?"
+        "Can I lose 10 pounds in 2 months with this plan?",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["loop_predict_outcome", "loop_evaluate_plan"]
+      relatedTools: ["loop_predict_outcome", "loop_evaluate_plan"],
     },
-    
+
     calorie_adjustment: {
       description: "User wants AI to adjust their calorie targets",
       examples: [
@@ -361,18 +364,18 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Adjust my calories based on my progress",
         "I'm not losing weight — what should I change?",
         "Optimize my calorie intake",
-        "Am I eating enough for my goals?"
+        "Am I eating enough for my goals?",
       ],
       priority: "medium",
       confidence: 0.85,
-      relatedTools: ["loop_adjust_calories", "loop_evaluate_plan"]
-    }
+      relatedTools: ["loop_adjust_calories", "loop_evaluate_plan"],
+    },
   },
 
   // ==========================================================================
   // NEGATIVE ROUTING HINTS (When NOT to Invoke)
   // ==========================================================================
-  
+
   negativeHints: [
     {
       description: "General cooking knowledge questions",
@@ -383,9 +386,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "How do I know when pasta is done?",
         "What does 'sauté' mean?",
         "How to properly season cast iron?",
-        "What's the best way to chop onions?"
+        "What's the best way to chop onions?",
       ],
-      reason: "These are general knowledge questions that ChatGPT can answer directly without tool invocation"
+      reason:
+        "These are general knowledge questions that ChatGPT can answer directly without tool invocation",
     },
     {
       description: "Restaurant recommendations (non-delivery)",
@@ -395,9 +399,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Where should I eat tonight?",
         "Restaurant recommendations for date night",
         "Top-rated steakhouses",
-        "Romantic dinner spots"
+        "Romantic dinner spots",
       ],
-      reason: "TheLoopGPT focuses on home cooking and meal planning, not general restaurant discovery (unless ordering/delivery)"
+      reason:
+        "LooptOS focuses on home cooking and meal planning, not general restaurant discovery (unless ordering/delivery)",
     },
     {
       description: "Food science or history questions",
@@ -407,9 +412,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "How is cheese made?",
         "Why do onions make you cry?",
         "What is the Maillard reaction?",
-        "Origin of sushi"
+        "Origin of sushi",
       ],
-      reason: "Educational questions about food don't require tool invocation"
+      reason: "Educational questions about food don't require tool invocation",
     },
     {
       description: "Non-food nutrition questions",
@@ -419,9 +424,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Best vitamins for energy",
         "Protein powder recommendations",
         "Should I take fish oil?",
-        "Vitamin D dosage"
+        "Vitamin D dosage",
       ],
-      reason: "TheLoopGPT focuses on food-based nutrition, not supplements"
+      reason: "LooptOS focuses on food-based nutrition, not supplements",
     },
     {
       description: "Medical or allergy advice",
@@ -431,9 +436,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Food to avoid with high blood pressure",
         "What should I eat after surgery?",
         "Is this safe during pregnancy?",
-        "Foods for kidney disease"
+        "Foods for kidney disease",
       ],
-      reason: "Medical nutrition advice requires professional consultation, not AI tools"
+      reason:
+        "Medical nutrition advice requires professional consultation, not AI tools",
     },
     {
       description: "Non-actionable food chat",
@@ -443,9 +449,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "What's the best cuisine?",
         "Is pineapple on pizza good?",
         "What do you think of sushi?",
-        "Do you prefer sweet or savory?"
+        "Do you prefer sweet or savory?",
       ],
-      reason: "Casual conversation about food preferences doesn't require tool invocation"
+      reason:
+        "Casual conversation about food preferences doesn't require tool invocation",
     },
     {
       description: "Specific recipe lookups",
@@ -454,9 +461,10 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "How do I make pad thai?",
         "Classic carbonara recipe",
         "Traditional beef stew recipe",
-        "Authentic tikka masala"
+        "Authentic tikka masala",
       ],
-      reason: "Specific named recipes can be answered directly without tools (unless user wants nutrition analysis or tracking)"
+      reason:
+        "Specific named recipes can be answered directly without tools (unless user wants nutrition analysis or tracking)",
     },
     {
       description: "Kitchen equipment questions",
@@ -465,25 +473,25 @@ export const ROUTING_METADATA: RoutingMetadata = {
         "Should I buy an air fryer?",
         "Knife recommendations",
         "Best stand mixer",
-        "Do I need a food processor?"
+        "Do I need a food processor?",
       ],
-      reason: "Equipment recommendations don't require TheLoopGPT tools"
-    }
+      reason: "Equipment recommendations don't require LooptOS tools",
+    },
   ],
 
   // ==========================================================================
   // TOOL CHAINS (Multi-Tool Sequences)
   // ==========================================================================
-  
+
   toolChains: [
     {
       name: "complete_meal_planning",
       description: "Full workflow from planning to shopping",
       sequence: [
         "plan_create_meal_plan",
-        "nutrition_analyze_food"
+        "nutrition_analyze_food",
       ],
-      trigger: "User asks for a complete meal plan with shopping list"
+      trigger: "User asks for a complete meal plan with shopping list",
     },
     {
       name: "recipe_to_tracking",
@@ -491,36 +499,36 @@ export const ROUTING_METADATA: RoutingMetadata = {
       sequence: [
         "plan_generate_from_leftovers",
         "nutrition_analyze_food",
-        "tracker_log_meal"
+        "tracker_log_meal",
       ],
-      trigger: "User wants to cook something AND track it"
+      trigger: "User wants to cook something AND track it",
     },
     {
       name: "leftover_rescue",
       description: "Turn leftovers into a proper meal with nutrition info",
       sequence: [
         "plan_generate_from_leftovers",
-        "nutrition_analyze_food"
+        "nutrition_analyze_food",
       ],
-      trigger: "User has random ingredients and wants options"
+      trigger: "User has random ingredients and wants options",
     },
     {
       name: "goal_based_planning",
       description: "Set goals then create matching meal plan",
       sequence: [
         "user_set_weight_goal",
-        "plan_create_meal_plan"
+        "plan_create_meal_plan",
       ],
-      trigger: "User wants to start a diet or change eating habits"
+      trigger: "User wants to start a diet or change eating habits",
     },
     {
       name: "daily_check_in",
       description: "Log meal and see daily progress",
       sequence: [
         "tracker_log_meal",
-        "tracker_summary"
+        "tracker_summary",
       ],
-      trigger: "User logs a meal and wants to know where they stand"
+      trigger: "User logs a meal and wants to know where they stand",
     },
     {
       name: "order_workflow",
@@ -528,9 +536,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
       sequence: [
         "delivery_search_restaurants",
         "delivery_get_menu",
-        "loopgpt_route_order"
+        "loopgpt_route_order",
       ],
-      trigger: "User wants to order food delivery"
+      trigger: "User wants to order food delivery",
     },
     {
       name: "progress_analysis",
@@ -538,9 +546,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
       sequence: [
         "tracker_get_progress",
         "loop_evaluate_plan",
-        "loop_adjust_calories"
+        "loop_adjust_calories",
       ],
-      trigger: "User wants to review progress and optimize their plan"
+      trigger: "User wants to review progress and optimize their plan",
     },
     {
       name: "nutrition_deep_dive",
@@ -548,9 +556,9 @@ export const ROUTING_METADATA: RoutingMetadata = {
       sequence: [
         "nutrition_analyze_food",
         "nutrition_compare_foods",
-        "nutrition_get_recommendations"
+        "nutrition_get_recommendations",
       ],
-      trigger: "User wants comprehensive nutrition analysis"
-    }
-  ]
+      trigger: "User wants comprehensive nutrition analysis",
+    },
+  ],
 };

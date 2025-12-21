@@ -1,6 +1,6 @@
 /**
  * FoodSearchInput - Autocomplete component for food search
- * 
+ *
  * Features:
  * - Debounced fuzzy search (150ms)
  * - Top 5 results with calories
@@ -10,7 +10,7 @@
  * - Client-side caching (60s TTL)
  */
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface Food {
   id: number;
@@ -41,7 +41,7 @@ export function FoodSearchInput({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const debounceTimerRef = useRef<number | null>(null);
@@ -76,7 +76,7 @@ export function FoodSearchInput({
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({ query: searchQuery, limit: 5 }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -126,9 +126,7 @@ export function FoodSearchInput({
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        setSelectedIndex((prev) =>
-          prev < results.length - 1 ? prev + 1 : prev
-        );
+        setSelectedIndex((prev) => prev < results.length - 1 ? prev + 1 : prev);
         break;
 
       case "ArrowUp":
@@ -165,13 +163,13 @@ export function FoodSearchInput({
 
     const parts = text.split(new RegExp(`(${query})`, "gi"));
     return parts.map((part, index) =>
-      part.toLowerCase() === query.toLowerCase() ? (
-        <mark key={index} className="bg-yellow-200 text-gray-900">
-          {part}
-        </mark>
-      ) : (
-        <span key={index}>{part}</span>
-      )
+      part.toLowerCase() === query.toLowerCase()
+        ? (
+          <mark key={index} className="bg-yellow-200 text-gray-900">
+            {part}
+          </mark>
+        )
+        : <span key={index}>{part}</span>
     );
   };
 
@@ -195,7 +193,8 @@ export function FoodSearchInput({
   // Scroll selected item into view
   useEffect(() => {
     if (selectedIndex >= 0 && resultsRef.current) {
-      const selectedElement = resultsRef.current.children[selectedIndex] as HTMLElement;
+      const selectedElement = resultsRef.current
+        .children[selectedIndex] as HTMLElement;
       selectedElement?.scrollIntoView({ block: "nearest" });
     }
   }, [selectedIndex]);
@@ -217,7 +216,7 @@ export function FoodSearchInput({
                      focus:border-transparent shadow-sm transition-all
                      placeholder-gray-400 text-gray-900"
         />
-        
+
         {/* Loading indicator */}
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -273,4 +272,3 @@ export function FoodSearchInput({
     </div>
   );
 }
-

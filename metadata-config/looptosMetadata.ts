@@ -1,23 +1,21 @@
 /**
- * TheLoopGPT Centralized Metadata Configuration
- * 
+ * LooptOS Centralized Metadata Configuration
+ *
  * This file contains all metadata that powers:
  * - ChatGPT Apps SDK manifest (app identity, descriptions, routing)
  * - MCP tool descriptions (what ChatGPT sees when deciding to invoke tools)
  * - App Store submission metadata (titles, tags, keywords)
  * - Analytics event naming conventions
- * 
- * Version: 2.0.0
- * Last Updated: 2025-12-03
+ *
+ * Version: 2.1.0
+ * Last Updated: 2025-12-21
  */
 
 import type {
   AppIdentity,
+  AppStoreSubmission,
   AppTitles,
   SeasonalKeywords,
-  TheLoopGPTMetadata,
-  AppStoreSubmission,
-  MCPToolManifest
 } from "./types.ts";
 
 // ============================================================================
@@ -26,51 +24,53 @@ import type {
 
 export const APP_IDENTITY: AppIdentity = {
   // Primary identifiers
-  appId: "theloopgpt",
-  displayName: "TheLoopGPT",
-  shortName: "LoopGPT",
-  
+  appId: "leftovergpt", // Functional name
+  displayName: "LeftoverGPT", // Functional name
+  shortName: "LeftoverGPT",
+
   // Version control for metadata changes
-  METADATA_VERSION: "2.0.0",
-  LAST_UPDATED: "2025-12-03",
-  
+  METADATA_VERSION: "2.1.0",
+  LAST_UPDATED: "2025-12-21",
+
   // Legacy internal names (for backward compatibility)
   legacyNames: {
     recipes: "LeftoverGPT",
-    nutrition: "NutritionGPT", 
+    nutrition: "NutritionGPT",
     tracking: "KCal GPT",
-    planning: "MealPlannerGPT"
+    planning: "MealPlannerGPT",
   },
-  
+
   // URLs
-  website: "https://theloopgpt.ai",
-  statusPage: "https://status.theloopgpt.ai",
-  supportEmail: "support@theloopgpt.ai"
+  website: "https://looptos.com",
+  statusPage: "https://status.looptos.com",
+  supportEmail: "support@looptos.com",
 } as const;
 
 export const APP_TITLES: AppTitles = {
-  primary: "TheLoopGPT — AI Cooking, Nutrition & Meal Planning Assistant",
-  
+  primary: "LeftoverGPT — AI Cooking, Nutrition & Meal Planning Assistant",
+
   variants: [
-    "TheLoopGPT — Turn Leftovers into Delicious Meals",
-    "TheLoopGPT — Your AI Kitchen Companion",
-    "TheLoopGPT — Meal Planning Made Effortless",
-    "TheLoopGPT — From Fridge Chaos to Dinner Gold"
+    "LeftoverGPT — Turn Leftovers into Delicious Meals",
+    "LeftoverGPT — Your AI Kitchen Companion",
+    "LeftoverGPT — Meal Planning Made Effortless",
+    "LeftoverGPT — From Fridge Chaos to Dinner Gold",
   ],
-  
-  subtitle: "Recipes • Nutrition • Calorie Tracking • Meal Plans • Grocery Lists"
+
+  subtitle:
+    "Powered by LooptOS • Recipes • Nutrition • Calorie Tracking • Meal Plans",
 } as const;
 
 // ============================================================================
 // Part 2: Descriptions
 // ============================================================================
 
-export const SHORT_DESCRIPTION = `All-in-one AI cooking assistant. Generate creative recipes from whatever's in your fridge, calculate nutrition and macros, track calories, build personalized meal plans, and create smart grocery lists. Your complete food ecosystem inside ChatGPT.`;
+export const SHORT_DESCRIPTION =
+  `All-in-one AI cooking assistant powered by LooptOS. Generate creative recipes from leftovers, calculate nutrition, track calories, build meal plans, and create smart grocery lists.`;
 
 export const LONG_DESCRIPTION = `
-## What TheLoopGPT Does
+## What LeftoverGPT Does
 
-TheLoopGPT is an interconnected AI nutrition ecosystem that creates a complete feedback loop around your food journey:
+LeftoverGPT is an interconnected AI nutrition ecosystem built on **LooptOS**, the Agentic Commerce intelligence layer. It creates a complete feedback loop around your food journey:
 
 **🍳 Creative Recipe Generation**
 Tell me what's in your fridge — even random leftovers — and I'll generate delicious, practical recipes. Each recipe includes a "Chaos Rating" (1-10) showing how experimental the combination is. Perfect for reducing food waste and cooking on a budget.
@@ -87,12 +87,9 @@ Generate personalized 7-day meal plans based on your calorie targets, dietary pr
 **🛒 Intelligent Grocery Lists**
 Turn any meal plan into an organized shopping list. Integrated with Instacart, Amazon Fresh, and other delivery services for one-tap ordering.
 
-## The Closed Loop Advantage
+## Powered by LooptOS
 
-Unlike standalone apps, TheLoopGPT creates a **closed feedback loop**:
-Plan meals → Track what you eat → See your progress → Adjust your plan → Repeat
-
-This is the complete nutrition system that competitors can't replicate.
+LeftoverGPT is built on **LooptOS**, the intelligence layer that orchestrates agentic commerce. While you interact with LeftoverGPT, LooptOS handles the complex reasoning, routing, and execution behind the scenes to ensure reliable results.
 
 ## Perfect For
 
@@ -110,7 +107,7 @@ This is the complete nutrition system that competitors can't replicate.
 
 export const PRIMARY_TAGS = [
   "recipes",
-  "cooking", 
+  "cooking",
   "nutrition",
   "calories",
   "macros",
@@ -118,7 +115,7 @@ export const PRIMARY_TAGS = [
   "grocery lists",
   "food tracking",
   "diet",
-  "health"
+  "health",
 ] as const;
 
 export const SECONDARY_TAGS = [
@@ -136,7 +133,7 @@ export const SECONDARY_TAGS = [
   "weight loss",
   "muscle building",
   "TDEE",
-  "CICO"
+  "CICO",
 ] as const;
 
 export const SEARCH_KEYWORDS = [
@@ -148,7 +145,7 @@ export const SEARCH_KEYWORDS = [
   "quick dinner ideas",
   "easy meals with",
   "what should I cook",
-  
+
   // Nutrition intent
   "calories in",
   "how many calories",
@@ -157,7 +154,7 @@ export const SEARCH_KEYWORDS = [
   "is this healthy",
   "protein in",
   "carbs in",
-  
+
   // Planning intent
   "meal plan for",
   "weekly meal plan",
@@ -165,26 +162,26 @@ export const SEARCH_KEYWORDS = [
   "plan my meals",
   "diet plan",
   "eating schedule",
-  
+
   // Tracking intent
   "track my food",
   "log my meal",
   "calorie counter",
   "food diary",
   "what I ate today",
-  
+
   // Shopping intent
   "grocery list for",
   "shopping list",
   "what to buy",
   "ingredients I need",
-  
+
   // Goal-based intent
   "lose weight",
   "build muscle",
   "eat healthier",
   "stay under calories",
-  "hit my protein goal"
+  "hit my protein goal",
 ] as const;
 
 export const SEASONAL_KEYWORDS: SeasonalKeywords = {
@@ -193,35 +190,35 @@ export const SEASONAL_KEYWORDS: SeasonalKeywords = {
     "comfort food",
     "slow cooker meals",
     "warm dishes",
-    "holiday cooking"
+    "holiday cooking",
   ],
   spring: [
     "light meals",
     "salad recipes",
     "fresh ingredients",
-    "detox meals"
+    "detox meals",
   ],
   summer: [
     "grilling recipes",
     "BBQ ideas",
     "no-cook meals",
     "cold dishes",
-    "picnic food"
+    "picnic food",
   ],
   fall: [
     "pumpkin recipes",
     "harvest meals",
     "thanksgiving planning",
-    "apple recipes"
+    "apple recipes",
   ],
-  
+
   // Time-of-day context
   timeOfDay: {
     morning: ["breakfast ideas", "quick breakfast", "meal prep breakfast"],
     afternoon: ["lunch recipes", "work lunch", "light lunch"],
     evening: ["dinner ideas", "quick dinner", "family dinner"],
-    lateNight: ["snack ideas", "midnight snack", "light snack"]
-  }
+    lateNight: ["snack ideas", "midnight snack", "light snack"],
+  },
 } as const;
 
 export const DIFFERENTIATOR_KEYWORDS = [
@@ -230,18 +227,18 @@ export const DIFFERENTIATOR_KEYWORDS = [
   "creative recipe ideas",
   "unique meal combinations",
   "not just database search",
-  
+
   // vs MyFitnessPal (standalone tracking)
   "recipes AND tracking",
   "meal plan that adjusts",
   "connected nutrition system",
   "plan to plate to progress",
-  
+
   // vs generic recipe apps
   "chaos rating",
   "leftover magic",
   "fridge to feast",
-  "reduce food waste AI"
+  "reduce food waste AI",
 ] as const;
 
 // ============================================================================
@@ -249,26 +246,26 @@ export const DIFFERENTIATOR_KEYWORDS = [
 // ============================================================================
 
 /**
- * Complete TheLoopGPT metadata package
+ * Complete LooptOS metadata package
  * This is the main export that combines all metadata components
  */
-export const THELOOPGPT_METADATA = {
+export const LOOPTOS_METADATA = {
   // Identity
   name: APP_IDENTITY.displayName,
   appId: APP_IDENTITY.appId,
   shortName: APP_IDENTITY.shortName,
   version: APP_IDENTITY.METADATA_VERSION,
   lastUpdated: APP_IDENTITY.LAST_UPDATED,
-  
+
   // Titles
   tagline: APP_TITLES.primary,
   subtitle: APP_TITLES.subtitle,
   titleVariants: APP_TITLES.variants,
-  
+
   // Descriptions
   shortDescription: SHORT_DESCRIPTION,
   longDescription: LONG_DESCRIPTION,
-  
+
   // Keywords
   keywords: [
     ...PRIMARY_TAGS,
@@ -282,29 +279,29 @@ export const THELOOPGPT_METADATA = {
     ...SEASONAL_KEYWORDS.timeOfDay.morning,
     ...SEASONAL_KEYWORDS.timeOfDay.afternoon,
     ...SEASONAL_KEYWORDS.timeOfDay.evening,
-    ...SEASONAL_KEYWORDS.timeOfDay.lateNight
+    ...SEASONAL_KEYWORDS.timeOfDay.lateNight,
   ].filter((v, i, a) => a.indexOf(v) === i), // Remove duplicates
   primaryTags: [...PRIMARY_TAGS],
   secondaryTags: [...SECONDARY_TAGS],
   searchKeywords: [...SEARCH_KEYWORDS],
   differentiatorKeywords: [...DIFFERENTIATOR_KEYWORDS],
-  
+
   // Categories
   categories: [
     "Food & Drink",
     "Health & Fitness",
     "Lifestyle",
-    "Productivity"
+    "Productivity",
   ],
-  
+
   // URLs
   website: APP_IDENTITY.website,
   statusPage: APP_IDENTITY.statusPage,
   supportEmail: APP_IDENTITY.supportEmail,
-  
+
   // Legacy names
   legacyNames: APP_IDENTITY.legacyNames,
-  
+
   // Feature highlights
   features: [
     "AI Recipe Generation from Leftovers",
@@ -314,9 +311,9 @@ export const THELOOPGPT_METADATA = {
     "Smart Grocery Lists",
     "Weight Goal Tracking",
     "Macro Calculator",
-    "Delivery Integration"
+    "Delivery Integration",
   ],
-  
+
   // Use cases
   useCases: [
     "Reduce food waste by cooking with leftovers",
@@ -324,9 +321,9 @@ export const THELOOPGPT_METADATA = {
     "Plan weekly meals based on dietary preferences",
     "Calculate nutrition for any recipe",
     "Create organized grocery lists",
-    "Monitor progress toward fitness goals"
+    "Monitor progress toward fitness goals",
   ],
-  
+
   // Target users
   targetUsers: [
     "Home cooks",
@@ -334,9 +331,19 @@ export const THELOOPGPT_METADATA = {
     "Busy professionals",
     "Families",
     "Budget-conscious shoppers",
-    "Health-conscious individuals"
-  ]
+    "Health-conscious individuals",
+  ],
 } as const;
+
+// Export individual constants for index.ts re-export
+export const APP_NAME = APP_IDENTITY.displayName;
+export const APP_TAGLINE = APP_TITLES.primary;
+export const APP_DESCRIPTION = SHORT_DESCRIPTION;
+export const APP_KEYWORDS = LOOPTOS_METADATA.keywords;
+export const APP_CATEGORIES = LOOPTOS_METADATA.categories;
+export const FEATURE_HIGHLIGHTS = LOOPTOS_METADATA.features;
+export const USE_CASES = LOOPTOS_METADATA.useCases;
+export const TARGET_USERS = LOOPTOS_METADATA.targetUsers;
 
 // ============================================================================
 // Export Helper Functions
@@ -356,7 +363,7 @@ export function generateAppStoreSubmission(): AppStoreSubmission {
     searchKeywords: [...SEARCH_KEYWORDS],
     website: APP_IDENTITY.website,
     supportEmail: APP_IDENTITY.supportEmail,
-    version: APP_IDENTITY.METADATA_VERSION
+    version: APP_IDENTITY.METADATA_VERSION,
   };
 }
 
@@ -376,9 +383,9 @@ export function getAllKeywords(): string[] {
     ...SEASONAL_KEYWORDS.timeOfDay.morning,
     ...SEASONAL_KEYWORDS.timeOfDay.afternoon,
     ...SEASONAL_KEYWORDS.timeOfDay.evening,
-    ...SEASONAL_KEYWORDS.timeOfDay.lateNight
+    ...SEASONAL_KEYWORDS.timeOfDay.lateNight,
   ];
-  
+
   // Remove duplicates
   return [...new Set(allKeywords)];
 }
@@ -388,18 +395,18 @@ export function getAllKeywords(): string[] {
  */
 export function getContextualKeywords(
   season?: "winter" | "spring" | "summer" | "fall",
-  timeOfDay?: "morning" | "afternoon" | "evening" | "lateNight"
+  timeOfDay?: "morning" | "afternoon" | "evening" | "lateNight",
 ): string[] {
   const keywords: string[] = [];
-  
+
   if (season) {
     keywords.push(...SEASONAL_KEYWORDS[season]);
   }
-  
+
   if (timeOfDay) {
     keywords.push(...SEASONAL_KEYWORDS.timeOfDay[timeOfDay]);
   }
-  
+
   return keywords;
 }
 
@@ -408,7 +415,7 @@ export function getContextualKeywords(
  */
 export function getCurrentSeason(): "winter" | "spring" | "summer" | "fall" {
   const month = new Date().getMonth(); // 0-11
-  
+
   if (month >= 11 || month <= 1) return "winter";
   if (month >= 2 && month <= 4) return "spring";
   if (month >= 5 && month <= 7) return "summer";
@@ -418,9 +425,13 @@ export function getCurrentSeason(): "winter" | "spring" | "summer" | "fall" {
 /**
  * Get current time of day
  */
-export function getCurrentTimeOfDay(): "morning" | "afternoon" | "evening" | "lateNight" {
+export function getCurrentTimeOfDay():
+  | "morning"
+  | "afternoon"
+  | "evening"
+  | "lateNight" {
   const hour = new Date().getHours();
-  
+
   if (hour >= 5 && hour < 12) return "morning";
   if (hour >= 12 && hour < 17) return "afternoon";
   if (hour >= 17 && hour < 22) return "evening";

@@ -15,13 +15,15 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 console.log("🔧 Applying Sentiment Layer Migration...\n");
 
 // Read the migration file
-const migrationSQL = await Deno.readTextFile("./supabase/migrations/20251204_sentiment_layer.sql");
+const migrationSQL = await Deno.readTextFile(
+  "./supabase/migrations/20251204_sentiment_layer.sql",
+);
 
 // Split into individual statements (rough split by semicolon + newline)
 const statements = migrationSQL
   .split(";")
-  .map(s => s.trim())
-  .filter(s => s.length > 0 && !s.startsWith("--"));
+  .map((s) => s.trim())
+  .filter((s) => s.length > 0 && !s.startsWith("--"));
 
 console.log(`📝 Found ${statements.length} SQL statements\n`);
 
@@ -30,15 +32,15 @@ let errorCount = 0;
 
 for (let i = 0; i < statements.length; i++) {
   const stmt = statements[i] + ";";
-  
+
   // Skip comments
   if (stmt.startsWith("--") || stmt.startsWith("COMMENT")) {
     continue;
   }
-  
+
   try {
     const { error } = await supabase.rpc("exec_sql", { sql: stmt });
-    
+
     if (error) {
       console.error(`❌ Statement ${i + 1} failed:`, error.message);
       console.error(`   SQL: ${stmt.substring(0, 100)}...`);

@@ -1,6 +1,6 @@
 /**
  * MealMe Webhook Edge Function
- * 
+ *
  * Handles webhook events from MealMe for order status updates.
  */
 
@@ -32,7 +32,10 @@ interface WebhookResponse {
   message?: string;
 }
 
-async function processWebhook(payload: WebhookPayload, signature?: string): Promise<WebhookResponse> {
+async function processWebhook(
+  payload: WebhookPayload,
+  signature?: string,
+): Promise<WebhookResponse> {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   // Verify webhook signature if secret is configured
@@ -41,7 +44,9 @@ async function processWebhook(payload: WebhookPayload, signature?: string): Prom
     console.log("[MealMe Webhook] Signature verification not yet implemented");
   }
 
-  console.log(`[MealMe Webhook] Received event for order ${payload.orderId || 'unknown'}`);
+  console.log(
+    `[MealMe Webhook] Received event for order ${payload.orderId || "unknown"}`,
+  );
 
   // Store raw webhook event
   const { error: webhookError } = await supabase
@@ -54,7 +59,9 @@ async function processWebhook(payload: WebhookPayload, signature?: string): Prom
     });
 
   if (webhookError) {
-    console.error(`[MealMe Webhook] Failed to store event: ${webhookError.message}`);
+    console.error(
+      `[MealMe Webhook] Failed to store event: ${webhookError.message}`,
+    );
     throw new Error(`Failed to store webhook event: ${webhookError.message}`);
   }
 
@@ -77,16 +84,20 @@ async function processWebhook(payload: WebhookPayload, signature?: string): Prom
     // Upsert order by mealme_order_id
     const { error: orderError } = await supabase
       .from("orders")
-      .upsert(updateData, { 
+      .upsert(updateData, {
         onConflict: "mealme_order_id",
         ignoreDuplicates: false,
       });
 
     if (orderError) {
-      console.error(`[MealMe Webhook] Failed to update order: ${orderError.message}`);
+      console.error(
+        `[MealMe Webhook] Failed to update order: ${orderError.message}`,
+      );
       // Don't throw - we still want to acknowledge the webhook
     } else {
-      console.log(`[MealMe Webhook] Updated order ${payload.orderId} with status ${payload.status}`);
+      console.log(
+        `[MealMe Webhook] Updated order ${payload.orderId} with status ${payload.status}`,
+      );
     }
 
     // Update order items if provided
@@ -120,9 +131,13 @@ async function processWebhook(payload: WebhookPayload, signature?: string): Prom
           .insert(orderItems);
 
         if (itemsError) {
-          console.error(`[MealMe Webhook] Failed to update items: ${itemsError.message}`);
+          console.error(
+            `[MealMe Webhook] Failed to update items: ${itemsError.message}`,
+          );
         } else {
-          console.log(`[MealMe Webhook] Updated ${orderItems.length} items for order ${payload.orderId}`);
+          console.log(
+            `[MealMe Webhook] Updated ${orderItems.length} items for order ${payload.orderId}`,
+          );
         }
       }
     }
@@ -157,4 +172,3 @@ const handler = async (req: Request): Promise<Response> => {
 // Export with logging middleware
 // withLogging is not compatible with withWebhook in this context, using withWebhook directly
 export default withWebhook(handler);
-

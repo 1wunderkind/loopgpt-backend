@@ -1,22 +1,25 @@
 # 🚀 Quick-Start Guide: API Configuration for TheLoopGPT Backend
 
-This guide will walk you through configuring all external API keys needed for TheLoopGPT backend to unlock its full functionality.
+This guide will walk you through configuring all external API keys needed for
+TheLoopGPT backend to unlock its full functionality.
 
 ---
 
 ## 📋 Overview
 
-TheLoopGPT backend integrates with several external services to provide comprehensive food, nutrition, and commerce features. While the system is functional without these keys, configuring them unlocks advanced capabilities.
+TheLoopGPT backend integrates with several external services to provide
+comprehensive food, nutrition, and commerce features. While the system is
+functional without these keys, configuring them unlocks advanced capabilities.
 
 ### API Keys Priority
 
-| Priority | Service | Purpose | Required For |
-|----------|---------|---------|--------------|
-| 🔴 **High** | OpenAI | AI-powered meal planning, nutrition analysis | Core features |
-| 🟡 **Medium** | MealMe | Grocery delivery integration | Commerce features |
-| 🟡 **Medium** | Stripe | Payment processing, subscriptions | Monetization |
-| 🟢 **Low** | Sentry | Error tracking and monitoring | Observability |
-| 🟢 **Low** | Affiliate Programs | Revenue generation from referrals | Monetization |
+| Priority      | Service            | Purpose                                      | Required For      |
+| ------------- | ------------------ | -------------------------------------------- | ----------------- |
+| 🔴 **High**   | OpenAI             | AI-powered meal planning, nutrition analysis | Core features     |
+| 🟡 **Medium** | MealMe             | Grocery delivery integration                 | Commerce features |
+| 🟡 **Medium** | Stripe             | Payment processing, subscriptions            | Monetization      |
+| 🟢 **Low**    | Sentry             | Error tracking and monitoring                | Observability     |
+| 🟢 **Low**    | Affiliate Programs | Revenue generation from referrals            | Monetization      |
 
 ---
 
@@ -41,6 +44,7 @@ TheLoopGPT backend integrates with several external services to provide comprehe
 ### Step 3: Restart Edge Functions (if needed)
 
 After adding new secrets, you may need to restart your edge functions:
+
 ```bash
 # From your local terminal
 cd /home/ubuntu/loopgpt-backend
@@ -53,7 +57,8 @@ supabase functions deploy --no-verify-jwt
 
 ### 1. OpenAI API Key (High Priority)
 
-**Purpose:** Powers AI-driven meal planning, recipe generation, nutrition analysis, and natural language processing.
+**Purpose:** Powers AI-driven meal planning, recipe generation, nutrition
+analysis, and natural language processing.
 
 **Environment Variable:** `OPENAI_API_KEY`
 
@@ -81,11 +86,13 @@ supabase functions deploy --no-verify-jwt
    ```
 
 #### Cost Estimate:
+
 - **GPT-4o:** ~$0.005 per meal plan generation
 - **GPT-3.5-turbo:** ~$0.0005 per nutrition analysis
 - **Expected monthly cost:** $20-100 depending on usage
 
 #### Functions Using This Key:
+
 - `plan_create_meal_plan`
 - `plan_generate_from_leftovers`
 - `nutrition_analyze_food`
@@ -96,7 +103,8 @@ supabase functions deploy --no-verify-jwt
 
 ### 2. MealMe API Key (Medium Priority)
 
-**Purpose:** Enables grocery delivery integration for ordering ingredients directly from meal plans.
+**Purpose:** Enables grocery delivery integration for ordering ingredients
+directly from meal plans.
 
 **Environment Variable:** `MEALME_API_KEY`
 
@@ -123,18 +131,22 @@ supabase functions deploy --no-verify-jwt
    ```
 
 #### Alternative (For Testing):
+
 If you don't have a MealMe key yet, you can use test mode:
+
 ```
 Name: MEALME_API_KEY
 Value: mealme_test_[YOUR_KEY_HERE]
 ```
 
 #### Cost Structure:
+
 - **Free tier:** 1,000 API calls/month
 - **Pro tier:** $99/month for 10,000 calls
 - **Transaction fee:** 2-5% of order value
 
 #### Functions Using This Key:
+
 - `mealme_create_cart`
 - `mealme_get_quotes`
 - `mealme_checkout_url`
@@ -147,7 +159,8 @@ Value: mealme_test_[YOUR_KEY_HERE]
 
 **Purpose:** Handles payment processing, subscription management, and billing.
 
-**Environment Variables:** 
+**Environment Variables:**
+
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 - `STRIPE_PUBLISHABLE_KEY` (for frontend)
@@ -166,7 +179,8 @@ Value: mealme_test_[YOUR_KEY_HERE]
 3. **Set Up Webhook:**
    - Go to: https://dashboard.stripe.com/webhooks
    - Click **+ Add endpoint**
-   - Enter URL: `https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/stripe_webhook`
+   - Enter URL:
+     `https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/stripe_webhook`
    - Select events to listen to:
      - `checkout.session.completed`
      - `customer.subscription.created`
@@ -181,25 +195,28 @@ Value: mealme_test_[YOUR_KEY_HERE]
    ```
    Name: STRIPE_SECRET_KEY
    Value: sk_live_[YOUR_STRIPE_SECRET_KEY]
-   
+
    Name: STRIPE_WEBHOOK_SECRET
    Value: whsec_[YOUR_WEBHOOK_SECRET]
-   
+
    Name: STRIPE_PUBLISHABLE_KEY
    Value: pk_live_[YOUR_PUBLISHABLE_KEY]
    ```
 
 #### Development vs Production:
+
 - **Test mode:** Use `sk_test_` and `pk_test_` keys for development
 - **Live mode:** Use `sk_live_` and `pk_live_` for production
 - Switch between modes in Stripe dashboard (top-right toggle)
 
 #### Cost Structure:
+
 - **Transaction fee:** 2.9% + $0.30 per successful charge
 - **Subscription billing:** No additional fees
 - **No monthly fees** for basic usage
 
 #### Functions Using These Keys:
+
 - `create_checkout_session`
 - `create_customer_portal`
 - `stripe_webhook`
@@ -210,33 +227,39 @@ Value: mealme_test_[YOUR_KEY_HERE]
 
 ### 4. External GPT Endpoints (Optional)
 
-**Purpose:** Connect to specialized GPT models for K-Cal tracking, leftover recipes, and nutrition analysis.
+**Purpose:** Connect to specialized GPT models for K-Cal tracking, leftover
+recipes, and nutrition analysis.
 
 **Environment Variables:**
+
 - `KCAL_GPT_ENDPOINT`
 - `LEFTOVER_GPT_ENDPOINT`
 - `NUTRITION_GPT_ENDPOINT`
 
 #### How to Configure:
 
-These are custom GPT endpoints you may have deployed separately. If you have these services:
+These are custom GPT endpoints you may have deployed separately. If you have
+these services:
 
 1. **Add to Supabase:**
    ```
    Name: KCAL_GPT_ENDPOINT
    Value: https://your-kcal-gpt-endpoint.com/api
-   
+
    Name: LEFTOVER_GPT_ENDPOINT
    Value: https://your-leftover-gpt-endpoint.com/api
-   
+
    Name: NUTRITION_GPT_ENDPOINT
    Value: https://your-nutrition-gpt-endpoint.com/api
    ```
 
 #### If You Don't Have These:
-The system will fall back to using the main OpenAI integration. These are optional enhancements.
+
+The system will fall back to using the main OpenAI integration. These are
+optional enhancements.
 
 #### Functions Using These Endpoints:
+
 - `plan_create_meal_plan` (uses MCP wrappers)
 - `plan_generate_from_leftovers`
 - `nutrition_get_macros`
@@ -273,11 +296,13 @@ The system will fall back to using the main OpenAI integration. These are option
    ```
 
 #### Cost Structure:
+
 - **Free tier:** 5,000 errors/month
 - **Team tier:** $26/month for 50,000 errors
 - **Business tier:** $80/month for 100,000 errors
 
 #### Benefits:
+
 - Real-time error alerts
 - Stack traces and debugging info
 - Performance monitoring
@@ -290,6 +315,7 @@ The system will fall back to using the main OpenAI integration. These are option
 **Purpose:** Generate revenue through affiliate links for ingredient purchases.
 
 **Environment Variables:**
+
 - `AMAZON_AFFILIATE_TAG`
 - `INSTACART_AFFILIATE_ID`
 
@@ -329,10 +355,12 @@ The system will fall back to using the main OpenAI integration. These are option
    ```
 
 #### Revenue Potential:
+
 - **Amazon:** 1-4% commission on qualifying purchases
 - **Instacart:** Varies by partnership agreement
 
 #### Functions Using These IDs:
+
 - `get_affiliate_links`
 - `get_affiliate_by_country`
 - `plan_create_meal_plan` (includes affiliate links in response)
@@ -344,6 +372,7 @@ The system will fall back to using the main OpenAI integration. These are option
 After adding your API keys, verify they're working:
 
 ### 1. Test Health Endpoint
+
 ```bash
 curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/sys_healthcheck
 ```
@@ -351,6 +380,7 @@ curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/sys_healthcheck
 Expected response should show configured services.
 
 ### 2. Test OpenAI Integration
+
 ```bash
 curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/nutrition_analyze_food \
   -H "Content-Type: application/json" \
@@ -359,6 +389,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/nutrition_ana
 ```
 
 ### 3. Test Stripe Integration
+
 ```bash
 curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/create_checkout_session \
   -H "Content-Type: application/json" \
@@ -367,6 +398,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/create_checko
 ```
 
 ### 4. Check Sentry Dashboard
+
 - Generate a test error
 - Check Sentry dashboard for the error event
 - Verify source maps and stack traces are working
@@ -376,26 +408,31 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/create_checko
 ## 🔒 Security Best Practices
 
 ### 1. Never Commit API Keys to Git
+
 - All keys should be in Supabase environment variables only
 - Never hardcode keys in your codebase
 - Use `.env.local` for local development (already in `.gitignore`)
 
 ### 2. Use Different Keys for Development and Production
+
 - Test keys for development: `sk_test_`, `pk_test_`
 - Live keys for production: `sk_live_`, `pk_live_`
 - Separate Sentry projects for each environment
 
 ### 3. Rotate Keys Regularly
+
 - Rotate API keys every 90 days
 - Immediately rotate if you suspect a key has been compromised
 - Use key rotation features when available (e.g., Stripe)
 
 ### 4. Monitor API Usage
+
 - Set up billing alerts in each service
 - Monitor for unusual activity
 - Review API usage logs regularly
 
 ### 5. Restrict API Key Permissions
+
 - Use the principle of least privilege
 - Restrict keys to only necessary permissions
 - Use IP allowlists when available
@@ -406,15 +443,15 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/create_checko
 
 Here's what you can expect to spend monthly with moderate usage (1,000 users):
 
-| Service | Free Tier | Estimated Monthly Cost |
-|---------|-----------|------------------------|
-| **OpenAI** | $5 credit (new users) | $50-200 |
-| **MealMe** | 1,000 calls | $0-99 (depending on volume) |
-| **Stripe** | Unlimited | 2.9% + $0.30 per transaction |
-| **Sentry** | 5,000 errors | $0-26 |
-| **Amazon Associates** | Free | $0 (generates revenue) |
-| **Instacart Affiliate** | Free | $0 (generates revenue) |
-| **Total** | - | **$50-325/month** |
+| Service                 | Free Tier             | Estimated Monthly Cost       |
+| ----------------------- | --------------------- | ---------------------------- |
+| **OpenAI**              | $5 credit (new users) | $50-200                      |
+| **MealMe**              | 1,000 calls           | $0-99 (depending on volume)  |
+| **Stripe**              | Unlimited             | 2.9% + $0.30 per transaction |
+| **Sentry**              | 5,000 errors          | $0-26                        |
+| **Amazon Associates**   | Free                  | $0 (generates revenue)       |
+| **Instacart Affiliate** | Free                  | $0 (generates revenue)       |
+| **Total**               | -                     | **$50-325/month**            |
 
 **Note:** Costs scale with usage. Start with free tiers and upgrade as needed.
 
@@ -427,16 +464,19 @@ Here's what you can expect to spend monthly with moderate usage (1,000 users):
 **Problem:** Getting authentication errors after adding API key
 
 **Solution:**
+
 1. Verify the key is correct (no extra spaces)
 2. Check if the key has necessary permissions
 3. Restart edge functions: `supabase functions deploy --no-verify-jwt`
-4. Check Supabase logs: https://supabase.com/dashboard/project/qmagnwxeijctkksqbcqz/logs
+4. Check Supabase logs:
+   https://supabase.com/dashboard/project/qmagnwxeijctkksqbcqz/logs
 
 ### Webhook Not Receiving Events
 
 **Problem:** Stripe webhook not triggering
 
 **Solution:**
+
 1. Verify webhook URL is correct
 2. Check webhook signing secret matches
 3. Test webhook in Stripe dashboard: **Webhooks** → **Send test webhook**
@@ -447,6 +487,7 @@ Here's what you can expect to spend monthly with moderate usage (1,000 users):
 **Problem:** Getting rate limit errors
 
 **Solution:**
+
 1. Implement request queuing in your frontend
 2. Upgrade API tier if needed
 3. Add caching to reduce API calls
@@ -457,6 +498,7 @@ Here's what you can expect to spend monthly with moderate usage (1,000 users):
 **Problem:** Unexpected high costs
 
 **Solution:**
+
 1. Set up billing alerts in each service
 2. Implement request caching
 3. Add rate limiting on your frontend
@@ -467,26 +509,31 @@ Here's what you can expect to spend monthly with moderate usage (1,000 users):
 ## 📞 Support Resources
 
 ### OpenAI
+
 - Documentation: https://platform.openai.com/docs
 - Support: https://help.openai.com
 - Status: https://status.openai.com
 
 ### MealMe
+
 - Documentation: https://docs.mealme.ai
 - Support: support@mealme.ai
 - Partnership inquiries: partnerships@mealme.ai
 
 ### Stripe
+
 - Documentation: https://stripe.com/docs
 - Support: https://support.stripe.com
 - Status: https://status.stripe.com
 
 ### Sentry
+
 - Documentation: https://docs.sentry.io
 - Support: https://sentry.io/support
 - Status: https://status.sentry.io
 
 ### Supabase
+
 - Documentation: https://supabase.com/docs
 - Support: https://supabase.com/support
 - Status: https://status.supabase.com
@@ -524,6 +571,8 @@ Use this checklist to track your progress:
 
 ---
 
-**Questions or issues?** Open an issue on GitHub: https://github.com/1wunderkind/loopgpt-backend/issues
+**Questions or issues?** Open an issue on GitHub:
+https://github.com/1wunderkind/loopgpt-backend/issues
 
-**Ready to start?** Begin with the OpenAI API key (highest priority) and work your way down the list!
+**Ready to start?** Begin with the OpenAI API key (highest priority) and work
+your way down the list!

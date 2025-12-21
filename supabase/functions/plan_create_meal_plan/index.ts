@@ -5,19 +5,33 @@
 
 import { serve } from "std@0.168.0/http/server.ts";
 import { withLogging } from "../../middleware/logging.ts";
-import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  validateRequired,
+} from "../../middleware/errorHandler.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
-import { getKCalGoals, getRecipesFromLeftover, getMacrosFromNutrition } from "../_lib/mcpWrappers.ts";
-import { buildAffiliateLinks, generateAffiliateSummary } from "../_lib/affiliate.ts";
-import { formatMealPlan, detectLanguage } from "../_lib/multilingual.ts";
-import { 
-  formatCountryDisplay, 
-  needsLocationConfirmation, 
+import {
+  getKCalGoals,
+  getMacrosFromNutrition,
+  getRecipesFromLeftover,
+} from "../_lib/mcpWrappers.ts";
+import {
+  buildAffiliateLinks,
+  generateAffiliateSummary,
+} from "../_lib/affiliate.ts";
+import { detectLanguage, formatMealPlan } from "../_lib/multilingual.ts";
+import {
+  calculateLocationConfidence,
+  formatCountryDisplay,
   generateLocationConfirmationPrompt,
   getAlternativeCountries,
-  calculateLocationConfidence 
+  needsLocationConfirmation,
 } from "../_lib/locationUtils.ts";
-import type { GenerateWeekPlanRequest, GenerateWeekPlanResponse } from "../_lib/types.ts";
+import type {
+  GenerateWeekPlanRequest,
+  GenerateWeekPlanResponse,
+} from "../_lib/types.ts";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
 async function handler(req: Request): Promise<Response> {
@@ -43,36 +57,47 @@ async function handler(req: Request): Promise<Response> {
     } = body;
 
     // Get authenticated Supabase client (enforces RLS)
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-    
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
+
     if (authError) {
       return createErrorResponse("AUTH_ERROR", authError, 401);
     }
-    
+
     if (!userId) {
-      return createErrorResponse("UNAUTHORIZED", "Authentication required", 401);
+      return createErrorResponse(
+        "UNAUTHORIZED",
+        "Authentication required",
+        401,
+      );
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
     // Step 1: Detect language from user input
-    const userInput = vibe || goal_type || dietary_restrictions.join(" ") || "healthy meal plan";
+    const userInput = vibe || goal_type || dietary_restrictions.join(" ") ||
+      "healthy meal plan";
     const detectedLanguage = language || detectLanguage(userInput);
-    
-    console.log(`[MULTILINGUAL] Detected language: ${detectedLanguage} from input: "${userInput}"`);
+
+    console.log(
+      `[MULTILINGUAL] Detected language: ${detectedLanguage} from input: "${userInput}"`,
+    );
 
     // Step 2: Get user location (NEW - GEOLOCATION)
     const geoHint = req.headers.get("X-User-Country") || undefined;
-    
-    const locationResponse = await fetch(`${supabaseUrl}/functions/v1/get_user_location`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chatgpt_user_id,
-        detected_language: detectedLanguage,
-        geo_hint: geoHint,
-      }),
-    });
+
+    const locationResponse = await fetch(
+      `${supabaseUrl}/functions/v1/get_user_location`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chatgpt_user_id,
+          detected_language: detectedLanguage,
+          geo_hint: geoHint,
+        }),
+      },
+    );
 
     const locationData = await locationResponse.json();
 
@@ -82,16 +107,20 @@ async function handler(req: Request): Promise<Response> {
     if (locationData.needs_confirmation && !confirmed_country) {
       const confidence = calculateLocationConfidence(
         locationData.source,
-        detectedLanguage === locationData.language
+        detectedLanguage === locationData.language,
       );
 
       if (needsLocationConfirmation(confidence)) {
         // Generate confirmation prompt
-        const alternatives = getAlternativeCountries(detectedLanguage, locationData.country, 1);
+        const alternatives = getAlternativeCountries(
+          detectedLanguage,
+          locationData.country,
+          1,
+        );
         const confirmationPrompt = generateLocationConfirmationPrompt(
           detectedLanguage,
           locationData.country || alternatives[0],
-          alternatives
+          alternatives,
         );
 
         console.log(`[GEOLOCATION] Needs confirmation: ${confirmationPrompt}`);
@@ -130,32 +159,44 @@ async function handler(req: Request): Promise<Response> {
     console.log(`[GEOLOCATION] Using country: ${userCountry}`);
 
     // Step 5: Get affiliates for user's country (NEW - GEOLOCATION)
-    const affiliatesResponse = await fetch(`${supabaseUrl}/functions/v1/get_affiliate_by_country`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ country: userCountry }),
-    });
+    const affiliatesResponse = await fetch(
+      `${supabaseUrl}/functions/v1/get_affiliate_by_country`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ country: userCountry }),
+      },
+    );
 
     const affiliatesData = await affiliatesResponse.json();
 
-    console.log(`[GEOLOCATION] Found ${affiliatesData.count} affiliates for ${userCountry}`);
+    console.log(
+      `[GEOLOCATION] Found ${affiliatesData.count} affiliates for ${userCountry}`,
+    );
 
     // Calculate date range (default to 7 days starting tomorrow)
     const startDate = start_date || getNextDay();
     const endDate = end_date || getDateAfterDays(startDate, 7);
 
-    console.log(`Generating meal plan for user ${chatgpt_user_id} from ${startDate} to ${endDate}`);
+    console.log(
+      `Generating meal plan for user ${chatgpt_user_id} from ${startDate} to ${endDate}`,
+    );
 
     // Step 6: Get user goals from K-Cal GPT
     const userGoals = await getKCalGoals(chatgpt_user_id);
-    const finalCaloriesTarget = calories_target || userGoals?.daily_calorie_goal || 2000;
+    const finalCaloriesTarget = calories_target ||
+      userGoals?.daily_calorie_goal || 2000;
     const finalMacrosTarget = macros_target || {
       protein_g: userGoals?.daily_protein_goal || 150,
       carbs_g: userGoals?.daily_carbs_goal || 200,
       fat_g: userGoals?.daily_fat_goal || 65,
     };
 
-    console.log(`User goals: ${finalCaloriesTarget} cal, ${JSON.stringify(finalMacrosTarget)} macros`);
+    console.log(
+      `User goals: ${finalCaloriesTarget} cal, ${
+        JSON.stringify(finalMacrosTarget)
+      } macros`,
+    );
 
     // Step 7: Generate recipes for the week
     const dailyMeals: any[] = [];
@@ -165,7 +206,11 @@ async function handler(req: Request): Promise<Response> {
       const dayDate = getDateAfterDays(startDate, day - 1);
 
       for (let mealOrder = 1; mealOrder <= recipes_per_day; mealOrder++) {
-        const mealType = mealOrder === 1 ? "breakfast" : mealOrder === 2 ? "lunch" : "dinner";
+        const mealType = mealOrder === 1
+          ? "breakfast"
+          : mealOrder === 2
+          ? "lunch"
+          : "dinner";
 
         // Generate recipe from LeftoverGPT
         const recipe = await getRecipesFromLeftover({
@@ -210,7 +255,7 @@ async function handler(req: Request): Promise<Response> {
         carbs_g: acc.carbs_g + (meal.macros?.carbs_g || 0),
         fat_g: acc.fat_g + (meal.macros?.fat_g || 0),
       }),
-      { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }
+      { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 },
     );
 
     // Step 9: Build grocery affiliate summary
@@ -243,7 +288,9 @@ async function handler(req: Request): Promise<Response> {
     const formattedMessage = await formatMealPlan(responseData, userInput);
 
     console.log(`[MULTILINGUAL] Formatted response in ${detectedLanguage}`);
-    console.log(`[GEOLOCATION] Included ${affiliatesData.count} delivery affiliates for ${userCountry}`);
+    console.log(
+      `[GEOLOCATION] Included ${affiliatesData.count} delivery affiliates for ${userCountry}`,
+    );
 
     // Step 12: Save meal plan to database
     const { data: savedPlan, error: planError } = await supabase
@@ -274,10 +321,11 @@ async function handler(req: Request): Promise<Response> {
       formatted_message: formattedMessage,
       language: detectedLanguage,
     });
-
   } catch (error) {
     console.error("Error generating meal plan:", error);
-    return createErrorResponse(error instanceof Error ? error.message : String(error));
+    return createErrorResponse(
+      error instanceof Error ? error.message : String(error),
+    );
   }
 }
 
@@ -297,4 +345,3 @@ function getDateAfterDays(startDate: string, days: number): string {
 // Export handler with logging middleware
 // withLogging is not compatible with withStandardAPI in this context, using withStandardAPI directly
 serve(withStandardAPI(handler));
-

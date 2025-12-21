@@ -5,17 +5,21 @@
 
 import { MealPlanJsonSchema } from "./shared/jsonSchema.ts";
 import {
-  MealPlanRequestSchema,
-  MealPlanWithGroceryInputSchema,
-  MealPlanSchema,
-  type MealPlan,
   type GroceryList,
+  type MealPlan,
+  MealPlanRequestSchema,
+  MealPlanSchema,
+  MealPlanWithGroceryInputSchema,
 } from "./shared/schemas.ts";
 import { getOpenAIClient } from "../config/openai.ts";
 import { ENV } from "../config/env.ts";
 import { OpenAiError } from "./shared/errors.ts";
 import { validateInput } from "./shared/validation.ts";
-import { logToolStart, logToolSuccess, logToolError } from "./shared/logging.ts";
+import {
+  logToolError,
+  logToolStart,
+  logToolSuccess,
+} from "./shared/logging.ts";
 import { recordToolCall } from "./shared/metrics.ts";
 import { cacheGet, cacheSet, generateCacheKey } from "./shared/cache.ts";
 import { generateGroceryList } from "./grocery.ts";
@@ -26,13 +30,13 @@ import { generateGroceryList } from "./grocery.ts";
 export async function generateMealPlan(params: unknown): Promise<MealPlan> {
   const startTime = Date.now();
   const toolName = "mealplan.generate";
-  
+
   try {
     logToolStart(toolName, { params });
-    
+
     // Validate input
     const input = validateInput(MealPlanRequestSchema, params, toolName);
-    
+
     // Check cache
     if (ENV.ENABLE_CACHING) {
       const cacheKey = generateCacheKey(toolName, input);
@@ -44,11 +48,12 @@ export async function generateMealPlan(params: unknown): Promise<MealPlan> {
         return cached;
       }
     }
-    
+
     // Generate meal plan using OpenAI Structured Outputs
     const client = getOpenAIClient();
-    
-    const systemPrompt = `You are TheLoopGPT's meal planning engine. Create balanced, practical meal plans based on user goals.
+
+    const systemPrompt =
+      `You are TheLoopGPT's meal planning engine. Create balanced, practical meal plans based on user goals.
 
 Rules:
 - Generate ${input.days} days of meals (breakfast, lunch, dinner, snacks)
@@ -60,12 +65,25 @@ Rules:
 - Provide nutritional summaries per day if possible
 - Add helpful notes about meal prep, shopping, or substitutions`;
 
-    const userPrompt = `Create a ${input.days}-day meal plan with these requirements:
+    const userPrompt =
+      `Create a ${input.days}-day meal plan with these requirements:
 
-${input.goal ? `Goal: ${input.goal}` : ''}
-${input.caloriesPerDay ? `Target calories per day: ${input.caloriesPerDay}` : ''}
-${input.dietTags && input.dietTags.length > 0 ? `Dietary requirements: ${input.dietTags.join(', ')}` : ''}
-${input.excludeIngredients && input.excludeIngredients.length > 0 ? `Exclude ingredients: ${input.excludeIngredients.join(', ')}` : ''}
+${input.goal ? `Goal: ${input.goal}` : ""}
+${
+        input.caloriesPerDay
+          ? `Target calories per day: ${input.caloriesPerDay}`
+          : ""
+      }
+${
+        input.dietTags && input.dietTags.length > 0
+          ? `Dietary requirements: ${input.dietTags.join(", ")}`
+          : ""
+      }
+${
+        input.excludeIngredients && input.excludeIngredients.length > 0
+          ? `Exclude ingredients: ${input.excludeIngredients.join(", ")}`
+          : ""
+      }
 
 Generate complete recipes for each meal with ingredients and instructions.`;
 
@@ -95,22 +113,24 @@ Generate complete recipes for each meal with ingredients and instructions.`;
     }
 
     const mealPlan: MealPlan = JSON.parse(rawContent);
-    
+
     // Cache the result
     if (ENV.ENABLE_CACHING) {
       const cacheKey = generateCacheKey(toolName, input);
       await cacheSet(cacheKey, mealPlan, ENV.CACHE_TTL_SECONDS, toolName);
     }
-    
+
     const duration = Date.now() - startTime;
     logToolSuccess(toolName, duration, { days: mealPlan.days.length });
     recordToolCall(toolName, true, duration);
-    
+
     return mealPlan;
   } catch (error) {
     const duration = Date.now() - startTime;
     logToolError(toolName, error as Error, duration);
-    recordToolCall(toolName, false, duration, { errorType: (error as Error).name });
+    recordToolCall(toolName, false, duration, {
+      errorType: (error as Error).name,
+    });
     throw error;
   }
 }
@@ -118,23 +138,31 @@ Generate complete recipes for each meal with ingredients and instructions.`;
 /**
  * Generate meal plan with grocery list (composite tool)
  */
-export async function generateMealPlanWithGroceryList(params: unknown): Promise<{
+export async function generateMealPlanWithGroceryList(
+  params: unknown,
+): Promise<{
   mealPlan: MealPlan;
   groceryList: GroceryList;
 }> {
   const startTime = Date.now();
   const toolName = "mealplan.generateWithGroceryList";
-  
+
   try {
     logToolStart(toolName, { params });
-    
+
     // Validate input
-    const input = validateInput(MealPlanWithGroceryInputSchema, params, toolName);
-    
+    const input = validateInput(
+      MealPlanWithGroceryInputSchema,
+      params,
+      toolName,
+    );
+
     // Check cache
     if (ENV.ENABLE_CACHING) {
       const cacheKey = generateCacheKey(toolName, input);
-      const cached = await cacheGet<{ mealPlan: MealPlan; groceryList: GroceryList }>(cacheKey);
+      const cached = await cacheGet<
+        { mealPlan: MealPlan; groceryList: GroceryList }
+      >(cacheKey);
       if (cached) {
         const duration = Date.now() - startTime;
         logToolSuccess(toolName, duration, { cached: true });
@@ -142,30 +170,35 @@ export async function generateMealPlanWithGroceryList(params: unknown): Promise<
         return cached;
       }
     }
-    
+
     // Generate meal plan
     const mealPlan = await generateMealPlan(input);
-    
+
     // Generate grocery list from meal plan
-    const groceryList = await generateGroceryList({ mealPlan, categorize: true });
-    
+    const groceryList = await generateGroceryList({
+      mealPlan,
+      categorize: true,
+    });
+
     const result = { mealPlan, groceryList };
-    
+
     // Cache the result
     if (ENV.ENABLE_CACHING) {
       const cacheKey = generateCacheKey(toolName, input);
       await cacheSet(cacheKey, result, ENV.CACHE_TTL_SECONDS, toolName);
     }
-    
+
     const duration = Date.now() - startTime;
     logToolSuccess(toolName, duration, { days: mealPlan.days.length });
     recordToolCall(toolName, true, duration);
-    
+
     return result;
   } catch (error) {
     const duration = Date.now() - startTime;
     logToolError(toolName, error as Error, duration);
-    recordToolCall(toolName, false, duration, { errorType: (error as Error).name });
+    recordToolCall(toolName, false, duration, {
+      errorType: (error as Error).name,
+    });
     throw error;
   }
 }

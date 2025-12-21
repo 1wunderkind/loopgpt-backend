@@ -4,7 +4,7 @@
  */
 
 console.log("\n🧪 Phase 3 Scoring Algorithm Tests\n");
-console.log("=" .repeat(60));
+console.log("=".repeat(60));
 
 let passed = 0;
 let failed = 0;
@@ -27,7 +27,9 @@ function test(name: string, fn: () => void | Promise<void>) {
     }
   } catch (error) {
     console.log(`❌ ${name}`);
-    console.log(`   Error: ${error instanceof Error ? error.message : String(error)}`);
+    console.log(
+      `   Error: ${error instanceof Error ? error.message : String(error)}`,
+    );
     failed++;
   }
 }
@@ -35,7 +37,7 @@ function test(name: string, fn: () => void | Promise<void>) {
 function assertEquals(actual: any, expected: any, message?: string) {
   if (actual !== expected) {
     throw new Error(
-      message || `Expected ${expected}, got ${actual}`
+      message || `Expected ${expected}, got ${actual}`,
     );
   }
 }
@@ -48,7 +50,7 @@ test("Price score calculation - lowest price scores 100", () => {
   const prices = [49.24, 45.92, 43.60];
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  
+
   // Walmart (lowest price: $43.60)
   const walmartScore = 1 - (43.60 - minPrice) / (maxPrice - minPrice);
   assertEquals(Math.round(walmartScore * 100), 100);
@@ -58,7 +60,7 @@ test("Price score calculation - highest price scores 0", () => {
   const prices = [49.24, 45.92, 43.60];
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  
+
   // MealMe (highest price: $49.24)
   const mealmeScore = 1 - (49.24 - minPrice) / (maxPrice - minPrice);
   assertEquals(Math.round(mealmeScore * 100), 0);
@@ -68,7 +70,7 @@ test("Price score calculation - middle price scores proportionally", () => {
   const prices = [49.24, 45.92, 43.60];
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  
+
   // Instacart (middle price: $45.92)
   const instacartScore = 1 - (45.92 - minPrice) / (maxPrice - minPrice);
   assertEquals(Math.round(instacartScore * 100), 59);
@@ -82,7 +84,7 @@ test("Speed score calculation - fastest delivery scores 100", () => {
   const times = [45, 60, 90];
   const minTime = Math.min(...times);
   const maxTime = Math.max(...times);
-  
+
   // MealMe (fastest: 45 min)
   const mealmeScore = 1 - (45 - minTime) / (maxTime - minTime);
   assertEquals(Math.round(mealmeScore * 100), 100);
@@ -92,7 +94,7 @@ test("Speed score calculation - slowest delivery scores 0", () => {
   const times = [45, 60, 90];
   const minTime = Math.min(...times);
   const maxTime = Math.max(...times);
-  
+
   // Walmart (slowest: 90 min)
   const walmartScore = 1 - (90 - minTime) / (maxTime - minTime);
   assertEquals(Math.round(walmartScore * 100), 0);
@@ -102,7 +104,7 @@ test("Speed score calculation - middle delivery time scores proportionally", () 
   const times = [45, 60, 90];
   const minTime = Math.min(...times);
   const maxTime = Math.max(...times);
-  
+
   // Instacart (middle: 60 min)
   const instacartScore = 1 - (60 - minTime) / (maxTime - minTime);
   assertEquals(Math.round(instacartScore * 100), 67);
@@ -116,10 +118,10 @@ test("Availability score calculation - all items found scores 100", () => {
   const found = 2;
   const substituted = 0;
   const total = 2;
-  
+
   const effectiveFulfillment = found + (substituted * 0.8);
   const score = (effectiveFulfillment / total) * 100;
-  
+
   assertEquals(Math.round(score), 100);
 });
 
@@ -127,10 +129,10 @@ test("Availability score calculation - substituted items count for 80%", () => {
   const found = 1;
   const substituted = 1;
   const total = 2;
-  
+
   const effectiveFulfillment = found + (substituted * 0.8);
   const score = (effectiveFulfillment / total) * 100;
-  
+
   assertEquals(Math.round(score), 90);
 });
 
@@ -138,10 +140,10 @@ test("Availability score calculation - no items found scores 0", () => {
   const found = 0;
   const substituted = 0;
   const total = 2;
-  
+
   const effectiveFulfillment = found + (substituted * 0.8);
   const score = (effectiveFulfillment / total) * 100;
-  
+
   assertEquals(Math.round(score), 0);
 });
 
@@ -151,35 +153,35 @@ test("Availability score calculation - no items found scores 0", () => {
 
 test("Margin score calculation - highest commission scores 100", () => {
   const revenues = [
-    49.24 * 0.05,  // MealMe: $2.46
-    45.92 * 0.07,  // Instacart: $3.21
-    43.60 * 0.03,  // Walmart: $1.31
+    49.24 * 0.05, // MealMe: $2.46
+    45.92 * 0.07, // Instacart: $3.21
+    43.60 * 0.03, // Walmart: $1.31
   ];
-  
+
   const minRevenue = Math.min(...revenues);
   const maxRevenue = Math.max(...revenues);
-  
+
   // Instacart (highest commission: 7%)
   const instacartRevenue = 45.92 * 0.07;
   const score = (instacartRevenue - minRevenue) / (maxRevenue - minRevenue);
-  
+
   assertEquals(Math.round(score * 100), 100);
 });
 
 test("Margin score calculation - lowest commission scores 0", () => {
   const revenues = [
-    49.24 * 0.05,  // MealMe: $2.46
-    45.92 * 0.07,  // Instacart: $3.21
-    43.60 * 0.03,  // Walmart: $1.31
+    49.24 * 0.05, // MealMe: $2.46
+    45.92 * 0.07, // Instacart: $3.21
+    43.60 * 0.03, // Walmart: $1.31
   ];
-  
+
   const minRevenue = Math.min(...revenues);
   const maxRevenue = Math.max(...revenues);
-  
+
   // Walmart (lowest commission: 3%)
   const walmartRevenue = 43.60 * 0.03;
   const score = (walmartRevenue - minRevenue) / (maxRevenue - minRevenue);
-  
+
   assertEquals(Math.round(score * 100), 0);
 });
 
@@ -195,7 +197,7 @@ test("Weighted total calculation - balanced weights", () => {
     margin: 60,
     reliability: 75,
   };
-  
+
   const weights = {
     price: 0.30,
     speed: 0.15,
@@ -203,14 +205,13 @@ test("Weighted total calculation - balanced weights", () => {
     margin: 0.20,
     reliability: 0.10,
   };
-  
-  const weightedTotal =
-    (weights.price * scores.price) +
+
+  const weightedTotal = (weights.price * scores.price) +
     (weights.speed * scores.speed) +
     (weights.availability * scores.availability) +
     (weights.margin * scores.margin) +
     (weights.reliability * scores.reliability);
-  
+
   // Should be around 70-75
   const rounded = Math.round(weightedTotal);
   assertEquals(rounded >= 70 && rounded <= 75, true);
@@ -218,28 +219,27 @@ test("Weighted total calculation - balanced weights", () => {
 
 test("Weighted total calculation - price-optimized weights", () => {
   const scores = {
-    price: 100,  // Best price
-    speed: 0,    // Slowest
+    price: 100, // Best price
+    speed: 0, // Slowest
     availability: 90,
-    margin: 0,   // Lowest margin
+    margin: 0, // Lowest margin
     reliability: 70,
   };
-  
+
   const weights = {
-    price: 0.50,  // 50% weight on price
+    price: 0.50, // 50% weight on price
     speed: 0.10,
     availability: 0.20,
     margin: 0.10,
     reliability: 0.10,
   };
-  
-  const weightedTotal =
-    (weights.price * scores.price) +
+
+  const weightedTotal = (weights.price * scores.price) +
     (weights.speed * scores.speed) +
     (weights.availability * scores.availability) +
     (weights.margin * scores.margin) +
     (weights.reliability * scores.reliability);
-  
+
   // Should be high (> 60) because price has 50% weight and scores 100
   assertEquals(Math.round(weightedTotal) > 60, true);
 });
@@ -252,7 +252,7 @@ test("Edge case - all providers same price", () => {
   const prices = [50, 50, 50];
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  
+
   // When all same, should return 100 for all
   assertEquals(maxPrice === minPrice, true);
 });
@@ -261,7 +261,7 @@ test("Edge case - single provider", () => {
   const prices = [50];
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  
+
   // Single provider, min === max
   assertEquals(maxPrice === minPrice, true);
 });
@@ -270,7 +270,7 @@ test("Edge case - zero items requested", () => {
   const found = 0;
   const substituted = 0;
   const total = 0;
-  
+
   // Should handle division by zero
   const score = total === 0 ? 100 : (found + substituted * 0.8) / total * 100;
   assertEquals(score, 100);
@@ -288,17 +288,17 @@ test("Explanation generation - identifies strong factors", () => {
     marginScore: 50,
     reliabilityScore: 75,
   };
-  
+
   const factors = [];
-  if (scores.priceScore > 80) factors.push('competitive pricing');
-  if (scores.speedScore > 80) factors.push('fast delivery');
-  if (scores.availabilityScore === 100) factors.push('all items in stock');
-  if (scores.reliabilityScore > 80) factors.push('highly reliable');
-  
+  if (scores.priceScore > 80) factors.push("competitive pricing");
+  if (scores.speedScore > 80) factors.push("fast delivery");
+  if (scores.availabilityScore === 100) factors.push("all items in stock");
+  if (scores.reliabilityScore > 80) factors.push("highly reliable");
+
   assertEquals(factors.length, 3);
-  assertEquals(factors.includes('competitive pricing'), true);
-  assertEquals(factors.includes('fast delivery'), true);
-  assertEquals(factors.includes('all items in stock'), true);
+  assertEquals(factors.includes("competitive pricing"), true);
+  assertEquals(factors.includes("fast delivery"), true);
+  assertEquals(factors.includes("all items in stock"), true);
 });
 
 test("Explanation generation - handles no strong factors", () => {
@@ -309,13 +309,13 @@ test("Explanation generation - handles no strong factors", () => {
     marginScore: 55,
     reliabilityScore: 65,
   };
-  
+
   const factors = [];
-  if (scores.priceScore > 80) factors.push('competitive pricing');
-  if (scores.speedScore > 80) factors.push('fast delivery');
-  if (scores.availabilityScore === 100) factors.push('all items in stock');
-  if (scores.reliabilityScore > 80) factors.push('highly reliable');
-  
+  if (scores.priceScore > 80) factors.push("competitive pricing");
+  if (scores.speedScore > 80) factors.push("fast delivery");
+  if (scores.availabilityScore === 100) factors.push("all items in stock");
+  if (scores.reliabilityScore > 80) factors.push("highly reliable");
+
   // No strong factors (all < 80)
   assertEquals(factors.length, 0);
 });
@@ -331,14 +331,18 @@ setTimeout(() => {
   console.log(`Total Tests: ${passed + failed}`);
   console.log(`Passed: ${passed} ✅`);
   console.log(`Failed: ${failed} ❌`);
-  console.log(`Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`);
+  console.log(
+    `Success Rate: ${((passed / (passed + failed)) * 100).toFixed(1)}%`,
+  );
   console.log("");
-  
+
   if (failed === 0) {
-    console.log("🎉 All tests passed! Phase 3 scoring algorithm is working correctly.");
+    console.log(
+      "🎉 All tests passed! Phase 3 scoring algorithm is working correctly.",
+    );
   } else {
     console.log("⚠️  Some tests failed. Review the errors above.");
   }
-  
+
   Deno.exit(failed > 0 ? 1 : 0);
 }, 100);

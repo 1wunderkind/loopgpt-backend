@@ -39,7 +39,10 @@ export class AgentCoordinator {
    * Resolves conflicts and returns a final decision modifier.
    * E.g., returns a list of blocked providers.
    */
-  resolveConstraints(): { blockedProviders: string[]; preferredProviders: string[] } {
+  resolveConstraints(): {
+    blockedProviders: string[];
+    preferredProviders: string[];
+  } {
     const blocked = new Set<string>();
     const preferred = new Set<string>();
 
@@ -59,7 +62,7 @@ export class AgentCoordinator {
 
     return {
       blockedProviders: Array.from(blocked),
-      preferredProviders: Array.from(preferred)
+      preferredProviders: Array.from(preferred),
     };
   }
 }

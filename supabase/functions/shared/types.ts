@@ -316,4 +316,3 @@ export interface LogEntry {
   context?: Record<string, unknown>;
   error?: Error;
 }
-

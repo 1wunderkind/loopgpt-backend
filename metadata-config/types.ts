@@ -1,6 +1,6 @@
 /**
- * TheLoopGPT Metadata Types
- * 
+ * LooptOS Metadata Types
+ *
  * Type definitions for centralized metadata configuration that powers:
  * - ChatGPT Apps SDK manifest
  * - MCP tool descriptions
@@ -63,31 +63,31 @@ export type ToolDescription = {
   // Identity
   toolId: string;
   displayName: string;
-  
+
   // What ChatGPT pattern-matches against
   primaryDescription: string;
-  
+
   // Detailed capabilities
   whenToUse: string[];
   whenNotToUse: string[];
-  
+
   // What makes this tool special
   uniqueCapabilities: string[];
-  
+
   // Parameters
   requiredParams: ToolParameter[];
   optionalParams: ToolParameter[];
-  
+
   // Output
   returnFormat: ToolReturnFormat;
-  
+
   // Integration
   chainsWith: string[]; // Other tools this commonly pairs with
-  
+
   // Branding
-  brandedName: string; // TheLoopGPT branded name
+  brandedName: string; // LooptOS branded name
   legacyName?: string; // Old name for backward compatibility
-  
+
   // Categorization
   category: string;
   subcategory?: string;
@@ -102,11 +102,11 @@ export type AppIdentity = {
   appId: string;
   displayName: string;
   shortName: string;
-  
+
   // Version control for metadata changes
   METADATA_VERSION: string;
   LAST_UPDATED: string;
-  
+
   // Legacy internal names (for backward compatibility)
   legacyNames: {
     recipes: string;
@@ -114,7 +114,7 @@ export type AppIdentity = {
     tracking: string;
     planning: string;
   };
-  
+
   // URLs
   website: string;
   statusPage: string;
@@ -148,28 +148,28 @@ export type SeasonalKeywords = {
 // Complete Metadata Type
 // ============================================================================
 
-export type TheLoopGPTMetadata = {
+export type LooptOSMetadata = {
   // Identity
   identity: AppIdentity;
   titles: AppTitles;
-  
+
   // Descriptions
   shortDescription: string;
   longDescription: string;
-  
+
   // Tags & Keywords
   primaryTags: readonly string[];
   secondaryTags: readonly string[];
   searchKeywords: readonly string[];
   seasonalKeywords: SeasonalKeywords;
   differentiatorKeywords: readonly string[];
-  
+
   // Routing
   routing: RoutingMetadata;
-  
+
   // Tools
   tools: Record<string, ToolDescription>;
-  
+
   // Metadata
   version: string;
   lastUpdated: string;

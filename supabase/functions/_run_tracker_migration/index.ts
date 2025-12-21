@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js";
 
 const migrationSQL = `
 -- Drop existing tables if any
@@ -117,49 +117,65 @@ CREATE INDEX idx_tracker_stats_user ON tracker_user_stats(user_id);
 Deno.serve(async (req) => {
   try {
     const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
 
     // Execute migration
-    const { data, error } = await supabaseClient.rpc('exec', { sql: migrationSQL })
-    
+    const { data, error } = await supabaseClient.rpc("exec", {
+      sql: migrationSQL,
+    });
+
     if (error) {
       // Try direct query instead
       const results = [];
-      const statements = migrationSQL.split(';').filter(s => s.trim());
-      
+      const statements = migrationSQL.split(";").filter((s) => s.trim());
+
       for (const statement of statements) {
         if (statement.trim()) {
-          const { error: stmtError } = await supabaseClient.from('_').select('*').limit(0); // Dummy to get client
+          const { error: stmtError } = await supabaseClient.from("_").select(
+            "*",
+          ).limit(0); // Dummy to get client
           // Execute via raw SQL
-          results.push({ statement: statement.substring(0, 50), executed: true });
+          results.push({
+            statement: statement.substring(0, 50),
+            executed: true,
+          });
         }
       }
-      
-      return new Response(JSON.stringify({
-        success: true,
-        message: 'Migration executed (fallback method)',
-        results
-      }), {
-        headers: { 'Content-Type': 'application/json' }
-      })
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "Migration executed (fallback method)",
+          results,
+        }),
+        {
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     }
 
-    return new Response(JSON.stringify({
-      success: true,
-      message: 'TheLoop Tracker tables created successfully!',
-      data
-    }), {
-      headers: { 'Content-Type': 'application/json' }
-    })
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "TheLoop Tracker tables created successfully!",
+        data,
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   } catch (error) {
-    return new Response(JSON.stringify({
-      success: false,
-      error: error.message
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    })
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error.message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   }
-})
+});

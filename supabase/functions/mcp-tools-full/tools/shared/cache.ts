@@ -5,7 +5,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { CacheError } from "./errors.ts";
-import { logWarn, logDebug } from "./logging.ts";
+import { logDebug, logWarn } from "./logging.ts";
 import { createHash } from "std/crypto/mod.ts";
 
 let supabase: any = null;
@@ -14,11 +14,11 @@ function getSupabaseClient() {
   if (!supabase) {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY");
-    
+
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
       throw new CacheError("Supabase credentials not configured");
     }
-    
+
     supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   }
   return supabase;
@@ -43,8 +43,8 @@ export function generateCacheKey(toolName: string, input: any): string {
   const hash = createHash("md5");
   hash.update(inputStr);
   const hashHex = Array.from(hash.digest())
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
   return `${toolName}:${hashHex}`;
 }
 
@@ -61,7 +61,9 @@ export async function cacheGet<T = any>(key: string): Promise<T | null> {
 
     if (error) {
       // Table might not exist yet - fail gracefully
-      if (error.code === 'PGRST116' || error.message?.includes('does not exist')) {
+      if (
+        error.code === "PGRST116" || error.message?.includes("does not exist")
+      ) {
         logDebug("Cache table not found", { key });
         return null;
       }
@@ -102,7 +104,7 @@ export async function cacheSet(
   key: string,
   value: any,
   ttlSeconds: number = 300,
-  toolName?: string
+  toolName?: string,
 ): Promise<void> {
   try {
     const expiresAt = new Date(Date.now() + ttlSeconds * 1000);

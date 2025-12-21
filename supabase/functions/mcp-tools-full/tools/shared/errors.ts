@@ -10,7 +10,8 @@ export class ValidationError extends Error {
   constructor(message: string, userMessage?: string) {
     super(message);
     this.name = "ValidationError";
-    this.userMessage = userMessage || "Invalid input provided. Please check your request.";
+    this.userMessage = userMessage ||
+      "Invalid input provided. Please check your request.";
   }
 }
 
@@ -24,13 +25,14 @@ export class ExternalApiError extends Error {
     message: string,
     service: string,
     statusCode?: number,
-    userMessage?: string
+    userMessage?: string,
   ) {
     super(message);
     this.name = "ExternalApiError";
     this.service = service;
     this.statusCode = statusCode;
-    this.userMessage = userMessage || `External service (${service}) is temporarily unavailable. Using fallback data.`;
+    this.userMessage = userMessage ||
+      `External service (${service}) is temporarily unavailable. Using fallback data.`;
   }
 }
 
@@ -43,7 +45,8 @@ export class OpenAiError extends Error {
     super(message);
     this.name = "OpenAiError";
     this.retryable = retryable;
-    this.userMessage = userMessage || "AI service is temporarily unavailable. Please try again.";
+    this.userMessage = userMessage ||
+      "AI service is temporarily unavailable. Please try again.";
   }
 }
 
@@ -56,7 +59,8 @@ export class RateLimitError extends Error {
     super(message);
     this.name = "RateLimitError";
     this.resetAt = resetAt;
-    this.userMessage = `Rate limit exceeded. Please try again after ${resetAt.toISOString()}.`;
+    this.userMessage =
+      `Rate limit exceeded. Please try again after ${resetAt.toISOString()}.`;
   }
 }
 
@@ -76,7 +80,8 @@ export class UnexpectedError extends Error {
   constructor(message: string, userMessage?: string) {
     super(message);
     this.name = "UnexpectedError";
-    this.userMessage = userMessage || "An unexpected error occurred. Our team has been notified.";
+    this.userMessage = userMessage ||
+      "An unexpected error occurred. Our team has been notified.";
   }
 }
 

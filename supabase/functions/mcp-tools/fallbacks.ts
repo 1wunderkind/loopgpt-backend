@@ -1,6 +1,6 @@
 /**
  * Fallback Data for Graceful Degradation
- * 
+ *
  * Provides hardcoded fallback responses when tools fail.
  * Ensures users always get something useful, never raw errors.
  */
@@ -137,7 +137,7 @@ export function getFallbackNutrition(recipes: any[]): any[] {
   // Simple heuristic: estimate based on ingredient types
   const analyses = recipes.map((recipe, index) => {
     const servings = recipe.servings || 2;
-    
+
     // Very rough estimates (per serving)
     let calories = 300;
     let protein = 10;
@@ -197,14 +197,16 @@ export function getFallbackNutrition(recipes: any[]): any[] {
  */
 export function getFallbackMealPlan(days: number = 1): any {
   const fallbackRecipes = getFallbackRecipes(3);
-  
+
   const plan = {
     id: "fallback-plan",
     name: "Simple Fallback Meal Plan",
     description: "A basic meal plan with simple, easy-to-make recipes.",
     days: Array.from({ length: Math.min(days, 3) }, (_, i) => ({
       dayNumber: i + 1,
-      date: new Date(Date.now() + i * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      date: new Date(Date.now() + i * 24 * 60 * 60 * 1000).toISOString().split(
+        "T",
+      )[0],
       meals: [
         {
           mealType: "breakfast",
@@ -264,8 +266,8 @@ export function getFallbackMealPlan(days: number = 1): any {
 export function getFallbackGroceryList(recipes: any[] = []): any {
   // Extract all ingredients from recipes
   const ingredients = new Set<string>();
-  
-  recipes.forEach(recipe => {
+
+  recipes.forEach((recipe) => {
     recipe.ingredients?.forEach((ing: any) => {
       ingredients.add(ing.name);
     });
@@ -273,9 +275,10 @@ export function getFallbackGroceryList(recipes: any[] = []): any {
 
   // If no recipes, use basic staples
   if (ingredients.size === 0) {
-    ["eggs", "bread", "milk", "rice", "pasta", "olive oil", "salt", "pepper"].forEach(item => {
-      ingredients.add(item);
-    });
+    ["eggs", "bread", "milk", "rice", "pasta", "olive oil", "salt", "pepper"]
+      .forEach((item) => {
+        ingredients.add(item);
+      });
   }
 
   const list = {
@@ -285,7 +288,7 @@ export function getFallbackGroceryList(recipes: any[] = []): any {
     categories: [
       {
         name: "All Items",
-        items: Array.from(ingredients).map(name => ({
+        items: Array.from(ingredients).map((name) => ({
           name,
           quantity: "as needed",
           unit: "",

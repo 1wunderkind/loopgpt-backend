@@ -1,8 +1,8 @@
 /**
  * LoopGPT Analytics Module
- * 
+ *
  * Centralized exports for analytics logging and types
- * 
+ *
  * Usage:
  *   import { logRecipeEvent, logMealPlanGenerated } from '../_shared/analytics/index.ts';
  *   import type { LogRecipeEventParams } from '../_shared/analytics/index.ts';
@@ -10,58 +10,52 @@
 
 // Export all types
 export type {
+  AffiliateConversionRate,
+  AffiliateEventType,
+  AnalyticsAffiliateEvent,
   // Table types
   AnalyticsIngredientSubmission,
-  AnalyticsRecipeEvent,
   AnalyticsMealLog,
   AnalyticsMealPlan,
-  AnalyticsAffiliateEvent,
-  AnalyticsUserGoal,
+  AnalyticsRecipeEvent,
   AnalyticsSessionEvent,
-  
-  // Enum types
-  RecipeEventType,
-  MealType,
-  AffiliateEventType,
-  UserGoalType,
-  SessionEventType,
-  
-  // Input types
-  IngredientInput,
-  MacroTargets,
-  
-  // Logger parameter types
-  LogIngredientSubmissionParams,
-  LogRecipeEventParams,
-  LogMealLogParams,
-  LogMealPlanParams,
-  LogAffiliateEventParams,
-  UpsertUserGoalParams,
-  LogSessionEventParams,
-  
+  AnalyticsUserGoal,
   // View types
   DailyActiveUsers,
+  // Input types
+  IngredientInput,
+  LogAffiliateEventParams,
+  // Logger parameter types
+  LogIngredientSubmissionParams,
+  LogMealLogParams,
+  LogMealPlanParams,
+  LogRecipeEventParams,
+  LogSessionEventParams,
+  MacroTargets,
+  MealType,
   RecipeAcceptanceRate,
-  AffiliateConversionRate,
+  // Enum types
+  RecipeEventType,
+  SessionEventType,
+  UpsertUserGoalParams,
+  UserGoalType,
   UserSummary,
-} from './types.ts';
+} from "./types.ts";
 
 // Export all logger functions
 export {
-  // Core logging functions
-  logIngredientSubmission,
-  logRecipeEvent,
-  logMealLog,
-  logMealPlanGenerated,
-  logAffiliateClick,
-  logAffiliateConversion,
-  upsertUserGoal,
-  logSessionEvent,
-  
   // Batch helpers
   batchLog,
-  
   // Query helpers
   getUserSummary,
+  logAffiliateClick,
+  logAffiliateConversion,
+  // Core logging functions
+  logIngredientSubmission,
+  logMealLog,
+  logMealPlanGenerated,
+  logRecipeEvent,
+  logSessionEvent,
   refreshAnalyticsViews,
-} from './logger.ts';
+  upsertUserGoal,
+} from "./logger.ts";

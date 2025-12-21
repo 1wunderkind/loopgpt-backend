@@ -1,6 +1,6 @@
 /**
  * Food Intent Classifier
- * 
+ *
  * Classifies natural language food queries into intents:
  * - recipes: cooking ideas, ingredient usage, meal prep
  * - nutrition: calories, macros, diet analysis
@@ -25,12 +25,12 @@ export interface FoodIntent {
  */
 export async function classifyFoodIntent(
   query: string,
-  locale?: string
+  locale?: string,
 ): Promise<FoodIntent> {
   // Cache key based on normalized query
   const cacheKey = `foodIntent:${locale || "en"}:${query.trim().toLowerCase()}`;
   const cached = await cacheGet(cacheKey);
-  
+
   if (cached) {
     console.log("[foodIntent] Cache hit", { query, cacheKey });
     return JSON.parse(cached);
@@ -44,7 +44,8 @@ export async function classifyFoodIntent(
 
   const openai = new OpenAI({ apiKey });
 
-  const systemPrompt = `You are an intent classifier for TheLoopGPT, a food assistant.
+  const systemPrompt =
+    `You are an intent classifier for TheLoopGPT, a food assistant.
 
 Classify the user's query into ONE primary intent:
 
@@ -114,7 +115,7 @@ Classify this query:`;
 
   try {
     const startTime = Date.now();
-    
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Fast and cheap for classification
       temperature: 0, // Deterministic
@@ -127,18 +128,22 @@ Classify this query:`;
 
     const duration = Date.now() - startTime;
     const raw = completion.choices[0]?.message?.content;
-    
+
     if (!raw) {
       throw new Error("Empty intent classification response");
     }
 
     const parsed = JSON.parse(raw) as FoodIntent;
-    
+
     // Validate the response
-    if (!["recipes", "nutrition", "mealplan", "grocery", "other"].includes(parsed.primaryIntent)) {
+    if (
+      !["recipes", "nutrition", "mealplan", "grocery", "other"].includes(
+        parsed.primaryIntent,
+      )
+    ) {
       throw new Error(`Invalid primaryIntent: ${parsed.primaryIntent}`);
     }
-    
+
     if (!["low", "medium", "high"].includes(parsed.confidence)) {
       throw new Error(`Invalid confidence: ${parsed.confidence}`);
     }
@@ -154,7 +159,6 @@ Classify this query:`;
     await cacheSet(cacheKey, JSON.stringify(parsed), 5 * 60);
 
     return parsed;
-    
   } catch (error: any) {
     console.error("[foodIntent] Classification error", {
       query,
@@ -179,10 +183,10 @@ Classify this query:`;
  */
 export async function classifyFoodIntentBatch(
   queries: string[],
-  locale?: string
+  locale?: string,
 ): Promise<Map<string, FoodIntent>> {
   const results = new Map<string, FoodIntent>();
-  
+
   // Process in parallel with limit to avoid rate limiting
   const batchSize = 5;
   for (let i = 0; i < queries.length; i += batchSize) {
@@ -191,18 +195,18 @@ export async function classifyFoodIntentBatch(
       batch.map(async (query) => {
         const intent = await classifyFoodIntent(query, locale);
         return { query, intent };
-      })
+      }),
     );
-    
+
     batchResults.forEach(({ query, intent }) => {
       results.set(query, intent);
     });
-    
+
     // Small delay between batches
     if (i + batchSize < queries.length) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
-  
+
   return results;
 }

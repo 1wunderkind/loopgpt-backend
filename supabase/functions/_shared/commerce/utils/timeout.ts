@@ -3,8 +3,8 @@
  * Helper functions for adding timeouts to async operations
  */
 
-import { ProviderTimeoutError } from '../types/index.ts';
-import type { ProviderId } from '../types/index.ts';
+import { ProviderTimeoutError } from "../types/index.ts";
+import type { ProviderId } from "../types/index.ts";
 
 /**
  * Wrap a promise with a timeout
@@ -16,7 +16,7 @@ import type { ProviderId } from '../types/index.ts';
 export async function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
-  providerId?: ProviderId
+  providerId?: ProviderId,
 ): Promise<T> {
   let timeoutHandle: number;
 

@@ -7,12 +7,12 @@ Deno.test("createToolErrorResponse returns HTTP 200 with correct envelope", asyn
     "UNAUTHORIZED",
     "Please sign in",
     false,
-    { reason: "missing_token" }
+    { reason: "missing_token" },
   );
 
   assertEquals(response.status, 200);
   const body = await response.json();
-  
+
   assertEquals(body.success, false);
   assertEquals(body.tool, "test_tool");
   assertEquals(body.error.code, "UNAUTHORIZED");

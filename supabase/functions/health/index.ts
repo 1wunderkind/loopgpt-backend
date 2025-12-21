@@ -3,11 +3,11 @@
  * System health and status monitoring
  */
 
-import { createEdgeFunction } from '../_shared/monitoring/middleware.ts';
-import { Logger } from '../_shared/monitoring/Logger.ts';
+import { createEdgeFunction } from "../_shared/monitoring/middleware.ts";
+import { Logger } from "../_shared/monitoring/Logger.ts";
 
 interface HealthStatus {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: "healthy" | "degraded" | "unhealthy";
   timestamp: string;
   uptime: number;
   version: string;
@@ -19,7 +19,7 @@ interface HealthStatus {
 }
 
 interface HealthCheckResult {
-  status: 'pass' | 'fail' | 'warn';
+  status: "pass" | "fail" | "warn";
   message?: string;
   duration_ms?: number;
 }
@@ -31,23 +31,23 @@ async function checkDatabase(): Promise<HealthCheckResult> {
 
   try {
     // Simple database check - in production, use actual Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
     if (!supabaseUrl) {
       return {
-        status: 'fail',
-        message: 'Database configuration missing',
+        status: "fail",
+        message: "Database configuration missing",
         duration_ms: Date.now() - start,
       };
     }
 
     return {
-      status: 'pass',
+      status: "pass",
       duration_ms: Date.now() - start,
     };
   } catch (error) {
     return {
-      status: 'fail',
-      message: error instanceof Error ? error.message : 'Database check failed',
+      status: "fail",
+      message: error instanceof Error ? error.message : "Database check failed",
       duration_ms: Date.now() - start,
     };
   }
@@ -58,26 +58,28 @@ async function checkExternalAPIs(): Promise<HealthCheckResult> {
 
   try {
     // Check if external API keys are configured
-    const hasInstacart = !!Deno.env.get('INSTACART_API_KEY');
-    const hasMealMe = !!Deno.env.get('MEALME_API_KEY');
+    const hasInstacart = !!Deno.env.get("INSTACART_API_KEY");
+    const hasMealMe = !!Deno.env.get("MEALME_API_KEY");
 
     if (!hasInstacart && !hasMealMe) {
       return {
-        status: 'warn',
-        message: 'No external API keys configured',
+        status: "warn",
+        message: "No external API keys configured",
         duration_ms: Date.now() - start,
       };
     }
 
     return {
-      status: 'pass',
-      message: `${hasInstacart ? 'Instacart' : ''}${hasInstacart && hasMealMe ? ', ' : ''}${hasMealMe ? 'MealMe' : ''} configured`,
+      status: "pass",
+      message: `${hasInstacart ? "Instacart" : ""}${
+        hasInstacart && hasMealMe ? ", " : ""
+      }${hasMealMe ? "MealMe" : ""} configured`,
       duration_ms: Date.now() - start,
     };
   } catch (error) {
     return {
-      status: 'fail',
-      message: error instanceof Error ? error.message : 'API check failed',
+      status: "fail",
+      message: error instanceof Error ? error.message : "API check failed",
       duration_ms: Date.now() - start,
     };
   }
@@ -96,7 +98,7 @@ function checkMemory(): HealthCheckResult {
 
     if (usagePercent > 90) {
       return {
-        status: 'fail',
+        status: "fail",
         message: `High memory usage: ${usagePercent.toFixed(1)}%`,
         duration_ms: Date.now() - start,
       };
@@ -104,28 +106,28 @@ function checkMemory(): HealthCheckResult {
 
     if (usagePercent > 75) {
       return {
-        status: 'warn',
+        status: "warn",
         message: `Elevated memory usage: ${usagePercent.toFixed(1)}%`,
         duration_ms: Date.now() - start,
       };
     }
 
     return {
-      status: 'pass',
+      status: "pass",
       message: `Memory usage: ${usagePercent.toFixed(1)}%`,
       duration_ms: Date.now() - start,
     };
   } catch (error) {
     return {
-      status: 'fail',
-      message: error instanceof Error ? error.message : 'Memory check failed',
+      status: "fail",
+      message: error instanceof Error ? error.message : "Memory check failed",
       duration_ms: Date.now() - start,
     };
   }
 }
 
 async function handler(req: Request, logger: Logger): Promise<Response> {
-  logger.info('Health check requested');
+  logger.info("Health check requested");
 
   // Run all health checks
   const [database, external_apis, memory] = await Promise.all([
@@ -136,24 +138,28 @@ async function handler(req: Request, logger: Logger): Promise<Response> {
 
   // Determine overall status
   const checks = { database, external_apis, memory };
-  const hasFailure = Object.values(checks).some((c) => c.status === 'fail');
-  const hasWarning = Object.values(checks).some((c) => c.status === 'warn');
+  const hasFailure = Object.values(checks).some((c) => c.status === "fail");
+  const hasWarning = Object.values(checks).some((c) => c.status === "warn");
 
   const status: HealthStatus = {
-    status: hasFailure ? 'unhealthy' : hasWarning ? 'degraded' : 'healthy',
+    status: hasFailure ? "unhealthy" : hasWarning ? "degraded" : "healthy",
     timestamp: new Date().toISOString(),
     uptime: Date.now() - startTime,
-    version: Deno.env.get('APP_VERSION') || '1.0.0',
+    version: Deno.env.get("APP_VERSION") || "1.0.0",
     checks,
   };
 
-  const statusCode = status.status === 'healthy' ? 200 : status.status === 'degraded' ? 200 : 503;
+  const statusCode = status.status === "healthy"
+    ? 200
+    : status.status === "degraded"
+    ? 200
+    : 503;
 
   return new Response(JSON.stringify(status, null, 2), {
     status: statusCode,
     headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      "Content-Type": "application/json",
+      "Cache-Control": "no-cache, no-store, must-revalidate",
     },
   });
 }
@@ -161,7 +167,7 @@ async function handler(req: Request, logger: Logger): Promise<Response> {
 // Export with monitoring middleware
 Deno.serve(
   createEdgeFunction(handler, {
-    functionName: 'health',
+    functionName: "health",
     enableCORS: true,
-  })
+  }),
 );

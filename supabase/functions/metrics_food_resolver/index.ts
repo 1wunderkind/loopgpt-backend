@@ -1,9 +1,9 @@
 /**
  * Food Resolver Metrics Endpoint
- * 
+ *
  * Provides Prometheus-style metrics for the food resolver system.
  * Aggregates data from food_search_logs table.
- * 
+ *
  * Endpoint: /metrics/food_resolver
  * Access: Public (read-only)
  */
@@ -11,7 +11,6 @@
 import { serve } from "std@0.168.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
-
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -80,7 +79,9 @@ const handler = async (req: Request) => {
       throw new Error(`Failed to get error count: ${errorCountError.message}`);
     }
 
-    const errorRate = (totalQueries || 0) > 0 ? (errorCount || 0) / (totalQueries || 1) : 0;
+    const errorRate = (totalQueries || 0) > 0
+      ? (errorCount || 0) / (totalQueries || 1)
+      : 0;
 
     // Get cache hit rate (queries with result_count > 0)
     const { count: hitCount, error: hitCountError } = await supabase
@@ -92,7 +93,9 @@ const handler = async (req: Request) => {
       throw new Error(`Failed to get hit count: ${hitCountError.message}`);
     }
 
-    const cacheHitRate = (totalQueries || 0) > 0 ? (hitCount || 0) / (totalQueries || 1) : 0;
+    const cacheHitRate = (totalQueries || 0) > 0
+      ? (hitCount || 0) / (totalQueries || 1)
+      : 0;
 
     // Get queries in last hour
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
@@ -188,11 +191,10 @@ const handler = async (req: Request) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-      }
+      },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withSearchAPI(handler));
-

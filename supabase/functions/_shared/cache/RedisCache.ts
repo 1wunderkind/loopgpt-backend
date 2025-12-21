@@ -32,14 +32,15 @@ export class RedisCache {
   private enabled: boolean;
 
   constructor(config?: CacheConfig) {
-    const url = config?.url || Deno.env.get('UPSTASH_REDIS_REST_URL') || '';
-    const token = config?.token || Deno.env.get('UPSTASH_REDIS_REST_TOKEN') || '';
+    const url = config?.url || Deno.env.get("UPSTASH_REDIS_REST_URL") || "";
+    const token = config?.token || Deno.env.get("UPSTASH_REDIS_REST_TOKEN") ||
+      "";
 
     this.config = {
       url,
       token,
       defaultTTL: config?.defaultTTL || 3600, // 1 hour default
-      keyPrefix: config?.keyPrefix || 'loopgpt:',
+      keyPrefix: config?.keyPrefix || "loopgpt:",
     };
 
     this.stats = {
@@ -52,7 +53,7 @@ export class RedisCache {
     this.enabled = !!(url && token);
 
     if (!this.enabled) {
-      console.warn('Redis cache not configured - caching disabled');
+      console.warn("Redis cache not configured - caching disabled");
     }
   }
 
@@ -68,7 +69,7 @@ export class RedisCache {
 
     try {
       const fullKey = this.getFullKey(key);
-      const response = await this.executeCommand('GET', fullKey);
+      const response = await this.executeCommand("GET", fullKey);
 
       if (response === null) {
         this.stats.misses++;
@@ -92,7 +93,7 @@ export class RedisCache {
       this.updateHitRate();
       return entry.value;
     } catch (error) {
-      console.error('Cache get error:', error);
+      console.error("Cache get error:", error);
       this.stats.misses++;
       this.updateHitRate();
       return null;
@@ -105,7 +106,7 @@ export class RedisCache {
   async set<T>(
     key: string,
     value: T,
-    ttl?: number
+    ttl?: number,
   ): Promise<boolean> {
     if (!this.enabled) {
       return false;
@@ -121,10 +122,15 @@ export class RedisCache {
         ttl: actualTTL,
       };
 
-      await this.executeCommand('SETEX', fullKey, actualTTL, JSON.stringify(entry));
+      await this.executeCommand(
+        "SETEX",
+        fullKey,
+        actualTTL,
+        JSON.stringify(entry),
+      );
       return true;
     } catch (error) {
-      console.error('Cache set error:', error);
+      console.error("Cache set error:", error);
       return false;
     }
   }
@@ -139,10 +145,10 @@ export class RedisCache {
 
     try {
       const fullKey = this.getFullKey(key);
-      await this.executeCommand('DEL', fullKey);
+      await this.executeCommand("DEL", fullKey);
       return true;
     } catch (error) {
-      console.error('Cache delete error:', error);
+      console.error("Cache delete error:", error);
       return false;
     }
   }
@@ -157,10 +163,10 @@ export class RedisCache {
 
     try {
       const fullKey = this.getFullKey(key);
-      const result = await this.executeCommand('EXISTS', fullKey);
+      const result = await this.executeCommand("EXISTS", fullKey);
       return result === 1;
     } catch (error) {
-      console.error('Cache exists error:', error);
+      console.error("Cache exists error:", error);
       return false;
     }
   }
@@ -171,7 +177,7 @@ export class RedisCache {
   async getOrSet<T>(
     key: string,
     factory: () => Promise<T>,
-    ttl?: number
+    ttl?: number,
   ): Promise<T> {
     // Try to get from cache
     const cached = await this.get<T>(key);
@@ -198,16 +204,16 @@ export class RedisCache {
 
     try {
       const fullPattern = this.getFullKey(pattern);
-      const keys = await this.executeCommand('KEYS', fullPattern);
+      const keys = await this.executeCommand("KEYS", fullPattern);
 
       if (!keys || keys.length === 0) {
         return 0;
       }
 
-      await this.executeCommand('DEL', ...keys);
+      await this.executeCommand("DEL", ...keys);
       return keys.length;
     } catch (error) {
-      console.error('Cache invalidate pattern error:', error);
+      console.error("Cache invalidate pattern error:", error);
       return 0;
     }
   }
@@ -216,7 +222,7 @@ export class RedisCache {
    * Clear all cache entries with prefix
    */
   async clear(): Promise<boolean> {
-    return (await this.invalidatePattern('*')) > 0;
+    return (await this.invalidatePattern("*")) > 0;
   }
 
   /**
@@ -247,9 +253,9 @@ export class RedisCache {
   ): Promise<any> {
     const { url, token } = this.config;
 
-    const response = await fetch(`${url}/${command}/${args.join('/')}`, {
+    const response = await fetch(`${url}/${command}/${args.join("/")}`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
       },
     });
 
@@ -307,9 +313,9 @@ export class CacheKeys {
   static providerQuote(
     provider: string,
     items: string[],
-    location: string
+    location: string,
   ): string {
-    const itemsHash = items.sort().join(',');
+    const itemsHash = items.sort().join(",");
     return `provider:${provider}:${itemsHash}:${location}`;
   }
 
@@ -360,12 +366,12 @@ export const CacheTTL = {
  */
 export function withCache<T>(
   keyGenerator: (...args: any[]) => string,
-  ttl: number
+  ttl: number,
 ) {
   return function (
     target: any,
     propertyKey: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 

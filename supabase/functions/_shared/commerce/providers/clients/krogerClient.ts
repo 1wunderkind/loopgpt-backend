@@ -1,11 +1,11 @@
 /**
  * Kroger API Client
  * OAuth2 authentication and API wrapper for Kroger's public grocery API
- * 
+ *
  * API Docs: https://developer.kroger.com/
  */
 
-import { ProviderError } from '../../types/index.ts';
+import { ProviderError } from "../../types/index.ts";
 
 // ============================================================================
 // Types
@@ -14,7 +14,7 @@ import { ProviderError } from '../../types/index.ts';
 export interface KrogerConfig {
   clientId: string;
   clientSecret: string;
-  environment: 'sandbox' | 'production';
+  environment: "sandbox" | "production";
 }
 
 export interface KrogerAuthToken {
@@ -66,9 +66,9 @@ export class KrogerClient {
 
   constructor(config: KrogerConfig) {
     this.config = config;
-    this.baseUrl = config.environment === 'production'
-      ? 'https://api.kroger.com/v1'
-      : 'https://api-ce.kroger.com/v1';
+    this.baseUrl = config.environment === "production"
+      ? "https://api.kroger.com/v1"
+      : "https://api-ce.kroger.com/v1";
   }
 
   /**
@@ -81,27 +81,29 @@ export class KrogerClient {
     }
 
     // Get new token
-    const authUrl = this.config.environment === 'production'
-      ? 'https://api.kroger.com/v1/connect/oauth2/token'
-      : 'https://api-ce.kroger.com/v1/connect/oauth2/token';
+    const authUrl = this.config.environment === "production"
+      ? "https://api.kroger.com/v1/connect/oauth2/token"
+      : "https://api-ce.kroger.com/v1/connect/oauth2/token";
 
-    const credentials = btoa(`${this.config.clientId}:${this.config.clientSecret}`);
+    const credentials = btoa(
+      `${this.config.clientId}:${this.config.clientSecret}`,
+    );
 
     const response = await fetch(authUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Basic ${credentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Authorization": `Basic ${credentials}`,
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: 'grant_type=client_credentials&scope=product.compact',
+      body: "grant_type=client_credentials&scope=product.compact",
     });
 
     if (!response.ok) {
       throw new ProviderError(
-        'KROGER_API',
+        "KROGER_API",
         `Kroger auth failed: ${response.status} ${response.statusText}`,
-        'AUTH_FAILED',
-        false
+        "AUTH_FAILED",
+        false,
       );
     }
 
@@ -123,15 +125,15 @@ export class KrogerClient {
    */
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<T> {
     const token = await this.getAccessToken();
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
         ...options.headers,
       },
     });
@@ -139,10 +141,10 @@ export class KrogerClient {
     if (!response.ok) {
       const errorText = await response.text();
       throw new ProviderError(
-        'KROGER_API',
+        "KROGER_API",
         `Kroger API error: ${response.status} ${errorText}`,
         `HTTP_${response.status}`,
-        response.status >= 500 // Retryable if 5xx
+        response.status >= 500, // Retryable if 5xx
       );
     }
 
@@ -155,16 +157,16 @@ export class KrogerClient {
   async searchProducts(
     term: string,
     locationId: string,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<KrogerProduct[]> {
     const params = new URLSearchParams({
-      'filter.term': term,
-      'filter.locationId': locationId,
-      'filter.limit': limit.toString(),
+      "filter.term": term,
+      "filter.locationId": locationId,
+      "filter.limit": limit.toString(),
     });
 
     const response = await this.request<{ data: KrogerProduct[] }>(
-      `/products?${params.toString()}`
+      `/products?${params.toString()}`,
     );
 
     return response.data || [];
@@ -173,14 +175,17 @@ export class KrogerClient {
   /**
    * Get product by ID
    */
-  async getProduct(productId: string, locationId: string): Promise<KrogerProduct | null> {
+  async getProduct(
+    productId: string,
+    locationId: string,
+  ): Promise<KrogerProduct | null> {
     try {
       const params = new URLSearchParams({
-        'filter.locationId': locationId,
+        "filter.locationId": locationId,
       });
 
       const response = await this.request<{ data: KrogerProduct }>(
-        `/products/${productId}?${params.toString()}`
+        `/products/${productId}?${params.toString()}`,
       );
 
       return response.data;
@@ -195,16 +200,16 @@ export class KrogerClient {
   async findStores(
     zipCode: string,
     radiusMiles: number = 10,
-    limit: number = 5
+    limit: number = 5,
   ): Promise<KrogerStore[]> {
     const params = new URLSearchParams({
-      'filter.zipCode.near': zipCode,
-      'filter.radiusInMiles': radiusMiles.toString(),
-      'filter.limit': limit.toString(),
+      "filter.zipCode.near": zipCode,
+      "filter.radiusInMiles": radiusMiles.toString(),
+      "filter.limit": limit.toString(),
     });
 
     const response = await this.request<{ data: KrogerStore[] }>(
-      `/locations?${params.toString()}`
+      `/locations?${params.toString()}`,
     );
 
     return response.data || [];
@@ -216,7 +221,7 @@ export class KrogerClient {
   async getStore(locationId: string): Promise<KrogerStore | null> {
     try {
       const response = await this.request<{ data: KrogerStore }>(
-        `/locations/${locationId}`
+        `/locations/${locationId}`,
       );
 
       return response.data;
@@ -240,16 +245,18 @@ export function getKrogerClient(): Promise<KrogerClient> {
     return Promise.resolve(clientInstance);
   }
 
-  const clientId = Deno.env.get('KROGER_CLIENT_ID');
-  const clientSecret = Deno.env.get('KROGER_CLIENT_SECRET');
-  const environment = (Deno.env.get('KROGER_ENV') || 'sandbox') as 'sandbox' | 'production';
+  const clientId = Deno.env.get("KROGER_CLIENT_ID");
+  const clientSecret = Deno.env.get("KROGER_CLIENT_SECRET");
+  const environment = (Deno.env.get("KROGER_ENV") || "sandbox") as
+    | "sandbox"
+    | "production";
 
   if (!clientId || !clientSecret) {
     throw new ProviderError(
-      'KROGER_API',
-      'Kroger API credentials not configured. Set KROGER_CLIENT_ID and KROGER_CLIENT_SECRET',
-      'MISSING_CREDENTIALS',
-      false
+      "KROGER_API",
+      "Kroger API credentials not configured. Set KROGER_CLIENT_ID and KROGER_CLIENT_SECRET",
+      "MISSING_CREDENTIALS",
+      false,
     );
   }
 
@@ -266,5 +273,6 @@ export function getKrogerClient(): Promise<KrogerClient> {
  * Check if Kroger API is configured
  */
 export function isKrogerConfigured(): boolean {
-  return !!(Deno.env.get('KROGER_CLIENT_ID') && Deno.env.get('KROGER_CLIENT_SECRET'));
+  return !!(Deno.env.get("KROGER_CLIENT_ID") &&
+    Deno.env.get("KROGER_CLIENT_SECRET"));
 }

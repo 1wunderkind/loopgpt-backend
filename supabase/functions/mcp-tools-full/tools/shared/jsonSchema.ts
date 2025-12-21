@@ -20,35 +20,35 @@ export const RecipeListJsonSchema = {
               properties: {
                 name: { type: "string" },
                 quantity: { type: "string" },
-                unit: { type: "string" }
+                unit: { type: "string" },
               },
               required: ["name"],
-              additionalProperties: false
-            }
+              additionalProperties: false,
+            },
           },
           instructions: {
             type: "array",
-            items: { type: "string" }
+            items: { type: "string" },
           },
           prepTimeMinutes: { type: "number" },
           cookTimeMinutes: { type: "number" },
           servings: { type: "number" },
           tags: {
             type: "array",
-            items: { type: "string" }
+            items: { type: "string" },
           },
           difficulty: {
             type: "string",
-            enum: ["easy", "medium", "hard"]
-          }
+            enum: ["easy", "medium", "hard"],
+          },
         },
         required: ["id", "name", "ingredients", "instructions"],
-        additionalProperties: false
-      }
-    }
+        additionalProperties: false,
+      },
+    },
   },
   required: ["recipes"],
-  additionalProperties: false
+  additionalProperties: false,
 };
 
 export const NutritionAnalysisJsonSchema = {
@@ -70,14 +70,14 @@ export const NutritionAnalysisJsonSchema = {
               fat_g: { type: "number" },
               fiber_g: { type: "number" },
               sugar_g: { type: "number" },
-              sodium_mg: { type: "number" }
+              sodium_mg: { type: "number" },
             },
             required: ["calories", "protein_g", "carbs_g", "fat_g"],
-            additionalProperties: false
+            additionalProperties: false,
           },
           confidence: {
             type: "string",
-            enum: ["low", "medium", "high"]
+            enum: ["low", "medium", "high"],
           },
           perServing: {
             type: "object",
@@ -88,15 +88,15 @@ export const NutritionAnalysisJsonSchema = {
               fat_g: { type: "number" },
               fiber_g: { type: "number" },
               sugar_g: { type: "number" },
-              sodium_mg: { type: "number" }
+              sodium_mg: { type: "number" },
             },
             required: ["calories", "protein_g", "carbs_g", "fat_g"],
-            additionalProperties: false
-          }
+            additionalProperties: false,
+          },
         },
         required: ["recipeId", "recipeName", "summary", "confidence"],
-        additionalProperties: false
-      }
+        additionalProperties: false,
+      },
     },
     total: {
       type: "object",
@@ -107,14 +107,14 @@ export const NutritionAnalysisJsonSchema = {
         fat_g: { type: "number" },
         fiber_g: { type: "number" },
         sugar_g: { type: "number" },
-        sodium_mg: { type: "number" }
+        sodium_mg: { type: "number" },
       },
       required: ["calories", "protein_g", "carbs_g", "fat_g"],
-      additionalProperties: false
-    }
+      additionalProperties: false,
+    },
   },
   required: ["perRecipe"],
-  additionalProperties: false
+  additionalProperties: false,
 };
 
 export const MealPlanJsonSchema = {
@@ -141,31 +141,31 @@ export const MealPlanJsonSchema = {
                     properties: {
                       name: { type: "string" },
                       quantity: { type: "string" },
-                      unit: { type: "string" }
+                      unit: { type: "string" },
                     },
                     required: ["name"],
-                    additionalProperties: false
-                  }
+                    additionalProperties: false,
+                  },
                 },
                 instructions: {
                   type: "array",
-                  items: { type: "string" }
+                  items: { type: "string" },
                 },
                 prepTimeMinutes: { type: "number" },
                 cookTimeMinutes: { type: "number" },
                 servings: { type: "number" },
                 tags: {
                   type: "array",
-                  items: { type: "string" }
+                  items: { type: "string" },
                 },
                 difficulty: {
                   type: "string",
-                  enum: ["easy", "medium", "hard"]
-                }
+                  enum: ["easy", "medium", "hard"],
+                },
               },
               required: ["id", "name", "ingredients", "instructions"],
-              additionalProperties: false
-            }
+              additionalProperties: false,
+            },
           },
           nutrition: {
             type: "object",
@@ -176,16 +176,16 @@ export const MealPlanJsonSchema = {
               fat_g: { type: "number" },
               fiber_g: { type: "number" },
               sugar_g: { type: "number" },
-              sodium_mg: { type: "number" }
+              sodium_mg: { type: "number" },
             },
             required: ["calories", "protein_g", "carbs_g", "fat_g"],
-            additionalProperties: false
+            additionalProperties: false,
           },
-          notes: { type: "string" }
+          notes: { type: "string" },
         },
         required: ["dayIndex", "recipes"],
-        additionalProperties: false
-      }
+        additionalProperties: false,
+      },
     },
     totalNutrition: {
       type: "object",
@@ -196,15 +196,15 @@ export const MealPlanJsonSchema = {
         fat_g: { type: "number" },
         fiber_g: { type: "number" },
         sugar_g: { type: "number" },
-        sodium_mg: { type: "number" }
+        sodium_mg: { type: "number" },
       },
       required: ["calories", "protein_g", "carbs_g", "fat_g"],
-      additionalProperties: false
+      additionalProperties: false,
     },
-    summary: { type: "string" }
+    summary: { type: "string" },
   },
   required: ["days"],
-  additionalProperties: false
+  additionalProperties: false,
 };
 
 export const GroceryListJsonSchema = {
@@ -221,16 +221,16 @@ export const GroceryListJsonSchema = {
           category: { type: "string" },
           source: {
             type: "string",
-            enum: ["recipe", "pantry", "manual"]
+            enum: ["recipe", "pantry", "manual"],
           },
           recipeIds: {
             type: "array",
-            items: { type: "string" }
-          }
+            items: { type: "string" },
+          },
         },
         required: ["name"],
-        additionalProperties: false
-      }
+        additionalProperties: false,
+      },
     },
     categorized: {
       type: "object",
@@ -245,21 +245,21 @@ export const GroceryListJsonSchema = {
             category: { type: "string" },
             source: {
               type: "string",
-              enum: ["recipe", "pantry", "manual"]
+              enum: ["recipe", "pantry", "manual"],
             },
             recipeIds: {
               type: "array",
-              items: { type: "string" }
-            }
+              items: { type: "string" },
+            },
           },
           required: ["name"],
-          additionalProperties: false
-        }
-      }
+          additionalProperties: false,
+        },
+      },
     },
     estimatedCost: { type: "number" },
-    notes: { type: "string" }
+    notes: { type: "string" },
   },
   required: ["items"],
-  additionalProperties: false
+  additionalProperties: false,
 };

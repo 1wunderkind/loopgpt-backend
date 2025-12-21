@@ -1,22 +1,30 @@
 /**
  * Security Middleware
- * 
+ *
  * Central enforcement point for:
  * - Rate limiting
  * - Input validation
  * - Authentication/authorization
  * - Payload size limits
- * 
+ *
  * Part of: Step 5 - Security Hardening
  */
 
 import type { ToolErrorResponse } from "./reliability.ts";
-import { checkRateLimits, extractClientIp, type RateLimitContext } from "./rateLimit.ts";
+import {
+  checkRateLimits,
+  extractClientIp,
+  type RateLimitContext,
+} from "./rateLimit.ts";
 import { getRulesForTool } from "../config/rateLimits.ts";
 import { validateAccess } from "../config/toolAccess.ts";
-import { validateToolInput, isPayloadTooLarge, formatValidationErrors } from "./validation.ts";
+import {
+  formatValidationErrors,
+  isPayloadTooLarge,
+  validateToolInput,
+} from "./validation.ts";
 import { redact } from "./redact.ts";
-import { logInfo, logWarn, logError } from "./logger.ts";
+import { logError, logInfo, logWarn } from "./logger.ts";
 
 // ============================================================================
 // Types
@@ -41,27 +49,31 @@ export interface SecurityCheckResult {
 
 /**
  * Perform all security checks before executing a tool
- * 
+ *
  * Checks in order:
  * 1. Payload size limit
  * 2. Rate limiting
  * 3. Input validation
  * 4. Authentication/authorization
- * 
+ *
  * Returns error on first failure, or success if all pass.
- * 
+ *
  * @param ctx - Security check context
  * @returns Security check result
  */
 export async function performSecurityChecks(
-  ctx: SecurityCheckContext
+  ctx: SecurityCheckContext,
 ): Promise<SecurityCheckResult> {
   // ========================================================================
   // 1. Authentication/Authorization Check
   // ========================================================================
-  
-  const accessCheck = validateAccess(ctx.toolName, ctx.userId, ctx.isServiceRole);
-  
+
+  const accessCheck = validateAccess(
+    ctx.toolName,
+    ctx.userId,
+    ctx.isServiceRole,
+  );
+
   if (!accessCheck.allowed) {
     logWarn("Tool access denied", {
       source: "security",
@@ -69,7 +81,7 @@ export async function performSecurityChecks(
       userId: ctx.userId,
       reason: accessCheck.reason,
     });
-    
+
     return {
       allowed: false,
       error: {
@@ -83,20 +95,20 @@ export async function performSecurityChecks(
       },
     };
   }
-  
+
   // ========================================================================
   // 2. Rate Limiting Check
   // ========================================================================
-  
+
   const rateLimitCtx: RateLimitContext = {
     toolName: ctx.toolName,
     userId: ctx.userId,
     clientIp: ctx.clientIp,
   };
-  
+
   const rules = getRulesForTool(ctx.toolName, ctx.userId);
   const rateLimitDecision = await checkRateLimits(rateLimitCtx, rules);
-  
+
   if (rateLimitDecision && !rateLimitDecision.allowed) {
     logWarn("Rate limit exceeded", {
       source: "security",
@@ -106,7 +118,7 @@ export async function performSecurityChecks(
       rule: rateLimitDecision.rule.name,
       resetAt: rateLimitDecision.resetAt.toISOString(),
     });
-    
+
     return {
       allowed: false,
       error: {
@@ -124,22 +136,22 @@ export async function performSecurityChecks(
       },
     };
   }
-  
+
   // ========================================================================
   // 3. Input Validation Check
   // ========================================================================
-  
+
   const validationResult = validateToolInput(ctx.toolName, ctx.requestBody);
-  
+
   if (validationResult && !validationResult.success) {
     const errorMessage = formatValidationErrors(validationResult.errors || []);
-    
+
     logWarn("Input validation failed", {
       source: "security",
       toolName: ctx.toolName,
       errors: validationResult.errors,
     });
-    
+
     return {
       allowed: false,
       error: {
@@ -153,24 +165,24 @@ export async function performSecurityChecks(
       },
     };
   }
-  
+
   // ========================================================================
   // All checks passed
   // ========================================================================
-  
+
   logInfo("Security checks passed", {
     source: "security",
     toolName: ctx.toolName,
     userId: ctx.userId,
     clientIp: ctx.clientIp,
   });
-  
+
   return { allowed: true };
 }
 
 /**
  * Extract security context from HTTP request
- * 
+ *
  * @param req - HTTP request
  * @param toolName - Tool name
  * @param userId - User ID (if authenticated)
@@ -181,18 +193,18 @@ export async function extractSecurityContext(
   req: Request,
   toolName: string,
   userId?: string,
-  isServiceRole: boolean = false
+  isServiceRole: boolean = false,
 ): Promise<SecurityCheckContext | { error: ToolErrorResponse }> {
   // Check payload size
   const tooLarge = await isPayloadTooLarge(req);
-  
+
   if (tooLarge) {
     logWarn("Payload too large", {
       source: "security",
       toolName,
       contentLength: req.headers.get("content-length"),
     });
-    
+
     return {
       error: {
         code: "VALIDATION_ERROR",
@@ -205,10 +217,10 @@ export async function extractSecurityContext(
       },
     };
   }
-  
+
   // Extract client IP
   const clientIp = extractClientIp(req);
-  
+
   // Parse request body
   let requestBody: any;
   try {
@@ -219,7 +231,7 @@ export async function extractSecurityContext(
       toolName,
       error: error instanceof Error ? error.message : String(error),
     });
-    
+
     return {
       error: {
         code: "VALIDATION_ERROR",
@@ -229,7 +241,7 @@ export async function extractSecurityContext(
       },
     };
   }
-  
+
   return {
     toolName,
     userId,
@@ -241,16 +253,16 @@ export async function extractSecurityContext(
 
 /**
  * Create error response for security violations
- * 
+ *
  * Ensures error response follows standard format and is safe to return
- * 
+ *
  * @param error - Tool error response
  * @returns Redacted error response
  */
 export function createSecurityErrorResponse(error: ToolErrorResponse): any {
   // Redact any sensitive data in error details
   const redactedDetails = error.details ? redact(error.details) : undefined;
-  
+
   return {
     success: false,
     error: {

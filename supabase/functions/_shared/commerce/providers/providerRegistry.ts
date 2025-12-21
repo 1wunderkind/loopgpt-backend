@@ -3,13 +3,13 @@
  * Centralized registry for all commerce providers
  */
 
-import type { ICommerceProvider } from './ICommerceProvider.ts';
-import type { ProviderId } from '../types/index.ts';
+import type { ICommerceProvider } from "./ICommerceProvider.ts";
+import type { ProviderId } from "../types/index.ts";
 
-import { mealmeProvider } from './mealmeProvider.ts';
-import { instacartProvider } from './instacartProvider.ts';
-import { krogerProvider } from './krogerProvider.ts';
-import { walmartProvider } from './walmartProvider.ts';
+import { mealmeProvider } from "./mealmeProvider.ts";
+import { instacartProvider } from "./instacartProvider.ts";
+import { krogerProvider } from "./krogerProvider.ts";
+import { walmartProvider } from "./walmartProvider.ts";
 
 /**
  * Provider registry map

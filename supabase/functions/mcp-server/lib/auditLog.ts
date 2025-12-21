@@ -1,25 +1,25 @@
 /**
  * Security Audit Logging
- * 
+ *
  * Logs sensitive actions to analytics.security_audit_events table.
- * 
+ *
  * Events logged:
  * - Order confirmations/cancellations
  * - User goal updates
  * - Weight logging
  * - Profile updates
- * 
+ *
  * Features:
  * - Best-effort logging (never fails main operation)
  * - Automatic redaction of sensitive data
  * - Structured metadata
- * 
+ *
  * Part of: Step 5 - Security Hardening
  */
 
 import { createClient } from "@supabase/supabase-js";
 import { redact } from "./redact.ts";
-import { logError, logDebug } from "./logger.ts";
+import { logDebug, logError } from "./logger.ts";
 
 // ============================================================================
 // Types
@@ -53,9 +53,9 @@ export interface AuditLogEntry {
 
 /**
  * Log a security audit event
- * 
+ *
  * Best-effort: never throws, logs errors internally
- * 
+ *
  * @param entry - Audit log entry
  */
 export async function logSecurityEvent(entry: AuditLogEntry): Promise<void> {
@@ -66,12 +66,12 @@ export async function logSecurityEvent(entry: AuditLogEntry): Promise<void> {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "",
       {
         db: { schema: "analytics" },
-      }
+      },
     );
-    
+
     // Redact sensitive data from metadata
     const redactedMetadata = entry.metadata ? redact(entry.metadata) : null;
-    
+
     // Insert audit event
     const { error } = await supabase
       .from("security_audit_events")
@@ -83,7 +83,7 @@ export async function logSecurityEvent(entry: AuditLogEntry): Promise<void> {
         client_ip: entry.clientIp || null,
         metadata: redactedMetadata,
       });
-    
+
     if (error) {
       // Log error but don't throw (best-effort)
       logError("Failed to log security audit event", {
@@ -93,7 +93,7 @@ export async function logSecurityEvent(entry: AuditLogEntry): Promise<void> {
       });
       return;
     }
-    
+
     logDebug("Security audit event logged", {
       source: "audit-log",
       eventType: entry.eventType,
@@ -122,7 +122,7 @@ export async function logOrderConfirmed(
     provider?: string;
     totalAmount?: number;
     restaurantName?: string;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "ORDER_CONFIRMED",
@@ -144,7 +144,7 @@ export async function logOrderCancelled(
     orderId?: string;
     provider?: string;
     reason?: string;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "ORDER_CANCELLED",
@@ -167,7 +167,7 @@ export async function logOrderFailed(
     provider?: string;
     errorCode?: string;
     errorMessage?: string;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "ORDER_FAILED",
@@ -189,7 +189,7 @@ export async function logGoalUpdated(
     goalType?: string;
     previousValue?: any;
     newValue?: any;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "GOAL_UPDATED",
@@ -211,7 +211,7 @@ export async function logWeightLogged(
     weight?: number;
     unit?: string;
     date?: string;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "WEIGHT_LOGGED",
@@ -231,7 +231,7 @@ export async function logProfileUpdated(
   clientIp: string | undefined,
   metadata: {
     fieldsUpdated?: string[];
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "PROFILE_UPDATED",
@@ -253,7 +253,7 @@ export async function logMealLogged(
     mealType?: string;
     calories?: number;
     timestamp?: string;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "MEAL_LOGGED",
@@ -273,7 +273,7 @@ export async function logAuthFailed(
   metadata: {
     reason?: string;
     attemptedUserId?: string;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "AUTH_FAILED",
@@ -294,7 +294,7 @@ export async function logRateLimitExceeded(
     rule?: string;
     limit?: number;
     window?: string;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "RATE_LIMIT_EXCEEDED",
@@ -315,7 +315,7 @@ export async function logUnauthorizedAccess(
   metadata: {
     reason?: string;
     requiredAccess?: string;
-  }
+  },
 ): Promise<void> {
   await logSecurityEvent({
     eventType: "UNAUTHORIZED_ACCESS",
@@ -332,7 +332,7 @@ export async function logUnauthorizedAccess(
 
 /**
  * Check if a tool should trigger audit logging
- * 
+ *
  * @param toolName - Tool name
  * @returns true if tool requires audit logging
  */
@@ -347,17 +347,19 @@ export function shouldAuditTool(toolName: string): boolean {
     "update_user_profile",
     "log_meal",
   ];
-  
+
   return AUDITED_TOOLS.includes(toolName);
 }
 
 /**
  * Get audit event type for a tool
- * 
+ *
  * @param toolName - Tool name
  * @returns Event type or undefined
  */
-export function getEventTypeForTool(toolName: string): SecurityEventType | undefined {
+export function getEventTypeForTool(
+  toolName: string,
+): SecurityEventType | undefined {
   const TOOL_TO_EVENT: Record<string, SecurityEventType> = {
     "confirm_order": "ORDER_CONFIRMED",
     "cancel_order": "ORDER_CANCELLED",
@@ -367,7 +369,7 @@ export function getEventTypeForTool(toolName: string): SecurityEventType | undef
     "update_user_profile": "PROFILE_UPDATED",
     "log_meal": "MEAL_LOGGED",
   };
-  
+
   return TOOL_TO_EVENT[toolName];
 }
 

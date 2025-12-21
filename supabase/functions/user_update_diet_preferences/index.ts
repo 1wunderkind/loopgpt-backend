@@ -1,9 +1,9 @@
 /**
  * update_weight_prefs Edge Function
- * 
+ *
  * Updates user preferences for weight tracking.
  * Upserts by chatgpt_user_id to create or update.
- * 
+ *
  * @param {string} chatgpt_user_id - User identifier
  * @param {string} unit - Unit preference ('kg' or 'lb')
  * @param {string} weigh_time - Preferred weigh-in time
@@ -11,7 +11,7 @@
  * @param {boolean} daily_reminder_enabled - Enable daily reminders
  * @param {string} reminder_time - Reminder time (HH:MM format)
  * @param {string} timezone - User timezone
- * 
+ *
  * @returns {object} { ok: true, prefs: {...} }
  */
 
@@ -51,7 +51,7 @@ async function handler(req: Request): Promise<Response> {
     if (!chatgpt_user_id) {
       return new Response(
         JSON.stringify({ ok: false, error: "chatgpt_user_id is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -59,7 +59,7 @@ async function handler(req: Request): Promise<Response> {
     if (unit && unit !== "kg" && unit !== "lb") {
       return new Response(
         JSON.stringify({ ok: false, error: "Unit must be 'kg' or 'lb'" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -73,7 +73,7 @@ async function handler(req: Request): Promise<Response> {
           ok: false,
           error: "safe_loss_kg_per_week must be between 0.25 and 1.0",
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -86,7 +86,7 @@ async function handler(req: Request): Promise<Response> {
             ok: false,
             error: "reminder_time must be in HH:MM format (e.g., 08:00)",
           }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
+          { status: 400, headers: { "Content-Type": "application/json" } },
         );
       }
     }
@@ -94,34 +94,21 @@ async function handler(req: Request): Promise<Response> {
     // Create Supabase client
     // Get authenticated Supabase client (enforces RLS)
 
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-    
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: authError }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
-    
-
     if (!userId) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
     // Build update object (only include provided fields)
@@ -132,10 +119,12 @@ async function handler(req: Request): Promise<Response> {
 
     if (unit !== undefined) updateData.unit = unit;
     if (weigh_time !== undefined) updateData.weigh_time = weigh_time;
-    if (safe_loss_kg_per_week !== undefined)
+    if (safe_loss_kg_per_week !== undefined) {
       updateData.safe_loss_kg_per_week = safe_loss_kg_per_week;
-    if (daily_reminder_enabled !== undefined)
+    }
+    if (daily_reminder_enabled !== undefined) {
       updateData.daily_reminder_enabled = daily_reminder_enabled;
+    }
     if (reminder_time !== undefined) updateData.reminder_time = reminder_time;
     if (timezone !== undefined) updateData.timezone = timezone;
 
@@ -152,7 +141,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("Database error:", error);
       return new Response(
         JSON.stringify({ ok: false, error: error.message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -168,7 +157,7 @@ async function handler(req: Request): Promise<Response> {
         reminder_timezone: data.timezone,
       },
       userInput,
-      true // isUpdate = true (this is an update)
+      true, // isUpdate = true (this is an update)
     );
 
     // Return updated preferences
@@ -178,7 +167,7 @@ async function handler(req: Request): Promise<Response> {
         prefs: data,
         message: formatted_message, // Multilingual!
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
     return handleError(error);
@@ -187,4 +176,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export with logging middleware
 export default withStandardAPI(withLogging(handler));
-

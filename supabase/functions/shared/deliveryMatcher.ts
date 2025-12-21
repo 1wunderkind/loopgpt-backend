@@ -3,7 +3,7 @@
  * Matches food delivery partners based on cuisine, diet, and location
  */
 
-import type { DeliveryPartner, DeliveryMatchCriteria } from "./types.ts";
+import type { DeliveryMatchCriteria, DeliveryPartner } from "./types.ts";
 
 /**
  * Normalize cuisine name for consistent matching
@@ -28,7 +28,7 @@ export interface PartnerMatchResult {
  */
 export function calculateMatchScore(
   partner: DeliveryPartner,
-  criteria: DeliveryMatchCriteria
+  criteria: DeliveryMatchCriteria,
 ): PartnerMatchResult {
   let score = 0;
   const reasons: string[] = [];
@@ -37,9 +37,9 @@ export function calculateMatchScore(
   if (criteria.cuisine) {
     const normalizedCuisine = normalizeCuisine(criteria.cuisine);
     const cuisineMatch = partner.cuisine_tags.some(
-      (tag) => normalizeCuisine(tag) === normalizedCuisine
+      (tag) => normalizeCuisine(tag) === normalizedCuisine,
     );
-    
+
     if (cuisineMatch) {
       score += 50;
       reasons.push(`Serves ${criteria.cuisine}`);
@@ -50,9 +50,9 @@ export function calculateMatchScore(
   if (criteria.diet && partner.diet_tags) {
     const normalizedDiet = normalizeCuisine(criteria.diet);
     const dietMatch = partner.diet_tags.some(
-      (tag) => normalizeCuisine(tag) === normalizedDiet
+      (tag) => normalizeCuisine(tag) === normalizedDiet,
     );
-    
+
     if (dietMatch) {
       score += 30;
       reasons.push(`Offers ${criteria.diet} options`);
@@ -62,9 +62,9 @@ export function calculateMatchScore(
   // Check country support
   if (criteria.country && partner.supported_countries) {
     const countryMatch = partner.supported_countries.includes(
-      criteria.country.toUpperCase()
+      criteria.country.toUpperCase(),
     );
-    
+
     if (countryMatch) {
       score += 20;
       reasons.push(`Available in ${criteria.country}`);
@@ -100,7 +100,7 @@ export function calculateMatchScore(
 export function rankPartners(
   partners: DeliveryPartner[],
   criteria: DeliveryMatchCriteria,
-  limit: number = 3
+  limit: number = 3,
 ): PartnerMatchResult[] {
   // Calculate match scores
   const scored = partners.map((partner) =>
@@ -133,7 +133,7 @@ export const CUISINE_CATEGORIES = {
  * Get cuisine category for a cuisine type
  */
 export function getCuisineCategory(
-  cuisine: string
+  cuisine: string,
 ): keyof typeof CUISINE_CATEGORIES | null {
   const normalized = normalizeCuisine(cuisine);
 
@@ -151,7 +151,7 @@ export function getCuisineCategory(
  */
 export function expandCuisineSearch(cuisine: string): string[] {
   const category = getCuisineCategory(cuisine);
-  
+
   if (!category) {
     return [cuisine];
   }
@@ -164,7 +164,7 @@ export function expandCuisineSearch(cuisine: string): string[] {
  */
 export function partnerSupportsDiet(
   partner: DeliveryPartner,
-  diet: string
+  diet: string,
 ): boolean {
   if (!partner.diet_tags || partner.diet_tags.length === 0) {
     return false;
@@ -172,7 +172,7 @@ export function partnerSupportsDiet(
 
   const normalizedDiet = normalizeCuisine(diet);
   return partner.diet_tags.some(
-    (tag) => normalizeCuisine(tag) === normalizedDiet
+    (tag) => normalizeCuisine(tag) === normalizedDiet,
   );
 }
 
@@ -213,10 +213,10 @@ export function getAllDiets(partners: DeliveryPartner[]): string[] {
  */
 export function suggestAlternativeCuisines(
   requestedCuisine: string,
-  availablePartners: DeliveryPartner[]
+  availablePartners: DeliveryPartner[],
 ): string[] {
   const category = getCuisineCategory(requestedCuisine);
-  
+
   if (!category) {
     // Return most popular cuisines as fallback
     return ["pizza", "burgers", "chinese", "italian", "mexican"];
@@ -230,4 +230,3 @@ export function suggestAlternativeCuisines(
     availableCuisines.includes(cuisine)
   );
 }
-

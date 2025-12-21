@@ -1,6 +1,7 @@
 # TheLoopGPT MCP Tools
 
-Ultra-reliable food and meal planning tools powered by OpenAI Structured Outputs.
+Ultra-reliable food and meal planning tools powered by OpenAI Structured
+Outputs.
 
 ## 🚀 Live Deployment
 
@@ -18,7 +19,8 @@ Ultra-reliable food and meal planning tools powered by OpenAI Structured Outputs
 ### Composite Tools (2)
 
 5. **recipes.generateWithNutrition** - Generate recipes + nutrition in one call
-6. **mealplan.generateWithGroceryList** - Generate meal plan + grocery list in one call
+6. **mealplan.generateWithGroceryList** - Generate meal plan + grocery list in
+   one call
 
 ## 🎯 Quick Start
 
@@ -44,6 +46,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -81,6 +84,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -122,6 +126,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ```
 
 **Response:**
+
 ```json
 {
   "id": "plan_1",
@@ -169,6 +174,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ```
 
 **Response:**
+
 ```json
 {
   "id": "list_1",
@@ -235,12 +241,12 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 
 ### Key Features
 
-✅ **OpenAI Structured Outputs** - Guaranteed schema compliance  
-✅ **Strong typing** - Runtime validation with Zod  
-✅ **Error handling** - Graceful degradation  
-✅ **Composite tools** - Multi-step workflows in one call  
-✅ **CORS enabled** - Ready for web apps  
-✅ **Health monitoring** - `/health` endpoint  
+✅ **OpenAI Structured Outputs** - Guaranteed schema compliance\
+✅ **Strong typing** - Runtime validation with Zod\
+✅ **Error handling** - Graceful degradation\
+✅ **Composite tools** - Multi-step workflows in one call\
+✅ **CORS enabled** - Ready for web apps\
+✅ **Health monitoring** - `/health` endpoint
 
 ### File Structure
 
@@ -271,7 +277,8 @@ mcp-tools/
 
 ## 📊 Rate Limiting
 
-**Current**: 100 requests per hour per user (in-memory, resets on function restart)
+**Current**: 100 requests per hour per user (in-memory, resets on function
+restart)
 
 **Production**: Requires Supabase Postgres table for persistent rate limiting
 
@@ -307,7 +314,8 @@ CREATE TABLE IF NOT EXISTS mcp_rate_limits (
 CREATE INDEX idx_mcp_rate_limits_window ON mcp_rate_limits(window_start);
 ```
 
-Then update `cache.ts` and `rateLimit.ts` to use Supabase instead of in-memory Map.
+Then update `cache.ts` and `rateLimit.ts` to use Supabase instead of in-memory
+Map.
 
 ## 🧪 Testing
 
@@ -341,6 +349,7 @@ All tools return structured errors:
 ```
 
 HTTP Status Codes:
+
 - `200` - Success
 - `400` - Bad request (validation error)
 - `429` - Rate limit exceeded
@@ -366,7 +375,8 @@ HTTP Status Codes:
 
 ## 🤝 Contributing
 
-This is a production deployment for TheLoopGPT. For issues or feature requests, contact the development team.
+This is a production deployment for TheLoopGPT. For issues or feature requests,
+contact the development team.
 
 ## 📄 License
 

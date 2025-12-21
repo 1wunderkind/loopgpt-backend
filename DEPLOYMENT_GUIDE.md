@@ -1,6 +1,6 @@
-# TheLoopGPT.ai Deployment Guide
+# LooptOS Deployment Guide
 
-Complete guide to deploying the LoopGPT backend to Supabase.
+Complete guide to deploying the LooptOS backend to Supabase.
 
 ---
 
@@ -23,7 +23,7 @@ Before deploying, ensure you have:
 1. Go to [supabase.com/dashboard](https://supabase.com/dashboard)
 2. Click **"New Project"**
 3. Fill in:
-   - **Name:** `theloopgpt-backend` (or your choice)
+   - **Name:** `looptos-backend` (or your choice)
    - **Database Password:** Generate a strong password (save it!)
    - **Region:** Choose closest to your users (e.g., `us-east-1`)
    - **Pricing Plan:** Start with **Free** ($0/month) or **Pro** ($25/month)
@@ -65,7 +65,7 @@ Before deploying, ensure you have:
    MEALME_PARTNER_ID=your-id
 
    # Affiliates (optional for MVP)
-   AMAZON_AFFILIATE_ID=theloopgpt-20
+   AMAZON_AFFILIATE_ID=looptos-20
    INSTACART_AFFILIATE_ID=your-id
    ```
 
@@ -92,6 +92,7 @@ supabase db push
 ```
 
 This creates:
+
 - 18 database tables
 - RLS policies
 - Indexes
@@ -99,6 +100,7 @@ This creates:
 - Seed data
 
 **Expected output:**
+
 ```
 ✓ Applying migration 20251101000000_complete_schema_with_auth.sql
 ✓ Migration complete
@@ -131,12 +133,12 @@ This creates:
 
 1. Go to Supabase Dashboard → **"Edge Functions"**
 2. Click **"Manage environment variables"**
-3. Add these variables:
+3. Add these variables (Note: `LOOPGPT_*` vars are supported for backward compatibility, but `LOOPTOS_*` is preferred):
    ```
    OPENAI_API_KEY=sk-...
    MEALME_API_KEY=your-key (optional)
    MEALME_PARTNER_ID=your-id (optional)
-   AMAZON_AFFILIATE_ID=theloopgpt-20 (optional)
+   AMAZON_AFFILIATE_ID=looptos-20 (optional)
    INSTACART_AFFILIATE_ID=your-id (optional)
    ```
 4. Click **"Save"**
@@ -150,8 +152,9 @@ This creates:
 This deploys all 20+ Edge Functions to Supabase.
 
 **Expected output:**
+
 ```
-🚀 Deploying TheLoopGPT.ai Backend to Supabase...
+🚀 Deploying LooptOS Backend to Supabase...
 📦 Deploying Edge Functions...
   → Deploying meal-planner functions...
   → Deploying weight-tracker functions...
@@ -179,10 +182,12 @@ curl -X POST https://xxxxx.supabase.co/functions/v1/generate_week_plan \
 ```
 
 Replace:
+
 - `xxxxx` with your Project Ref
 - `YOUR_ANON_KEY` with your anon public key
 
 **Expected response:**
+
 ```json
 {
   "success": true,
@@ -291,6 +296,7 @@ supabase functions logs generate_week_plan --follow
 ### **Problem: Migration Failed**
 
 **Solution:**
+
 ```bash
 # Reset database (⚠️ deletes all data)
 supabase db reset
@@ -302,6 +308,7 @@ supabase db push
 ### **Problem: Function Deployment Failed**
 
 **Solution:**
+
 ```bash
 # Check function syntax
 cd supabase/functions/meal-planner/generate_week_plan
@@ -314,17 +321,19 @@ supabase functions deploy generate_week_plan --project-ref xxxxx
 ### **Problem: RLS Policy Blocking Access**
 
 **Solution:**
-```sql
--- Temporarily disable RLS (for testing only!)
+
+```bash
+# Temporarily disable RLS (for testing only!)
 ALTER TABLE meal_plans DISABLE ROW LEVEL SECURITY;
 
--- Re-enable after testing
+# Re-enable after testing
 ALTER TABLE meal_plans ENABLE ROW LEVEL SECURITY;
 ```
 
 ### **Problem: Function Timeout**
 
 **Solution:**
+
 - Increase timeout in Supabase Dashboard (max 60s)
 - Optimize function code
 - Add caching
@@ -332,13 +341,14 @@ ALTER TABLE meal_plans ENABLE ROW LEVEL SECURITY;
 ### **Problem: CORS Errors**
 
 **Solution:**
+
 - Add CORS headers in Edge Functions:
   ```typescript
   return new Response(JSON.stringify(data), {
     headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    }
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
   });
   ```
 
@@ -415,6 +425,7 @@ supabase db reset --version 20251101000000
 ### **Horizontal Scaling**
 
 Supabase automatically scales:
+
 - Database connections
 - Edge Function instances
 - Storage capacity
@@ -422,6 +433,7 @@ Supabase automatically scales:
 ### **Vertical Scaling**
 
 Upgrade compute resources in Dashboard:
+
 - **Database:** Increase RAM/CPU
 - **Edge Functions:** Increase timeout/memory
 
@@ -453,4 +465,3 @@ Before going live, verify:
 **You're ready to go live!** 🚀
 
 **Plan → Eat → Track → Result → Adapt** 🔄
-

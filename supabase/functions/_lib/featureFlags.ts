@@ -16,7 +16,7 @@ const flagCache = new Map<string, FeatureFlag>();
  */
 export async function isFeatureEnabled(
   flagKey: string,
-  userId?: string
+  userId?: string,
 ): Promise<boolean> {
   // Check cache first
   let flag = flagCache.get(flagKey);
@@ -52,7 +52,9 @@ export async function isFeatureEnabled(
 /**
  * Get feature flag configuration
  */
-export async function getFeatureFlag(flagKey: string): Promise<FeatureFlag | null> {
+export async function getFeatureFlag(
+  flagKey: string,
+): Promise<FeatureFlag | null> {
   // Check cache
   let flag = flagCache.get(flagKey);
 
@@ -137,4 +139,3 @@ export function clearFlagCache(): void {
 export function setFeatureFlag(flag: FeatureFlag): void {
   flagCache.set(flag.key, flag);
 }
-

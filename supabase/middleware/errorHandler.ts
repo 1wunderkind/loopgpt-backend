@@ -7,10 +7,10 @@ export interface ErrorResponse {
 }
 
 export function handleError(error: unknown): Response {
-  console.error('Error:', error);
-  
+  console.error("Error:", error);
+
   const errorResponse: ErrorResponse = {
-    error: error instanceof Error ? error.message : 'An unknown error occurred',
+    error: error instanceof Error ? error.message : "An unknown error occurred",
     details: error instanceof Error ? error.stack : undefined,
     timestamp: new Date().toISOString(),
   };
@@ -19,14 +19,18 @@ export function handleError(error: unknown): Response {
     JSON.stringify(errorResponse),
     {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    }
+      headers: { "Content-Type": "application/json" },
+    },
   );
 }
 
-export function createErrorResponse(code: string, details?: any, status: number = 400): Response {
+export function createErrorResponse(
+  code: string,
+  details?: any,
+  status: number = 400,
+): Response {
   // Handle legacy calls where first arg is message and second is status
-  if (typeof details === 'number') {
+  if (typeof details === "number") {
     status = details;
     details = undefined;
   }
@@ -41,18 +45,21 @@ export function createErrorResponse(code: string, details?: any, status: number 
     JSON.stringify(errorResponse),
     {
       status,
-      headers: { 'Content-Type': 'application/json' },
-    }
+      headers: { "Content-Type": "application/json" },
+    },
   );
 }
 
-export function createSuccessResponse(data: any, status: number = 200): Response {
+export function createSuccessResponse(
+  data: any,
+  status: number = 200,
+): Response {
   return new Response(
     JSON.stringify(data),
     {
       status,
-      headers: { 'Content-Type': 'application/json' },
-    }
+      headers: { "Content-Type": "application/json" },
+    },
   );
 }
 
@@ -64,4 +71,3 @@ export function validateRequired(body: any, fields: string[]): string | null {
   }
   return null;
 }
-

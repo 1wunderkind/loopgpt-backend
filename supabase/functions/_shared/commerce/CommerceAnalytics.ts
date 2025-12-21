@@ -35,39 +35,38 @@ export interface LoopGPTEvent {
 }
 
 export class CommerceAnalytics {
-  
   static async recordProviderOutcome(
     outcome: Omit<ProviderOutcome, "timestamp">,
-    logger: Logger
+    logger: Logger,
   ): Promise<void> {
     const event: ProviderOutcome = {
       ...outcome,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
+
     logger.info("Provider Outcome", {
       type: "PROVIDER_OUTCOME",
-      ...event
+      ...event,
     });
-    
+
     // In real impl: await supabase.from('provider_outcomes').insert(event)
   }
 
   static async emitFlywheelEvent(
     event: Omit<LoopGPTEvent, "timestamp" | "schemaVersion">,
-    logger: Logger
+    logger: Logger,
   ): Promise<void> {
     const fullEvent: LoopGPTEvent = {
       ...event,
       schemaVersion: "1.0",
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
+
     logger.info("LoopGPT Flywheel Event", {
       type: "LOOPGPT_FLYWHEEL",
-      ...fullEvent
+      ...fullEvent,
     });
-    
+
     // In real impl: await supabase.from('loopgpt_events').insert(fullEvent)
   }
 }

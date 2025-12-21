@@ -1,17 +1,17 @@
 /**
  * Logging & Telemetry Utilities
  * Structured logging for commerce operations with observability
- * 
+ *
  * Log Levels:
  * - INFO: Normal operations (provider success, router decisions)
  * - WARN: Recoverable issues (provider fallback, partial availability)
  * - ERROR: Failures (provider errors, router failures)
- * 
+ *
  * All logs are JSON-structured for easy parsing by log aggregators
  * (Supabase logs, Logtail, Datadog, etc.)
  */
 
-import type { ProviderId, ProviderQuote, ScoredQuote } from '../types/index.ts';
+import type { ProviderId, ProviderQuote, ScoredQuote } from "../types/index.ts";
 
 // ============================================================================
 // Log Event Types
@@ -24,13 +24,13 @@ export interface BaseLogEvent {
 }
 
 export interface ProviderQuoteStartEvent extends BaseLogEvent {
-  event: 'provider_quote_start';
+  event: "provider_quote_start";
   providerId: ProviderId;
   itemCount: number;
 }
 
 export interface ProviderQuoteSuccessEvent extends BaseLogEvent {
-  event: 'provider_quote_success';
+  event: "provider_quote_success";
   providerId: ProviderId;
   latencyMs: number;
   totalCents: number;
@@ -40,7 +40,7 @@ export interface ProviderQuoteSuccessEvent extends BaseLogEvent {
 }
 
 export interface ProviderQuoteErrorEvent extends BaseLogEvent {
-  event: 'provider_quote_error';
+  event: "provider_quote_error";
   providerId: ProviderId;
   latencyMs: number;
   error: string;
@@ -49,14 +49,14 @@ export interface ProviderQuoteErrorEvent extends BaseLogEvent {
 }
 
 export interface ProviderFallbackEvent extends BaseLogEvent {
-  event: 'provider_fallback';
+  event: "provider_fallback";
   providerId: ProviderId;
   reason: string;
-  fallbackMode: 'mock' | 'alternative';
+  fallbackMode: "mock" | "alternative";
 }
 
 export interface RouterDecisionEvent extends BaseLogEvent {
-  event: 'router_decision';
+  event: "router_decision";
   selectedProviderId: ProviderId;
   totalQuotes: number;
   score: number;
@@ -70,13 +70,13 @@ export interface RouterDecisionEvent extends BaseLogEvent {
 }
 
 export interface RouterFailureEvent extends BaseLogEvent {
-  event: 'router_failure';
+  event: "router_failure";
   attemptedProviders: ProviderId[];
   errors: Array<{ providerId: ProviderId; error: string }>;
 }
 
 export interface RouterLatencyEvent extends BaseLogEvent {
-  event: 'router_latency';
+  event: "router_latency";
   totalLatencyMs: number;
   providerLatencies: Record<ProviderId, number>;
   slowestProvider?: ProviderId;
@@ -93,10 +93,10 @@ export interface RouterLatencyEvent extends BaseLogEvent {
 export function logProviderQuoteStart(
   providerId: ProviderId,
   itemCount: number,
-  requestId?: string
+  requestId?: string,
 ): void {
   const event: ProviderQuoteStartEvent = {
-    event: 'provider_quote_start',
+    event: "provider_quote_start",
     providerId,
     itemCount,
     timestamp: new Date().toISOString(),
@@ -113,13 +113,14 @@ export function logProviderQuoteSuccess(
   providerId: ProviderId,
   quote: ProviderQuote,
   latencyMs: number,
-  requestId?: string
+  requestId?: string,
 ): void {
-  const itemsFound = quote.itemAvailability.filter(ia => ia.status === 'found').length;
+  const itemsFound =
+    quote.itemAvailability.filter((ia) => ia.status === "found").length;
   const itemsRequested = quote.itemAvailability.length;
 
   const event: ProviderQuoteSuccessEvent = {
-    event: 'provider_quote_success',
+    event: "provider_quote_success",
     providerId,
     latencyMs,
     totalCents: quote.quote.totalCents,
@@ -140,10 +141,10 @@ export function logProviderQuoteError(
   providerId: ProviderId,
   error: unknown,
   latencyMs: number,
-  requestId?: string
+  requestId?: string,
 ): void {
   const event: ProviderQuoteErrorEvent = {
-    event: 'provider_quote_error',
+    event: "provider_quote_error",
     providerId,
     latencyMs,
     error: error instanceof Error ? error.message : String(error),
@@ -162,11 +163,11 @@ export function logProviderQuoteError(
 export function logProviderFallback(
   providerId: ProviderId,
   reason: string,
-  fallbackMode: 'mock' | 'alternative',
-  requestId?: string
+  fallbackMode: "mock" | "alternative",
+  requestId?: string,
 ): void {
   const event: ProviderFallbackEvent = {
-    event: 'provider_fallback',
+    event: "provider_fallback",
     providerId,
     reason,
     fallbackMode,
@@ -183,10 +184,10 @@ export function logProviderFallback(
 export function logRouterDecision(
   selectedQuote: ScoredQuote,
   totalQuotes: number,
-  requestId?: string
+  requestId?: string,
 ): void {
   const event: RouterDecisionEvent = {
-    event: 'router_decision',
+    event: "router_decision",
     selectedProviderId: selectedQuote.provider.id,
     totalQuotes,
     score: selectedQuote.score,
@@ -210,10 +211,10 @@ export function logRouterDecision(
 export function logRouterFailure(
   attemptedProviders: ProviderId[],
   errors: Array<{ providerId: ProviderId; error: string }>,
-  requestId?: string
+  requestId?: string,
 ): void {
   const event: RouterFailureEvent = {
-    event: 'router_failure',
+    event: "router_failure",
     attemptedProviders,
     errors,
     timestamp: new Date().toISOString(),
@@ -229,14 +230,20 @@ export function logRouterFailure(
 export function logRouterLatency(
   totalLatencyMs: number,
   providerLatencies: Record<ProviderId, number>,
-  requestId?: string
+  requestId?: string,
 ): void {
   const latencies = Object.entries(providerLatencies);
-  const slowest = latencies.reduce((max, [id, ms]) => ms > max[1] ? [id, ms] : max, ['', 0]);
-  const fastest = latencies.reduce((min, [id, ms]) => ms < min[1] ? [id, ms] : min, ['', Infinity]);
+  const slowest = latencies.reduce(
+    (max, [id, ms]) => ms > max[1] ? [id, ms] : max,
+    ["", 0],
+  );
+  const fastest = latencies.reduce(
+    (min, [id, ms]) => ms < min[1] ? [id, ms] : min,
+    ["", Infinity],
+  );
 
   const event: RouterLatencyEvent = {
-    event: 'router_latency',
+    event: "router_latency",
     totalLatencyMs,
     providerLatencies,
     slowestProvider: slowest[0] as ProviderId || undefined,
@@ -265,7 +272,7 @@ export function generateRequestId(): string {
 export function logProviderError(
   providerId: ProviderId,
   error: unknown,
-  requestId?: string
+  requestId?: string,
 ): void {
   logProviderQuoteError(providerId, error, 0, requestId);
 }
@@ -275,7 +282,7 @@ export function logProviderError(
  */
 export function logProviderSuccess(
   quote: ProviderQuote,
-  requestId?: string
+  requestId?: string,
 ): void {
   logProviderQuoteSuccess(quote.provider.id, quote, 0, requestId);
 }
@@ -309,7 +316,7 @@ export function createRoutingMetrics(
   totalLatencyMs: number,
   allProviders: ProviderId[],
   successfulQuotes: ProviderQuote[],
-  selectedQuote: ScoredQuote
+  selectedQuote: ScoredQuote,
 ): RoutingMetrics {
   return {
     requestId,
@@ -335,6 +342,6 @@ export async function sendMetrics(metrics: RoutingMetrics): Promise<void> {
   // - Datadog: await datadogClient.sendMetrics(metrics)
   // - New Relic: await newRelicClient.recordCustomEvent('routing', metrics)
   // - Supabase: await supabase.from('routing_metrics').insert(metrics)
-  
-  console.log('[Metrics]', JSON.stringify(metrics));
+
+  console.log("[Metrics]", JSON.stringify(metrics));
 }

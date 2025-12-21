@@ -3,13 +3,13 @@
  * Comprehensive error handling utilities for edge functions
  */
 
-export type ErrorCategory = 
-  | "VALIDATION" 
-  | "PROVIDER" 
-  | "NETWORK" 
-  | "RATE_LIMIT" 
-  | "OPENAI" 
-  | "AUTH" 
+export type ErrorCategory =
+  | "VALIDATION"
+  | "PROVIDER"
+  | "NETWORK"
+  | "RATE_LIMIT"
+  | "OPENAI"
+  | "AUTH"
   | "INTERNAL";
 
 /**
@@ -21,63 +21,70 @@ export class AppError extends Error {
     public code: string,
     public statusCode: number = 500,
     public category: ErrorCategory = "INTERNAL",
-    public details?: unknown
+    public details?: unknown,
   ) {
     super(message);
-    this.name = 'AppError';
+    this.name = "AppError";
   }
 }
 
 export class ValidationError extends AppError {
   constructor(message: string, details?: unknown) {
-    super(message, 'VALIDATION_ERROR', 400, "VALIDATION", details);
-    this.name = 'ValidationError';
+    super(message, "VALIDATION_ERROR", 400, "VALIDATION", details);
+    this.name = "ValidationError";
   }
 }
 
 export class NotFoundError extends AppError {
   constructor(resource: string, id?: string) {
     super(
-      `${resource}${id ? ` with id ${id}` : ''} not found`,
-      'NOT_FOUND',
+      `${resource}${id ? ` with id ${id}` : ""} not found`,
+      "NOT_FOUND",
       404,
-      "VALIDATION"
+      "VALIDATION",
     );
-    this.name = 'NotFoundError';
+    this.name = "NotFoundError";
   }
 }
 
 export class AuthenticationError extends AppError {
-  constructor(message: string = 'Authentication required') {
-    super(message, 'AUTHENTICATION_ERROR', 401, "AUTH");
-    this.name = 'AuthenticationError';
+  constructor(message: string = "Authentication required") {
+    super(message, "AUTHENTICATION_ERROR", 401, "AUTH");
+    this.name = "AuthenticationError";
   }
 }
 
 export class AuthorizationError extends AppError {
-  constructor(message: string = 'Insufficient permissions') {
-    super(message, 'AUTHORIZATION_ERROR', 403, "AUTH");
-    this.name = 'AuthorizationError';
+  constructor(message: string = "Insufficient permissions") {
+    super(message, "AUTHORIZATION_ERROR", 403, "AUTH");
+    this.name = "AuthorizationError";
   }
 }
 
 export class RateLimitError extends AppError {
-  constructor(message: string = 'Rate limit exceeded', source: 'INTERNAL' | 'PROVIDER' | 'OPENAI' = 'INTERNAL') {
-    super(message, 'RATE_LIMIT_ERROR', 429, "RATE_LIMIT", { source });
-    this.name = 'RateLimitError';
+  constructor(
+    message: string = "Rate limit exceeded",
+    source: "INTERNAL" | "PROVIDER" | "OPENAI" = "INTERNAL",
+  ) {
+    super(message, "RATE_LIMIT_ERROR", 429, "RATE_LIMIT", { source });
+    this.name = "RateLimitError";
   }
 }
 
 export class ExternalServiceError extends AppError {
-  constructor(service: string, originalError?: unknown, isNetworkError: boolean = false) {
+  constructor(
+    service: string,
+    originalError?: unknown,
+    isNetworkError: boolean = false,
+  ) {
     super(
       `External service error: ${service}`,
-      'EXTERNAL_SERVICE_ERROR',
+      "EXTERNAL_SERVICE_ERROR",
       502,
       isNetworkError ? "NETWORK" : "PROVIDER",
-      originalError
+      originalError,
     );
-    this.name = 'ExternalServiceError';
+    this.name = "ExternalServiceError";
   }
 }
 
@@ -85,12 +92,12 @@ export class OpenAiError extends AppError {
   constructor(message: string, originalError?: unknown) {
     super(
       `OpenAI error: ${message}`,
-      'OPENAI_ERROR',
+      "OPENAI_ERROR",
       502,
       "OPENAI",
-      originalError
+      originalError,
     );
-    this.name = 'OpenAiError';
+    this.name = "OpenAiError";
   }
 }
 
@@ -98,11 +105,11 @@ export class TimeoutError extends AppError {
   constructor(operation: string, timeoutMs: number) {
     super(
       `Operation '${operation}' timed out after ${timeoutMs}ms`,
-      'TIMEOUT_ERROR',
+      "TIMEOUT_ERROR",
       504,
-      "NETWORK"
+      "NETWORK",
     );
-    this.name = 'TimeoutError';
+    this.name = "TimeoutError";
   }
 }
 
@@ -114,7 +121,7 @@ export class ErrorHandler {
    * Handle error and return appropriate Response
    */
   static handleError(error: unknown): Response {
-    console.error('Error occurred:', error);
+    console.error("Error occurred:", error);
 
     // Handle known AppError types
     if (error instanceof AppError) {
@@ -127,8 +134,8 @@ export class ErrorHandler {
         }),
         {
           status: error.statusCode,
-          headers: { 'Content-Type': 'application/json' },
-        }
+          headers: { "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -136,28 +143,28 @@ export class ErrorHandler {
     if (error instanceof Error) {
       return new Response(
         JSON.stringify({
-          error: 'INTERNAL_ERROR',
+          error: "INTERNAL_ERROR",
           message: error.message,
-          category: "INTERNAL"
+          category: "INTERNAL",
         }),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
+          headers: { "Content-Type": "application/json" },
+        },
       );
     }
 
     // Handle unknown errors
     return new Response(
       JSON.stringify({
-        error: 'UNKNOWN_ERROR',
-        message: 'An unknown error occurred',
-        category: "INTERNAL"
+        error: "UNKNOWN_ERROR",
+        message: "An unknown error occurred",
+        category: "INTERNAL",
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
+        headers: { "Content-Type": "application/json" },
+      },
     );
   }
 
@@ -166,7 +173,7 @@ export class ErrorHandler {
    */
   static async withErrorHandling<T>(
     fn: () => Promise<T>,
-    context?: string
+    context?: string,
   ): Promise<T> {
     try {
       return await fn();
@@ -181,10 +188,10 @@ export class ErrorHandler {
   /**
    * Execute with timeout
    */
-  static async withTimeout<T>(
+  static withTimeout<T>(
     fn: () => Promise<T>,
     timeoutMs: number,
-    operation: string
+    operation: string,
   ): Promise<T> {
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(() => {
@@ -207,14 +214,14 @@ export class ErrorHandler {
       maxDelayMs?: number;
       backoffMultiplier?: number;
       retryableCategories?: ErrorCategory[];
-    } = {}
+    } = {},
   ): Promise<T> {
     const {
       maxRetries = 3,
       initialDelayMs = 1000,
       maxDelayMs = 10000,
       backoffMultiplier = 2,
-      retryableCategories = ['NETWORK', 'RATE_LIMIT'],
+      retryableCategories = ["NETWORK", "RATE_LIMIT"],
     } = options;
 
     let lastError: unknown;
@@ -228,13 +235,13 @@ export class ErrorHandler {
 
         // Check if error is retryable
         let isRetryable = false;
-        
+
         if (error instanceof AppError) {
           isRetryable = retryableCategories.includes(error.category);
         } else if (error instanceof Error) {
           // Assume standard errors might be transient network issues if they look like it
           // But safer to default to false unless we know
-          isRetryable = false; 
+          isRetryable = false;
         }
 
         // Don't retry if not retryable or max retries reached
@@ -244,7 +251,7 @@ export class ErrorHandler {
 
         // Wait before retrying
         console.log(
-          `Retry attempt ${attempt + 1}/${maxRetries} after ${delayMs}ms`
+          `Retry attempt ${attempt + 1}/${maxRetries} after ${delayMs}ms`,
         );
         await new Promise((resolve) => setTimeout(resolve, delayMs));
 
@@ -265,35 +272,35 @@ export class ErrorHandler {
       failureThreshold?: number;
       resetTimeoutMs?: number;
       monitoringPeriodMs?: number;
-    } = {}
+    } = {},
   ) {
     const {
       failureThreshold = 5,
       resetTimeoutMs = 60000,
-      monitoringPeriodMs = 10000,
+      _monitoringPeriodMs = 10000,
     } = options;
 
     let failures = 0;
     let lastFailureTime = 0;
-    let state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED';
+    let state: "CLOSED" | "OPEN" | "HALF_OPEN" = "CLOSED";
 
     return async (): Promise<T> => {
       // Check if circuit should reset
       if (
-        state === 'OPEN' &&
+        state === "OPEN" &&
         Date.now() - lastFailureTime > resetTimeoutMs
       ) {
-        state = 'HALF_OPEN';
+        state = "HALF_OPEN";
         failures = 0;
       }
 
       // Reject if circuit is open
-      if (state === 'OPEN') {
+      if (state === "OPEN") {
         throw new AppError(
-          'Circuit breaker is OPEN',
-          'CIRCUIT_BREAKER_OPEN',
+          "Circuit breaker is OPEN",
+          "CIRCUIT_BREAKER_OPEN",
           503,
-          "INTERNAL"
+          "INTERNAL",
         );
       }
 
@@ -301,8 +308,8 @@ export class ErrorHandler {
         const result = await fn();
 
         // Reset on success
-        if (state === 'HALF_OPEN') {
-          state = 'CLOSED';
+        if (state === "HALF_OPEN") {
+          state = "CLOSED";
           failures = 0;
         }
 
@@ -313,9 +320,9 @@ export class ErrorHandler {
 
         // Open circuit if threshold reached
         if (failures >= failureThreshold) {
-          state = 'OPEN';
+          state = "OPEN";
           console.error(
-            `Circuit breaker opened after ${failures} failures`
+            `Circuit breaker opened after ${failures} failures`,
           );
         }
 
@@ -329,13 +336,13 @@ export class ErrorHandler {
    */
   static async withFallback<T>(
     fn: () => Promise<T>,
-    fallback: T | (() => Promise<T>)
+    fallback: T | (() => Promise<T>),
   ): Promise<T> {
     try {
       return await fn();
     } catch (error) {
-      console.warn('Using fallback due to error:', error);
-      return typeof fallback === 'function'
+      console.warn("Using fallback due to error:", error);
+      return typeof fallback === "function"
         ? await (fallback as () => Promise<T>)()
         : fallback;
     }
@@ -346,16 +353,17 @@ export class ErrorHandler {
    */
   static validateRequired(
     data: Record<string, unknown>,
-    requiredFields: string[]
+    requiredFields: string[],
   ): void {
     const missingFields = requiredFields.filter(
-      (field) => !(field in data) || data[field] === null || data[field] === undefined
+      (field) =>
+        !(field in data) || data[field] === null || data[field] === undefined,
     );
 
     if (missingFields.length > 0) {
       throw new ValidationError(
-        `Missing required fields: ${missingFields.join(', ')}`,
-        { missingFields }
+        `Missing required fields: ${missingFields.join(", ")}`,
+        { missingFields },
       );
     }
   }
@@ -366,7 +374,7 @@ export class ErrorHandler {
   static validateEmail(email: string): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new ValidationError('Invalid email format');
+      throw new ValidationError("Invalid email format");
     }
   }
 
@@ -377,7 +385,7 @@ export class ErrorHandler {
     try {
       new URL(url);
     } catch {
-      throw new ValidationError('Invalid URL format');
+      throw new ValidationError("Invalid URL format");
     }
   }
 
@@ -388,11 +396,11 @@ export class ErrorHandler {
     value: number,
     min: number,
     max: number,
-    fieldName: string
+    fieldName: string,
   ): void {
     if (value < min || value > max) {
       throw new ValidationError(
-        `${fieldName} must be between ${min} and ${max}`
+        `${fieldName} must be between ${min} and ${max}`,
       );
     }
   }
@@ -402,9 +410,9 @@ export class ErrorHandler {
  * Decorator for error handling (for use with class methods)
  */
 export function handleErrors(
-  target: unknown,
-  propertyKey: string,
-  descriptor: PropertyDescriptor
+  _target: unknown,
+  _propertyKey: string,
+  descriptor: PropertyDescriptor,
 ) {
   const originalMethod = descriptor.value;
 

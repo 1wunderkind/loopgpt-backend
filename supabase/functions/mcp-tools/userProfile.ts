@@ -1,6 +1,6 @@
 /**
  * User Profile Management
- * 
+ *
  * Stores lightweight user preferences for personalization and retention.
  * Uses Supabase for persistent storage.
  */
@@ -9,7 +9,7 @@ import { createClient } from "@supabase/supabase-js";
 
 /**
  * User Profile
- * 
+ *
  * Stores user preferences for personalized meal suggestions.
  */
 export interface UserProfile {
@@ -24,7 +24,7 @@ export interface UserProfile {
 
 /**
  * User Profile Store Abstraction
- * 
+ *
  * Provides get/upsert operations for user profiles.
  */
 export interface UserProfileStore {
@@ -34,23 +34,23 @@ export interface UserProfileStore {
 
 /**
  * Supabase User Profile Store
- * 
+ *
  * Implements UserProfileStore using Supabase database.
  */
 export class SupabaseUserProfileStore implements UserProfileStore {
   private supabase;
-  
+
   constructor() {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    
+
     if (!supabaseUrl || !supabaseKey) {
       throw new Error("Missing Supabase credentials");
     }
-    
+
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
-  
+
   /**
    * Get user profile by userId
    */
@@ -60,7 +60,7 @@ export class SupabaseUserProfileStore implements UserProfileStore {
       .select("*")
       .eq("user_id", userId)
       .single();
-    
+
     if (error) {
       if (error.code === "PGRST116") {
         // No rows returned - user doesn't have a profile yet
@@ -69,11 +69,11 @@ export class SupabaseUserProfileStore implements UserProfileStore {
       console.error("[UserProfile] Error fetching profile:", error);
       throw new Error(`Failed to fetch profile: ${error.message}`);
     }
-    
+
     if (!data) {
       return null;
     }
-    
+
     // Transform database row to UserProfile
     return {
       userId: data.user_id,
@@ -85,13 +85,13 @@ export class SupabaseUserProfileStore implements UserProfileStore {
       updatedAt: data.updated_at,
     };
   }
-  
+
   /**
    * Upsert user profile (insert or update)
    */
   async upsertProfile(profile: UserProfile): Promise<void> {
     const now = new Date().toISOString();
-    
+
     // Transform UserProfile to database row
     const row = {
       user_id: profile.userId,
@@ -101,18 +101,18 @@ export class SupabaseUserProfileStore implements UserProfileStore {
       last_plan_date: profile.lastPlanDate || null,
       updated_at: now,
     };
-    
+
     const { error } = await this.supabase
       .from("user_profiles")
       .upsert(row, {
         onConflict: "user_id",
       });
-    
+
     if (error) {
       console.error("[UserProfile] Error upserting profile:", error);
       throw new Error(`Failed to upsert profile: ${error.message}`);
     }
-    
+
     console.log("[UserProfile] Profile upserted", {
       userId: profile.userId,
       hasDietTags: !!profile.dietTags,
@@ -140,14 +140,16 @@ export function getUserProfileStore(): UserProfileStore {
 /**
  * Helper: Get user profile with fallback to defaults
  */
-export async function getProfileOrDefaults(userId: string): Promise<UserProfile> {
+export async function getProfileOrDefaults(
+  userId: string,
+): Promise<UserProfile> {
   const store = getUserProfileStore();
   const profile = await store.getProfile(userId);
-  
+
   if (profile) {
     return profile;
   }
-  
+
   // Return default profile if user doesn't have one
   return {
     userId,

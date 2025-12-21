@@ -1,6 +1,6 @@
 /**
  * LoopGPT Analytics - TypeScript Types
- * 
+ *
  * Type definitions for the 7 foundational metrics tables
  * Auto-generated from database schema
  */
@@ -111,36 +111,36 @@ export interface AnalyticsSessionEvent {
 // Enum Types
 // ============================================================================
 
-export type RecipeEventType = 
-  | 'generated' 
-  | 'accepted' 
-  | 'rejected' 
-  | 'regenerated' 
-  | 'cooked';
+export type RecipeEventType =
+  | "generated"
+  | "accepted"
+  | "rejected"
+  | "regenerated"
+  | "cooked";
 
-export type MealType = 
-  | 'breakfast' 
-  | 'lunch' 
-  | 'dinner' 
-  | 'snack' 
-  | 'other';
+export type MealType =
+  | "breakfast"
+  | "lunch"
+  | "dinner"
+  | "snack"
+  | "other";
 
-export type AffiliateEventType = 
-  | 'click' 
-  | 'impression' 
-  | 'conversion';
+export type AffiliateEventType =
+  | "click"
+  | "impression"
+  | "conversion";
 
-export type UserGoalType = 
-  | 'weight_loss' 
-  | 'muscle_gain' 
-  | 'maintenance' 
-  | 'performance'
-  | 'general_health';
+export type UserGoalType =
+  | "weight_loss"
+  | "muscle_gain"
+  | "maintenance"
+  | "performance"
+  | "general_health";
 
-export type SessionEventType = 
-  | 'session_start' 
-  | 'session_end' 
-  | 'tool_call';
+export type SessionEventType =
+  | "session_start"
+  | "session_end"
+  | "tool_call";
 
 // ============================================================================
 // Input Types (for logging functions)

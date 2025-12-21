@@ -3,7 +3,7 @@
  * Comprehensive tests for user and billing functionality
  */
 
-import { assertEquals, assertExists, assert, testData } from "../../helpers.ts";
+import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 // Profile Operations Tests (10 tests)
 Deno.test("profile: creates user profile", async () => {
@@ -76,7 +76,7 @@ Deno.test("profile: validates required fields", async () => {
     email: "user@example.com",
     name: "Test User",
   };
-  assert(requiredFields.every(field => field in profile));
+  assert(requiredFields.every((field) => field in profile));
 });
 
 Deno.test("profile: handles timezone settings", async () => {

@@ -1,15 +1,15 @@
 /**
  * Normalize Ingredients Edge Function
- * 
+ *
  * Normalizes ingredient names for better MealMe search results.
  */
 
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
-import { 
-  normalizeIngredients, 
-  groupIngredients, 
+import {
+  groupIngredients,
+  normalizeIngredients,
   toMealMeCartItems,
   validateIngredients,
 } from "../_lib/ingredientNormalizer.ts";
@@ -51,7 +51,9 @@ function normalize(req: NormalizeRequest): NormalizeResponse {
   // Group similar ingredients if requested
   if (group) {
     normalized = groupIngredients(normalized);
-    console.log(`[Normalize] Grouped to ${normalized.length} unique ingredients`);
+    console.log(
+      `[Normalize] Grouped to ${normalized.length} unique ingredients`,
+    );
   }
 
   // Convert to MealMe cart items
@@ -84,4 +86,3 @@ const handler = async (req: Request): Promise<Response> => {
 // Export with logging middleware
 // withLogging is not compatible with withStandardAPI in this context, using withStandardAPI directly
 export default withStandardAPI(handler);
-

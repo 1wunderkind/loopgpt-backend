@@ -58,7 +58,11 @@ export function logToolStart(toolName: string, meta?: LogMeta) {
   });
 }
 
-export function logToolSuccess(toolName: string, durationMs: number, meta?: LogMeta) {
+export function logToolSuccess(
+  toolName: string,
+  durationMs: number,
+  meta?: LogMeta,
+) {
   logInfo(`Tool completed: ${toolName}`, {
     tool: toolName,
     phase: "complete",
@@ -68,7 +72,12 @@ export function logToolSuccess(toolName: string, durationMs: number, meta?: LogM
   });
 }
 
-export function logToolError(toolName: string, error: Error, durationMs: number, meta?: LogMeta) {
+export function logToolError(
+  toolName: string,
+  error: Error,
+  durationMs: number,
+  meta?: LogMeta,
+) {
   logError(`Tool failed: ${toolName}`, {
     tool: toolName,
     phase: "error",

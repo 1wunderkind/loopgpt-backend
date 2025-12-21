@@ -3,9 +3,9 @@
  * Track business events, user actions, and system events
  */
 
-import { Logger } from '../monitoring/Logger.ts';
+import { Logger } from "../monitoring/Logger.ts";
 
-const logger = new Logger('EventTracker');
+const logger = new Logger("EventTracker");
 
 export interface Event {
   id: string;
@@ -19,11 +19,11 @@ export interface Event {
 }
 
 export enum EventCategory {
-  USER = 'user',
-  SYSTEM = 'system',
-  BUSINESS = 'business',
-  PERFORMANCE = 'performance',
-  ERROR = 'error',
+  USER = "user",
+  SYSTEM = "system",
+  BUSINESS = "business",
+  PERFORMANCE = "performance",
+  ERROR = "error",
 }
 
 export interface EventMetadata {
@@ -52,8 +52,8 @@ export class EventTracker {
   private version: string;
 
   constructor() {
-    this.environment = Deno.env.get('ENVIRONMENT') || 'development';
-    this.version = Deno.env.get('VERSION') || '1.0.0';
+    this.environment = Deno.env.get("ENVIRONMENT") || "development";
+    this.version = Deno.env.get("VERSION") || "1.0.0";
   }
 
   /**
@@ -68,7 +68,7 @@ export class EventTracker {
       sessionId?: string;
       userAgent?: string;
       ipAddress?: string;
-    }
+    },
   ): Event {
     const event: Event = {
       id: this.generateEventId(),
@@ -79,7 +79,7 @@ export class EventTracker {
       sessionId: options?.sessionId,
       properties,
       metadata: {
-        source: 'loopgpt',
+        source: "loopgpt",
         environment: this.environment,
         version: this.version,
         userAgent: options?.userAgent,
@@ -94,7 +94,7 @@ export class EventTracker {
       this.events.shift();
     }
 
-    logger.info('Event tracked', {
+    logger.info("Event tracked", {
       name,
       category: event.category,
       userId: event.userId,
@@ -112,7 +112,7 @@ export class EventTracker {
   trackUser(
     name: string,
     userId: string,
-    properties: Record<string, unknown> = {}
+    properties: Record<string, unknown> = {},
   ): Event {
     return this.track(name, properties, {
       category: EventCategory.USER,
@@ -125,7 +125,7 @@ export class EventTracker {
    */
   trackBusiness(
     name: string,
-    properties: Record<string, unknown> = {}
+    properties: Record<string, unknown> = {},
   ): Event {
     return this.track(name, properties, {
       category: EventCategory.BUSINESS,
@@ -138,7 +138,7 @@ export class EventTracker {
   trackPerformance(
     name: string,
     duration: number,
-    properties: Record<string, unknown> = {}
+    properties: Record<string, unknown> = {},
   ): Event {
     return this.track(name, { duration, ...properties }, {
       category: EventCategory.PERFORMANCE,
@@ -151,7 +151,7 @@ export class EventTracker {
   trackError(
     name: string,
     error: Error,
-    properties: Record<string, unknown> = {}
+    properties: Record<string, unknown> = {},
   ): Event {
     return this.track(name, {
       error: error.message,
@@ -170,23 +170,23 @@ export class EventTracker {
 
     if (filter) {
       if (filter.category) {
-        filtered = filtered.filter(e => e.category === filter.category);
+        filtered = filtered.filter((e) => e.category === filter.category);
       }
 
       if (filter.name) {
-        filtered = filtered.filter(e => e.name === filter.name);
+        filtered = filtered.filter((e) => e.name === filter.name);
       }
 
       if (filter.userId) {
-        filtered = filtered.filter(e => e.userId === filter.userId);
+        filtered = filtered.filter((e) => e.userId === filter.userId);
       }
 
       if (filter.startTime) {
-        filtered = filtered.filter(e => e.timestamp >= filter.startTime!);
+        filtered = filtered.filter((e) => e.timestamp >= filter.startTime!);
       }
 
       if (filter.endTime) {
-        filtered = filtered.filter(e => e.timestamp <= filter.endTime!);
+        filtered = filtered.filter((e) => e.timestamp <= filter.endTime!);
       }
     }
 
@@ -232,7 +232,7 @@ export class EventTracker {
   private exportEvent(event: Event): void {
     // In production, send to analytics service (Mixpanel, Amplitude, etc.)
     // For now, just log
-    logger.debug('Event exported', {
+    logger.debug("Event exported", {
       id: event.id,
       name: event.name,
       category: event.category,
@@ -260,56 +260,56 @@ export const eventTracker = new EventTracker();
  */
 export const Events = {
   // User events
-  USER_REGISTERED: 'user.registered',
-  USER_LOGGED_IN: 'user.logged_in',
-  USER_LOGGED_OUT: 'user.logged_out',
-  USER_UPDATED_PROFILE: 'user.updated_profile',
-  USER_DELETED_ACCOUNT: 'user.deleted_account',
+  USER_REGISTERED: "user.registered",
+  USER_LOGGED_IN: "user.logged_in",
+  USER_LOGGED_OUT: "user.logged_out",
+  USER_UPDATED_PROFILE: "user.updated_profile",
+  USER_DELETED_ACCOUNT: "user.deleted_account",
 
   // Food events
-  FOOD_SEARCHED: 'food.searched',
-  FOOD_VIEWED: 'food.viewed',
-  MEAL_LOGGED: 'meal.logged',
-  MEAL_PLAN_CREATED: 'meal_plan.created',
+  FOOD_SEARCHED: "food.searched",
+  FOOD_VIEWED: "food.viewed",
+  MEAL_LOGGED: "meal.logged",
+  MEAL_PLAN_CREATED: "meal_plan.created",
 
   // Weight events
-  WEIGHT_LOGGED: 'weight.logged',
-  WEIGHT_GOAL_SET: 'weight.goal_set',
-  WEIGHT_GOAL_REACHED: 'weight.goal_reached',
+  WEIGHT_LOGGED: "weight.logged",
+  WEIGHT_GOAL_SET: "weight.goal_set",
+  WEIGHT_GOAL_REACHED: "weight.goal_reached",
 
   // Order events
-  ORDER_INITIATED: 'order.initiated',
-  ORDER_QUOTED: 'order.quoted',
-  ORDER_CONFIRMED: 'order.confirmed',
-  ORDER_CANCELLED: 'order.cancelled',
-  ORDER_COMPLETED: 'order.completed',
-  ORDER_FAILED: 'order.failed',
+  ORDER_INITIATED: "order.initiated",
+  ORDER_QUOTED: "order.quoted",
+  ORDER_CONFIRMED: "order.confirmed",
+  ORDER_CANCELLED: "order.cancelled",
+  ORDER_COMPLETED: "order.completed",
+  ORDER_FAILED: "order.failed",
 
   // Provider events
-  PROVIDER_QUERIED: 'provider.queried',
-  PROVIDER_SELECTED: 'provider.selected',
-  PROVIDER_FALLBACK: 'provider.fallback',
+  PROVIDER_QUERIED: "provider.queried",
+  PROVIDER_SELECTED: "provider.selected",
+  PROVIDER_FALLBACK: "provider.fallback",
 
   // Performance events
-  API_REQUEST: 'api.request',
-  API_RESPONSE: 'api.response',
-  CACHE_HIT: 'cache.hit',
-  CACHE_MISS: 'cache.miss',
-  DB_QUERY: 'db.query',
+  API_REQUEST: "api.request",
+  API_RESPONSE: "api.response",
+  CACHE_HIT: "cache.hit",
+  CACHE_MISS: "cache.miss",
+  DB_QUERY: "db.query",
 
   // Error events
-  ERROR_VALIDATION: 'error.validation',
-  ERROR_AUTHENTICATION: 'error.authentication',
-  ERROR_AUTHORIZATION: 'error.authorization',
-  ERROR_NOT_FOUND: 'error.not_found',
-  ERROR_INTERNAL: 'error.internal',
-  ERROR_EXTERNAL: 'error.external',
+  ERROR_VALIDATION: "error.validation",
+  ERROR_AUTHENTICATION: "error.authentication",
+  ERROR_AUTHORIZATION: "error.authorization",
+  ERROR_NOT_FOUND: "error.not_found",
+  ERROR_INTERNAL: "error.internal",
+  ERROR_EXTERNAL: "error.external",
 
   // Business events
-  REVENUE_GENERATED: 'revenue.generated',
-  SUBSCRIPTION_STARTED: 'subscription.started',
-  SUBSCRIPTION_CANCELLED: 'subscription.cancelled',
-  REFERRAL_COMPLETED: 'referral.completed',
+  REVENUE_GENERATED: "revenue.generated",
+  SUBSCRIPTION_STARTED: "subscription.started",
+  SUBSCRIPTION_CANCELLED: "subscription.cancelled",
+  REFERRAL_COMPLETED: "referral.completed",
 };
 
 /**
@@ -318,38 +318,40 @@ export const Events = {
 export const trackUserAction = (
   action: string,
   userId: string,
-  properties?: Record<string, unknown>
+  properties?: Record<string, unknown>,
 ) => eventTracker.trackUser(action, userId, properties);
 
 export const trackOrderEvent = (
   event: string,
   orderId: string,
-  properties?: Record<string, unknown>
+  properties?: Record<string, unknown>,
 ) => eventTracker.trackBusiness(event, { orderId, ...properties });
 
 export const trackProviderEvent = (
   event: string,
   provider: string,
-  properties?: Record<string, unknown>
+  properties?: Record<string, unknown>,
 ) => eventTracker.trackBusiness(event, { provider, ...properties });
 
 export const trackCacheEvent = (
   hit: boolean,
   key: string,
-  properties?: Record<string, unknown>
-) => eventTracker.trackPerformance(
-  hit ? Events.CACHE_HIT : Events.CACHE_MISS,
-  0,
-  { key, ...properties }
-);
+  properties?: Record<string, unknown>,
+) =>
+  eventTracker.trackPerformance(
+    hit ? Events.CACHE_HIT : Events.CACHE_MISS,
+    0,
+    { key, ...properties },
+  );
 
 export const trackApiRequest = (
   endpoint: string,
   method: string,
   duration: number,
-  statusCode: number
-) => eventTracker.trackPerformance(Events.API_REQUEST, duration, {
-  endpoint,
-  method,
-  statusCode,
-});
+  statusCode: number,
+) =>
+  eventTracker.trackPerformance(Events.API_REQUEST, duration, {
+    endpoint,
+    method,
+    statusCode,
+  });

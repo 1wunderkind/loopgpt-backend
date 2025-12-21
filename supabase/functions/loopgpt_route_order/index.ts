@@ -1,13 +1,13 @@
 /**
  * LoopGPT Commerce Router - Route Order
  * Production-grade multi-provider order routing with intelligent scoring
- * 
+ *
  * This function:
  * 1. Queries all enabled providers for quotes (parallel with timeouts)
  * 2. Scores providers using the Phase 3 algorithm
  * 3. Selects the best provider based on weighted scoring
  * 4. Returns quote with explanation and alternatives
- * 
+ *
  * Security: Rate limited (10 req/min), request size limit (10MB), security headers
  */
 
@@ -19,38 +19,39 @@ import { getProvider } from "../_shared/commerce/providers/providerRegistry.ts";
 import { getEnabledProvidersSorted } from "../_shared/commerce/providers/providerConfigs.ts";
 import { withTimeout } from "../_shared/commerce/utils/timeout.ts";
 import {
+  logRouteOrderFailure,
   logRouteOrderStart,
   logRouteOrderSuccess,
-  logRouteOrderFailure,
 } from "../_shared/commerce/commerceLogger.ts";
 import {
+  createRoutingMetrics,
+  generateRequestId,
+  logProviderQuoteError,
   logProviderQuoteStart,
   logProviderQuoteSuccess,
-  logProviderQuoteError,
   logRouterDecision,
   logRouterFailure,
   logRouterLatency,
-  generateRequestId,
-  createRoutingMetrics,
   sendMetrics,
 } from "../_shared/commerce/utils/logging.ts";
 import type {
-  RouteOrderRequest,
-  RouteOrderResponse,
+  ProviderId,
   ProviderQuote,
   RequestedItem,
-  ProviderId,
+  RouteOrderRequest,
+  RouteOrderResponse,
 } from "../_shared/commerce/types/index.ts";
 import type { QuoteRequest } from "../_shared/commerce/providers/ICommerceProvider.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -60,12 +61,12 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     // Parse request
     const request: RouteOrderRequest = await req.json();
-    
+
     // Log route order start
     logRouteOrderStart(
       request.userId,
       request.items.length,
-      requestId
+      requestId,
     );
 
     // Validate request
@@ -73,19 +74,19 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'INVALID_REQUEST',
-          message: 'userId and items are required',
+          error: "INVALID_REQUEST",
+          message: "userId and items are required",
         }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
     // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // ========================================================================
@@ -96,38 +97,40 @@ const handler = async (req: Request): Promise<Response> => {
     const candidateConfigs = getEnabledProvidersSorted();
 
     if (candidateConfigs.length === 0) {
-      console.error('[Router] No enabled providers found');
+      console.error("[Router] No enabled providers found");
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'NO_PROVIDERS',
-          message: 'No providers are currently enabled',
+          error: "NO_PROVIDERS",
+          message: "No providers are currently enabled",
         }),
         {
           status: 503,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
-    console.log(`[Router] Querying ${candidateConfigs.length} providers:`, 
-      candidateConfigs.map(c => c.id).join(', '));
+    console.log(
+      `[Router] Querying ${candidateConfigs.length} providers:`,
+      candidateConfigs.map((c) => c.id).join(", "),
+    );
 
     // Build base quote request
-    const baseQuoteRequest: Omit<QuoteRequest, 'providerId'> = {
+    const baseQuoteRequest: Omit<QuoteRequest, "providerId"> = {
       items: request.items.map((item, idx) => ({
-        id: item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + `-${idx}`,
+        id: item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + `-${idx}`,
         name: item.name,
         quantity: item.quantity,
         unit: item.preferences?.unit as string | undefined,
         preferences: item.preferences,
       })),
       shippingAddress: {
-        street: request.location.street || '',
+        street: request.location.street || "",
         city: request.location.city,
-        state: request.location.state || '',
+        state: request.location.state || "",
         postalCode: request.location.zip,
-        country: request.location.country || 'US',
+        country: request.location.country || "US",
       },
       userContext: {
         // TODO: Add user-specific context from database
@@ -137,7 +140,10 @@ const handler = async (req: Request): Promise<Response> => {
     // Query all providers in parallel with timeouts
     const quotes: ProviderQuote[] = [];
     const errors: Array<{ providerId: ProviderId; error: string }> = [];
-    const providerLatencies: Record<ProviderId, number> = {} as Record<ProviderId, number>;
+    const providerLatencies: Record<ProviderId, number> = {} as Record<
+      ProviderId,
+      number
+    >;
 
     const routingStartTime = Date.now();
 
@@ -159,7 +165,7 @@ const handler = async (req: Request): Promise<Response> => {
           const quote = await withTimeout(
             provider.getQuote(quoteRequest, config),
             timeout,
-            config.id
+            config.id,
           );
 
           const latencyMs = Date.now() - startTime;
@@ -178,34 +184,34 @@ const handler = async (req: Request): Promise<Response> => {
           });
           throw err;
         }
-      })
+      }),
     );
 
     // Extract successful quotes
     for (const result of results) {
-      if (result.status === 'fulfilled') {
+      if (result.status === "fulfilled") {
         quotes.push(result.value);
       }
     }
 
     // Check if we have any valid quotes
     if (quotes.length === 0) {
-      const attemptedProviders = candidateConfigs.map(c => c.id);
-      const errorMessages = errors.map(e => `${e.providerId}: ${e.error}`);
-      
+      const attemptedProviders = candidateConfigs.map((c) => c.id);
+      const errorMessages = errors.map((e) => `${e.providerId}: ${e.error}`);
+
       logRouterFailure(attemptedProviders, errors, requestId);
 
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'NO_VALID_QUOTES',
-          message: 'No providers returned valid quotes',
+          error: "NO_VALID_QUOTES",
+          message: "No providers returned valid quotes",
           details: errors,
         }),
         {
           status: 503,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -218,7 +224,7 @@ const handler = async (req: Request): Promise<Response> => {
     const scoredQuotes = await scorer.scoreProviders(
       quotes,
       request.items.length,
-      request.preferences?.optimizeFor || 'balanced'
+      request.preferences?.optimizeFor || "balanced",
     );
 
     // Select best provider
@@ -226,14 +232,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Log router decision
     logRouterDecision(selected, quotes.length, requestId);
-    
+
     // Log route order success
     const totalLatencyMs = Date.now() - routingStartTime;
     logRouteOrderSuccess(
       requestId,
       selected.provider.id,
       totalLatencyMs,
-      selected.score
+      selected.score,
     );
 
     // Log latency metrics
@@ -243,14 +249,16 @@ const handler = async (req: Request): Promise<Response> => {
     const metrics = createRoutingMetrics(
       requestId,
       totalLatencyMs,
-      candidateConfigs.map(c => c.id),
+      candidateConfigs.map((c) => c.id),
       quotes,
-      selected
+      selected,
     );
     await sendMetrics(metrics);
 
     // Generate confirmation token
-    const confirmationToken = `conf_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const confirmationToken = `conf_${Date.now()}_${
+      Math.random().toString(36).substring(7)
+    }`;
 
     // Build response
     const response: RouteOrderResponse = {
@@ -262,7 +270,7 @@ const handler = async (req: Request): Promise<Response> => {
       quote: selected.quote,
       itemAvailability: selected.itemAvailability,
       scoreBreakdown: selected.scoreBreakdown,
-      alternatives: scoredQuotes.slice(1, 3).map(q => ({
+      alternatives: scoredQuotes.slice(1, 3).map((q) => ({
         provider: q.provider.name,
         providerId: q.provider.id,
         totalCents: q.quote.totalCents,
@@ -274,38 +282,38 @@ const handler = async (req: Request): Promise<Response> => {
       })),
       confirmationToken,
       affiliateUrl: selected.affiliateUrl,
-      message: `Order routed to ${selected.provider.name}. ${selected.scoreBreakdown.explanation}`,
+      message:
+        `Order routed to ${selected.provider.name}. ${selected.scoreBreakdown.explanation}`,
     };
 
     return new Response(
       JSON.stringify(response),
       {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
     );
-
   } catch (error) {
-    console.error('[Router] Fatal error:', error);
-    
+    console.error("[Router] Fatal error:", error);
+
     // Log route order failure
     const totalLatencyMs = Date.now() - routingStartTime;
     logRouteOrderFailure(
       requestId,
-      'INTERNAL_ERROR',
-      totalLatencyMs
+      "INTERNAL_ERROR",
+      totalLatencyMs,
     );
-    
+
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'INTERNAL_ERROR',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: "INTERNAL_ERROR",
+        message: error instanceof Error ? error.message : "Unknown error",
       }),
       {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
     );
   }
 };

@@ -1,14 +1,22 @@
 /**
  * Change Location Edge Function
- * 
+ *
  * Allows users to change their location (for travelers, expats, or corrections).
  * This is a convenience wrapper around update_user_location with better UX.
  */
 
 import { serve } from "std@0.168.0/http/server.ts";
 import { withLogging } from "../../middleware/logging.ts";
-import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
-import { formatCountryDisplay, isValidCountryCode, normalizeCountryCode } from "../_lib/locationUtils.ts";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  validateRequired,
+} from "../../middleware/errorHandler.ts";
+import {
+  formatCountryDisplay,
+  isValidCountryCode,
+  normalizeCountryCode,
+} from "../_lib/locationUtils.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
@@ -47,62 +55,34 @@ async function handler(req: Request): Promise<Response> {
 
     if (!isValidCountryCode(normalizedCountry)) {
       return createErrorResponse(
-        new Error(`Invalid country code: ${new_country}. Must be 2-letter ISO code (e.g., US, IN, ES)`)
+        new Error(
+          `Invalid country code: ${new_country}. Must be 2-letter ISO code (e.g., US, IN, ES)`,
+        ),
       );
     }
 
-    console.log(`[ChangeLocation] User ${chatgpt_user_id} changing location to ${normalizedCountry}`);
+    console.log(
+      `[ChangeLocation] User ${chatgpt_user_id} changing location to ${normalizedCountry}`,
+    );
 
     // Get authenticated Supabase client (enforces RLS)
 
-
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-
-    
-
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: authError }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     if (!userId) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
@@ -127,7 +107,7 @@ async function handler(req: Request): Promise<Response> {
         },
         {
           onConflict: "chatgpt_user_id",
-        }
+        },
       )
       .select()
       .single();
@@ -140,7 +120,9 @@ async function handler(req: Request): Promise<Response> {
     // Build success message
     let message: string;
     if (oldCountry && oldCountry !== normalizedCountry) {
-      message = `Location updated from ${formatCountryDisplay(oldCountry)} to ${formatCountryDisplay(normalizedCountry)}`;
+      message = `Location updated from ${formatCountryDisplay(oldCountry)} to ${
+        formatCountryDisplay(normalizedCountry)
+      }`;
     } else {
       message = `Location set to ${formatCountryDisplay(normalizedCountry)}`;
     }
@@ -154,7 +136,6 @@ async function handler(req: Request): Promise<Response> {
       new_country: normalizedCountry,
       user: data,
     });
-
   } catch (error) {
     console.error("[ChangeLocation] Error:", error);
     return createErrorResponse(error);
@@ -163,4 +144,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export handler with logging middleware
 serve(withStandardAPI(withLogging(handler)));
-

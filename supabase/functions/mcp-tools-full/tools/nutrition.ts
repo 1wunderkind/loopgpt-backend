@@ -5,31 +5,37 @@
 
 import { NutritionAnalysisJsonSchema } from "./shared/jsonSchema.ts";
 import {
-  NutritionInputSchema,
-  NutritionAnalysisSchema,
   type NutritionAnalysis,
+  NutritionAnalysisSchema,
+  NutritionInputSchema,
 } from "./shared/schemas.ts";
 import { getOpenAIClient } from "../config/openai.ts";
 import { ENV } from "../config/env.ts";
 import { OpenAiError } from "./shared/errors.ts";
 import { validateInput } from "./shared/validation.ts";
-import { logToolStart, logToolSuccess, logToolError } from "./shared/logging.ts";
+import {
+  logToolError,
+  logToolStart,
+  logToolSuccess,
+} from "./shared/logging.ts";
 import { recordToolCall } from "./shared/metrics.ts";
 import { cacheGet, cacheSet, generateCacheKey } from "./shared/cache.ts";
 
 /**
  * Analyze nutrition for recipes
  */
-export async function analyzeNutrition(params: unknown): Promise<NutritionAnalysis> {
+export async function analyzeNutrition(
+  params: unknown,
+): Promise<NutritionAnalysis> {
   const startTime = Date.now();
   const toolName = "nutrition.analyze";
-  
+
   try {
     logToolStart(toolName, { params });
-    
+
     // Validate input
     const input = validateInput(NutritionInputSchema, params, toolName);
-    
+
     // Check cache
     if (ENV.ENABLE_CACHING) {
       const cacheKey = generateCacheKey(toolName, input);
@@ -41,11 +47,12 @@ export async function analyzeNutrition(params: unknown): Promise<NutritionAnalys
         return cached;
       }
     }
-    
+
     // Analyze nutrition using OpenAI Structured Outputs
     const client = getOpenAIClient();
-    
-    const systemPrompt = `You are TheLoopGPT's nutrition analysis engine. Analyze the nutritional content of recipes with high accuracy.
+
+    const systemPrompt =
+      `You are TheLoopGPT's nutrition analysis engine. Analyze the nutritional content of recipes with high accuracy.
 
 Rules:
 - Provide realistic calorie and macro estimates based on ingredients and portions
@@ -57,14 +64,24 @@ Rules:
 
     const userPrompt = `Analyze the nutrition for these recipes:
 
-${input.recipes.map((r, i) => `
+${
+      input.recipes.map((r, i) => `
 Recipe ${i + 1}: ${r.name}
-Servings: ${r.servings || 'unknown'}
+Servings: ${r.servings || "unknown"}
 Ingredients:
-${r.ingredients.map(ing => `- ${ing.name}${ing.quantity ? ` (${ing.quantity})` : ''}`).join('\n')}
-`).join('\n')}
+${
+        r.ingredients.map((ing) =>
+          `- ${ing.name}${ing.quantity ? ` (${ing.quantity})` : ""}`
+        ).join("\n")
+      }
+`).join("\n")
+    }
 
-${input.perServing ? 'Provide per-serving nutrition for each recipe.' : 'Provide total nutrition for each recipe.'}`;
+${
+      input.perServing
+        ? "Provide per-serving nutrition for each recipe."
+        : "Provide total nutrition for each recipe."
+    }`;
 
     // Use pre-defined JSON Schema for Structured Outputs
 
@@ -92,30 +109,36 @@ ${input.perServing ? 'Provide per-serving nutrition for each recipe.' : 'Provide
     }
 
     const analysis: NutritionAnalysis = JSON.parse(rawContent);
-    
+
     // Cache the result
     if (ENV.ENABLE_CACHING) {
       const cacheKey = generateCacheKey(toolName, input);
       await cacheSet(cacheKey, analysis, ENV.CACHE_TTL_SECONDS, toolName);
     }
-    
+
     const duration = Date.now() - startTime;
     logToolSuccess(toolName, duration, { recipeCount: input.recipes.length });
     recordToolCall(toolName, true, duration);
-    
+
     return analysis;
   } catch (error) {
     const duration = Date.now() - startTime;
     logToolError(toolName, error as Error, duration);
-    recordToolCall(toolName, false, duration, { errorType: (error as Error).name });
-    
+    recordToolCall(toolName, false, duration, {
+      errorType: (error as Error).name,
+    });
+
     // Graceful degradation: return approximate nutrition
     if (error instanceof OpenAiError) {
-      logToolError(toolName, new Error("Falling back to approximate nutrition"), duration);
-      
+      logToolError(
+        toolName,
+        new Error("Falling back to approximate nutrition"),
+        duration,
+      );
+
       const input = validateInput(NutritionInputSchema, params, toolName);
       return {
-        perRecipe: input.recipes.map(r => ({
+        perRecipe: input.recipes.map((r) => ({
           recipeId: r.id,
           recipeName: r.name,
           summary: {
@@ -128,7 +151,7 @@ ${input.perServing ? 'Provide per-serving nutrition for each recipe.' : 'Provide
         })),
       };
     }
-    
+
     throw error;
   }
 }

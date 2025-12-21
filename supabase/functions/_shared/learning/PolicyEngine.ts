@@ -29,11 +29,16 @@ export class PolicyEngine {
     latency: -0.001, // -1 point per 1000ms
     gmv: 0.1,
     commission: 0.5,
-    bias: 0
+    bias: 0,
   };
 
   static calculateReward(
-    outcome: { success: boolean; latencyMs: number; gmvUsd?: number; commissionUsd?: number }
+    outcome: {
+      success: boolean;
+      latencyMs: number;
+      gmvUsd?: number;
+      commissionUsd?: number;
+    },
   ): number {
     const successReward = outcome.success ? 1.0 : -5.0; // Heavy penalty for failure
     const latencyPenalty = outcome.latencyMs * 0.0001; // Small penalty for slowness
@@ -46,16 +51,17 @@ export class PolicyEngine {
   static scoreProvider(
     provider: string,
     features: RoutingFeaturesV1,
-    weights: PolicyWeights = this.DEFAULT_WEIGHTS
+    weights: PolicyWeights = this.DEFAULT_WEIGHTS,
   ): ScoredProvider {
     const terms = {
       success: features.providerSuccessRate * weights.successRate,
       latency: features.providerLatencyP50 * weights.latency,
       gmv: features.providerGMVPerRoute * weights.gmv,
-      commission: features.providerCommissionRate * weights.commission
+      commission: features.providerCommissionRate * weights.commission,
     };
 
-    const score = terms.success + terms.latency + terms.gmv + terms.commission + weights.bias;
+    const score = terms.success + terms.latency + terms.gmv + terms.commission +
+      weights.bias;
 
     return {
       provider,
@@ -63,8 +69,8 @@ export class PolicyEngine {
       explanation: {
         features,
         weights,
-        terms
-      }
+        terms,
+      },
     };
   }
 }

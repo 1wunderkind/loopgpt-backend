@@ -12,7 +12,6 @@ import { serve } from "std@0.177.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
 import { withHeavyOperation } from "../_shared/security/applyMiddleware.ts";
 
-
 // ============================================================================
 // Environment Configuration
 // ============================================================================
@@ -32,17 +31,36 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ============================================================================
 
 const CHEF_POOLS = {
-  low: ['Jamie Leftover', 'Jamie Rollover', 'Jamie Makeover', 'Jamie Pullover', 'Jamie Holdover'],
-  medium: ['Paul Leftovuse', 'Paul Whatcha-use', 'Paul Chaos-use', 'Paul Fridge-cruise', 'Paul Broke-use'],
-  high: ['Gordon Leftover-Slay', 'Gordon Scram-Say', 'Gordon Ram-Stray', 'Gordon Fridge-Disarray', 'Gordon Can\'t-Throw-Away', 'Gordon Damn-Dismay']
+  low: [
+    "Jamie Leftover",
+    "Jamie Rollover",
+    "Jamie Makeover",
+    "Jamie Pullover",
+    "Jamie Holdover",
+  ],
+  medium: [
+    "Paul Leftovuse",
+    "Paul Whatcha-use",
+    "Paul Chaos-use",
+    "Paul Fridge-cruise",
+    "Paul Broke-use",
+  ],
+  high: [
+    "Gordon Leftover-Slay",
+    "Gordon Scram-Say",
+    "Gordon Ram-Stray",
+    "Gordon Fridge-Disarray",
+    "Gordon Can't-Throw-Away",
+    "Gordon Damn-Dismay",
+  ],
 };
 
 function selectChef(chaosRating: number): string {
-  let tier: 'low' | 'medium' | 'high';
-  if (chaosRating <= 3) tier = 'low';
-  else if (chaosRating <= 6) tier = 'medium';
-  else tier = 'high';
-  
+  let tier: "low" | "medium" | "high";
+  if (chaosRating <= 3) tier = "low";
+  else if (chaosRating <= 6) tier = "medium";
+  else tier = "high";
+
   const chefNames = CHEF_POOLS[tier];
   return chefNames[Math.floor(Math.random() * chefNames.length)];
 }
@@ -112,19 +130,22 @@ interface DeliveryOption {
 async function getDeliveryOptions(
   chatgpt_user_id: string,
   recipe_name: string,
-  cuisine_type?: string
+  cuisine_type?: string,
 ): Promise<DeliveryOption[]> {
   try {
-    const { data, error } = await supabase.functions.invoke('get_delivery_recommendations', {
-      body: {
-        chatgpt_user_id,
-        cuisine: cuisine_type || 'general',
-        diet_preferences: [],
-      }
-    });
+    const { data, error } = await supabase.functions.invoke(
+      "get_delivery_recommendations",
+      {
+        body: {
+          chatgpt_user_id,
+          cuisine: cuisine_type || "general",
+          diet_preferences: [],
+        },
+      },
+    );
 
     if (error) {
-      console.error('[Delivery] Error:', error);
+      console.error("[Delivery] Error:", error);
       return [];
     }
 
@@ -138,25 +159,26 @@ async function getDeliveryOptions(
       cuisine_match: rec.match_score > 50,
     }));
   } catch (error) {
-    console.error('[Delivery] Error getting delivery options:', error);
+    console.error("[Delivery] Error getting delivery options:", error);
     return [];
   }
 }
 
 function formatDeliveryOptions(options: DeliveryOption[]): string {
   if (options.length === 0) {
-    return '';
+    return "";
   }
 
-  let formatted = '\n\n---\n\n';
-  formatted += '## 🚗 Don\'t Feel Like Cooking?\n\n';
-  formatted += 'Order something similar from:\n\n';
+  let formatted = "\n\n---\n\n";
+  formatted += "## 🚗 Don't Feel Like Cooking?\n\n";
+  formatted += "Order something similar from:\n\n";
 
   options.forEach((option) => {
-    formatted += `• **${option.partner_name}** - [Order Now](${option.affiliate_url})\n`;
+    formatted +=
+      `• **${option.partner_name}** - [Order Now](${option.affiliate_url})\n`;
   });
 
-  formatted += '\n*Affiliate links help support TheLoop Ecosystem!*\n';
+  formatted += "\n*Affiliate links help support TheLoop Ecosystem!*\n";
 
   return formatted;
 }
@@ -165,31 +187,35 @@ function formatDeliveryOptions(options: DeliveryOption[]): string {
 // Canva Integration (Recipe Cards)
 // ============================================================================
 
-async function generateRecipeCard(recipe: any, vibe: string): Promise<string | null> {
+async function generateRecipeCard(
+  recipe: any,
+  vibe: string,
+): Promise<string | null> {
   try {
-    console.log('[Canva] Generating recipe card for:', recipe.recipe_name);
+    console.log("[Canva] Generating recipe card for:", recipe.recipe_name);
 
     // Determine color scheme based on chaos rating
-    let colorScheme = '';
+    let colorScheme = "";
     if (recipe.chaos_rating <= 3) {
-      colorScheme = 'warm greens and yellows (calm, wholesome)';
+      colorScheme = "warm greens and yellows (calm, wholesome)";
     } else if (recipe.chaos_rating <= 6) {
-      colorScheme = 'vibrant oranges and blues (creative, fun)';
+      colorScheme = "vibrant oranges and blues (creative, fun)";
     } else {
-      colorScheme = 'bold reds and purples (wild, chaotic)';
+      colorScheme = "bold reds and purples (wild, chaotic)";
     }
 
     // Determine chef emoji
-    let chefEmoji = '👨‍🍳';
-    if (recipe.chef_name.includes('Gordon')) {
-      chefEmoji = '😤';
-    } else if (recipe.chef_name.includes('Paul')) {
-      chefEmoji = '😏';
-    } else if (recipe.chef_name.includes('Jamie')) {
-      chefEmoji = '😊';
+    let chefEmoji = "👨‍🍳";
+    if (recipe.chef_name.includes("Gordon")) {
+      chefEmoji = "😤";
+    } else if (recipe.chef_name.includes("Paul")) {
+      chefEmoji = "😏";
+    } else if (recipe.chef_name.includes("Jamie")) {
+      chefEmoji = "😊";
     }
 
-    const designPrompt = `Create a modern, Instagram-ready recipe card (1080x1920px vertical) with ${colorScheme}.
+    const designPrompt =
+      `Create a modern, Instagram-ready recipe card (1080x1920px vertical) with ${colorScheme}.
 
 TITLE (huge, bold): "${recipe.recipe_name}"
 
@@ -206,7 +232,10 @@ QUICK INFO (icons):
 🎯 Vibe: ${vibe}
 
 INGREDIENTS (top 3):
-${recipe.ingredients_you_have.slice(0, 3).map((ing: string) => `• ${ing}`).join('\n')}
+${
+        recipe.ingredients_you_have.slice(0, 3).map((ing: string) => `• ${ing}`)
+          .join("\n")
+      }
 
 BRANDING:
 Bottom: "Made with TheLoop Recipes 🍳"
@@ -222,69 +251,85 @@ STYLE:
     // Call Canva MCP via manus-mcp-cli
     const generateCmd = new Deno.Command("manus-mcp-cli", {
       args: [
-        "tool", "call", "generate-design",
-        "--server", "canva",
-        "--input", JSON.stringify({
+        "tool",
+        "call",
+        "generate-design",
+        "--server",
+        "canva",
+        "--input",
+        JSON.stringify({
           user_intent: "Generate a shareable recipe card for TheLoop Recipes",
-          query: designPrompt
-        })
+          query: designPrompt,
+        }),
       ],
       stdout: "piped",
-      stderr: "piped"
+      stderr: "piped",
     });
 
     const generateOutput = await generateCmd.output();
     if (!generateOutput.success) {
-      console.error('[Canva] Generate failed');
+      console.error("[Canva] Generate failed");
       return null;
     }
 
-    const generateResult = JSON.parse(new TextDecoder().decode(generateOutput.stdout));
-    
+    const generateResult = JSON.parse(
+      new TextDecoder().decode(generateOutput.stdout),
+    );
+
     if (!generateResult.candidates || generateResult.candidates.length === 0) {
-      console.error('[Canva] No design candidates generated');
+      console.error("[Canva] No design candidates generated");
       return null;
     }
 
     const candidateId = generateResult.candidates[0].id;
-    console.log('[Canva] Design candidate created:', candidateId);
+    console.log("[Canva] Design candidate created:", candidateId);
 
     // Convert candidate to editable design
     const createCmd = new Deno.Command("manus-mcp-cli", {
       args: [
-        "tool", "call", "create-design-from-candidate",
-        "--server", "canva",
-        "--input", JSON.stringify({
+        "tool",
+        "call",
+        "create-design-from-candidate",
+        "--server",
+        "canva",
+        "--input",
+        JSON.stringify({
           user_intent: "Convert AI-generated recipe card to editable design",
-          candidate_id: candidateId
-        })
+          candidate_id: candidateId,
+        }),
       ],
       stdout: "piped",
-      stderr: "piped"
+      stderr: "piped",
     });
 
     const createOutput = await createCmd.output();
     if (!createOutput.success) {
-      console.error('[Canva] Create design failed');
+      console.error("[Canva] Create design failed");
       return null;
     }
 
-    const createResult = JSON.parse(new TextDecoder().decode(createOutput.stdout));
-    
+    const createResult = JSON.parse(
+      new TextDecoder().decode(createOutput.stdout),
+    );
+
     if (!createResult.design || !createResult.design.id) {
-      console.error('[Canva] Failed to create design from candidate');
+      console.error("[Canva] Failed to create design from candidate");
       return null;
     }
 
     const designId = createResult.design.id;
-    console.log('[Canva] Editable design created:', designId);
+    console.log("[Canva] Editable design created:", designId);
 
     // Export as PNG
     const exportCmd = new Deno.Command("manus-mcp-cli", {
       args: [
-        "tool", "call", "export-design",
-        "--server", "canva",
-        "--input", JSON.stringify({
+        "tool",
+        "call",
+        "export-design",
+        "--server",
+        "canva",
+        "--input",
+        JSON.stringify({
           user_intent: "Export recipe card as shareable PNG image",
           design_id: designId,
           format: {
@@ -292,32 +337,33 @@ STYLE:
             width: 1080,
             height: 1920,
             transparent_background: false,
-            export_quality: "regular"
-          }
-        })
+            export_quality: "regular",
+          },
+        }),
       ],
       stdout: "piped",
-      stderr: "piped"
+      stderr: "piped",
     });
 
     const exportOutput = await exportCmd.output();
     if (!exportOutput.success) {
-      console.error('[Canva] Export failed');
+      console.error("[Canva] Export failed");
       return null;
     }
 
-    const exportResult = JSON.parse(new TextDecoder().decode(exportOutput.stdout));
-    
+    const exportResult = JSON.parse(
+      new TextDecoder().decode(exportOutput.stdout),
+    );
+
     if (!exportResult.url) {
-      console.error('[Canva] Failed to export design');
+      console.error("[Canva] Failed to export design");
       return null;
     }
 
-    console.log('[Canva] Recipe card exported:', exportResult.url);
+    console.log("[Canva] Recipe card exported:", exportResult.url);
     return exportResult.url;
-
   } catch (error) {
-    console.error('[Canva ERROR]:', error);
+    console.error("[Canva ERROR]:", error);
     return null;
   }
 }
@@ -328,30 +374,40 @@ STYLE:
 
 const handler = async (req: Request) => {
   // Handle CORS
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-      }
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "authorization, x-client-info, apikey, content-type",
+      },
     });
   }
 
   try {
-    const { ingredients, dietary_restrictions = 'none', vibe = 'comfort', chatgpt_user_id } = await req.json();
+    const {
+      ingredients,
+      dietary_restrictions = "none",
+      vibe = "comfort",
+      chatgpt_user_id,
+    } = await req.json();
 
     // Validate ingredients
     if (!ingredients || ingredients.length === 0) {
       return new Response(
-        JSON.stringify({ error: 'Please provide at least one ingredient!' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: "Please provide at least one ingredient!" }),
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    console.log(`[TheLoop Recipes] Creating recipe with ${ingredients.length} ingredients, vibe: ${vibe}, dietary: ${dietary_restrictions}`);
+    console.log(
+      `[TheLoop Recipes] Creating recipe with ${ingredients.length} ingredients, vibe: ${vibe}, dietary: ${dietary_restrictions}`,
+    );
 
     // Build user prompt
-    const userPrompt = `Create a recipe using these ingredients: ${ingredients.join(', ')}
+    const userPrompt = `Create a recipe using these ingredients: ${
+      ingredients.join(", ")
+    }
 
 Dietary restrictions: ${dietary_restrictions}
 Cooking vibe: ${vibe}
@@ -360,36 +416,39 @@ Remember to output valid JSON only, no markdown formatting.`;
 
     // Select chef based on vibe
     let tempChaosGuess: number;
-    if (vibe === 'surprise-me') {
+    if (vibe === "surprise-me") {
       tempChaosGuess = Math.floor(Math.random() * 10) + 1;
-    } else if (vibe === 'chaos') {
+    } else if (vibe === "chaos") {
       tempChaosGuess = 8;
-    } else if (vibe === 'quick') {
+    } else if (vibe === "quick") {
       tempChaosGuess = 4;
     } else {
       tempChaosGuess = 5;
     }
     const chefName = selectChef(tempChaosGuess);
-    
+
     console.log(`[TheLoop Recipes] Selected chef: ${chefName}`);
 
     // Call OpenAI
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
+    const openaiResponse = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: buildSystemPrompt(chefName) },
+            { role: "user", content: userPrompt },
+          ],
+          response_format: { type: "json_object" },
+          temperature: 0.9,
+        }),
       },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: buildSystemPrompt(chefName) },
-          { role: "user", content: userPrompt }
-        ],
-        response_format: { type: "json_object" },
-        temperature: 0.9,
-      })
-    });
+    );
 
     if (!openaiResponse.ok) {
       throw new Error(`OpenAI API error: ${openaiResponse.statusText}`);
@@ -397,13 +456,15 @@ Remember to output valid JSON only, no markdown formatting.`;
 
     const openaiData = await openaiResponse.json();
     const recipeJson = openaiData.choices[0].message.content;
-    
+
     if (!recipeJson) {
       throw new Error("No recipe generated");
     }
 
     const recipe = JSON.parse(recipeJson);
-    console.log(`[TheLoop Recipes] Recipe generated: ${recipe.recipe_name}, chaos: ${recipe.chaos_rating}`);
+    console.log(
+      `[TheLoop Recipes] Recipe generated: ${recipe.recipe_name}, chaos: ${recipe.chaos_rating}`,
+    );
 
     // Format output
     const finalChefName = "Chef " + chefName;
@@ -421,7 +482,7 @@ Remember to output valid JSON only, no markdown formatting.`;
       formatted += "✓ " + ing + "\n";
     });
     formatted += "\n";
-    
+
     if (recipe.ingredients_to_add && recipe.ingredients_to_add.length > 0) {
       formatted += "## You'll Also Need:\n";
       recipe.ingredients_to_add.forEach((ing: string) => {
@@ -429,7 +490,7 @@ Remember to output valid JSON only, no markdown formatting.`;
       });
       formatted += "\n";
     }
-    
+
     formatted += "## Instructions:\n";
     recipe.instructions.forEach((step: string, idx: number) => {
       formatted += (idx + 1) + ". " + step + "\n";
@@ -444,19 +505,24 @@ Remember to output valid JSON only, no markdown formatting.`;
     // Add delivery options if chatgpt_user_id is provided
     if (chatgpt_user_id) {
       try {
-        console.log('[TheLoop Recipes] Fetching delivery options for user...');
+        console.log("[TheLoop Recipes] Fetching delivery options for user...");
         const deliveryOptions = await getDeliveryOptions(
           chatgpt_user_id,
           recipe.recipe_name,
-          vibe
+          vibe,
         );
-        
+
         if (deliveryOptions.length > 0) {
           formatted += formatDeliveryOptions(deliveryOptions);
-          console.log(`[TheLoop Recipes] Added ${deliveryOptions.length} delivery options`);
+          console.log(
+            `[TheLoop Recipes] Added ${deliveryOptions.length} delivery options`,
+          );
         }
       } catch (error) {
-        console.error('[TheLoop Recipes] Error adding delivery options:', error);
+        console.error(
+          "[TheLoop Recipes] Error adding delivery options:",
+          error,
+        );
         // Continue without delivery options
       }
     }
@@ -464,17 +530,20 @@ Remember to output valid JSON only, no markdown formatting.`;
     // Generate recipe card image with Canva
     let cardImageUrl: string | null = null;
     try {
-      console.log('[TheLoop Recipes] Generating shareable recipe card...');
+      console.log("[TheLoop Recipes] Generating shareable recipe card...");
       cardImageUrl = await generateRecipeCard(recipe, vibe);
-      
+
       if (cardImageUrl) {
-        console.log('[TheLoop Recipes] Recipe card generated successfully!');
-        formatted += `\n\n📸 **Shareable Recipe Card:**\n${cardImageUrl}\n\n*Right-click to save or share on social media!* 🚀`;
+        console.log("[TheLoop Recipes] Recipe card generated successfully!");
+        formatted +=
+          `\n\n📸 **Shareable Recipe Card:**\n${cardImageUrl}\n\n*Right-click to save or share on social media!* 🚀`;
       } else {
-        console.log('[TheLoop Recipes] Recipe card generation failed, continuing without image');
+        console.log(
+          "[TheLoop Recipes] Recipe card generation failed, continuing without image",
+        );
       }
     } catch (error) {
-      console.error('[TheLoop Recipes] Canva integration error:', error);
+      console.error("[TheLoop Recipes] Canva integration error:", error);
       // Continue without recipe card
     }
 
@@ -483,32 +552,30 @@ Remember to output valid JSON only, no markdown formatting.`;
       JSON.stringify({
         recipe_markdown: formatted,
         canva_image_url: cardImageUrl,
-        recipe_data: recipe
+        recipe_data: recipe,
       }),
       {
         status: 200,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      },
     );
-
   } catch (error: any) {
-    console.error('[TheLoop Recipes ERROR]:', error);
+    console.error("[TheLoop Recipes ERROR]:", error);
     return new Response(
       JSON.stringify({ error: `Error generating recipe: ${error.message}` }),
       {
         status: 500,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withHeavyOperation(handler));
-

@@ -1,7 +1,7 @@
 /**
  * Kroger Provider Implementation
  * Dual-mode: Mock for testing, Real API for production
- * 
+ *
  * Environment Variables:
  * - KROGER_CLIENT_ID: Kroger API client ID
  * - KROGER_CLIENT_SECRET: Kroger API client secret
@@ -11,37 +11,48 @@
  */
 
 import type {
-  ProviderQuote,
-  ProviderConfig,
   CartItem,
   ItemAvailability,
+  ProviderConfig,
   ProviderMeta,
-} from '../types/index.ts';
-import { ProviderError } from '../types/index.ts';
-import { BaseCommerceProvider, type QuoteRequest } from './ICommerceProvider.ts';
-import { getKrogerClient, isKrogerConfigured, type KrogerProduct } from './clients/krogerClient.ts';
+  ProviderQuote,
+} from "../types/index.ts";
+import { ProviderError } from "../types/index.ts";
+import {
+  BaseCommerceProvider,
+  type QuoteRequest,
+} from "./ICommerceProvider.ts";
+import {
+  getKrogerClient,
+  isKrogerConfigured,
+  type KrogerProduct,
+} from "./clients/krogerClient.ts";
 
 /**
  * KrogerProvider - Direct integration with Kroger API
- * 
+ *
  * Features:
  * - Direct Kroger store inventory
  * - Competitive pricing (no middleman)
  * - Kroger loyalty program integration
  * - 2-4 hour delivery windows
- * 
+ *
  * API Docs: https://developer.kroger.com/
  */
 class KrogerProvider extends BaseCommerceProvider {
-  readonly id = 'KROGER_API' as const;
+  readonly id = "KROGER_API" as const;
 
-  async getQuote(request: QuoteRequest, config: ProviderConfig): Promise<ProviderQuote> {
+  async getQuote(
+    request: QuoteRequest,
+    config: ProviderConfig,
+  ): Promise<ProviderQuote> {
     // Check if we should use mock mode
-    const forceMock = Deno.env.get('LOOPGPT_KROGER_MOCK') === 'true';
-    const allowMockFallback = Deno.env.get('LOOPGPT_KROGER_ALLOW_MOCK_FALLBACK') === 'true';
+    const forceMock = Deno.env.get("LOOPGPT_KROGER_MOCK") === "true";
+    const allowMockFallback =
+      Deno.env.get("LOOPGPT_KROGER_ALLOW_MOCK_FALLBACK") === "true";
 
     if (forceMock || !isKrogerConfigured()) {
-      console.log('[KrogerProvider] Using mock mode');
+      console.log("[KrogerProvider] Using mock mode");
       return this.getMockQuote(request, config);
     }
 
@@ -49,11 +60,11 @@ class KrogerProvider extends BaseCommerceProvider {
     try {
       return await this.getRealQuote(request, config);
     } catch (error) {
-      console.error('[KrogerProvider] Real API failed:', error);
+      console.error("[KrogerProvider] Real API failed:", error);
 
       // Fallback to mock if allowed
       if (allowMockFallback) {
-        console.log('[KrogerProvider] Falling back to mock mode');
+        console.log("[KrogerProvider] Falling back to mock mode");
         return this.getMockQuote(request, config);
       }
 
@@ -64,17 +75,24 @@ class KrogerProvider extends BaseCommerceProvider {
   /**
    * Get quote from real Kroger API
    */
-  private async getRealQuote(request: QuoteRequest, config: ProviderConfig): Promise<ProviderQuote> {
+  private async getRealQuote(
+    request: QuoteRequest,
+    config: ProviderConfig,
+  ): Promise<ProviderQuote> {
     const client = await getKrogerClient();
 
     // 1. Find nearest store
-    const stores = await client.findStores(request.shippingAddress.postalCode, 10, 1);
+    const stores = await client.findStores(
+      request.shippingAddress.postalCode,
+      10,
+      1,
+    );
     if (stores.length === 0) {
       throw new ProviderError(
         this.id,
-        'No Kroger stores found near delivery address',
-        'NO_STORES',
-        false
+        "No Kroger stores found near delivery address",
+        "NO_STORES",
+        false,
       );
     }
 
@@ -95,7 +113,7 @@ class KrogerProvider extends BaseCommerceProvider {
           itemAvailability.push({
             clientItemId: item.id,
             requestedItem: item.name,
-            status: 'unavailable',
+            status: "unavailable",
             inStock: false,
           });
           continue;
@@ -109,27 +127,29 @@ class KrogerProvider extends BaseCommerceProvider {
           itemAvailability.push({
             clientItemId: item.id,
             requestedItem: item.name,
-            status: 'unavailable',
+            status: "unavailable",
             inStock: false,
           });
           continue;
         }
 
-        const priceCents = this.dollarsToCents(productItem.price.promo || productItem.price.regular);
+        const priceCents = this.dollarsToCents(
+          productItem.price.promo || productItem.price.regular,
+        );
 
         cartItems.push({
           clientItemId: item.id,
           providerSku: productItem.itemId,
           name: product.description,
           quantity: item.quantity,
-          unit: item.unit || 'pcs',
+          unit: item.unit || "pcs",
           priceCents,
         });
 
         itemAvailability.push({
           clientItemId: item.id,
           requestedItem: item.name,
-          status: 'found',
+          status: "found",
           inStock: true,
           providerSku: productItem.itemId,
           foundProduct: {
@@ -139,18 +159,24 @@ class KrogerProvider extends BaseCommerceProvider {
           },
         });
       } catch (error) {
-        console.error(`[KrogerProvider] Error finding product for "${item.name}":`, error);
+        console.error(
+          `[KrogerProvider] Error finding product for "${item.name}":`,
+          error,
+        );
         itemAvailability.push({
           clientItemId: item.id,
           requestedItem: item.name,
-          status: 'unavailable',
+          status: "unavailable",
           inStock: false,
         });
       }
     }
 
     // 3. Calculate pricing
-    const subtotalCents = cartItems.reduce((sum, item) => sum + (item.priceCents * item.quantity), 0);
+    const subtotalCents = cartItems.reduce(
+      (sum, item) => sum + (item.priceCents * item.quantity),
+      0,
+    );
     const feesCents = subtotalCents < 3500 ? this.dollarsToCents(9.95) : 0; // $9.95 fee if under $35
     const taxCents = Math.round(subtotalCents * 0.075); // 7.5% tax (varies by state)
     const totalCents = subtotalCents + feesCents + taxCents;
@@ -162,7 +188,8 @@ class KrogerProvider extends BaseCommerceProvider {
       priority: config.priority,
     };
 
-    const affiliateUrl = `https://www.kroger.com/checkout?storeId=${storeId}&affId=LOOPGPT`;
+    const affiliateUrl =
+      `https://www.kroger.com/checkout?storeId=${storeId}&affId=LOOPGPT`;
 
     return {
       provider: providerMeta,
@@ -170,7 +197,8 @@ class KrogerProvider extends BaseCommerceProvider {
       store: {
         id: store.locationId,
         name: store.name,
-        address: `${store.address.addressLine1}, ${store.address.city}, ${store.address.state} ${store.address.zipCode}`,
+        address:
+          `${store.address.addressLine1}, ${store.address.city}, ${store.address.state} ${store.address.zipCode}`,
       },
       cart: cartItems,
       quote: {
@@ -178,7 +206,7 @@ class KrogerProvider extends BaseCommerceProvider {
         feesCents,
         taxCents,
         totalCents,
-        currency: 'USD',
+        currency: "USD",
         estimatedDeliveryMinutes: 150, // 2-4 hour window (average 2.5 hours)
         // Legacy fields
         subtotal: this.centsToDollars(subtotalCents),
@@ -193,8 +221,8 @@ class KrogerProvider extends BaseCommerceProvider {
       itemAvailability,
       affiliateUrl,
       raw: {
-        provider: 'kroger',
-        mode: 'real',
+        provider: "kroger",
+        mode: "real",
         storeId,
         timestamp: new Date().toISOString(),
       },
@@ -204,7 +232,10 @@ class KrogerProvider extends BaseCommerceProvider {
   /**
    * Get mock quote for testing/fallback
    */
-  private getMockQuote(request: QuoteRequest, config: ProviderConfig): ProviderQuote {
+  private getMockQuote(
+    request: QuoteRequest,
+    config: ProviderConfig,
+  ): ProviderQuote {
     const providerMeta: ProviderMeta = {
       id: this.id,
       name: config.name,
@@ -217,22 +248,28 @@ class KrogerProvider extends BaseCommerceProvider {
       providerSku: this.generateMockSku(this.id, item.name, idx),
       name: item.name,
       quantity: item.quantity,
-      unit: item.unit || 'pcs',
+      unit: item.unit || "pcs",
       priceCents: this.dollarsToCents(10.99),
       substituted: false,
     }));
 
     // Mock pricing
-    const subtotalCents = cart.reduce((sum, item) => sum + (item.priceCents * item.quantity), 0);
+    const subtotalCents = cart.reduce(
+      (sum, item) => sum + (item.priceCents * item.quantity),
+      0,
+    );
     const feesCents = subtotalCents < 3500 ? this.dollarsToCents(9.95) : 0;
     const taxCents = Math.round(subtotalCents * 0.075);
     const totalCents = subtotalCents + feesCents + taxCents;
 
     // Mock availability
-    const itemAvailability: ItemAvailability[] = request.items.map((item, idx) => ({
+    const itemAvailability: ItemAvailability[] = request.items.map((
+      item,
+      idx,
+    ) => ({
       clientItemId: item.id,
       requestedItem: item.name,
-      status: 'found' as const,
+      status: "found" as const,
       inStock: true,
       providerSku: cart[idx].providerSku,
       foundProduct: {
@@ -242,7 +279,8 @@ class KrogerProvider extends BaseCommerceProvider {
       },
     }));
 
-    const affiliateUrl = `https://www.kroger.com/checkout?cartId=mock-kroger-${Date.now()}&affId=LOOPGPT`;
+    const affiliateUrl =
+      `https://www.kroger.com/checkout?cartId=mock-kroger-${Date.now()}&affId=LOOPGPT`;
 
     return {
       provider: providerMeta,
@@ -253,7 +291,7 @@ class KrogerProvider extends BaseCommerceProvider {
         feesCents,
         taxCents,
         totalCents,
-        currency: 'USD',
+        currency: "USD",
         estimatedDeliveryMinutes: 150,
         // Legacy fields
         subtotal: this.centsToDollars(subtotalCents),
@@ -268,8 +306,8 @@ class KrogerProvider extends BaseCommerceProvider {
       itemAvailability,
       affiliateUrl,
       raw: {
-        provider: 'kroger',
-        mode: 'mock',
+        provider: "kroger",
+        mode: "mock",
         timestamp: new Date().toISOString(),
       },
     };
@@ -277,13 +315,13 @@ class KrogerProvider extends BaseCommerceProvider {
 
   async healthCheck(config: ProviderConfig): Promise<boolean> {
     // Check if mock mode
-    if (Deno.env.get('LOOPGPT_KROGER_MOCK') === 'true') {
+    if (Deno.env.get("LOOPGPT_KROGER_MOCK") === "true") {
       return config.enabled;
     }
 
     // Check if API is configured
     if (!isKrogerConfigured()) {
-      console.warn('[KrogerProvider] API credentials not configured');
+      console.warn("[KrogerProvider] API credentials not configured");
       return false;
     }
 
@@ -292,13 +330,13 @@ class KrogerProvider extends BaseCommerceProvider {
       await getKrogerClient();
       return true;
     } catch (error) {
-      console.error('[KrogerProvider] Health check failed:', error);
+      console.error("[KrogerProvider] Health check failed:", error);
       return false;
     }
   }
 
   getName(): string {
-    return 'Kroger Direct';
+    return "Kroger Direct";
   }
 }
 

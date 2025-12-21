@@ -1,11 +1,11 @@
 /**
  * LoopGPT Recommendation Engine Integration
- * 
+ *
  * Provides personalized recipe scoring using the deployed recommendation engine
- * 
+ *
  * Usage:
  *   import { scoreRecipes } from '../_shared/recommendations/index.ts';
- *   
+ *
  *   const scoredRecipes = await scoreRecipes({
  *     userId: 'user-123',
  *     recipes: candidateRecipes,
@@ -13,7 +13,7 @@
  *   });
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 // ============================================================================
 // Types
@@ -38,7 +38,7 @@ export interface ScoredRecipe {
   behavioral_score: number;
   diversity_score: number;
   match_reason: string;
-  confidence: 'high' | 'medium' | 'low';
+  confidence: "high" | "medium" | "low";
 }
 
 export interface ScoreRecipesParams {
@@ -52,18 +52,18 @@ export interface ScoreRecipesParams {
 // ============================================================================
 
 function getRecommendationClient() {
-  const supabaseUrl = Deno.env.get('SUPABASE_URL');
-  const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-  
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error('[Recommendations] Supabase credentials not configured');
+    throw new Error("[Recommendations] Supabase credentials not configured");
   }
-  
+
   return createClient(supabaseUrl, supabaseKey, {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   });
 }
 
@@ -73,18 +73,18 @@ function getRecommendationClient() {
 
 /**
  * Score and rank recipes using the recommendation engine
- * 
+ *
  * Returns recipes sorted by total_score (highest first)
  * Falls back to original order if recommendation engine fails or user is anonymous
  */
 export async function scoreRecipes(
-  params: ScoreRecipesParams
+  params: ScoreRecipesParams,
 ): Promise<ScoredRecipe[]> {
   const { userId, recipes, limit = 10 } = params;
-  
+
   // If no userId, return recipes unsorted (anonymous user)
   if (!userId) {
-    console.log('[Recommendations] Anonymous user - skipping personalization');
+    console.log("[Recommendations] Anonymous user - skipping personalization");
     return recipes.slice(0, limit).map((recipe, index) => ({
       recipe_id: recipe.recipe_id,
       recipe_title: recipe.title,
@@ -93,30 +93,32 @@ export async function scoreRecipes(
       goal_alignment_score: 15, // Neutral
       behavioral_score: 10, // Neutral
       diversity_score: 15, // New user
-      match_reason: 'No personalization (anonymous user)',
-      confidence: 'medium' as const,
+      match_reason: "No personalization (anonymous user)",
+      confidence: "medium" as const,
     }));
   }
-  
+
   try {
     const client = getRecommendationClient();
-    
+
     // Call recommendation engine
-    const { data, error } = await client.rpc('get_recipe_recommendations', {
+    const { data, error } = await client.rpc("get_recipe_recommendations", {
       p_user_id: userId,
       p_candidate_recipes: recipes,
-      p_limit: limit
+      p_limit: limit,
     });
-    
+
     if (error) {
-      console.error('[Recommendations] RPC call failed:', error);
+      console.error("[Recommendations] RPC call failed:", error);
       throw error;
     }
-    
+
     if (!data || data.length === 0) {
-      console.warn('[Recommendations] No recommendations returned - using fallback');
+      console.warn(
+        "[Recommendations] No recommendations returned - using fallback",
+      );
       // Return original recipes with neutral scores
-      return recipes.slice(0, limit).map(recipe => ({
+      return recipes.slice(0, limit).map((recipe) => ({
         recipe_id: recipe.recipe_id,
         recipe_title: recipe.title,
         total_score: 50,
@@ -124,19 +126,20 @@ export async function scoreRecipes(
         goal_alignment_score: 15,
         behavioral_score: 10,
         diversity_score: 15,
-        match_reason: 'Fallback scoring',
-        confidence: 'medium' as const,
+        match_reason: "Fallback scoring",
+        confidence: "medium" as const,
       }));
     }
-    
-    console.log(`[Recommendations] Scored ${data.length} recipes for user ${userId}`);
+
+    console.log(
+      `[Recommendations] Scored ${data.length} recipes for user ${userId}`,
+    );
     return data as ScoredRecipe[];
-    
   } catch (error) {
-    console.error('[Recommendations] Failed to score recipes:', error);
-    
+    console.error("[Recommendations] Failed to score recipes:", error);
+
     // Graceful fallback - return recipes unsorted
-    return recipes.slice(0, limit).map(recipe => ({
+    return recipes.slice(0, limit).map((recipe) => ({
       recipe_id: recipe.recipe_id,
       recipe_title: recipe.title,
       total_score: 50,
@@ -144,8 +147,8 @@ export async function scoreRecipes(
       goal_alignment_score: 15,
       behavioral_score: 10,
       diversity_score: 15,
-      match_reason: 'Error in recommendation engine',
-      confidence: 'low' as const,
+      match_reason: "Error in recommendation engine",
+      confidence: "low" as const,
     }));
   }
 }
@@ -156,19 +159,25 @@ export async function scoreRecipes(
 export async function getUserIngredientProfile(userId: string) {
   try {
     const client = getRecommendationClient();
-    
-    const { data, error } = await client.rpc('get_user_ingredient_profile', {
-      p_user_id: userId
+
+    const { data, error } = await client.rpc("get_user_ingredient_profile", {
+      p_user_id: userId,
     });
-    
+
     if (error) {
-      console.error('[Recommendations] Failed to get ingredient profile:', error);
+      console.error(
+        "[Recommendations] Failed to get ingredient profile:",
+        error,
+      );
       return [];
     }
-    
+
     return data || [];
   } catch (error) {
-    console.error('[Recommendations] Exception in getUserIngredientProfile:', error);
+    console.error(
+      "[Recommendations] Exception in getUserIngredientProfile:",
+      error,
+    );
     return [];
   }
 }
@@ -179,19 +188,25 @@ export async function getUserIngredientProfile(userId: string) {
 export async function getUserRecipePreferences(userId: string) {
   try {
     const client = getRecommendationClient();
-    
-    const { data, error } = await client.rpc('get_user_recipe_preferences', {
-      p_user_id: userId
+
+    const { data, error } = await client.rpc("get_user_recipe_preferences", {
+      p_user_id: userId,
     });
-    
+
     if (error) {
-      console.error('[Recommendations] Failed to get recipe preferences:', error);
+      console.error(
+        "[Recommendations] Failed to get recipe preferences:",
+        error,
+      );
       return null;
     }
-    
+
     return data?.[0] || null;
   } catch (error) {
-    console.error('[Recommendations] Exception in getUserRecipePreferences:', error);
+    console.error(
+      "[Recommendations] Exception in getUserRecipePreferences:",
+      error,
+    );
     return null;
   }
 }

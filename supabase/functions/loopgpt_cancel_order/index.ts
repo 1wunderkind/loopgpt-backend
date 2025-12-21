@@ -1,7 +1,7 @@
 /**
  * LoopGPT Commerce Router - Cancel Order
  * Phase 3: Cancels pending orders before confirmation
- * 
+ *
  * This function:
  * 1. Validates confirmation token
  * 2. Cancels pending order
@@ -13,10 +13,10 @@ import { serve } from "std@0.177.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
 import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
 
-
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 interface CancelOrderRequest {
@@ -32,7 +32,7 @@ interface CancelOrderResponse {
 
 const handler = async (req: Request) => {
   // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -45,19 +45,19 @@ const handler = async (req: Request) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'INVALID_REQUEST',
-          message: 'confirmation_token and user_id are required',
+          error: "INVALID_REQUEST",
+          message: "confirmation_token and user_id are required",
         }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
     // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // ========================================================================
@@ -73,30 +73,30 @@ const handler = async (req: Request) => {
     // For now, return mock success response
     const response: CancelOrderResponse = {
       success: true,
-      message: 'Order cancelled successfully. Your confirmation token has been invalidated.',
+      message:
+        "Order cancelled successfully. Your confirmation token has been invalidated.",
     };
 
     return new Response(
       JSON.stringify(response),
       {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
     );
-
   } catch (error) {
-    console.error('Error in loopgpt_cancel_order:', error);
-    
+    console.error("Error in loopgpt_cancel_order:", error);
+
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'INTERNAL_ERROR',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: "INTERNAL_ERROR",
+        message: error instanceof Error ? error.message : "Unknown error",
       }),
       {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
     );
   }
 };

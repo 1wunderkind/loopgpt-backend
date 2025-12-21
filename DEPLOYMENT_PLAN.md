@@ -1,12 +1,14 @@
 # LoopGPT Backend Deployment Plan
 
-This document outlines the step-by-step process to deploy the LoopGPT backend to Supabase.
+This document outlines the step-by-step process to deploy the LoopGPT backend to
+Supabase.
 
 ## 1. Prerequisites
 
 - **Supabase CLI**: Installed and authenticated (`supabase login`).
 - **Supabase Project**: Created in the Supabase Dashboard.
-- **Environment Variables**: Collected from external providers (OpenAI, MealMe, etc.).
+- **Environment Variables**: Collected from external providers (OpenAI, MealMe,
+  etc.).
 
 ## 2. Environment Configuration
 
@@ -33,11 +35,13 @@ INSTACART_API_KEY=...
 The database schema is managed via SQL migrations in `supabase/migrations/`.
 
 **Command:**
+
 ```bash
 supabase db push
 ```
 
 This will apply all pending migrations, including:
+
 - Core tables (`users`, `profiles`)
 - Analytics tables (`tool_invocations`, `provider_metrics`)
 - Commerce tables (`cart_sessions`, `order_receipts`)
@@ -48,11 +52,13 @@ This will apply all pending migrations, including:
 We use a script to deploy all functions at once.
 
 **Command:**
+
 ```bash
 ./scripts/deploy-all.sh
 ```
 
 This script deploys:
+
 - `mcp-server`: The main entry point for ChatGPT.
 - `nutrition_analyze_deterministic`: The nutrition engine.
 - `commerce_router`: The order routing logic.
@@ -63,6 +69,7 @@ This script deploys:
 Production secrets must be set in the Supabase Dashboard or via CLI.
 
 **Command:**
+
 ```bash
 supabase secrets set --env-file .env
 ```
@@ -71,24 +78,25 @@ supabase secrets set --env-file .env
 
 After deployment, verify the health of the system:
 
-1.  **Check Function Logs**:
-    ```bash
-    supabase functions logs mcp-server
-    ```
+1. **Check Function Logs**:
+   ```bash
+   supabase functions logs mcp-server
+   ```
 
-2.  **Run Smoke Tests**:
-    ```bash
-    deno run --allow-net scripts/security-smoke-test.ts
-    ```
+2. **Run Smoke Tests**:
+   ```bash
+   deno run --allow-net scripts/security-smoke-test.ts
+   ```
 
-3.  **Run Chaos Tests** (Optional, for staging):
-    ```bash
-    deno run --allow-net scripts/chaos-test.ts
-    ```
+3. **Run Chaos Tests** (Optional, for staging):
+   ```bash
+   deno run --allow-net scripts/chaos-test.ts
+   ```
 
 ## 7. App Store Submission
 
 Ensure the following are ready for the App Store review:
+
 - **Privacy Policy URL**: Hosted on your marketing site.
 - **Support URL**: Hosted on your marketing site.
 - **Test Account**: A user account with pre-populated data for reviewers.
@@ -96,5 +104,7 @@ Ensure the following are ready for the App Store review:
 ## 8. Rollback Plan
 
 In case of critical failure:
-1.  **Revert Edge Functions**: Redeploy the previous git commit.
-2.  **Revert Database**: Use Supabase PITR (Point-in-Time Recovery) to restore to a safe state.
+
+1. **Revert Edge Functions**: Redeploy the previous git commit.
+2. **Revert Database**: Use Supabase PITR (Point-in-Time Recovery) to restore to
+   a safe state.

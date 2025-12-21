@@ -30,13 +30,13 @@ export class PolicyResolver {
     latency: -0.001,
     gmv: 0.1,
     commission: 0.5,
-    bias: 0
+    bias: 0,
   };
 
   static async resolve(
     tenantId: string,
     userId: string,
-    logger: Logger
+    logger: Logger,
   ): Promise<ResolvedPolicy> {
     // 1. Start with Global
     let weights = { ...this.GLOBAL_WEIGHTS };
@@ -54,13 +54,13 @@ export class PolicyResolver {
       preferredProviders: [],
       avoidProviders: [],
       priceSensitivity: 0.5,
-      speedSensitivity: 0.5
+      speedSensitivity: 0.5,
     };
 
     // 4. Adjust weights based on user sensitivity
     // High price sensitivity -> lower GMV weight (don't push expensive stuff)
     if (userPrefs.priceSensitivity > 0.8) {
-      weights.gmv *= 0.5; 
+      weights.gmv *= 0.5;
     }
     // High speed sensitivity -> higher latency penalty
     if (userPrefs.speedSensitivity > 0.8) {
@@ -71,14 +71,14 @@ export class PolicyResolver {
       tenantId,
       userId,
       scope,
-      weights
+      weights,
     });
 
     return {
       weights,
       scope,
       version: "v1.0",
-      preferences: userPrefs
+      preferences: userPrefs,
     };
   }
 
@@ -86,7 +86,7 @@ export class PolicyResolver {
   static _setTenantPolicy(tenantId: string, weights: Partial<PolicyWeights>) {
     TENANT_POLICIES.set(tenantId, weights);
   }
-  
+
   static _setUserPrefs(userId: string, prefs: any) {
     USER_PREFERENCES.set(userId, prefs);
   }

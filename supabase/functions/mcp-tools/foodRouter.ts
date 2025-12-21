@@ -1,9 +1,9 @@
 /**
  * Food Router Tool
- * 
+ *
  * Single entrypoint for vague/natural-language food queries.
  * Classifies intent and routes to appropriate specialized tool.
- * 
+ *
  * This is the "smart assistant" layer that makes TheLoopGPT easy to use
  * without requiring ChatGPT to choose the exact right tool.
  */
@@ -13,7 +13,12 @@ import { generateRecipes } from "./recipes.ts";
 import { analyzeNutrition } from "./nutrition.ts";
 import { generateMealPlan } from "./mealplan.ts";
 import { generateGroceryList } from "./grocery.ts";
-import { categorizeError, logStructuredError, logSuccess, ValidationError } from "./errorTypes.ts";
+import {
+  categorizeError,
+  logStructuredError,
+  logSuccess,
+  ValidationError,
+} from "./errorTypes.ts";
 import { getFallbackRecipes } from "./fallbacks.ts";
 import { getUserProfileStore } from "./userProfile.ts";
 
@@ -32,36 +37,36 @@ export interface FoodRouterInput {
 // Output schema - discriminated union based on intent type
 export type FoodRouterResult =
   | {
-      type: "recipes";
-      intent: string;
-      confidence: "low" | "medium" | "high";
-      recipes: Record<string, unknown>; // RecipeList from recipes.ts
-    }
+    type: "recipes";
+    intent: string;
+    confidence: "low" | "medium" | "high";
+    recipes: Record<string, unknown>; // RecipeList from recipes.ts
+  }
   | {
-      type: "nutrition";
-      intent: string;
-      confidence: "low" | "medium" | "high";
-      analysis: Record<string, unknown>; // NutritionAnalysis from nutrition.ts
-    }
+    type: "nutrition";
+    intent: string;
+    confidence: "low" | "medium" | "high";
+    analysis: Record<string, unknown>; // NutritionAnalysis from nutrition.ts
+  }
   | {
-      type: "mealplan";
-      intent: string;
-      confidence: "low" | "medium" | "high";
-      mealPlan: Record<string, unknown>; // MealPlan from mealplan.ts
-    }
+    type: "mealplan";
+    intent: string;
+    confidence: "low" | "medium" | "high";
+    mealPlan: Record<string, unknown>; // MealPlan from mealplan.ts
+  }
   | {
-      type: "grocery";
-      intent: string;
-      confidence: "low" | "medium" | "high";
-      groceryList: Record<string, unknown>; // GroceryList from grocery.ts
-    }
+    type: "grocery";
+    intent: string;
+    confidence: "low" | "medium" | "high";
+    groceryList: Record<string, unknown>; // GroceryList from grocery.ts
+  }
   | {
-      type: "fallback";
-      intent: string;
-      confidence: "low" | "medium" | "high";
-      message: string;
-      suggestions?: string[];
-    };
+    type: "fallback";
+    intent: string;
+    confidence: "low" | "medium" | "high";
+    message: string;
+    suggestions?: string[];
+  };
 
 /**
  * Validate router input
@@ -71,8 +76,13 @@ function validateRouterInput(params: Record<string, unknown>): FoodRouterInput {
     throw new Error("Invalid input: expected object");
   }
 
-  if (!params.query || typeof params.query !== "string" || params.query.trim().length === 0) {
-    throw new Error("Invalid input: query is required and must be a non-empty string");
+  if (
+    !params.query || typeof params.query !== "string" ||
+    params.query.trim().length === 0
+  ) {
+    throw new Error(
+      "Invalid input: query is required and must be a non-empty string",
+    );
   }
 
   const userGoals = params.userGoals as Record<string, unknown> | undefined;
@@ -81,13 +91,22 @@ function validateRouterInput(params: Record<string, unknown>): FoodRouterInput {
     query: params.query.trim(),
     locale: typeof params.locale === "string" ? params.locale : "en",
     userId: typeof params.userId === "string" ? params.userId : undefined,
-    userGoals: userGoals ? {
-      caloriesPerDay: typeof userGoals.caloriesPerDay === "number" ? userGoals.caloriesPerDay : undefined,
-      goal: typeof userGoals.goal === "string" && ["weight_loss", "muscle_gain", "general_health"].includes(userGoals.goal) 
-        ? userGoals.goal as "weight_loss" | "muscle_gain" | "general_health" 
-        : undefined,
-      dietTags: Array.isArray(userGoals.dietTags) ? userGoals.dietTags.map(String) : undefined,
-    } : {},
+    userGoals: userGoals
+      ? {
+        caloriesPerDay: typeof userGoals.caloriesPerDay === "number"
+          ? userGoals.caloriesPerDay
+          : undefined,
+        goal: typeof userGoals.goal === "string" &&
+            ["weight_loss", "muscle_gain", "general_health"].includes(
+              userGoals.goal,
+            )
+          ? userGoals.goal as "weight_loss" | "muscle_gain" | "general_health"
+          : undefined,
+        dietTags: Array.isArray(userGoals.dietTags)
+          ? userGoals.dietTags.map(String)
+          : undefined,
+      }
+      : {},
   };
 }
 
@@ -97,7 +116,7 @@ function validateRouterInput(params: Record<string, unknown>): FoodRouterInput {
  */
 function extractIngredientsFromQuery(query: string): string[] {
   const lowerQuery = query.toLowerCase();
-  
+
   // Common patterns that indicate ingredients
   const patterns = [
     /with\s+([^.?!]+)/i,
@@ -112,9 +131,9 @@ function extractIngredientsFromQuery(query: string): string[] {
       // Split by common delimiters
       const ingredients = match[1]
         .split(/\s+and\s+|,\s*|\s+&\s+/)
-        .map(ing => ing.trim())
-        .filter(ing => ing.length > 0 && ing.length < 50); // Reasonable length
-      
+        .map((ing) => ing.trim())
+        .filter((ing) => ing.length > 0 && ing.length < 50); // Reasonable length
+
       if (ingredients.length > 0) {
         return ingredients;
       }
@@ -123,13 +142,31 @@ function extractIngredientsFromQuery(query: string): string[] {
 
   // Fallback: look for common food words
   const commonFoods = [
-    "chicken", "beef", "pork", "fish", "salmon", "tuna", "shrimp",
-    "rice", "pasta", "noodles", "bread", "quinoa",
-    "tomato", "onion", "garlic", "potato", "carrot", "broccoli",
-    "egg", "cheese", "milk", "butter",
+    "chicken",
+    "beef",
+    "pork",
+    "fish",
+    "salmon",
+    "tuna",
+    "shrimp",
+    "rice",
+    "pasta",
+    "noodles",
+    "bread",
+    "quinoa",
+    "tomato",
+    "onion",
+    "garlic",
+    "potato",
+    "carrot",
+    "broccoli",
+    "egg",
+    "cheese",
+    "milk",
+    "butter",
   ];
 
-  const foundIngredients = commonFoods.filter(food => 
+  const foundIngredients = commonFoods.filter((food) =>
     lowerQuery.includes(food)
   );
 
@@ -139,9 +176,11 @@ function extractIngredientsFromQuery(query: string): string[] {
 /**
  * Main router function
  */
-export async function routeFood(params: Record<string, unknown>): Promise<FoodRouterResult> {
+export async function routeFood(
+  params: Record<string, unknown>,
+): Promise<FoodRouterResult> {
   const startTime = Date.now();
-  
+
   try {
     console.log("[foodRouter] Starting", { params });
 
@@ -162,7 +201,10 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
           hasCalories: !!userProfile?.caloriesPerDay,
         });
       } catch (error: unknown) {
-        console.warn("[foodRouter] Failed to load user profile", { userId, error: error instanceof Error ? error.message : String(error) });
+        console.warn("[foodRouter] Failed to load user profile", {
+          userId,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
 
@@ -198,13 +240,15 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
     switch (intent.primaryIntent) {
       case "recipes": {
         console.log("[foodRouter] Routing to recipes.generate");
-        
+
         // Check if ingredients are missing
-        const hasMissingIngredients = intent.missingInfo?.includes("ingredients");
-        
+        const hasMissingIngredients = intent.missingInfo?.includes(
+          "ingredients",
+        );
+
         // Try to extract ingredients from the query
         const ingredients = extractIngredientsFromQuery(query);
-        
+
         // Build params for recipes tool
         const recipeParams: Record<string, unknown> = {
           count: 3,
@@ -214,11 +258,14 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
 
         // Handle missing ingredients with low-effort mode
         if (ingredients.length === 0 || hasMissingIngredients) {
-          console.log("[foodRouter] Missing ingredients, triggering low-effort mode");
-          
+          console.log(
+            "[foodRouter] Missing ingredients, triggering low-effort mode",
+          );
+
           // Check if query suggests low effort (tired, quick, easy, etc.)
-          const isLowEffortQuery = /\b(tired|exhausted|quick|easy|simple|fast|lazy)\b/i.test(query);
-          
+          const isLowEffortQuery =
+            /\b(tired|exhausted|quick|easy|simple|fast|lazy)\b/i.test(query);
+
           if (isLowEffortQuery) {
             // Use low-effort mode with common pantry items
             recipeParams.ingredients = ["eggs", "rice", "pasta"];
@@ -233,7 +280,7 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
         }
 
         const recipes = await generateRecipes(recipeParams as any); // Cast to any for now as generateRecipes expects specific type
-        
+
         result = {
           type: "recipes",
           intent: intent.primaryIntent,
@@ -245,16 +292,17 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
 
       case "nutrition": {
         console.log("[foodRouter] Routing to nutrition.analyze");
-        
+
         // For nutrition, we need to extract what they want analyzed
         // This is tricky - for now, return a helpful message
         // TODO: Enhance nutrition.analyze to accept free-form queries
-        
+
         result = {
           type: "fallback",
           intent: intent.primaryIntent,
           confidence: intent.confidence,
-          message: "To analyze nutrition, please provide specific recipes or meals. For example: 'Analyze the nutrition of grilled chicken with rice and broccoli'",
+          message:
+            "To analyze nutrition, please provide specific recipes or meals. For example: 'Analyze the nutrition of grilled chicken with rice and broccoli'",
           suggestions: [
             "Use recipes.generate first to get recipes, then analyze their nutrition",
             "Provide specific meal details for analysis",
@@ -265,15 +313,15 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
 
       case "mealplan": {
         console.log("[foodRouter] Routing to mealplan.generate");
-        
+
         // Check what info is missing
         const missingCalories = intent.missingInfo?.includes("caloriesPerDay");
         const missingDietTags = intent.missingInfo?.includes("dietTags");
-        
+
         // Use merged goals (includes profile data)
         let dailyCalories = mergedGoals.caloriesPerDay || 2000;
         let dietTags = mergedGoals.dietTags;
-        
+
         // Try to extract calorie goal from query
         const caloriesMatch = query.match(/(\d+)\s*cal/i);
         if (caloriesMatch) {
@@ -287,9 +335,12 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
           } else {
             dailyCalories = 2000; // General health default
           }
-          console.log("[foodRouter] Using default calories", { dailyCalories, reason: "missing from query" });
+          console.log("[foodRouter] Using default calories", {
+            dailyCalories,
+            reason: "missing from query",
+          });
         }
-        
+
         // Extract goals from query or use userGoals
         const mealPlanParams: Record<string, unknown> = {
           goals: {
@@ -308,7 +359,7 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
         }
 
         const mealPlan = await generateMealPlan(mealPlanParams as any); // Cast to any for now
-        
+
         result = {
           type: "mealplan",
           intent: intent.primaryIntent,
@@ -320,15 +371,16 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
 
       case "grocery": {
         console.log("[foodRouter] Routing to grocery.list");
-        
+
         // For now, return a helpful message
         // TODO: Enhance grocery.list to accept free-form queries
-        
+
         result = {
           type: "fallback",
           intent: intent.primaryIntent,
           confidence: intent.confidence,
-          message: "To create a grocery list, I need recipes or a meal plan first. Would you like me to generate a meal plan and then create a grocery list from it?",
+          message:
+            "To create a grocery list, I need recipes or a meal plan first. Would you like me to generate a meal plan and then create a grocery list from it?",
           suggestions: [
             "Use mealplan.generate first, then create a grocery list",
             "Provide specific recipes to convert into a shopping list",
@@ -339,19 +391,21 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
 
       case "other":
       default: {
-        console.log("[foodRouter] Intent is 'other' or unknown, attempting fallback to recipes");
-        
+        console.log(
+          "[foodRouter] Intent is 'other' or unknown, attempting fallback to recipes",
+        );
+
         // Try to handle as a recipe request anyway
         try {
           const ingredients = extractIngredientsFromQuery(query);
-          
+
           if (ingredients.length > 0) {
             const recipes = await generateRecipes({
               ingredients,
               count: 3,
               dietary_restrictions: userGoals?.dietTags || [],
             });
-            
+
             result = {
               type: "recipes",
               intent: "recipes",
@@ -364,7 +418,8 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
               type: "fallback",
               intent: intent.primaryIntent,
               confidence: intent.confidence,
-              message: "I'm not sure what you're looking for. I can help with recipes, nutrition analysis, meal planning, and grocery lists.",
+              message:
+                "I'm not sure what you're looking for. I can help with recipes, nutrition analysis, meal planning, and grocery lists.",
               suggestions: [
                 "Try: 'What can I cook with chicken and rice?'",
                 "Try: 'Create a 3-day meal plan for weight loss'",
@@ -374,13 +429,16 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
             };
           }
         } catch (error: unknown) {
-          console.error("[foodRouter] Fallback to recipes failed", { error: error instanceof Error ? error.message : String(error) });
-          
+          console.error("[foodRouter] Fallback to recipes failed", {
+            error: error instanceof Error ? error.message : String(error),
+          });
+
           result = {
             type: "fallback",
             intent: intent.primaryIntent,
             confidence: "low",
-            message: "I couldn't understand your request. I can help with recipes, nutrition, meal planning, and grocery lists. What would you like to do?",
+            message:
+              "I couldn't understand your request. I can help with recipes, nutrition, meal planning, and grocery lists. What would you like to do?",
             suggestions: [
               "Ask for recipe ideas with specific ingredients",
               "Request a meal plan with your goals",
@@ -400,21 +458,21 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
     });
 
     return result;
-    
   } catch (error: unknown) {
     const duration = Date.now() - startTime;
-    
+
     // Categorize and log error
     const categorized = categorizeError(error, "food.router");
     logStructuredError(categorized, true, duration);
-    
+
     // For validation errors, provide specific guidance
     if (categorized instanceof ValidationError) {
       return {
         type: "fallback",
         intent: "validation_error",
         confidence: "low",
-        message: "I couldn't understand your request. Please provide more details about what you'd like to do.",
+        message:
+          "I couldn't understand your request. Please provide more details about what you'd like to do.",
         suggestions: [
           "Try: 'What can I cook with chicken and rice?'",
           "Try: 'Create a 3-day meal plan for 2000 calories'",
@@ -422,19 +480,19 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
         ],
       };
     }
-    
+
     // For any other error, try to provide fallback recipes
     console.warn("[foodRouter] Attempting fallback recipes due to error");
     try {
       const fallbackRecipes = getFallbackRecipes(3);
-      
+
       logSuccess("food.router", duration, {
         type: "recipes",
         confidence: "low",
         fallbackUsed: true,
         errorType: categorized.type,
       });
-      
+
       return {
         type: "recipes",
         intent: "fallback",
@@ -443,14 +501,17 @@ export async function routeFood(params: Record<string, unknown>): Promise<FoodRo
       };
     } catch (fallbackError: unknown) {
       // Even fallback failed - return helpful message
-      const message = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+      const message = fallbackError instanceof Error
+        ? fallbackError.message
+        : String(fallbackError);
       console.error("[foodRouter] Fallback also failed", { error: message });
-      
+
       return {
         type: "fallback",
         intent: "error",
         confidence: "low",
-        message: "I'm having trouble processing your request right now. Please try again in a moment or use one of the specialized tools directly.",
+        message:
+          "I'm having trouble processing your request right now. Please try again in a moment or use one of the specialized tools directly.",
         suggestions: [
           "Try again in a few moments",
           "Use recipes.generate for recipe ideas",

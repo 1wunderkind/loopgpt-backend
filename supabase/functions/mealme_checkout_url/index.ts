@@ -1,6 +1,6 @@
 /**
  * MealMe Checkout URL Edge Function
- * 
+ *
  * Generates a checkout URL for MealMe SDK.
  */
 
@@ -70,4 +70,3 @@ const handler = async (req: Request): Promise<Response> => {
 // Export with logging middleware
 // withLogging is not compatible with withOrderAPI in this context, using withOrderAPI directly
 export default withOrderAPI(handler);
-

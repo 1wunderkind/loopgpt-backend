@@ -3,11 +3,7 @@
  * Tests for calculating nutritional values
  */
 
-import {
-  assertEquals,
-  assert,
-  testData,
-} from "../../helpers.ts";
+import { assert, assertEquals, testData } from "../../helpers.ts";
 
 Deno.test("nutrition_calc: calculates calories correctly", async () => {
   const food = testData.food({
@@ -17,7 +13,7 @@ Deno.test("nutrition_calc: calculates calories correctly", async () => {
   const quantity = 200; // 200g
 
   const calculatedCalories = (food.calories / food.serving_size) * quantity;
-  
+
   assertEquals(calculatedCalories, 200);
 });
 
@@ -29,7 +25,7 @@ Deno.test("nutrition_calc: calculates protein correctly", async () => {
   const quantity = 150; // 150g
 
   const calculatedProtein = (food.protein / food.serving_size) * quantity;
-  
+
   assertEquals(calculatedProtein, 15);
 });
 
@@ -84,7 +80,7 @@ Deno.test("nutrition_calc: calculates macro percentages", async () => {
   assert(proteinPercent > 0 && proteinPercent < 100);
   assert(carbsPercent > 0 && carbsPercent < 100);
   assert(fatPercent > 0 && fatPercent < 100);
-  
+
   // Should sum to ~100%
   const total = proteinPercent + carbsPercent + fatPercent;
   assert(Math.abs(total - 100) < 0.1);
@@ -98,7 +94,7 @@ Deno.test("nutrition_calc: handles fractional servings", async () => {
   const quantity = 50.5; // 50.5g
 
   const calculatedCalories = (food.calories / food.serving_size) * quantity;
-  
+
   assertEquals(calculatedCalories, 50.5);
 });
 
@@ -111,7 +107,7 @@ Deno.test("nutrition_calc: rounds to appropriate precision", async () => {
 
   const calculatedCalories = (food.calories / food.serving_size) * quantity;
   const rounded = Math.round(calculatedCalories * 10) / 10; // Round to 1 decimal
-  
+
   assertEquals(rounded, 33.3);
 });
 

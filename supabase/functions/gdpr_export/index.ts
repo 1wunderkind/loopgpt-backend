@@ -3,13 +3,17 @@
  * Allows users to export all their personal data
  */
 
-import { createEdgeFunction } from '../_shared/monitoring/middleware.ts';
-import { Logger } from '../_shared/monitoring/Logger.ts';
-import { ErrorHandler, ValidationError, AuthenticationError } from '../_shared/errors/ErrorHandler.ts';
+import { createEdgeFunction } from "../_shared/monitoring/middleware.ts";
+import { Logger } from "../_shared/monitoring/Logger.ts";
+import {
+  AuthenticationError,
+  ErrorHandler,
+  ValidationError,
+} from "../_shared/errors/ErrorHandler.ts";
 
 interface ExportRequest {
   user_id: string;
-  format?: 'json' | 'csv';
+  format?: "json" | "csv";
 }
 
 interface UserData {
@@ -23,25 +27,25 @@ interface UserData {
 }
 
 async function handler(req: Request, logger: Logger): Promise<Response> {
-  if (req.method !== 'POST') {
-    throw new ValidationError('Method not allowed');
+  if (req.method !== "POST") {
+    throw new ValidationError("Method not allowed");
   }
 
   const body: ExportRequest = await req.json();
-  
+
   // Validate required fields
-  ErrorHandler.validateRequired(body, ['user_id']);
-  
-  const { user_id, format = 'json' } = body;
-  
-  logger.info('GDPR data export requested', { user_id, format });
-  
+  ErrorHandler.validateRequired(body, ["user_id"]);
+
+  const { user_id, format = "json" } = body;
+
+  logger.info("GDPR data export requested", { user_id, format });
+
   // TODO: Verify user authentication
   // const authUserId = extractUserIdFromToken(req);
   // if (authUserId !== user_id) {
   //   throw new AuthorizationError('Cannot export data for other users');
   // }
-  
+
   try {
     // Collect all user data from various tables
     const userData: UserData = {
@@ -53,35 +57,37 @@ async function handler(req: Request, logger: Logger): Promise<Response> {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-    
-    logger.info('User data collected', {
+
+    logger.info("User data collected", {
       user_id,
       weight_entries: userData.weight_entries.length,
       meal_logs: userData.meal_logs.length,
       orders: userData.orders.length,
     });
-    
+
     // Format data based on requested format
-    if (format === 'csv') {
+    if (format === "csv") {
       const csv = convertToCSV(userData);
-      
+
       return new Response(csv, {
         headers: {
-          'Content-Type': 'text/csv',
-          'Content-Disposition': `attachment; filename="user_data_${user_id}_${Date.now()}.csv"`,
+          "Content-Type": "text/csv",
+          "Content-Disposition":
+            `attachment; filename="user_data_${user_id}_${Date.now()}.csv"`,
         },
       });
     } else {
       // JSON format
       return new Response(JSON.stringify(userData, null, 2), {
         headers: {
-          'Content-Type': 'application/json',
-          'Content-Disposition': `attachment; filename="user_data_${user_id}_${Date.now()}.json"`,
+          "Content-Type": "application/json",
+          "Content-Disposition":
+            `attachment; filename="user_data_${user_id}_${Date.now()}.json"`,
         },
       });
     }
   } catch (error) {
-    logger.error('Failed to export user data', error as Error, { user_id });
+    logger.error("Failed to export user data", error as Error, { user_id });
     throw error;
   }
 }
@@ -93,9 +99,9 @@ function getUserProfile(userId: string): Promise<Record<string, unknown>> {
   // TODO: Implement actual database query
   return Promise.resolve({
     id: userId,
-    email: 'user@example.com',
-    name: 'User Name',
-    created_at: '2024-01-01T00:00:00Z',
+    email: "user@example.com",
+    name: "User Name",
+    created_at: "2024-01-01T00:00:00Z",
   });
 }
 
@@ -136,59 +142,59 @@ function getUserPreferences(userId: string): Promise<Record<string, unknown>> {
  */
 function convertToCSV(userData: UserData): string {
   const lines: string[] = [];
-  
+
   // User profile
-  lines.push('=== USER PROFILE ===');
-  lines.push('Field,Value');
+  lines.push("=== USER PROFILE ===");
+  lines.push("Field,Value");
   Object.entries(userData.user_profile).forEach(([key, value]) => {
     lines.push(`${key},"${value}"`);
   });
-  lines.push('');
-  
+  lines.push("");
+
   // Weight entries
-  lines.push('=== WEIGHT ENTRIES ===');
+  lines.push("=== WEIGHT ENTRIES ===");
   if (userData.weight_entries.length > 0) {
     const headers = Object.keys(userData.weight_entries[0]);
-    lines.push(headers.join(','));
-    userData.weight_entries.forEach(entry => {
-      lines.push(headers.map(h => `"${entry[h]}"`).join(','));
+    lines.push(headers.join(","));
+    userData.weight_entries.forEach((entry) => {
+      lines.push(headers.map((h) => `"${entry[h]}"`).join(","));
     });
   }
-  lines.push('');
-  
+  lines.push("");
+
   // Meal logs
-  lines.push('=== MEAL LOGS ===');
+  lines.push("=== MEAL LOGS ===");
   if (userData.meal_logs.length > 0) {
     const headers = Object.keys(userData.meal_logs[0]);
-    lines.push(headers.join(','));
-    userData.meal_logs.forEach(entry => {
-      lines.push(headers.map(h => `"${entry[h]}"`).join(','));
+    lines.push(headers.join(","));
+    userData.meal_logs.forEach((entry) => {
+      lines.push(headers.map((h) => `"${entry[h]}"`).join(","));
     });
   }
-  lines.push('');
-  
+  lines.push("");
+
   // Orders
-  lines.push('=== ORDERS ===');
+  lines.push("=== ORDERS ===");
   if (userData.orders.length > 0) {
     const headers = Object.keys(userData.orders[0]);
-    lines.push(headers.join(','));
-    userData.orders.forEach(entry => {
-      lines.push(headers.map(h => `"${entry[h]}"`).join(','));
+    lines.push(headers.join(","));
+    userData.orders.forEach((entry) => {
+      lines.push(headers.map((h) => `"${entry[h]}"`).join(","));
     });
   }
-  
-  return lines.join('\n');
+
+  return lines.join("\n");
 }
 
 // Export with monitoring
 Deno.serve(
   createEdgeFunction(handler, {
-    functionName: 'gdpr_export',
+    functionName: "gdpr_export",
     enableCORS: true,
     enableRateLimit: true,
     rateLimitConfig: {
       maxRequests: 10, // Limited to prevent abuse
       windowMs: 3600000, // 1 hour
     },
-  })
+  }),
 );

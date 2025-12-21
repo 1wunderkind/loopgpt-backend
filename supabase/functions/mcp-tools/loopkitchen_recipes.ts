@@ -1,26 +1,36 @@
 /**
  * LoopKitchen Recipes Tool
- * 
+ *
  * Advanced recipe generation with chaos mode, soft constraints, and widget support.
  * Powered by LeftoverGPT prompts from LoopKitchen.
  */
 
 import {
-  // Types
-  RecipeCardCompact,
+  // Utilities
+  callModelWithRetry,
   InfoMessage,
-  Widget,
   // Prompts
   LEFTOVERGPT_LIST_SYSTEM,
   LEFTOVERGPT_LIST_USER,
-  // Utilities
-  callModelWithRetry,
+  // Types
+  RecipeCardCompact,
+  Widget,
 } from "../_shared/loopkitchen/index.ts";
 import { generateRecipesCacheKey } from "./cacheKey.ts";
 import { cacheGet, cacheSet } from "./cache.ts";
-import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
-import { logIngredientSubmission, logRecipeEvent } from "../_shared/analytics/index.ts";
-import { scoreRecipes, type CandidateRecipe } from "../_shared/recommendations/index.ts";
+import {
+  categorizeError,
+  logStructuredError,
+  logSuccess,
+} from "./errorTypes.ts";
+import {
+  logIngredientSubmission,
+  logRecipeEvent,
+} from "../_shared/analytics/index.ts";
+import {
+  type CandidateRecipe,
+  scoreRecipes,
+} from "../_shared/recommendations/index.ts";
 
 // ============================================================================
 // Types
@@ -45,11 +55,11 @@ export interface GenerateRecipesInput {
 function generateSlugId(title: string, index: number): string {
   const slug = title
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
     .trim();
-  
+
   return `${slug}-${index}`;
 }
 
@@ -57,16 +67,19 @@ function generateSlugId(title: string, index: number): string {
  * Validate and normalize input
  */
 function validateInput(params: any): GenerateRecipesInput {
-  if (!params.ingredients || !Array.isArray(params.ingredients) || params.ingredients.length === 0) {
+  if (
+    !params.ingredients || !Array.isArray(params.ingredients) ||
+    params.ingredients.length === 0
+  ) {
     throw new Error("ingredients array is required and must not be empty");
   }
-  
+
   return {
     ingredients: params.ingredients,
     vibes: params.vibes || [],
     timeLimit: params.timeLimit || null,
     dietConstraints: params.dietConstraints || [],
-    notes: params.notes || '',
+    notes: params.notes || "",
     count: Math.min(Math.max(params.count || 5, 3), 8), // 3-8 recipes
   };
 }
@@ -78,24 +91,28 @@ function validateInput(params: any): GenerateRecipesInput {
 /**
  * Generate recipes with LoopKitchen's chaos mode and soft constraints
  */
-export async function generateRecipes(params: any): Promise<{ widgets: Widget[] }> {
+export async function generateRecipes(
+  params: any,
+): Promise<{ widgets: Widget[] }> {
   const startTime = Date.now();
-  
+
   try {
     console.log("[loopkitchen_recipes.generate] Starting...", { params });
-    
+
     // Validate input
     const input = validateInput(params);
-    
+
     // Log ingredient submission (analytics)
     logIngredientSubmission({
       userId: params.userId || null,
       sessionId: params.sessionId || null,
-      sourceGpt: 'LeftoverGPT',
-      ingredients: input.ingredients.map(ing => ({ name: ing, raw: ing })),
+      sourceGpt: "LeftoverGPT",
+      ingredients: input.ingredients.map((ing) => ({ name: ing, raw: ing })),
       locale: params.locale || null,
-    }).catch(err => console.error('[Analytics] Failed to log ingredient submission:', err));
-    
+    }).catch((err) =>
+      console.error("[Analytics] Failed to log ingredient submission:", err)
+    );
+
     // Check cache first
     const cacheKey = generateRecipesCacheKey(input);
     const cached = await cacheGet(cacheKey);
@@ -108,7 +125,7 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
       });
       return { widgets };
     }
-    
+
     // Build prompts
     const systemPrompt = LEFTOVERGPT_LIST_SYSTEM;
     const userPrompt = LEFTOVERGPT_LIST_USER(
@@ -116,11 +133,11 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
       input.vibes,
       input.timeLimit,
       input.dietConstraints,
-      input.notes
+      input.notes,
     );
-    
+
     console.log("[loopkitchen_recipes.generate] Calling OpenAI...");
-    
+
     // Call OpenAI with retry logic
     interface RecipeResponse {
       recipes: Array<{
@@ -129,50 +146,54 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
         shortDescription?: string;
         chaosRating: number;
         timeMinutes: number;
-        difficulty: 'easy' | 'medium' | 'hard';
+        difficulty: "easy" | "medium" | "hard";
         dietTags: string[];
         primaryIngredients?: string[];
         vibes?: string[];
       }>;
     }
-    
+
     const response = await callModelWithRetry<RecipeResponse>(
       systemPrompt,
       userPrompt,
       {
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         temperature: 0.8,
         maxTokens: 2000,
       },
-      2 // max retries
+      2, // max retries
     );
-    
+
     // Handle empty response (unsafe ingredients)
     if (!response.recipes || response.recipes.length === 0) {
       const infoMessage: InfoMessage = {
-        type: 'InfoMessage',
+        type: "InfoMessage",
         id: `warning-${Date.now()}`,
-        severity: 'warning',
-        title: 'No Recipes Generated',
-        message: 'The ingredients provided cannot be safely combined into recipes. Please try different ingredients.',
-        actionLabel: 'Try Again',
+        severity: "warning",
+        title: "No Recipes Generated",
+        message:
+          "The ingredients provided cannot be safely combined into recipes. Please try different ingredients.",
+        actionLabel: "Try Again",
       };
-      
+
       const duration = Date.now() - startTime;
       logSuccess("loopkitchen_recipes.generate", duration, {
         widgetCount: 1,
         infoMessage: true,
       });
-      
+
       return { widgets: [infoMessage] };
     }
-    
+
     // ========================================================================
     // RECOMMENDATION ENGINE INTEGRATION
     // ========================================================================
-    
+
     // Prepare candidate recipes for scoring
-    const candidateRecipes: CandidateRecipe[] = response.recipes.map((recipe, index) => ({
+    const candidateRecipes: CandidateRecipe[] = response.recipes.map((
+      recipe,
+      index,
+    ) => ({
       recipe_id: recipe.id || generateSlugId(recipe.title, index),
       title: recipe.title,
       ingredients: recipe.primaryIngredients || input.ingredients,
@@ -181,123 +202,142 @@ export async function generateRecipes(params: any): Promise<{ widgets: Widget[] 
       carbs_g: 50,
       fat_g: 15,
     }));
-    
+
     // Score recipes using recommendation engine
-    console.log('[loopkitchen_recipes.generate] Scoring recipes with recommendation engine...');
+    console.log(
+      "[loopkitchen_recipes.generate] Scoring recipes with recommendation engine...",
+    );
     const scoredRecipes = await scoreRecipes({
       userId: params.userId || null,
       recipes: candidateRecipes,
       limit: input.count,
     });
-    
+
     // Create a map of recipe_id -> score data for quick lookup
-    const scoreMap = new Map(scoredRecipes.map(sr => [sr.recipe_id, sr]));
-    
+    const scoreMap = new Map(scoredRecipes.map((sr) => [sr.recipe_id, sr]));
+
     // Map to RecipeCardCompact widgets with soft constraint flags AND recommendation scores
-    const widgets: RecipeCardCompact[] = response.recipes.map((recipe, index) => {
-      const id = recipe.id || generateSlugId(recipe.title, index);
-      
-      // Check soft constraints
-      const overTimeLimit = input.timeLimit && recipe.timeMinutes > input.timeLimit;
-      const dietConstraints = input.dietConstraints || [];
-      const matchesDiet = dietConstraints.length === 0 || 
-        dietConstraints.some(constraint => 
-          recipe.dietTags.some(tag => 
-            tag.toLowerCase().includes(constraint.toLowerCase())
-          )
-        );
-      
-      // Get recommendation score data
-      const scoreData = scoreMap.get(id);
-      
-      // Build share metadata
-      const ingredientsList = (recipe.primaryIngredients || input.ingredients).slice(0, 3).join(", ");
-      const shareTitle = `I just discovered "${recipe.title}" in LoopKitchen`;
-      const shareDescription = `Made from: ${ingredientsList}${(recipe.primaryIngredients || input.ingredients).length > 3 ? ", and more" : ""}`;
-      const suggestedCaption = `LoopKitchen turned my leftovers into "${recipe.title}" 🤯 #LoopGPT #LeftoverGPT`;
-      
-      return {
-        type: 'RecipeCardCompact',
-        id,
-        title: recipe.title,
-        shortDescription: recipe.shortDescription,
-        chaosRating: recipe.chaosRating,
-        timeMinutes: recipe.timeMinutes,
-        difficulty: recipe.difficulty,
-        dietTags: recipe.dietTags,
-        primaryIngredients: recipe.primaryIngredients,
-        vibes: recipe.vibes,
-        // Soft constraint flags
-        overTimeLimit: overTimeLimit || undefined,
-        requestedTimeLimit: overTimeLimit ? input.timeLimit : undefined,
-        matchesDiet: (input.dietConstraints || []).length > 0 ? matchesDiet : undefined,
-        requestedDiet: (input.dietConstraints || []).length > 0 ? (input.dietConstraints || []).join(', ') : undefined,
-        // Recommendation engine scores (optional metadata)
-        recommendationScore: scoreData?.total_score,
-        matchReason: scoreData?.match_reason,
-        // confidence: scoreData?.confidence, // Removed due to type mismatch (string vs number)
-        // Share metadata
-        share: {
-          enabled: true,
-          title: shareTitle,
-          description: shareDescription,
-          suggestedCaptions: [suggestedCaption],
-        },
-      };
-    });
-    
+    const widgets: RecipeCardCompact[] = response.recipes.map(
+      (recipe, index) => {
+        const id = recipe.id || generateSlugId(recipe.title, index);
+
+        // Check soft constraints
+        const overTimeLimit = input.timeLimit &&
+          recipe.timeMinutes > input.timeLimit;
+        const dietConstraints = input.dietConstraints || [];
+        const matchesDiet = dietConstraints.length === 0 ||
+          dietConstraints.some((constraint) =>
+            recipe.dietTags.some((tag) =>
+              tag.toLowerCase().includes(constraint.toLowerCase())
+            )
+          );
+
+        // Get recommendation score data
+        const scoreData = scoreMap.get(id);
+
+        // Build share metadata
+        const ingredientsList = (recipe.primaryIngredients || input.ingredients)
+          .slice(0, 3).join(", ");
+        const shareTitle = `I just discovered "${recipe.title}" in LoopKitchen`;
+        const shareDescription = `Made from: ${ingredientsList}${
+          (recipe.primaryIngredients || input.ingredients).length > 3
+            ? ", and more"
+            : ""
+        }`;
+        const suggestedCaption =
+          `LoopKitchen turned my leftovers into "${recipe.title}" 🤯 #LoopGPT #LeftoverGPT`;
+
+        return {
+          type: "RecipeCardCompact",
+          id,
+          title: recipe.title,
+          shortDescription: recipe.shortDescription,
+          chaosRating: recipe.chaosRating,
+          timeMinutes: recipe.timeMinutes,
+          difficulty: recipe.difficulty,
+          dietTags: recipe.dietTags,
+          primaryIngredients: recipe.primaryIngredients,
+          vibes: recipe.vibes,
+          // Soft constraint flags
+          overTimeLimit: overTimeLimit || undefined,
+          requestedTimeLimit: overTimeLimit ? input.timeLimit : undefined,
+          matchesDiet: (input.dietConstraints || []).length > 0
+            ? matchesDiet
+            : undefined,
+          requestedDiet: (input.dietConstraints || []).length > 0
+            ? (input.dietConstraints || []).join(", ")
+            : undefined,
+          // Recommendation engine scores (optional metadata)
+          recommendationScore: scoreData?.total_score,
+          matchReason: scoreData?.match_reason,
+          // confidence: scoreData?.confidence, // Removed due to type mismatch (string vs number)
+          // Share metadata
+          share: {
+            enabled: true,
+            title: shareTitle,
+            description: shareDescription,
+            suggestedCaptions: [suggestedCaption],
+          },
+        };
+      },
+    );
+
     // Sort widgets by recommendation score (highest first)
     widgets.sort((a, b) => {
       const scoreA = a.recommendationScore || 50;
       const scoreB = b.recommendationScore || 50;
       return scoreB - scoreA;
     });
-    
-    console.log('[loopkitchen_recipes.generate] Recipes sorted by recommendation score');
-    
+
+    console.log(
+      "[loopkitchen_recipes.generate] Recipes sorted by recommendation score",
+    );
+
     // Cache the result for 24 hours
     await cacheSet(cacheKey, JSON.stringify(widgets), 86400);
-    
+
     const duration = Date.now() - startTime;
     logSuccess("loopkitchen_recipes.generate", duration, {
       widgetCount: widgets.length,
       cached: false,
     });
-    
+
     // Log recipe generation events (analytics)
     for (const widget of widgets) {
-      if (widget.type === 'RecipeCardCompact') {
+      if (widget.type === "RecipeCardCompact") {
         logRecipeEvent({
           userId: params.userId || null,
           sessionId: params.sessionId || null,
           recipeId: widget.id,
           recipeTitle: widget.title,
-          eventType: 'generated',
+          eventType: "generated",
           chaosRatingShown: widget.chaosRating,
-          sourceGpt: 'LeftoverGPT',
+          sourceGpt: "LeftoverGPT",
           responseTimeMs: duration,
-        }).catch(err => console.error('[Analytics] Failed to log recipe event:', err));
+        }).catch((err) =>
+          console.error("[Analytics] Failed to log recipe event:", err)
+        );
       }
     }
-    
+
     return { widgets };
   } catch (error: any) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "loopkitchen_recipes.generate");
-    
+
     // Log structured error
     logStructuredError(categorized, true, duration);
-    
+
     // Return InfoMessage widget for errors
     const errorMessage: InfoMessage = {
-      type: 'InfoMessage',
+      type: "InfoMessage",
       id: `error-${Date.now()}`,
-      severity: 'error',
-      title: 'Recipe Generation Failed',
+      severity: "error",
+      title: "Recipe Generation Failed",
       message: `Unable to generate recipes: ${categorized.message}`,
-      actionLabel: 'Try Again',
+      actionLabel: "Try Again",
     };
-    
+
     return { widgets: [errorMessage] };
   }
 }

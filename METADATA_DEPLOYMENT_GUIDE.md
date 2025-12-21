@@ -2,9 +2,12 @@
 
 ## 📋 Overview
 
-This guide covers deploying the comprehensive metadata optimization pack that will **maximize ChatGPT tool invocation rates** and improve App Store discovery for TheLoopGPT.
+This guide covers deploying the comprehensive metadata optimization pack that
+will **maximize ChatGPT tool invocation rates** and improve App Store discovery
+for TheLoopGPT.
 
 **What's Been Implemented:**
+
 - ✅ 50 edge function tool descriptions
 - ✅ 19 trigger hint categories with 281 examples
 - ✅ Enhanced MCP server with 5 new metadata endpoints
@@ -28,7 +31,8 @@ node validate-metadata.js
 
 ### Step 2: Deploy MCP Server
 
-The MCP server is the critical component that ChatGPT interacts with. Deploy it first:
+The MCP server is the critical component that ChatGPT interacts with. Deploy it
+first:
 
 ```bash
 # Login to Supabase (if not already logged in)
@@ -40,7 +44,8 @@ supabase functions deploy mcp-server --no-verify-jwt
 # Expected output: Deployed Function mcp-server version: vX.X.X
 ```
 
-**Important:** The `--no-verify-jwt` flag is required because the manifest endpoint needs to be publicly accessible for ChatGPT Apps SDK discovery.
+**Important:** The `--no-verify-jwt` flag is required because the manifest
+endpoint needs to be publicly accessible for ChatGPT Apps SDK discovery.
 
 ### Step 3: Verify MCP Server Deployment
 
@@ -114,7 +119,8 @@ After deployment, verify the following:
 
 ### MCP Server Health
 
-- [ ] MCP server is responding: `curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server/`
+- [ ] MCP server is responding:
+      `curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server/`
 - [ ] Metadata endpoint returns 50 tools
 - [ ] Tool metadata endpoint returns detailed descriptions
 - [ ] Recommendation endpoint suggests correct tools
@@ -145,12 +151,14 @@ After deployment, verify the following:
 ### Tool Invocation Rate
 
 **Before Optimization:**
+
 - Generic tool descriptions
 - No routing hints
 - ~60-70% invocation rate on food-related queries
 - ~75% correct tool selection
 
 **After Optimization:**
+
 - Comprehensive tool descriptions with 281 examples
 - 19 trigger hint categories
 - **Target: >90% invocation rate** on food-related queries
@@ -159,12 +167,14 @@ After deployment, verify the following:
 ### App Store Discovery
 
 **Enhanced Keywords:**
+
 - 281 trigger examples covering user intent
 - Seasonal and contextual keywords
 - Differentiator keywords vs competitors
 - Primary, secondary, and search keywords
 
 **Expected Results:**
+
 - Improved search ranking for "recipe", "nutrition", "meal planning" queries
 - Better matching to user intent
 - Higher click-through rate from search results
@@ -178,28 +188,33 @@ After deployment, verify the following:
 Test these queries to verify tool invocation:
 
 **Recipe Generation:**
+
 - "What can I make with chicken, rice, and broccoli?"
 - "I have leftover salmon, what should I cook?"
 - "Give me a creative recipe with these ingredients: tofu, mushrooms, soy sauce"
 
 **Nutrition Analysis:**
+
 - "How many calories in a chicken breast?"
 - "What are the macros for this burrito?"
 - "Is this meal high in protein?"
 
 **Meal Planning:**
+
 - "Plan my meals for the week"
 - "Create a 7-day keto meal plan"
 - "What should I eat this week to lose weight?"
 
 **Food Tracking:**
+
 - "Log my breakfast: 2 eggs and toast"
 - "I just had a chicken salad for lunch"
 - "How many calories have I eaten today?"
 
 ### 2. Monitor Tool Choice Logs
 
-Check the `tool_choice_log` table in Supabase to see which tools are being invoked:
+Check the `tool_choice_log` table in Supabase to see which tools are being
+invoked:
 
 ```sql
 SELECT 
@@ -234,6 +249,7 @@ If you want to measure the impact scientifically:
 **Symptoms:** 404 or 500 errors when accessing metadata endpoints
 
 **Solutions:**
+
 1. Check deployment logs: `supabase functions logs mcp-server`
 2. Verify TypeScript compilation: Check for import errors
 3. Redeploy: `supabase functions deploy mcp-server --no-verify-jwt`
@@ -243,7 +259,9 @@ If you want to measure the impact scientifically:
 **Symptoms:** Endpoints return 500 errors or incomplete data
 
 **Solutions:**
-1. Check if metadata files are deployed: Verify `_shared/config/` directory exists
+
+1. Check if metadata files are deployed: Verify `_shared/config/` directory
+   exists
 2. Run validation: `node validate-metadata.js`
 3. Check for circular imports or missing exports
 
@@ -252,6 +270,7 @@ If you want to measure the impact scientifically:
 **Symptoms:** `/metadata/recommend` suggests wrong tools
 
 **Solutions:**
+
 1. Review routing hints in `routingHints.ts`
 2. Add more trigger examples for edge cases
 3. Adjust confidence thresholds in trigger hints
@@ -261,7 +280,9 @@ If you want to measure the impact scientifically:
 **Symptoms:** ChatGPT answers directly instead of using tools
 
 **Solutions:**
-1. Verify manifest is accessible: `curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server/`
+
+1. Verify manifest is accessible:
+   `curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server/`
 2. Check tool descriptions are clear and action-oriented
 3. Add more "whenToUse" examples
 4. Review negative hints to ensure they're not too broad
@@ -370,21 +391,25 @@ If you want to measure the impact scientifically:
 The metadata optimization is considered successful when:
 
 ✅ **Deployment:**
+
 - All metadata endpoints are accessible
 - No TypeScript compilation errors
 - Validation tests pass (34/34)
 
 ✅ **Functionality:**
+
 - Tool recommendations are accurate (>90%)
 - Routing hints cover common use cases
 - Negative hints prevent false positives
 
 ✅ **Performance:**
+
 - Tool invocation rate >90%
 - Correct tool selection >95%
 - False positive rate <5%
 
 ✅ **User Experience:**
+
 - Users report improved tool suggestions
 - Session length increases
 - Return rate improves
@@ -402,6 +427,6 @@ If you encounter issues during deployment:
 
 ---
 
-**Last Updated:** 2025-12-03  
-**Version:** 1.0.0  
+**Last Updated:** 2025-12-03\
+**Version:** 1.0.0\
 **Status:** Ready for Deployment ✅

@@ -1,26 +1,29 @@
 /**
  * LoopKitchen Nutrition Analysis Tool
- * 
+ *
  * Standalone nutrition analysis using NutritionGPT from shared module.
  * Returns NutritionSummary widget for UI-ready data.
- * 
+ *
  * Features:
  * - Recipe-based analysis (from recipe objects)
  * - Ingredient-based analysis (from raw ingredient lists)
  * - Meal logging with daily/weekly aggregation
  * - Confidence indicators for estimates
  * - Health insights and warnings
- * 
+ *
  * Phase 3 of LoopKitchen Integration
  */
 
 import { callModel } from "../_shared/loopkitchen/callModel.ts";
-import { NUTRITIONGPT_SYSTEM, NUTRITIONGPT_USER } from "../_shared/loopkitchen/prompts.ts";
+import {
+  NUTRITIONGPT_SYSTEM,
+  NUTRITIONGPT_USER,
+} from "../_shared/loopkitchen/prompts.ts";
 import { getCached } from "../_shared/loopkitchen/cache.ts";
 import { logMealLog } from "../_shared/analytics/index.ts";
 import type {
-  NutritionSummary,
   InfoMessage,
+  NutritionSummary,
   RecipeCardDetailed,
 } from "../_shared/loopkitchen/types/index.ts";
 
@@ -31,17 +34,17 @@ import type {
 interface NutritionInput {
   // Option 1: Analyze from recipe objects
   recipes?: RecipeCardDetailed[];
-  
+
   // Option 2: Analyze from raw ingredients
   ingredients?: Array<{
     name: string;
     quantity?: string;
     unit?: string;
   }>;
-  
+
   // Optional: Servings count (defaults to 1)
   servings?: number;
-  
+
   // Optional: Meal context for logging
   mealContext?: {
     mealType?: "breakfast" | "lunch" | "dinner" | "snack";
@@ -75,7 +78,9 @@ interface NutritionAnalysisResult {
 // Validation
 // ============================================================================
 
-function validateNutritionInput(params: Record<string, unknown>): NutritionInput {
+function validateNutritionInput(
+  params: Record<string, unknown>,
+): NutritionInput {
   // Must have either recipes or ingredients
   if (!params.recipes && !params.ingredients) {
     throw new Error("Either 'recipes' or 'ingredients' must be provided");
@@ -97,9 +102,15 @@ function validateNutritionInput(params: Record<string, unknown>): NutritionInput
 
   return {
     recipes: params.recipes as RecipeCardDetailed[],
-    ingredients: params.ingredients as Array<{ name: string; quantity?: string; unit?: string }>,
+    ingredients: params.ingredients as Array<
+      { name: string; quantity?: string; unit?: string }
+    >,
     servings: (params.servings as number) || 1,
-    mealContext: params.mealContext as { mealType?: "breakfast" | "lunch" | "dinner" | "snack"; date?: string; userId?: string },
+    mealContext: params.mealContext as {
+      mealType?: "breakfast" | "lunch" | "dinner" | "snack";
+      date?: string;
+      userId?: string;
+    },
   };
 }
 
@@ -107,7 +118,7 @@ function validateNutritionInput(params: Record<string, unknown>): NutritionInput
 // GPT Response Schema
 // ============================================================================
 
-    const nutritionAnalysisSchema = {
+const nutritionAnalysisSchema = {
   type: "object",
   properties: {
     perServing: {
@@ -121,7 +132,15 @@ function validateNutritionInput(params: Record<string, unknown>): NutritionInput
         sugar_g: { type: "number" },
         sodium_mg: { type: "number" },
       },
-      required: ["calories", "protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g", "sodium_mg"],
+      required: [
+        "calories",
+        "protein_g",
+        "carbs_g",
+        "fat_g",
+        "fiber_g",
+        "sugar_g",
+        "sodium_mg",
+      ],
       additionalProperties: false,
     },
     total: {
@@ -135,7 +154,15 @@ function validateNutritionInput(params: Record<string, unknown>): NutritionInput
         sugar_g: { type: "number" },
         sodium_mg: { type: "number" },
       },
-      required: ["calories", "protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g", "sodium_mg"],
+      required: [
+        "calories",
+        "protein_g",
+        "carbs_g",
+        "fat_g",
+        "fiber_g",
+        "sugar_g",
+        "sodium_mg",
+      ],
       additionalProperties: false,
     },
     servings: { type: "number" },
@@ -174,7 +201,9 @@ function validateNutritionInput(params: Record<string, unknown>): NutritionInput
 // Main Function
 // ============================================================================
 
-export async function analyzeNutrition(params: Record<string, unknown>): Promise<NutritionSummary | InfoMessage> {
+export async function analyzeNutrition(
+  params: Record<string, unknown>,
+): Promise<NutritionSummary | InfoMessage> {
   const startTime = Date.now();
 
   try {
@@ -196,8 +225,11 @@ export async function analyzeNutrition(params: Record<string, unknown>): Promise
       // Recipe-based analysis
       const recipe = input.recipes[0]; // For now, analyze first recipe
       sourceName = recipe.title;
-      
-      const ingredientsList = [...recipe.ingredientsHave, ...recipe.ingredientsNeed]
+
+      const ingredientsList = [
+        ...recipe.ingredientsHave,
+        ...recipe.ingredientsNeed,
+      ]
         .map((ing) => `- ${ing.quantity} ${ing.name}`.trim())
         .join("\n");
 
@@ -215,9 +247,11 @@ ${recipe.instructions.map((step, i) => `${i + 1}. ${step}`).join("\n")}`;
     } else if (input.ingredients && input.ingredients.length > 0) {
       // Ingredient-based analysis
       sourceName = "Custom Ingredients";
-      
+
       const ingredientsList = input.ingredients
-        .map((ing) => `- ${ing.quantity || ""} ${ing.unit || ""} ${ing.name}`.trim())
+        .map((ing) =>
+          `- ${ing.quantity || ""} ${ing.unit || ""} ${ing.name}`.trim()
+        )
         .join("\n");
 
       userMessage = `Analyze the nutritional content of these ingredients:
@@ -240,15 +274,16 @@ ${ingredientsList}`;
     const { value: result, cached } = await getCached(
       "nutrition.analyze",
       { userMessage }, // Cache by user message content
-      () => callModel<NutritionAnalysisResult>(
-        NUTRITIONGPT_SYSTEM,
-        userMessage,
-        {
-          temperature: 0.3,
-          maxTokens: 1000,
-        }
-      ),
-      86400000 // 24 hour TTL for nutrition data
+      () =>
+        callModel<NutritionAnalysisResult>(
+          NUTRITIONGPT_SYSTEM,
+          userMessage,
+          {
+            temperature: 0.3,
+            maxTokens: 1000,
+          },
+        ),
+      86400000, // 24 hour TTL for nutrition data
     );
 
     if (cached) {
@@ -300,10 +335,10 @@ ${ingredientsList}`;
 
 /**
  * Log a meal with nutrition data for daily/weekly tracking
- * 
+ *
  * Database Integration: Ready for Phase 4
  * Schema: /database/schemas/loopkitchen_meal_logs.sql
- * 
+ *
  * @param params - Meal logging parameters
  * @param params.userId - User ID
  * @param params.mealType - breakfast | lunch | dinner | snack
@@ -315,9 +350,11 @@ ${ingredientsList}`;
  * @param params.healthScore - Health score (0-100)
  * @param params.tags - Diet/health tags
  */
-export async function logMeal(params: Record<string, unknown>): Promise<InfoMessage> {
+export async function logMeal(
+  params: Record<string, unknown>,
+): Promise<InfoMessage> {
   const startTime = Date.now();
-  
+
   try {
     console.log("[loopkitchen.nutrition] Meal logging requested", {
       mealType: params.mealType,
@@ -344,14 +381,14 @@ export async function logMeal(params: Record<string, unknown>): Promise<InfoMess
     /*
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    
+
     if (!supabaseUrl || !supabaseKey) {
       throw new Error("Database not configured");
     }
-    
+
     const { createClient } = await import("@supabase/supabase-js");
     const supabase = createClient(supabaseUrl, supabaseKey);
-    
+
     const { data, error } = await supabase
       .from("loopkitchen_meal_logs")
       .insert({
@@ -373,20 +410,20 @@ export async function logMeal(params: Record<string, unknown>): Promise<InfoMess
       })
       .select()
       .single();
-    
+
     if (error) {
       throw new Error(`Database error: ${error.message}`);
     }
-    
+
     // Refresh materialized view for daily summaries
     await supabase.rpc("refresh_loopkitchen_daily_nutrition");
-    
+
     const duration = Date.now() - startTime;
     console.log("[loopkitchen.nutrition] Meal logged successfully", {
       mealId: data.id,
       duration,
     });
-    
+
     const widget: InfoMessage = {
       type: "InfoMessage",
       data: {
@@ -405,16 +442,16 @@ export async function logMeal(params: Record<string, unknown>): Promise<InfoMess
         durationMs: duration,
       },
     };
-    
+
     return widget;
     */
-    
+
     // Log to analytics (Phase 1)
     const nutrition = params.nutrition as NutritionMacros;
     logMealLog({
       userId: params.userId as string,
       sessionId: (params.sessionId as string) || null,
-      sourceGpt: 'KCalGPT',
+      sourceGpt: "KCalGPT",
       loggedAt: (params.mealDate as string) || new Date().toISOString(),
       mealType: params.mealType as string,
       description: params.recipeTitle as string,
@@ -424,7 +461,7 @@ export async function logMeal(params: Record<string, unknown>): Promise<InfoMess
       fatG: nutrition.fat_g * ((params.servings as number) || 1),
       fiberG: nutrition.fiber_g * ((params.servings as number) || 1),
       rawPayload: params,
-    }).catch(err => console.error('[Analytics] Failed to log meal:', err));
+    }).catch((err) => console.error("[Analytics] Failed to log meal:", err));
 
     // Placeholder response for Phase 3
     const duration = Date.now() - startTime;
@@ -433,7 +470,9 @@ export async function logMeal(params: Record<string, unknown>): Promise<InfoMess
       id: `log-success-${Date.now()}`,
       severity: "info",
       title: "Meal Logged",
-      message: `Successfully logged ${params.recipeTitle || "meal"} for ${params.mealDate || "today"}.`,
+      message: `Successfully logged ${params.recipeTitle || "meal"} for ${
+        params.mealDate || "today"
+      }.`,
     };
 
     return widget;
@@ -455,18 +494,20 @@ export async function logMeal(params: Record<string, unknown>): Promise<InfoMess
 
 /**
  * Get daily nutrition summary for a user
- * 
+ *
  * Aggregates all meals logged for a specific date.
  * Database Integration: Ready for Phase 4
  * Schema: /database/schemas/loopkitchen_meal_logs.sql
- * 
+ *
  * @param params - Daily summary parameters
  * @param params.userId - User ID
  * @param params.date - ISO date string (defaults to today)
  */
-export async function getDailyNutrition(params: Record<string, any>): Promise<NutritionSummary | InfoMessage> {
+export async function getDailyNutrition(
+  params: Record<string, any>,
+): Promise<NutritionSummary | InfoMessage> {
   const startTime = Date.now();
-  
+
   try {
     console.log("[loopkitchen.nutrition] Daily summary requested", {
       date: params.date,
@@ -478,21 +519,21 @@ export async function getDailyNutrition(params: Record<string, any>): Promise<Nu
       throw new Error("userId is required");
     }
 
-    const targetDate = params.date || new Date().toISOString().split('T')[0];
+    const targetDate = params.date || new Date().toISOString().split("T")[0];
 
     // TODO: Phase 4 - Database Integration
     // Uncomment when database is set up:
     /*
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    
+
     if (!supabaseUrl || !supabaseKey) {
       throw new Error("Database not configured");
     }
-    
+
     const { createClient } = await import("@supabase/supabase-js");
     const supabase = createClient(supabaseUrl, supabaseKey);
-    
+
     // Query daily summary from materialized view
     const { data: dailySummary, error: summaryError } = await supabase
       .from("loopkitchen_daily_nutrition")
@@ -500,22 +541,22 @@ export async function getDailyNutrition(params: Record<string, any>): Promise<Nu
       .eq("user_id", params.userId)
       .eq("meal_date", targetDate)
       .single();
-    
+
     if (summaryError && summaryError.code !== 'PGRST116') { // PGRST116 = no rows
       throw new Error(`Database error: ${summaryError.message}`);
     }
-    
+
     // Get user targets for comparison
     const { data: userPrefs, error: prefsError } = await supabase
       .from("loopkitchen_user_nutrition_prefs")
       .select("*")
       .eq("user_id", params.userId)
       .single();
-    
+
     if (prefsError && prefsError.code !== 'PGRST116') {
       console.warn("[loopkitchen.nutrition] No user preferences found");
     }
-    
+
     // If no meals logged today, return empty summary
     if (!dailySummary) {
       const emptyWidget: InfoMessage = {
@@ -534,7 +575,7 @@ export async function getDailyNutrition(params: Record<string, any>): Promise<Nu
       };
       return emptyWidget;
     }
-    
+
     // Build nutrition summary widget
     const totalNutrition: NutritionMacros = {
       calories: dailySummary.total_calories,
@@ -545,7 +586,7 @@ export async function getDailyNutrition(params: Record<string, any>): Promise<Nu
       sugar: dailySummary.total_sugar,
       sodium: dailySummary.total_sodium,
     };
-    
+
     // Calculate per-meal average
     const perServing: NutritionMacros = {
       calories: dailySummary.total_calories / dailySummary.meal_count,
@@ -556,11 +597,11 @@ export async function getDailyNutrition(params: Record<string, any>): Promise<Nu
       sugar: dailySummary.total_sugar / dailySummary.meal_count,
       sodium: dailySummary.total_sodium / dailySummary.meal_count,
     };
-    
+
     // Generate insights based on targets
     const insights: string[] = [];
     const warnings: string[] = [];
-    
+
     if (userPrefs) {
       if (totalNutrition.calories < userPrefs.target_calories * 0.8) {
         insights.push(`You're ${Math.round(userPrefs.target_calories - totalNutrition.calories)} calories below your target.`);
@@ -569,21 +610,21 @@ export async function getDailyNutrition(params: Record<string, any>): Promise<Nu
       } else {
         insights.push("You're on track with your calorie target!");
       }
-      
+
       if (totalNutrition.protein < userPrefs.target_protein * 0.8) {
         insights.push(`Consider adding ${Math.round(userPrefs.target_protein - totalNutrition.protein)}g more protein.`);
       }
-      
+
       if (totalNutrition.fiber < 25) {
         insights.push("Try to include more fiber-rich foods like vegetables and whole grains.");
       }
     }
-    
+
     // Add meal distribution insights
     if (dailySummary.breakfast_count === 0) {
       insights.push("Don't skip breakfast! It helps maintain energy levels throughout the day.");
     }
-    
+
     const widget: NutritionSummary = {
       type: "NutritionSummary",
       data: {
@@ -603,7 +644,7 @@ export async function getDailyNutrition(params: Record<string, any>): Promise<Nu
         model: "database-aggregation",
       },
     };
-    
+
     return widget;
     */
 
@@ -614,7 +655,8 @@ export async function getDailyNutrition(params: Record<string, any>): Promise<Nu
       id: `daily-info-${Date.now()}`,
       severity: "info",
       title: "Daily Nutrition Ready",
-      message: `Daily nutrition tracking is ready for database integration in Phase 4. Schema created at /database/schemas/loopkitchen_meal_logs.sql. Would query meals for: ${targetDate}`,
+      message:
+        `Daily nutrition tracking is ready for database integration in Phase 4. Schema created at /database/schemas/loopkitchen_meal_logs.sql. Would query meals for: ${targetDate}`,
     };
 
     return widget;

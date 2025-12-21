@@ -3,9 +3,9 @@
  * Query optimization, connection pooling, and performance monitoring
  */
 
-import { Logger } from '../monitoring/Logger.ts';
+import { Logger } from "../monitoring/Logger.ts";
 
-const logger = new Logger('DatabaseOptimizer');
+const logger = new Logger("DatabaseOptimizer");
 
 export interface QueryPerformance {
   query: string;
@@ -34,7 +34,7 @@ export class DatabaseOptimizer {
    */
   async measureQuery<T>(
     queryName: string,
-    query: () => Promise<T>
+    query: () => Promise<T>,
   ): Promise<T> {
     const startTime = Date.now();
 
@@ -47,7 +47,7 @@ export class DatabaseOptimizer {
 
       // Log slow queries
       if (duration > this.slowQueryThreshold) {
-        logger.warn('Slow query detected', {
+        logger.warn("Slow query detected", {
           query: queryName,
           duration,
           threshold: this.slowQueryThreshold,
@@ -57,7 +57,7 @@ export class DatabaseOptimizer {
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
-      logger.error('Query failed', error as Error, {
+      logger.error("Query failed", error as Error, {
         query: queryName,
         duration,
       });
@@ -72,7 +72,7 @@ export class DatabaseOptimizer {
     query: string,
     duration: number,
     rows: number,
-    cached: boolean
+    cached: boolean,
   ): void {
     const perf: QueryPerformance = {
       query,
@@ -117,7 +117,7 @@ export class DatabaseOptimizer {
   getSlowQueries(threshold?: number): QueryPerformance[] {
     const actualThreshold = threshold || this.slowQueryThreshold;
     const allStats = this.getQueryStats();
-    return allStats.filter(stat => stat.duration > actualThreshold);
+    return allStats.filter((stat) => stat.duration > actualThreshold);
   }
 
   /**
@@ -145,7 +145,7 @@ export class DatabaseOptimizer {
  * Query builder with optimization hints
  */
 export class OptimizedQueryBuilder {
-  private query: string = '';
+  private query: string = "";
   private params: any[] = [];
   private useIndex?: string;
 
@@ -153,7 +153,7 @@ export class OptimizedQueryBuilder {
    * Start SELECT query
    */
   select(columns: string | string[]): this {
-    const cols = Array.isArray(columns) ? columns.join(', ') : columns;
+    const cols = Array.isArray(columns) ? columns.join(", ") : columns;
     this.query = `SELECT ${cols}`;
     return this;
   }
@@ -187,7 +187,7 @@ export class OptimizedQueryBuilder {
   /**
    * ORDER BY clause
    */
-  orderBy(column: string, direction: 'ASC' | 'DESC' = 'ASC'): this {
+  orderBy(column: string, direction: "ASC" | "DESC" = "ASC"): this {
     this.query += ` ORDER BY ${column} ${direction}`;
     return this;
   }
@@ -244,42 +244,42 @@ export const IndexRecommendations = {
    * Food search indexes
    */
   foodSearch: [
-    'CREATE INDEX IF NOT EXISTS idx_foods_name_trgm ON foods USING gin(name gin_trgm_ops);',
-    'CREATE INDEX IF NOT EXISTS idx_foods_category ON foods(category);',
-    'CREATE INDEX IF NOT EXISTS idx_foods_brand ON foods(brand);',
+    "CREATE INDEX IF NOT EXISTS idx_foods_name_trgm ON foods USING gin(name gin_trgm_ops);",
+    "CREATE INDEX IF NOT EXISTS idx_foods_category ON foods(category);",
+    "CREATE INDEX IF NOT EXISTS idx_foods_brand ON foods(brand);",
   ],
 
   /**
    * Weight tracking indexes
    */
   weightTracking: [
-    'CREATE INDEX IF NOT EXISTS idx_weight_entries_user_date ON weight_entries(user_id, date DESC);',
-    'CREATE INDEX IF NOT EXISTS idx_weight_entries_date ON weight_entries(date DESC);',
+    "CREATE INDEX IF NOT EXISTS idx_weight_entries_user_date ON weight_entries(user_id, date DESC);",
+    "CREATE INDEX IF NOT EXISTS idx_weight_entries_date ON weight_entries(date DESC);",
   ],
 
   /**
    * Meal logging indexes
    */
   mealLogging: [
-    'CREATE INDEX IF NOT EXISTS idx_meal_logs_user_date ON meal_logs(user_id, date DESC);',
-    'CREATE INDEX IF NOT EXISTS idx_meal_logs_date ON meal_logs(date DESC);',
+    "CREATE INDEX IF NOT EXISTS idx_meal_logs_user_date ON meal_logs(user_id, date DESC);",
+    "CREATE INDEX IF NOT EXISTS idx_meal_logs_date ON meal_logs(date DESC);",
   ],
 
   /**
    * Order indexes
    */
   orders: [
-    'CREATE INDEX IF NOT EXISTS idx_orders_user_created ON orders(user_id, created_at DESC);',
-    'CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);',
-    'CREATE INDEX IF NOT EXISTS idx_orders_provider ON orders(provider);',
+    "CREATE INDEX IF NOT EXISTS idx_orders_user_created ON orders(user_id, created_at DESC);",
+    "CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);",
+    "CREATE INDEX IF NOT EXISTS idx_orders_provider ON orders(provider);",
   ],
 
   /**
    * User indexes
    */
   users: [
-    'CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);',
-    'CREATE INDEX IF NOT EXISTS idx_users_created ON users(created_at DESC);',
+    "CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);",
+    "CREATE INDEX IF NOT EXISTS idx_users_created ON users(created_at DESC);",
   ],
 };
 
@@ -287,9 +287,9 @@ export const IndexRecommendations = {
  * Apply all recommended indexes
  */
 export async function applyRecommendedIndexes(
-  executeQuery: (query: string) => Promise<void>
+  executeQuery: (query: string) => Promise<void>,
 ): Promise<void> {
-  logger.info('Applying recommended database indexes...');
+  logger.info("Applying recommended database indexes...");
 
   const allIndexes = [
     ...IndexRecommendations.foodSearch,
@@ -302,13 +302,15 @@ export async function applyRecommendedIndexes(
   for (const indexQuery of allIndexes) {
     try {
       await executeQuery(indexQuery);
-      logger.info('Index created', { query: indexQuery });
+      logger.info("Index created", { query: indexQuery });
     } catch (error) {
-      logger.error('Failed to create index', error as Error, { query: indexQuery });
+      logger.error("Failed to create index", error as Error, {
+        query: indexQuery,
+      });
     }
   }
 
-  logger.info('Finished applying indexes');
+  logger.info("Finished applying indexes");
 }
 
 /**

@@ -3,11 +3,7 @@
  * Tests for calculating weight statistics
  */
 
-import {
-  assertEquals,
-  assert,
-  testData,
-} from "../../helpers.ts";
+import { assert, assertEquals, testData } from "../../helpers.ts";
 
 Deno.test("weight_stats: calculates average weight", async () => {
   const weights = [70, 71, 69, 70.5, 69.5];
@@ -80,7 +76,8 @@ Deno.test("weight_stats: handles single entry", async () => {
 Deno.test("weight_stats: calculates standard deviation", async () => {
   const weights = [70, 71, 69, 70, 70];
   const mean = weights.reduce((sum, w) => sum + w, 0) / weights.length;
-  const variance = weights.reduce((sum, w) => sum + Math.pow(w - mean, 2), 0) / weights.length;
+  const variance = weights.reduce((sum, w) => sum + Math.pow(w - mean, 2), 0) /
+    weights.length;
   const stdDev = Math.sqrt(variance);
 
   assert(stdDev >= 0);

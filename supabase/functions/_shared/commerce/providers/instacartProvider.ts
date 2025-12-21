@@ -4,17 +4,20 @@
  */
 
 import type {
-  ProviderQuote,
-  ProviderConfig,
   CartItem,
   ItemAvailability,
+  ProviderConfig,
   ProviderMeta,
-} from '../types/index.ts';
-import { BaseCommerceProvider, type QuoteRequest } from './ICommerceProvider.ts';
+  ProviderQuote,
+} from "../types/index.ts";
+import {
+  BaseCommerceProvider,
+  type QuoteRequest,
+} from "./ICommerceProvider.ts";
 
 /**
  * InstacartProvider - Integrates with Instacart for grocery delivery
- * 
+ *
  * Features:
  * - Grocery delivery from major retailers
  * - Same-day delivery (45-60 min typical)
@@ -22,12 +25,15 @@ import { BaseCommerceProvider, type QuoteRequest } from './ICommerceProvider.ts'
  * - Affiliate commission tracking
  */
 class InstacartProvider extends BaseCommerceProvider {
-  readonly id = 'INSTACART' as const;
+  readonly id = "INSTACART" as const;
 
-  async getQuote(request: QuoteRequest, config: ProviderConfig): Promise<ProviderQuote> {
+  async getQuote(
+    request: QuoteRequest,
+    config: ProviderConfig,
+  ): Promise<ProviderQuote> {
     // TODO: Replace with real Instacart API integration
     // For now, return deterministic mock data
-    
+
     const providerMeta: ProviderMeta = {
       id: this.id,
       name: config.name,
@@ -40,22 +46,28 @@ class InstacartProvider extends BaseCommerceProvider {
       providerSku: this.generateMockSku(this.id, item.name, idx),
       name: item.name,
       quantity: item.quantity,
-      unit: item.unit || 'pcs',
+      unit: item.unit || "pcs",
       priceCents: this.dollarsToCents(11.49), // Slightly cheaper than MealMe
       substituted: false,
     }));
 
     // Mock pricing
-    const subtotalCents = cart.reduce((sum, item) => sum + (item.priceCents * item.quantity), 0);
+    const subtotalCents = cart.reduce(
+      (sum, item) => sum + (item.priceCents * item.quantity),
+      0,
+    );
     const feesCents = this.dollarsToCents(5.99); // Instacart delivery fee
     const taxCents = Math.round(subtotalCents * 0.08); // 8% tax
     const totalCents = subtotalCents + feesCents + taxCents;
 
     // Mock availability
-    const itemAvailability: ItemAvailability[] = request.items.map((item, idx) => ({
+    const itemAvailability: ItemAvailability[] = request.items.map((
+      item,
+      idx,
+    ) => ({
       clientItemId: item.id,
       requestedItem: item.name,
-      status: 'found' as const,
+      status: "found" as const,
       inStock: true,
       providerSku: cart[idx].providerSku,
       foundProduct: {
@@ -66,7 +78,8 @@ class InstacartProvider extends BaseCommerceProvider {
     }));
 
     // Mock affiliate URL
-    const affiliateUrl = `https://www.instacart.com/store/checkout?cartId=mock-instacart-${Date.now()}&affId=LOOPGPT`;
+    const affiliateUrl =
+      `https://www.instacart.com/store/checkout?cartId=mock-instacart-${Date.now()}&affId=LOOPGPT`;
 
     return {
       provider: providerMeta,
@@ -77,7 +90,7 @@ class InstacartProvider extends BaseCommerceProvider {
         feesCents,
         taxCents,
         totalCents,
-        currency: 'USD',
+        currency: "USD",
         estimatedDeliveryMinutes: 52, // 45-60 min average
         // Legacy fields for backward compatibility
         subtotal: this.centsToDollars(subtotalCents),
@@ -92,7 +105,7 @@ class InstacartProvider extends BaseCommerceProvider {
       itemAvailability,
       affiliateUrl,
       raw: {
-        provider: 'instacart',
+        provider: "instacart",
         mock: true,
         timestamp: new Date().toISOString(),
       },
@@ -105,7 +118,7 @@ class InstacartProvider extends BaseCommerceProvider {
   }
 
   override getName(): string {
-    return 'Instacart';
+    return "Instacart";
   }
 }
 

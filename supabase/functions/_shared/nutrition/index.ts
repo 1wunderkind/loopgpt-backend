@@ -1,11 +1,11 @@
 /**
  * Nutrition Engine - Public API
- * 
+ *
  * Single entry point for all nutrition-related functionality.
- * 
+ *
  * Usage:
  *   import { estimateRecipeNutrition } from "../_shared/nutrition/index.ts";
- *   
+ *
  *   const result = estimateRecipeNutrition({
  *     recipeName: "Chicken and Rice",
  *     servings: 4,
@@ -14,7 +14,7 @@
  *       { name: "rice", quantity: 2, unit: "cup" },
  *     ],
  *   });
- * 
+ *
  * Part of: Step 4 - Deterministic Nutrition Engine
  */
 
@@ -23,15 +23,15 @@
 // ============================================================================
 
 export {
-  estimateRecipeNutrition,
-  estimateMultipleRecipes,
-  aggregateRecipeNutrition,
-  lookupIngredient,
-  convertToBaseUnit,
-  calculateIngredientMacros,
   aggregateMacros,
   aggregateMicronutrients,
+  aggregateRecipeNutrition,
   calculateConfidence,
+  calculateIngredientMacros,
+  convertToBaseUnit,
+  estimateMultipleRecipes,
+  estimateRecipeNutrition,
+  lookupIngredient,
 } from "./engine.ts";
 
 // ============================================================================
@@ -39,14 +39,14 @@ export {
 // ============================================================================
 
 export {
+  checkDietCompliance,
+  checkDietViolations,
+  DIET_TAG_DESCRIPTIONS,
+  getDietTagDescription,
+  getDietTagDescriptions,
   getDietTags,
   getIngredientBasedTags,
   getMacroBasedTags,
-  checkDietCompliance,
-  checkDietViolations,
-  getDietTagDescription,
-  getDietTagDescriptions,
-  DIET_TAG_DESCRIPTIONS,
 } from "./tags.ts";
 
 // ============================================================================
@@ -54,9 +54,9 @@ export {
 // ============================================================================
 
 export {
-  normalizeIngredientName,
   FOOD_DATABASE,
   INGREDIENT_SYNONYMS,
+  normalizeIngredientName,
   UNIT_CONVERSIONS,
 } from "./dictionary.ts";
 
@@ -65,26 +65,24 @@ export {
 // ============================================================================
 
 export type {
-  // Input types
-  RecipeNutritionInput,
-  IngredientQuantity,
-  
-  // Output types
-  RecipeNutritionResult,
-  Macros,
-  Micronutrients,
-  DietTag,
   ConfidenceLevel,
-  
+  DietTag,
   // Internal types
   FoodEntry,
   IngredientFlags,
   IngredientLookupResult,
+  IngredientQuantity,
+  Macros,
+  Micronutrients,
+  // Input types
+  RecipeNutritionInput,
+  // Output types
+  RecipeNutritionResult,
   UnitConversion,
 } from "./types.ts";
 
 export {
-  DIET_TAG_THRESHOLDS,
   CONFIDENCE_THRESHOLDS,
+  DIET_TAG_THRESHOLDS,
   ROUNDING_CONFIG,
 } from "./types.ts";

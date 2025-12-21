@@ -40,16 +40,16 @@ export interface LearningEvent {
 export class LearningLoop {
   static async emitLearningEvent(
     event: Omit<LearningEvent, "timestamp">,
-    logger: Logger
+    logger: Logger,
   ): Promise<void> {
     const fullEvent: LearningEvent = {
       ...event,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     logger.info("Learning Event", {
       type: "LEARNING_EVENT",
-      ...fullEvent
+      ...fullEvent,
     });
 
     // In real impl: await supabase.from('learning_events').insert(fullEvent)

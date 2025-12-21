@@ -47,7 +47,7 @@ export const NutritionAnalysisSchema = z.object({
       summary: NutritionSummarySchema,
       confidence: z.enum(["low", "medium", "high"]),
       perServing: NutritionSummarySchema.optional(),
-    })
+    }),
   ),
   total: NutritionSummarySchema.optional(),
 });
@@ -56,7 +56,8 @@ export const MealPlanRequestSchema = z.object({
   version: z.enum(["v1"]).default("v1"),
   days: z.number().int().min(1).max(30),
   caloriesPerDay: z.number().int().min(800).max(5000).optional(),
-  goal: z.enum(["weight_loss", "muscle_gain", "general_health", "maintenance"]).optional(),
+  goal: z.enum(["weight_loss", "muscle_gain", "general_health", "maintenance"])
+    .optional(),
   dietTags: z.array(z.string()).optional(),
   excludeIngredients: z.array(z.string()).optional(),
 });
@@ -69,7 +70,7 @@ export const MealPlanSchema = z.object({
       recipes: RecipeListSchema,
       nutrition: NutritionSummarySchema.optional(),
       notes: z.string().optional(),
-    })
+    }),
   ),
   totalNutrition: NutritionSummarySchema.optional(),
   summary: z.string().optional(),
@@ -97,7 +98,10 @@ export const GroceryListSchema = z.object({
 
 export const RecipesInputSchema = z.object({
   version: z.enum(["v1"]).default("v1"),
-  ingredients: z.array(IngredientSchema).min(1, "At least one ingredient required"),
+  ingredients: z.array(IngredientSchema).min(
+    1,
+    "At least one ingredient required",
+  ),
   dietaryTags: z.array(z.string()).optional(),
   excludeIngredients: z.array(z.string()).optional(),
   maxRecipes: z.number().int().min(1).max(10).default(3),
@@ -133,11 +137,14 @@ export const MealPlanWithGroceryInputSchema = MealPlanRequestSchema.extend({
 export const HealthCheckSchema = z.object({
   status: z.enum(["healthy", "degraded", "unhealthy"]),
   timestamp: z.string(),
-  services: z.record(z.string(), z.object({
-    available: z.boolean(),
-    latencyMs: z.number().optional(),
-    error: z.string().optional(),
-  })),
+  services: z.record(
+    z.string(),
+    z.object({
+      available: z.boolean(),
+      latencyMs: z.number().optional(),
+      error: z.string().optional(),
+    }),
+  ),
 });
 
 export const UsageStatsSchema = z.object({

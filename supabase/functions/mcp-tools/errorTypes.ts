@@ -1,6 +1,6 @@
 /**
  * Error Types for MCP Tools
- * 
+ *
  * Categorizes errors for better logging, monitoring, and handling.
  */
 
@@ -34,7 +34,7 @@ export class McpError extends Error {
     type: ErrorType,
     message: string,
     toolName: string,
-    originalError?: unknown
+    originalError?: unknown,
   ) {
     super(message);
     this.name = "McpError";
@@ -99,38 +99,50 @@ export class UnexpectedError extends McpError {
  */
 export function categorizeError(error: unknown, toolName: string): McpError {
   const err = error as Record<string, unknown>;
-  const message = typeof err?.message === 'string' ? err.message : '';
-  const status = typeof err?.status === 'number' ? err.status : 0;
+  const message = typeof err?.message === "string" ? err.message : "";
+  const status = typeof err?.status === "number" ? err.status : 0;
 
   // OpenAI errors
-  if (message.includes("OpenAI") || 
-      message.includes("rate limit") ||
-      message.includes("model") ||
-      status === 429 ||
-      status === 503) {
+  if (
+    message.includes("OpenAI") ||
+    message.includes("rate limit") ||
+    message.includes("model") ||
+    status === 429 ||
+    status === 503
+  ) {
     return new OpenAiError(message || "OpenAI API error", toolName, error);
   }
 
   // Validation errors
-  if (message.includes("validation") ||
-      message.includes("invalid") ||
-      message.includes("required") ||
-      message.includes("schema")) {
+  if (
+    message.includes("validation") ||
+    message.includes("invalid") ||
+    message.includes("required") ||
+    message.includes("schema")
+  ) {
     return new ValidationError(message || "Validation error", toolName, error);
   }
 
   // Cache errors
-  if (message.includes("cache") ||
-      message.includes("Postgres") ||
-      message.includes("database")) {
+  if (
+    message.includes("cache") ||
+    message.includes("Postgres") ||
+    message.includes("database")
+  ) {
     return new CacheError(message || "Cache error", toolName, error);
   }
 
   // External API errors
-  if (message.includes("API") ||
-      message.includes("fetch") ||
-      message.includes("network")) {
-    return new ExternalApiError(message || "External API error", toolName, error);
+  if (
+    message.includes("API") ||
+    message.includes("fetch") ||
+    message.includes("network")
+  ) {
+    return new ExternalApiError(
+      message || "External API error",
+      toolName,
+      error,
+    );
   }
 
   // Default: unexpected error
@@ -143,10 +155,10 @@ export function categorizeError(error: unknown, toolName: string): McpError {
 export function logStructuredError(
   error: McpError,
   fallbackUsed: boolean,
-  durationMs: number
+  durationMs: number,
 ): void {
-  const originalErrorMsg = error.originalError instanceof Error 
-    ? error.originalError.message 
+  const originalErrorMsg = error.originalError instanceof Error
+    ? error.originalError.message
     : String(error.originalError);
 
   const structuredError: StructuredError = {
@@ -171,7 +183,7 @@ export function logStructuredError(
 export function logSuccess(
   toolName: string,
   durationMs: number,
-  metadata: Record<string, unknown> = {}
+  metadata: Record<string, unknown> = {},
 ): void {
   console.log(JSON.stringify({
     level: "info",
@@ -189,7 +201,7 @@ export function logCtaClick(
   ctaId: string,
   sourceType: string, // recipes, mealplan, grocery, nutrition
   toolInvoked: string,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ) {
   console.log(
     JSON.stringify({
@@ -200,7 +212,7 @@ export function logCtaClick(
       toolInvoked,
       timestamp: new Date().toISOString(),
       ...metadata,
-    })
+    }),
   );
 }
 
@@ -210,7 +222,7 @@ export function logCtaClick(
 export function logCtaImpression(
   sourceType: string,
   ctaIds: string[],
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ) {
   console.log(
     JSON.stringify({
@@ -221,6 +233,6 @@ export function logCtaImpression(
       ctaCount: ctaIds.length,
       timestamp: new Date().toISOString(),
       ...metadata,
-    })
+    }),
   );
 }

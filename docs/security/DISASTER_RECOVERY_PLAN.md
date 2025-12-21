@@ -1,15 +1,17 @@
 # Disaster Recovery Plan
 
-**Project:** LoopGPT  
-**Version:** 1.0  
-**Last Updated:** December 2, 2024  
+**Project:** LoopGPT\
+**Version:** 1.0\
+**Last Updated:** December 2, 2024\
 **Owner:** Operations Team
 
 ---
 
 ## Executive Summary
 
-This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services in the event of a disaster. The plan defines recovery objectives, procedures, and responsibilities.
+This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
+in the event of a disaster. The plan defines recovery objectives, procedures,
+and responsibilities.
 
 ### Recovery Objectives
 
@@ -26,11 +28,13 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 **Scenario:** Supabase database becomes unavailable or corrupted
 
 **Impact:**
+
 - All data access fails
 - Orders cannot be processed
 - Users cannot log in
 
 **Recovery Procedure:**
+
 1. Verify database status in Supabase Dashboard
 2. Check Supabase status page: https://status.supabase.com
 3. If Supabase outage: Wait for resolution (ETA from status page)
@@ -40,7 +44,7 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
    - Resume operations
 5. Notify users of service restoration
 
-**Recovery Time:** 1-2 hours  
+**Recovery Time:** 1-2 hours\
 **Data Loss:** < 1 hour (last backup)
 
 ---
@@ -50,11 +54,13 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 **Scenario:** Supabase Edge Functions become unavailable
 
 **Impact:**
+
 - API endpoints fail
 - Orders cannot be placed
 - Food search unavailable
 
 **Recovery Procedure:**
+
 1. Check Edge Functions status in Supabase Dashboard
 2. Review error logs in Sentry
 3. If deployment issue:
@@ -66,21 +72,24 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 5. Verify all endpoints working
 6. Notify users of service restoration
 
-**Recovery Time:** 30 minutes - 2 hours  
+**Recovery Time:** 30 minutes - 2 hours\
 **Data Loss:** None
 
 ---
 
 ### 3. Provider API Outage
 
-**Scenario:** One or more provider APIs (Instacart, Shipt, etc.) become unavailable
+**Scenario:** One or more provider APIs (Instacart, Shipt, etc.) become
+unavailable
 
 **Impact:**
+
 - Reduced provider options
 - Some orders may fail
 - Automatic fallback to other providers
 
 **Recovery Procedure:**
+
 1. Monitor provider status
 2. Verify automatic fallback working
 3. If all providers down:
@@ -91,7 +100,7 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
    - Resume normal operations
 5. Notify affected users
 
-**Recovery Time:** Depends on provider  
+**Recovery Time:** Depends on provider\
 **Data Loss:** None (orders queued)
 
 ---
@@ -101,11 +110,13 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 **Scenario:** All LoopGPT services become unavailable
 
 **Impact:**
+
 - Complete service unavailability
 - No user access
 - No order processing
 
 **Recovery Procedure:**
+
 1. Assess scope of outage
 2. Check all infrastructure components:
    - Supabase (database + edge functions)
@@ -121,7 +132,7 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 6. Conduct post-mortem
 7. Notify all users
 
-**Recovery Time:** 2-4 hours  
+**Recovery Time:** 2-4 hours\
 **Data Loss:** < 1 hour
 
 ---
@@ -131,11 +142,13 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 **Scenario:** Unauthorized access to user data
 
 **Impact:**
+
 - User data compromised
 - Legal/compliance implications
 - Reputation damage
 
 **Recovery Procedure:**
+
 1. **Immediate (0-1 hour):**
    - Isolate affected systems
    - Revoke compromised credentials
@@ -160,7 +173,7 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
    - Conduct post-mortem
    - Update security policies
 
-**Recovery Time:** 1-7 days  
+**Recovery Time:** 1-7 days\
 **Data Loss:** Depends on breach scope
 
 ---
@@ -170,18 +183,21 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 ### Database Backups
 
 **Supabase Automatic Backups:**
+
 - Frequency: Daily
 - Retention: 7 days (free tier) / 30 days (pro tier)
 - Type: Full database backup
 - Location: Supabase infrastructure
 
 **Manual Backups:**
+
 - Frequency: Before major changes
 - Retention: 90 days
 - Type: Database dump
 - Location: External storage (S3)
 
 **Backup Verification:**
+
 - Test restore: Monthly
 - Verify integrity: Weekly
 - Document results: All tests
@@ -189,12 +205,14 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 ### Code Backups
 
 **Git Repository:**
+
 - Frequency: Every commit
 - Retention: Unlimited
 - Location: GitHub
 - Branches: main, develop, feature/*
 
 **Deployment Backups:**
+
 - Frequency: Every deployment
 - Retention: Last 10 deployments
 - Location: Supabase
@@ -202,11 +220,13 @@ This Disaster Recovery (DR) Plan outlines procedures to restore LoopGPT services
 ### Configuration Backups
 
 **Environment Variables:**
+
 - Frequency: On change
 - Retention: Version controlled
 - Location: Secure vault + Git (encrypted)
 
 **Infrastructure Config:**
+
 - Frequency: On change
 - Retention: Version controlled
 - Location: Git repository
@@ -287,11 +307,13 @@ supabase functions deploy --project-ref xxx
 ### Internal Communication
 
 **Incident Notification:**
+
 1. Slack: #incidents channel
 2. Email: ops@loopgpt.ai
 3. Phone: On-call engineer
 
 **Status Updates:**
+
 - Frequency: Every 30 minutes during incident
 - Channel: Slack #incidents
 - Content: Current status, ETA, actions taken
@@ -299,12 +321,14 @@ supabase functions deploy --project-ref xxx
 ### External Communication
 
 **User Notification:**
+
 1. Status page: status.loopgpt.ai
 2. Email: All affected users
 3. In-app: Banner notification
 4. Social media: Twitter, etc.
 
 **Status Page Updates:**
+
 - Incident detected: Within 5 minutes
 - Investigation update: Every 30 minutes
 - Resolution: Within 5 minutes
@@ -312,6 +336,7 @@ supabase functions deploy --project-ref xxx
 **Email Templates:**
 
 **Incident Notification:**
+
 ```
 Subject: LoopGPT Service Issue - [DATE]
 
@@ -331,6 +356,7 @@ The LoopGPT Team
 ```
 
 **Resolution Notification:**
+
 ```
 Subject: LoopGPT Service Restored - [DATE]
 
@@ -354,24 +380,28 @@ The LoopGPT Team
 ## Roles and Responsibilities
 
 ### Incident Commander
+
 - Declare disaster
 - Coordinate recovery efforts
 - Make critical decisions
 - Communicate with stakeholders
 
 ### Technical Lead
+
 - Assess technical impact
 - Execute recovery procedures
 - Verify system restoration
 - Document technical details
 
 ### Communications Lead
+
 - Update status page
 - Send user notifications
 - Handle media inquiries
 - Coordinate internal communication
 
 ### Support Lead
+
 - Monitor support channels
 - Respond to user inquiries
 - Escalate critical issues
@@ -386,12 +416,14 @@ The LoopGPT Team
 **Frequency:** Quarterly
 
 **Test Scenarios:**
+
 1. Database restore test
 2. Edge function rollback test
 3. Complete service recovery test
 4. Communication plan test
 
 **Test Procedure:**
+
 1. Schedule test (non-peak hours)
 2. Execute test scenario
 3. Document results
@@ -401,11 +433,13 @@ The LoopGPT Team
 ### Plan Maintenance
 
 **Review Schedule:**
+
 - Quarterly: Full plan review
 - After incidents: Update based on lessons learned
 - After major changes: Update affected procedures
 
 **Update Process:**
+
 1. Identify changes needed
 2. Draft updates
 3. Review with team
@@ -422,11 +456,13 @@ The LoopGPT Team
 **Timeline:** Within 48 hours of incident resolution
 
 **Participants:**
+
 - Incident Commander
 - Technical Lead
 - All involved team members
 
 **Agenda:**
+
 1. Incident timeline
 2. Root cause analysis
 3. Impact assessment
@@ -435,6 +471,7 @@ The LoopGPT Team
 6. Action items
 
 **Deliverables:**
+
 - Post-mortem report
 - Action items with owners and deadlines
 - DR plan updates
@@ -442,12 +479,14 @@ The LoopGPT Team
 ### Continuous Improvement
 
 **Action Items:**
+
 - Assign owners
 - Set deadlines
 - Track progress
 - Verify completion
 
 **DR Plan Updates:**
+
 - Incorporate lessons learned
 - Update procedures
 - Add new scenarios
@@ -460,36 +499,41 @@ The LoopGPT Team
 ### A. Contact Information
 
 **On-Call Rotation:**
+
 - Primary: [Name] - [Phone]
 - Secondary: [Name] - [Phone]
 - Escalation: [Name] - [Phone]
 
 **External Contacts:**
+
 - Supabase Support: support@supabase.io
 - Provider Support: [Contact info]
 
 ### B. System Access
 
 **Supabase Dashboard:**
+
 - URL: https://supabase.com/dashboard
 - Project: qmagnwxeijctkksqbcqz
 
 **GitHub Repository:**
+
 - URL: https://github.com/loopgpt/backend
 - Access: Team members
 
 **AWS S3 (Backups):**
+
 - Bucket: loopgpt-backups
 - Region: us-east-1
 
 ### C. Runbooks
 
-**Database Restore Runbook:** See Database Recovery section  
-**Edge Function Rollback Runbook:** See Edge Function Recovery section  
+**Database Restore Runbook:** See Database Recovery section\
+**Edge Function Rollback Runbook:** See Edge Function Recovery section\
 **Provider Failover Runbook:** See Provider API Outage section
 
 ---
 
-**Plan Status:** ACTIVE  
-**Next Review:** March 2, 2025  
+**Plan Status:** ACTIVE\
+**Next Review:** March 2, 2025\
 **Version:** 1.0

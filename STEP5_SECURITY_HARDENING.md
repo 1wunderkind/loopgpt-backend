@@ -1,16 +1,17 @@
-
-
 # Step 5: Rate Limiting & Security Hardening
 
-**Status:** ✅ Complete  
-**Date:** December 14, 2025  
+**Status:** ✅ Complete\
+**Date:** December 14, 2025\
 **Author:** Manus AI
 
 ---
 
 ## Overview
 
-This document describes the implementation of **Step 5: Rate Limiting & Security Hardening** for the LoopGPT backend. This step adds production-grade security features to protect against abuse, ensure fair usage, and maintain audit trails for sensitive operations.
+This document describes the implementation of **Step 5: Rate Limiting & Security
+Hardening** for the LoopGPT backend. This step adds production-grade security
+features to protect against abuse, ensure fair usage, and maintain audit trails
+for sensitive operations.
 
 ### Goals
 
@@ -101,11 +102,13 @@ CREATE TABLE analytics.rate_limit_counters (
 ```
 
 **Indexes:**
+
 - `idx_rate_limit_key` (unique) - Fast atomic upserts
 - `idx_rate_limit_window_start` - Cleanup old records
 - `idx_rate_limit_scope_subject` - Query by scope
 
-**Cleanup:** Automatic deletion of records older than 7 days via `cleanup_old_rate_limit_counters()` function.
+**Cleanup:** Automatic deletion of records older than 7 days via
+`cleanup_old_rate_limit_counters()` function.
 
 ### 2. Security Audit Events
 
@@ -125,12 +128,14 @@ CREATE TABLE analytics.security_audit_events (
 ```
 
 **Indexes:**
+
 - `idx_security_audit_events_created_at` - Query by time
 - `idx_security_audit_events_event_type` - Query by event type
 - `idx_security_audit_events_user_id` - Query by user
 - `idx_security_audit_events_tool_name` - Query by tool
 
-**Cleanup:** Automatic deletion of records older than 90 days via `cleanup_old_security_audit_events()` function.
+**Cleanup:** Automatic deletion of records older than 90 days via
+`cleanup_old_security_audit_events()` function.
 
 ---
 
@@ -138,7 +143,7 @@ CREATE TABLE analytics.security_audit_events (
 
 ### 1. Rate Limiting
 
-**Module:** `lib/rateLimit.ts`  
+**Module:** `lib/rateLimit.ts`\
 **Config:** `config/rateLimits.ts`
 
 #### Features
@@ -151,25 +156,25 @@ CREATE TABLE analytics.security_audit_events (
 
 #### Rate Limit Rules
 
-| Scope | Window | Limit | Description |
-|-------|--------|-------|-------------|
-| **Global IP** | Minute | 60 | Prevent DDoS |
-| **Global IP** | Hour | 500 | Fair usage |
-| **Global User** | Minute | 120 | Authenticated users get higher limits |
-| **Global User** | Day | 1,000 | Daily quota |
-| **Anonymous IP** | Minute | 30 | Stricter for unauthenticated |
-| **Anonymous IP** | Hour | 200 | Encourage sign-up |
+| Scope            | Window | Limit | Description                           |
+| ---------------- | ------ | ----- | ------------------------------------- |
+| **Global IP**    | Minute | 60    | Prevent DDoS                          |
+| **Global IP**    | Hour   | 500   | Fair usage                            |
+| **Global User**  | Minute | 120   | Authenticated users get higher limits |
+| **Global User**  | Day    | 1,000 | Daily quota                           |
+| **Anonymous IP** | Minute | 30    | Stricter for unauthenticated          |
+| **Anonymous IP** | Hour   | 200   | Encourage sign-up                     |
 
 #### Tool-Specific Limits
 
-| Tool | Limit | Reason |
-|------|-------|--------|
-| `search_restaurants` | 10/min/user, 30/min/IP | External API costs |
-| `place_order` | 5/min/user | Fraud prevention |
-| `confirm_order` | 5/min/user | Fraud prevention |
-| `get_affiliate_links` | 20/min/user | API quota |
-| `generate_week_plan` | 20/hour/user | LLM costs |
-| `estimate_recipe_nutrition` | 60/min/user | Cheap, deterministic |
+| Tool                        | Limit                  | Reason               |
+| --------------------------- | ---------------------- | -------------------- |
+| `search_restaurants`        | 10/min/user, 30/min/IP | External API costs   |
+| `place_order`               | 5/min/user             | Fraud prevention     |
+| `confirm_order`             | 5/min/user             | Fraud prevention     |
+| `get_affiliate_links`       | 20/min/user            | API quota            |
+| `generate_week_plan`        | 20/hour/user           | LLM costs            |
+| `estimate_recipe_nutrition` | 60/min/user            | Cheap, deterministic |
 
 #### Usage Example
 
@@ -203,7 +208,7 @@ if (decision && !decision.allowed) {
 
 ### 2. Input Validation
 
-**Module:** `lib/validation.ts`  
+**Module:** `lib/validation.ts`\
 **Schemas:** `schemas/*.ts`
 
 #### Features
@@ -246,8 +251,14 @@ export const SearchRestaurantsSchema = z.object({
     "retryable": false,
     "details": {
       "validationErrors": [
-        { "field": "query", "message": "String must contain at least 1 character(s)" },
-        { "field": "location.lat", "message": "Number must be less than or equal to 90" }
+        {
+          "field": "query",
+          "message": "String must contain at least 1 character(s)"
+        },
+        {
+          "field": "location.lat",
+          "message": "Number must be less than or equal to 90"
+        }
       ]
     }
   }
@@ -262,11 +273,11 @@ export const SearchRestaurantsSchema = z.object({
 
 #### Access Levels
 
-| Level | Description | Example Tools |
-|-------|-------------|---------------|
-| **public** | No auth required | `loopkitchen_recipes.generate`, `estimate_recipe_nutrition` |
-| **authenticated** | Requires user session | `log_meal`, `place_order`, `set_user_goals` |
-| **service_only** | Internal use only | `admin.delete_user_data`, `analytics.record_event` |
+| Level             | Description           | Example Tools                                               |
+| ----------------- | --------------------- | ----------------------------------------------------------- |
+| **public**        | No auth required      | `loopkitchen_recipes.generate`, `estimate_recipe_nutrition` |
+| **authenticated** | Requires user session | `log_meal`, `place_order`, `set_user_goals`                 |
+| **service_only**  | Internal use only     | `admin.delete_user_data`, `analytics.record_event`          |
 
 #### Tool Access Map
 
@@ -275,13 +286,13 @@ export const TOOL_ACCESS: Record<string, ToolAccess> = {
   // Public tools
   "loopkitchen_recipes.generate": "public",
   "estimate_recipe_nutrition": "public",
-  
+
   // Authenticated tools
   "log_meal": "authenticated",
   "log_weight": "authenticated",
   "place_order": "authenticated",
   "set_user_goals": "authenticated",
-  
+
   // Service-only tools
   "admin.delete_user_data": "service_only",
 };
@@ -318,11 +329,13 @@ if (!accessCheck.allowed) {
 #### Sensitive Keys
 
 Automatically redacted:
+
 - `authorization`, `token`, `bearer`, `jwt`, `session`, `cookie`
 - `apiKey`, `api_key`, `secret`, `password`, `pwd`
 - `card`, `cvv`, `cvc`, `ssn`, `license`
 
 Partially redacted (show last 4):
+
 - `email`, `phone`, `address`, `zip`
 
 #### Usage
@@ -369,18 +382,18 @@ console.log(safeStringify(sensitiveData));
 
 #### Audited Events
 
-| Event Type | Trigger | Metadata |
-|------------|---------|----------|
-| `ORDER_CONFIRMED` | `confirm_order` succeeds | orderId, provider, totalAmount |
-| `ORDER_CANCELLED` | `cancel_order` succeeds | orderId, provider, reason |
-| `ORDER_FAILED` | `place_order` fails | orderId, errorCode, errorMessage |
-| `GOAL_UPDATED` | `set_user_goals` | goalType, previousValue, newValue |
-| `WEIGHT_LOGGED` | `log_weight` | weight, unit, date |
-| `PROFILE_UPDATED` | `update_user_profile` | fieldsUpdated |
-| `MEAL_LOGGED` | `log_meal` | mealType, calories, timestamp |
-| `AUTH_FAILED` | Auth failure | reason, attemptedUserId |
-| `RATE_LIMIT_EXCEEDED` | Rate limit hit | rule, limit, window |
-| `UNAUTHORIZED_ACCESS` | Unauth attempt | reason, requiredAccess |
+| Event Type            | Trigger                  | Metadata                          |
+| --------------------- | ------------------------ | --------------------------------- |
+| `ORDER_CONFIRMED`     | `confirm_order` succeeds | orderId, provider, totalAmount    |
+| `ORDER_CANCELLED`     | `cancel_order` succeeds  | orderId, provider, reason         |
+| `ORDER_FAILED`        | `place_order` fails      | orderId, errorCode, errorMessage  |
+| `GOAL_UPDATED`        | `set_user_goals`         | goalType, previousValue, newValue |
+| `WEIGHT_LOGGED`       | `log_weight`             | weight, unit, date                |
+| `PROFILE_UPDATED`     | `update_user_profile`    | fieldsUpdated                     |
+| `MEAL_LOGGED`         | `log_meal`               | mealType, calories, timestamp     |
+| `AUTH_FAILED`         | Auth failure             | reason, attemptedUserId           |
+| `RATE_LIMIT_EXCEEDED` | Rate limit hit           | rule, limit, window               |
+| `UNAUTHORIZED_ACCESS` | Unauth attempt           | reason, requiredAccess            |
 
 #### Usage
 
@@ -397,7 +410,7 @@ await logOrderConfirmed(
     provider: "doordash",
     totalAmount: 29.99,
     restaurantName: "Pizza Palace",
-  }
+  },
 );
 ```
 
@@ -412,16 +425,24 @@ Provides single enforcement point for all security checks.
 #### Usage in MCP Handler
 
 ```typescript
-import { performSecurityChecks, extractSecurityContext } from "./lib/security.ts";
+import {
+  extractSecurityContext,
+  performSecurityChecks,
+} from "./lib/security.ts";
 
 // Extract context from request
-const context = await extractSecurityContext(req, toolName, userId, isServiceRole);
+const context = await extractSecurityContext(
+  req,
+  toolName,
+  userId,
+  isServiceRole,
+);
 
 if ("error" in context) {
   // Payload too large or invalid JSON
   return new Response(
     JSON.stringify(createSecurityErrorResponse(context.error)),
-    { status: 200, headers: corsHeaders }
+    { status: 200, headers: corsHeaders },
   );
 }
 
@@ -432,7 +453,7 @@ if (!securityResult.allowed) {
   // Security check failed (rate limit, validation, auth)
   return new Response(
     JSON.stringify(createSecurityErrorResponse(securityResult.error!)),
-    { status: 200, headers: corsHeaders }
+    { status: 200, headers: corsHeaders },
   );
 }
 
@@ -447,10 +468,12 @@ const result = await executeTool(toolName, context.requestBody);
 ### Step 1: Reliability & Error Envelopes
 
 ✅ **Extended `ToolErrorCode`** with new codes:
+
 - `RATE_LIMITED` - Rate limit exceeded
 - `UNAUTHORIZED` - Authentication required
 
 ✅ **Maintained error envelope format:**
+
 ```json
 {
   "success": false,
@@ -467,8 +490,9 @@ const result = await executeTool(toolName, context.requestBody);
 ### Step 2: Structured Logging
 
 ✅ **Used existing logger** for security events:
+
 ```typescript
-import { logWarn, logError } from "./logger.ts";
+import { logError, logWarn } from "./logger.ts";
 
 logWarn("Rate limit exceeded", {
   source: "security",
@@ -482,6 +506,7 @@ logWarn("Rate limit exceeded", {
 ### Step 3: Commerce Routing
 
 ✅ **Applied stricter rate limits** to commerce tools:
+
 - `place_order`: 5/min/user
 - `confirm_order`: 5/min/user
 - `cancel_order`: 10/min/user
@@ -491,6 +516,7 @@ logWarn("Rate limit exceeded", {
 ### Step 4: Deterministic Nutrition
 
 ✅ **Higher rate limits** for cheap, deterministic operations:
+
 - `estimate_recipe_nutrition`: 60/min/user
 - `nutrition.analyze`: 60/min/user
 
@@ -516,14 +542,14 @@ deno run --allow-net --allow-env scripts/security-smoke-test.ts
 
 ### Test Coverage
 
-| Test | Description | Expected Result |
-|------|-------------|-----------------|
-| **Rate Limiting** | Make 65 requests to trigger 60/min limit | Some requests blocked with `RATE_LIMITED` |
-| **Input Validation** | Send invalid input to `search_restaurants` | Blocked with `VALIDATION_ERROR` |
-| **Auth Enforcement** | Call `log_meal` without token | Blocked with `UNAUTHORIZED` |
-| **Payload Size** | Send 300 KB payload | Blocked with `VALIDATION_ERROR` |
-| **Audit Logging** | Call `set_user_goals` | Event logged to `security_audit_events` |
-| **Public Access** | Call `estimate_recipe_nutrition` without token | Succeeds |
+| Test                 | Description                                    | Expected Result                           |
+| -------------------- | ---------------------------------------------- | ----------------------------------------- |
+| **Rate Limiting**    | Make 65 requests to trigger 60/min limit       | Some requests blocked with `RATE_LIMITED` |
+| **Input Validation** | Send invalid input to `search_restaurants`     | Blocked with `VALIDATION_ERROR`           |
+| **Auth Enforcement** | Call `log_meal` without token                  | Blocked with `UNAUTHORIZED`               |
+| **Payload Size**     | Send 300 KB payload                            | Blocked with `VALIDATION_ERROR`           |
+| **Audit Logging**    | Call `set_user_goals`                          | Event logged to `security_audit_events`   |
+| **Public Access**    | Call `estimate_recipe_nutrition` without token | Succeeds                                  |
 
 ---
 
@@ -637,24 +663,24 @@ SELECT cron.schedule(
 
 ### New Files
 
-| File | Purpose |
-|------|---------|
-| `supabase/migrations/20251214_step5_security_hardening.sql` | Database schema for rate limiting and audit logging |
-| `supabase/functions/mcp-server/lib/rateLimit.ts` | Rate limiting module |
-| `supabase/functions/mcp-server/lib/validation.ts` | Input validation module |
-| `supabase/functions/mcp-server/lib/redact.ts` | Secrets redaction utility |
-| `supabase/functions/mcp-server/lib/security.ts` | Central security middleware |
-| `supabase/functions/mcp-server/lib/auditLog.ts` | Security audit logging |
-| `supabase/functions/mcp-server/config/rateLimits.ts` | Rate limit configuration |
-| `supabase/functions/mcp-server/config/toolAccess.ts` | Tool access control |
-| `supabase/functions/mcp-server/schemas/search_restaurants.ts` | Example input schema |
-| `scripts/security-smoke-test.ts` | Security smoke tests |
-| `STEP5_SECURITY_HARDENING.md` | This documentation |
+| File                                                          | Purpose                                             |
+| ------------------------------------------------------------- | --------------------------------------------------- |
+| `supabase/migrations/20251214_step5_security_hardening.sql`   | Database schema for rate limiting and audit logging |
+| `supabase/functions/mcp-server/lib/rateLimit.ts`              | Rate limiting module                                |
+| `supabase/functions/mcp-server/lib/validation.ts`             | Input validation module                             |
+| `supabase/functions/mcp-server/lib/redact.ts`                 | Secrets redaction utility                           |
+| `supabase/functions/mcp-server/lib/security.ts`               | Central security middleware                         |
+| `supabase/functions/mcp-server/lib/auditLog.ts`               | Security audit logging                              |
+| `supabase/functions/mcp-server/config/rateLimits.ts`          | Rate limit configuration                            |
+| `supabase/functions/mcp-server/config/toolAccess.ts`          | Tool access control                                 |
+| `supabase/functions/mcp-server/schemas/search_restaurants.ts` | Example input schema                                |
+| `scripts/security-smoke-test.ts`                              | Security smoke tests                                |
+| `STEP5_SECURITY_HARDENING.md`                                 | This documentation                                  |
 
 ### Modified Files
 
-| File | Changes |
-|------|---------|
+| File                                               | Changes                                             |
+| -------------------------------------------------- | --------------------------------------------------- |
 | `supabase/functions/mcp-server/lib/reliability.ts` | Added `RATE_LIMITED` and `UNAUTHORIZED` error codes |
 
 ---
@@ -680,7 +706,8 @@ SELECT cron.schedule(
 
 1. **Add more input schemas** for critical tools
 2. **Set up monitoring dashboards** for rate limits and security events
-3. **Configure alerting** for suspicious patterns (high rate limit hits, auth failures)
+3. **Configure alerting** for suspicious patterns (high rate limit hits, auth
+   failures)
 4. **Implement IP allowlisting** for trusted partners
 5. **Add CAPTCHA** for anonymous users hitting rate limits
 6. **Implement exponential backoff** suggestions in rate limit errors
@@ -697,7 +724,8 @@ SELECT cron.schedule(
 
 ## Conclusion
 
-Step 5 successfully implements production-grade security hardening for the LoopGPT backend. The implementation:
+Step 5 successfully implements production-grade security hardening for the
+LoopGPT backend. The implementation:
 
 - ✅ Protects against abuse with multi-scope rate limiting
 - ✅ Ensures data integrity with input validation

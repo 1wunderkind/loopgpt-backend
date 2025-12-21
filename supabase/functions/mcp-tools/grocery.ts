@@ -5,22 +5,32 @@
 
 import OpenAI from "openai";
 import { cacheGet, cacheSet } from "./cache.ts";
-import { categorizeError, logStructuredError, logSuccess, logCtaImpression } from "./errorTypes.ts";
+import {
+  categorizeError,
+  logCtaImpression,
+  logStructuredError,
+  logSuccess,
+} from "./errorTypes.ts";
 import { getFallbackGroceryList } from "./fallbacks.ts";
-import { generateGroceryCtas, addCtasToResponse } from "./ctaSchemas.ts";
-import { validatePantry, type Pantry } from "./commerceSchemas.ts";
-import { detectMissingIngredients, annotateGroceryListWithMissing, getMissingSummary } from "./ingredientMatcher.ts";
+import { addCtasToResponse, generateGroceryCtas } from "./ctaSchemas.ts";
+import { type Pantry, validatePantry } from "./commerceSchemas.ts";
+import {
+  annotateGroceryListWithMissing,
+  detectMissingIngredients,
+  getMissingSummary,
+} from "./ingredientMatcher.ts";
 import { withTimeout } from "../mcp-server/lib/reliability.ts";
 
 // Simple input validation
 function validateGroceryInput(params: Record<string, any>) {
-  const hasRecipes = params.recipes && Array.isArray(params.recipes) && params.recipes.length > 0;
-  const hasMealPlan = params.mealPlan && typeof params.mealPlan === 'object';
-  
+  const hasRecipes = params.recipes && Array.isArray(params.recipes) &&
+    params.recipes.length > 0;
+  const hasMealPlan = params.mealPlan && typeof params.mealPlan === "object";
+
   if (!hasRecipes && !hasMealPlan) {
     throw new Error("Either recipes array or mealPlan object is required");
   }
-  
+
   return {
     recipes: params.recipes || [],
     mealPlan: params.mealPlan || null,
@@ -37,66 +47,76 @@ const GroceryListJsonSchema = {
     list: {
       type: "object",
       properties: {
-    id: { type: "string" },
-    name: { type: "string" },
-    totalItems: { type: "number" },
-    categories: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          name: { type: "string" },
+        id: { type: "string" },
+        name: { type: "string" },
+        totalItems: { type: "number" },
+        categories: {
+          type: "array",
           items: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                name: { type: "string" },
-                quantity: { type: "string" },
-                unit: { type: "string" },
-                notes: { type: "string" },
-                usedIn: {
-                  type: "array",
-                  items: { type: "string" }
-                }
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              items: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    quantity: { type: "string" },
+                    unit: { type: "string" },
+                    notes: { type: "string" },
+                    usedIn: {
+                      type: "array",
+                      items: { type: "string" },
+                    },
+                  },
+                  required: ["name", "quantity", "unit", "notes", "usedIn"],
+                  additionalProperties: false,
+                },
               },
-              required: ["name", "quantity", "unit", "notes", "usedIn"],
-              additionalProperties: false
-            }
-          }
+            },
+            required: ["name", "items"],
+            additionalProperties: false,
+          },
         },
-        required: ["name", "items"],
-        additionalProperties: false
-      }
-    },
-    estimatedCost: { type: "number" },
-    tips: {
-      type: "array",
-      items: { type: "string" }
-    }
+        estimatedCost: { type: "number" },
+        tips: {
+          type: "array",
+          items: { type: "string" },
+        },
       },
-      required: ["id", "name", "totalItems", "categories", "estimatedCost", "tips"],
-      additionalProperties: false
-    }
+      required: [
+        "id",
+        "name",
+        "totalItems",
+        "categories",
+        "estimatedCost",
+        "tips",
+      ],
+      additionalProperties: false,
+    },
   },
   required: ["list"],
-  additionalProperties: false
+  additionalProperties: false,
 };
 
 export async function generateGroceryList(params: Record<string, any>) {
   const startTime = Date.now();
-  
+
   try {
     console.log("[grocery.list] Starting...", { params });
-    
+
     // Validate input
     const input = validateGroceryInput(params);
-    
+
     // Generate cache key from recipes/mealplan
-    const recipeIds = input.recipes.map((r: { id?: string; name?: string }) => r.id || r.name).join(',');
-    const mealPlanId = input.mealPlan?.id || input.mealPlan?.name || '';
-    const cacheKey = `grocery:${recipeIds}:${mealPlanId}:${input.servings}`.substring(0, 200);
-    
+    const recipeIds = input.recipes.map((r: { id?: string; name?: string }) =>
+      r.id || r.name
+    ).join(",");
+    const mealPlanId = input.mealPlan?.id || input.mealPlan?.name || "";
+    const cacheKey = `grocery:${recipeIds}:${mealPlanId}:${input.servings}`
+      .substring(0, 200);
+
     // Check cache first
     const cached = await cacheGet(cacheKey);
     if (cached) {
@@ -109,17 +129,18 @@ export async function generateGroceryList(params: Record<string, any>) {
       });
       return list;
     }
-    
+
     // Cache miss - generate grocery list
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) {
       throw new Error("OPENAI_API_KEY not configured");
     }
-    
+
     const client = new OpenAI({ apiKey });
-    
+
     // Build prompts
-    const systemPrompt = `You are TheLoopGPT's grocery list generator. Create organized, practical shopping lists from recipes or meal plans.
+    const systemPrompt =
+      `You are TheLoopGPT's grocery list generator. Create organized, practical shopping lists from recipes or meal plans.
 
 Rules:
 - Consolidate duplicate ingredients (e.g., "2 cups milk" + "1 cup milk" = "3 cups milk")
@@ -131,59 +152,83 @@ Rules:
 - Use standard grocery quantities (e.g., "1 lb" not "453g")`;
 
     let sourceText = "";
-    
+
     if (input.recipes.length > 0) {
-      sourceText = `Recipes:\n${input.recipes.map((r: { name?: string; ingredients?: { name: string; quantity?: string }[] }, i: number) => {
-        const ingredients = r.ingredients?.map((ing) => 
-          `- ${ing.quantity || ''} ${ing.name}`.trim()
-        ).join('\n') || 'No ingredients';
-        
-        return `${i + 1}. ${r.name || 'Unnamed Recipe'}\n${ingredients}`;
-      }).join('\n\n')}`;
-    }
-    
-    if (input.mealPlan) {
-      const days = input.mealPlan.days || [];
-      sourceText += `\n\nMeal Plan: ${input.mealPlan.name || 'Unnamed Plan'}\n`;
-      sourceText += days.map((day: { dayNumber: number; meals?: { mealType: string; recipeName: string; ingredients?: { name: string; quantity?: string }[] }[] }) => {
-        const meals = day.meals || [];
-        return `Day ${day.dayNumber}:\n${meals.map((m) => {
-          const ingredients = m.ingredients?.map((ing) => 
-            `  - ${ing.quantity || ''} ${ing.name}`.trim()
-          ).join('\n') || '';
-          return `${m.mealType}: ${m.recipeName}\n${ingredients}`;
-        }).join('\n')}`;
-      }).join('\n\n');
+      sourceText = `Recipes:\n${
+        input.recipes.map(
+          (
+            r: {
+              name?: string;
+              ingredients?: { name: string; quantity?: string }[];
+            },
+            i: number,
+          ) => {
+            const ingredients = r.ingredients?.map((ing) =>
+              `- ${ing.quantity || ""} ${ing.name}`.trim()
+            ).join("\n") || "No ingredients";
+
+            return `${i + 1}. ${r.name || "Unnamed Recipe"}\n${ingredients}`;
+          },
+        ).join("\n\n")
+      }`;
     }
 
-    const userPrompt = `Generate a grocery list for ${input.servings} serving(s).
+    if (input.mealPlan) {
+      const days = input.mealPlan.days || [];
+      sourceText += `\n\nMeal Plan: ${input.mealPlan.name || "Unnamed Plan"}\n`;
+      sourceText += days.map(
+        (
+          day: {
+            dayNumber: number;
+            meals?: {
+              mealType: string;
+              recipeName: string;
+              ingredients?: { name: string; quantity?: string }[];
+            }[];
+          },
+        ) => {
+          const meals = day.meals || [];
+          return `Day ${day.dayNumber}:\n${
+            meals.map((m) => {
+              const ingredients = m.ingredients?.map((ing) =>
+                `  - ${ing.quantity || ""} ${ing.name}`.trim()
+              ).join("\n") || "";
+              return `${m.mealType}: ${m.recipeName}\n${ingredients}`;
+            }).join("\n")
+          }`;
+        },
+      ).join("\n\n");
+    }
+
+    const userPrompt =
+      `Generate a grocery list for ${input.servings} serving(s).
 Group items by: ${input.groupBy}
 
 ${sourceText}`;
 
     console.log("[grocery.list] Calling OpenAI...");
-    
+
     // Call OpenAI with Structured Outputs (with 15s timeout)
     const completion = await withTimeout(
       client.chat.completions.create({
-      model: "gpt-4o-mini-2024-07-18",
-      temperature: 0.3,
-      max_tokens: 2000,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      response_format: {
-        type: "json_schema" as any,
-        json_schema: {
-          name: "grocery_list",
-          strict: true,
-          schema: GroceryListJsonSchema,
-        },
-      } as any,
-    }),
-    15000 // 15 second timeout
-  );
+        model: "gpt-4o-mini-2024-07-18",
+        temperature: 0.3,
+        max_tokens: 2000,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        response_format: {
+          type: "json_schema" as any,
+          json_schema: {
+            name: "grocery_list",
+            strict: true,
+            schema: GroceryListJsonSchema,
+          },
+        } as any,
+      }),
+      15000, // 15 second timeout
+    );
 
     const rawContent = completion.choices[0]?.message?.content;
     if (!rawContent) {
@@ -192,18 +237,23 @@ ${sourceText}`;
 
     const parsed = JSON.parse(rawContent);
     let list = parsed.list || parsed;
-    
+
     // Detect missing ingredients if pantry provided
     if (input.pantry && input.pantry.length > 0) {
       // Flatten all items from categories
-      const allItems = list.categories?.flatMap((cat: { items: unknown[] }) => cat.items) || [];
-      
+      const allItems = list.categories?.flatMap((cat: { items: unknown[] }) =>
+        cat.items
+      ) || [];
+
       // Annotate with missing status
-      const annotatedItems = annotateGroceryListWithMissing(allItems, input.pantry);
-      
+      const annotatedItems = annotateGroceryListWithMissing(
+        allItems,
+        input.pantry,
+      );
+
       // Detect missing ingredients
       const missingResult = detectMissingIngredients(allItems, input.pantry);
-      
+
       // Add missing info to list
       list = {
         ...list,
@@ -211,54 +261,58 @@ ${sourceText}`;
         missingCount: missingResult.totalMissing,
         availableCount: missingResult.totalAvailable,
         // Update categories with annotated items
-        categories: list.categories?.map((cat: { items: { name: string }[] }) => ({
+        categories: list.categories?.map((
+          cat: { items: { name: string }[] },
+        ) => ({
           ...cat,
           items: cat.items.map((item) => {
-            const annotated = annotatedItems.find((a: { name: string }) => a.name === item.name);
+            const annotated = annotatedItems.find((a: { name: string }) =>
+              a.name === item.name
+            );
             return annotated || item;
           }),
         })),
       };
     }
-    
+
     // Cache the result for 24 hours
     await cacheSet(cacheKey, JSON.stringify(list), 86400);
-    
+
     const duration = Date.now() - startTime;
     logSuccess("grocery.list", duration, {
       totalItems: list.totalItems,
       cached: false,
       fallbackUsed: false,
     });
-    
+
     // Add CTAs to successful response
     const ctas = generateGroceryCtas(list, input);
-    
+
     // Log CTA impression
-    logCtaImpression("grocery", ctas.map(c => c.id), {
+    logCtaImpression("grocery", ctas.map((c) => c.id), {
       totalItems: list.totalItems,
       cached: false,
     });
-    
+
     return addCtasToResponse(list, ctas);
   } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "grocery.list");
-    
+
     // Log structured error
     logStructuredError(categorized, true, duration);
-    
+
     // Return fallback grocery list instead of throwing
     console.warn("[grocery.list] Returning fallback grocery list due to error");
     const fallbackList = getFallbackGroceryList(params.recipes || []);
-    
+
     // Log fallback usage
     logSuccess("grocery.list", duration, {
       fallbackUsed: true,
       totalItems: fallbackList.totalItems,
       errorType: categorized.type,
     });
-    
+
     // Add CTAs to fallback response
     const ctasForFallback = generateGroceryCtas(fallbackList, params);
     return addCtasToResponse(fallbackList, ctasForFallback);

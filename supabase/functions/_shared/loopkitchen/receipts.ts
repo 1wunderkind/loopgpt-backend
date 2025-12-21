@@ -71,7 +71,9 @@ export class ReceiptManager {
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 
-  async createReceipt(receipt: Omit<OrderReceipt, "id" | "createdAt" | "status">): Promise<OrderReceipt> {
+  async createReceipt(
+    receipt: Omit<OrderReceipt, "id" | "createdAt" | "status">,
+  ): Promise<OrderReceipt> {
     const row: Omit<OrderReceiptRow, "id" | "created_at"> = {
       user_id: receipt.userId,
       provider_id: receipt.providerId,
@@ -111,7 +113,10 @@ export class ReceiptManager {
     return this.mapRowToReceipt(data);
   }
 
-  async updateStatus(id: string, status: OrderReceipt["status"]): Promise<void> {
+  async updateStatus(
+    id: string,
+    status: OrderReceipt["status"],
+  ): Promise<void> {
     const { error } = await this.supabase
       .from("order_receipts")
       .update({ status })

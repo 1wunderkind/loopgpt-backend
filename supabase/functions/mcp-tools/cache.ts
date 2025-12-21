@@ -11,15 +11,15 @@ function getSupabaseClient() {
   if (!supabaseClient) {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    
+
     if (!supabaseUrl || !supabaseKey) {
       console.warn("[cache] Supabase not configured, caching disabled");
       return null;
     }
-    
+
     supabaseClient = createClient(supabaseUrl, supabaseKey);
   }
-  
+
   return supabaseClient;
 }
 
@@ -31,41 +31,41 @@ export async function cacheGet(key: string): Promise<string | null> {
   try {
     const client = getSupabaseClient();
     if (!client) return null;
-    
+
     const { data, error } = await client
       .from("mcp_cache")
       .select("value, expires_at, hit_count")
       .eq("key", key)
       .single();
-    
+
     if (error) {
       // Table might not exist yet or no data found
-      if (error.code === 'PGRST116') {
+      if (error.code === "PGRST116") {
         return null;
       }
       console.error("[cache] Get error:", error.message);
       return null;
     }
-    
+
     if (!data) return null;
-    
+
     // Check expiration
     if (new Date(data.expires_at) < new Date()) {
       // Expired, delete it (fire and forget)
       client.from("mcp_cache").delete().eq("key", key).then(() => {});
       return null;
     }
-    
+
     // Increment hit count (fire and forget)
     client
       .from("mcp_cache")
-      .update({ 
+      .update({
         hit_count: (data.hit_count || 0) + 1,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq("key", key)
       .then(() => {});
-    
+
     console.log("[cache] Hit", { key, hitCount: data.hit_count + 1 });
     return data.value;
   } catch (error: any) {
@@ -80,13 +80,17 @@ export async function cacheGet(key: string): Promise<string | null> {
  * @param value - Value to cache (string)
  * @param ttlSeconds - Time to live in seconds (default: 1 hour)
  */
-export async function cacheSet(key: string, value: string, ttlSeconds: number = 86400): Promise<void> { // Default: 24 hours
+export async function cacheSet(
+  key: string,
+  value: string,
+  ttlSeconds: number = 86400,
+): Promise<void> { // Default: 24 hours
   try {
     const client = getSupabaseClient();
     if (!client) return;
-    
+
     const expiresAt = new Date(Date.now() + ttlSeconds * 1000).toISOString();
-    
+
     const { error } = await client
       .from("mcp_cache")
       .upsert({
@@ -94,17 +98,17 @@ export async function cacheSet(key: string, value: string, ttlSeconds: number = 
         value,
         expires_at: expiresAt,
         updated_at: new Date().toISOString(),
-        hit_count: 0
+        hit_count: 0,
       }, {
-        onConflict: 'key'
+        onConflict: "key",
       });
-    
+
     if (error) {
       console.error("[cache] Set error:", error.message);
       // Don't throw - caching failures shouldn't break the app
       return;
     }
-    
+
     console.log("[cache] Set", { key, ttlSeconds });
   } catch (error: any) {
     console.error("[cache] Set error:", error.message);
@@ -119,7 +123,7 @@ export async function cacheDelete(key: string): Promise<void> {
   try {
     const client = getSupabaseClient();
     if (!client) return;
-    
+
     await client.from("mcp_cache").delete().eq("key", key);
     console.log("[cache] Delete", { key });
   } catch (error: any) {
@@ -130,20 +134,23 @@ export async function cacheDelete(key: string): Promise<void> {
 /**
  * Get cache statistics
  */
-export async function cacheStats(): Promise<{totalEntries: number, totalHits: number} | null> {
+export async function cacheStats(): Promise<
+  { totalEntries: number; totalHits: number } | null
+> {
   try {
     const client = getSupabaseClient();
     if (!client) return null;
-    
+
     const { data, error } = await client
       .from("mcp_cache")
       .select("hit_count");
-    
+
     if (error) return null;
-    
+
     const totalEntries = data?.length || 0;
-    const totalHits = data?.reduce((sum: number, row: any) => sum + (row.hit_count || 0), 0) || 0;
-    
+    const totalHits = data?.reduce((sum: number, row: any) =>
+      sum + (row.hit_count || 0), 0) || 0;
+
     return { totalEntries, totalHits };
   } catch (error: any) {
     console.error("[cache] Stats error:", error.message);

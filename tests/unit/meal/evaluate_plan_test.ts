@@ -2,7 +2,7 @@
  * Unit Tests: Meal Planning - Evaluate Plan
  */
 
-import { assertEquals, assert } from "../../helpers.ts";
+import { assert, assertEquals } from "../../helpers.ts";
 
 Deno.test("evaluate: calculates plan quality score", async () => {
   const score = 85; // 0-100
@@ -29,13 +29,13 @@ Deno.test("evaluate: checks meal variety", async () => {
 
 Deno.test("evaluate: validates micronutrients", async () => {
   const vitamins = { vitamin_a: 80, vitamin_c: 120, vitamin_d: 60 };
-  const adequate = Object.values(vitamins).filter(v => v >= 70).length;
+  const adequate = Object.values(vitamins).filter((v) => v >= 70).length;
   assert(adequate >= 2); // At least 2 vitamins adequate
 });
 
 Deno.test("evaluate: checks portion sizes", async () => {
   const portions = [100, 150, 200];
-  assert(portions.every(p => p >= 50 && p <= 500));
+  assert(portions.every((p) => p >= 50 && p <= 500));
 });
 
 Deno.test("evaluate: validates meal timing", async () => {

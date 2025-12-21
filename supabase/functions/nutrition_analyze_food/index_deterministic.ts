@@ -2,13 +2,13 @@
  * TheLoop Nutrition - Deterministic Nutrition Analysis
  * ============================================================================
  * UPDATED VERSION using deterministic rule-based engine instead of LLM.
- * 
+ *
  * Changes from original:
  * - Uses estimateRecipeNutrition() from _shared/nutrition/
  * - No LLM calls for macro calculation (only for formatting)
  * - Deterministic results: same input → same output
  * - Faster response times (no OpenAI API latency)
- * 
+ *
  * Part of: Step 4 - Deterministic Nutrition Engine
  * ============================================================================
  */
@@ -16,7 +16,10 @@
 import { serve } from "std@0.177.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
 import { withOrderAPI } from "../_shared/security/applyMiddleware.ts";
-import { estimateRecipeNutrition, type RecipeNutritionInput } from "../_shared/nutrition/index.ts";
+import {
+  estimateRecipeNutrition,
+  type RecipeNutritionInput,
+} from "../_shared/nutrition/index.ts";
 
 // ============================================================================
 // Environment Configuration
@@ -53,9 +56,10 @@ interface IngredientInput {
 async function formatNutritionResponse(
   nutrition: any,
   recipeName: string,
-  ingredientNames: string[]
+  ingredientNames: string[],
 ): Promise<string> {
-  const systemPrompt = `You are TheLoop Nutrition, a nutrition analysis assistant that presents nutrition data in a clear, readable format.
+  const systemPrompt =
+    `You are TheLoop Nutrition, a nutrition analysis assistant that presents nutrition data in a clear, readable format.
 
 CRITICAL: You MUST respond in the SAME LANGUAGE as the recipe name and ingredients provided by the user.
 - If the recipe name is in Chinese, respond entirely in Chinese
@@ -151,7 +155,11 @@ interface DeliveryOption {
   cuisine_match: boolean;
 }
 
-function isHealthyRecipe(calories: number, protein: number, fiber: number): boolean {
+function isHealthyRecipe(
+  calories: number,
+  protein: number,
+  fiber: number,
+): boolean {
   return (
     calories < 600 &&
     protein >= 15 &&
@@ -159,18 +167,23 @@ function isHealthyRecipe(calories: number, protein: number, fiber: number): bool
   );
 }
 
-async function getHealthyDeliveryOptions(chatgpt_user_id: string): Promise<DeliveryOption[]> {
+async function getHealthyDeliveryOptions(
+  chatgpt_user_id: string,
+): Promise<DeliveryOption[]> {
   try {
-    const { data, error } = await supabase.functions.invoke('get_delivery_recommendations', {
-      body: {
-        chatgpt_user_id,
-        cuisine: 'healthy',
-        diet_preferences: ['low_calorie', 'high_protein'],
-      }
-    });
+    const { data, error } = await supabase.functions.invoke(
+      "get_delivery_recommendations",
+      {
+        body: {
+          chatgpt_user_id,
+          cuisine: "healthy",
+          diet_preferences: ["low_calorie", "high_protein"],
+        },
+      },
+    );
 
     if (error) {
-      console.error('[TheLoop Nutrition] Delivery error:', error);
+      console.error("[TheLoop Nutrition] Delivery error:", error);
       return [];
     }
 
@@ -184,25 +197,27 @@ async function getHealthyDeliveryOptions(chatgpt_user_id: string): Promise<Deliv
       cuisine_match: rec.match_score > 50,
     }));
   } catch (error) {
-    console.error('[TheLoop Nutrition] Error getting delivery options:', error);
+    console.error("[TheLoop Nutrition] Error getting delivery options:", error);
     return [];
   }
 }
 
 function formatHealthyDeliverySuggestions(options: DeliveryOption[]): string {
   if (options.length === 0) {
-    return '';
+    return "";
   }
 
-  let formatted = '\n\n---\n\n';
-  formatted += '## 🥗 Looking for Healthy Meals?\n\n';
-  formatted += 'This recipe is nutritious! Here are similar healthy options you can order:\n\n';
+  let formatted = "\n\n---\n\n";
+  formatted += "## 🥗 Looking for Healthy Meals?\n\n";
+  formatted +=
+    "This recipe is nutritious! Here are similar healthy options you can order:\n\n";
 
   options.forEach((option) => {
-    formatted += `• **${option.partner_name}** - [Order Now](${option.affiliate_url})\n`;
+    formatted +=
+      `• **${option.partner_name}** - [Order Now](${option.affiliate_url})\n`;
   });
 
-  formatted += '\n*Affiliate links help support TheLoop Ecosystem!*\n';
+  formatted += "\n*Affiliate links help support TheLoop Ecosystem!*\n";
 
   return formatted;
 }
@@ -213,27 +228,33 @@ function formatHealthyDeliverySuggestions(options: DeliveryOption[]): string {
 
 const handler = async (req: Request) => {
   // Handle CORS
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-      }
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "authorization, x-client-info, apikey, content-type",
+      },
     });
   }
 
   try {
-    const { recipeName, servings, ingredients, chatgpt_user_id } = await req.json();
+    const { recipeName, servings, ingredients, chatgpt_user_id } = await req
+      .json();
 
     // Validate input
     if (!recipeName || !servings || !ingredients || ingredients.length === 0) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields: recipeName, servings, ingredients' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({
+          error: "Missing required fields: recipeName, servings, ingredients",
+        }),
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    console.log(`[TheLoop Nutrition] Analyzing: ${recipeName}, servings: ${servings}, ingredients: ${ingredients.length}`);
+    console.log(
+      `[TheLoop Nutrition] Analyzing: ${recipeName}, servings: ${servings}, ingredients: ${ingredients.length}`,
+    );
 
     // Build input for deterministic engine
     const recipeInput: RecipeNutritionInput = {
@@ -249,28 +270,45 @@ const handler = async (req: Request) => {
     // Call deterministic engine (NO LLM calls here)
     const result = estimateRecipeNutrition(recipeInput);
 
-    console.log(`[TheLoop Nutrition] Analysis complete: ${result.perServing.calories} cal/serving, confidence: ${result.confidence}`);
+    console.log(
+      `[TheLoop Nutrition] Analysis complete: ${result.perServing.calories} cal/serving, confidence: ${result.confidence}`,
+    );
 
     // Format response using LLM for multilingual support (ONLY LLM call)
     const ingredientNames = ingredients.map((ing: IngredientInput) => ing.name);
-    let formattedResponse = await formatNutritionResponse(result, recipeName, ingredientNames);
+    let formattedResponse = await formatNutritionResponse(
+      result,
+      recipeName,
+      ingredientNames,
+    );
 
     // Add healthy delivery options if recipe is healthy and chatgpt_user_id is provided
-    if (chatgpt_user_id && isHealthyRecipe(
-      result.perServing.calories,
-      result.perServing.protein_g,
-      result.perServing.fiber_g || 0
-    )) {
+    if (
+      chatgpt_user_id && isHealthyRecipe(
+        result.perServing.calories,
+        result.perServing.protein_g,
+        result.perServing.fiber_g || 0,
+      )
+    ) {
       try {
-        console.log('[TheLoop Nutrition] Fetching healthy delivery options...');
-        const deliveryOptions = await getHealthyDeliveryOptions(chatgpt_user_id);
-        
+        console.log("[TheLoop Nutrition] Fetching healthy delivery options...");
+        const deliveryOptions = await getHealthyDeliveryOptions(
+          chatgpt_user_id,
+        );
+
         if (deliveryOptions.length > 0) {
-          formattedResponse += formatHealthyDeliverySuggestions(deliveryOptions);
-          console.log(`[TheLoop Nutrition] Added ${deliveryOptions.length} delivery options`);
+          formattedResponse += formatHealthyDeliverySuggestions(
+            deliveryOptions,
+          );
+          console.log(
+            `[TheLoop Nutrition] Added ${deliveryOptions.length} delivery options`,
+          );
         }
       } catch (error) {
-        console.error('[TheLoop Nutrition] Error adding delivery options:', error);
+        console.error(
+          "[TheLoop Nutrition] Error adding delivery options:",
+          error,
+        );
         // Continue without delivery options
       }
     }
@@ -279,28 +317,27 @@ const handler = async (req: Request) => {
     return new Response(
       JSON.stringify({
         nutrition_markdown: formattedResponse,
-        nutrition_data: result
+        nutrition_data: result,
       }),
       {
         status: 200,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      },
     );
-
   } catch (error: any) {
-    console.error('[TheLoop Nutrition ERROR]:', error);
+    console.error("[TheLoop Nutrition ERROR]:", error);
     return new Response(
       JSON.stringify({ error: `Error analyzing nutrition: ${error.message}` }),
       {
         status: 500,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      },
     );
   }
 };

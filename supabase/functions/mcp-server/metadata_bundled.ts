@@ -53,31 +53,31 @@ export type ToolDescription = {
   // Identity
   toolId: string;
   displayName: string;
-  
+
   // What ChatGPT pattern-matches against
   primaryDescription: string;
-  
+
   // Detailed capabilities
   whenToUse: string[];
   whenNotToUse: string[];
-  
+
   // What makes this tool special
   uniqueCapabilities: string[];
-  
+
   // Parameters
   requiredParams: ToolParameter[];
   optionalParams: ToolParameter[];
-  
+
   // Output
   returnFormat: ToolReturnFormat;
-  
+
   // Integration
   chainsWith: string[]; // Other tools this commonly pairs with
-  
+
   // Branding
   brandedName: string; // TheLoopGPT branded name
   legacyName?: string; // Old name for backward compatibility
-  
+
   // Categorization
   category: string;
   subcategory?: string;

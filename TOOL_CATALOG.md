@@ -19,15 +19,18 @@
 
 ### 1.1 `generate_week_plan`
 
-**Description:** Generates a personalized 7-day meal plan based on user dietary preferences, calorie targets, allergies, and cuisine preferences.
+**Description:** Generates a personalized 7-day meal plan based on user dietary
+preferences, calorie targets, allergies, and cuisine preferences.
 
 **When to Use:**
+
 - User asks for a meal plan
 - User wants to lose/gain weight
 - User has specific dietary requirements
 - User wants variety in their meals
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)",
@@ -41,6 +44,7 @@
 ```
 
 **Output:**
+
 ```json
 {
   "plan_id": "unique-plan-id",
@@ -59,6 +63,7 @@
 ```
 
 **Example Conversation:**
+
 ```
 User: "I want to lose weight, create a meal plan for me"
 ChatGPT: "I'll create a personalized meal plan for you. What's your target daily calorie intake?"
@@ -71,15 +76,18 @@ ChatGPT: "Here's your 7-day vegetarian meal plan with 1800 calories per day..."
 
 ### 1.2 `log_meal_plan`
 
-**Description:** Saves a generated meal plan to the user's account for tracking and future reference.
+**Description:** Saves a generated meal plan to the user's account for tracking
+and future reference.
 
 **When to Use:**
+
 - After generating a meal plan
 - User wants to save the plan
 - Need to track plan adherence
 - For outcome evaluation later
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)",
@@ -90,6 +98,7 @@ ChatGPT: "Here's your 7-day vegetarian meal plan with 1800 calories per day..."
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -99,6 +108,7 @@ ChatGPT: "Here's your 7-day vegetarian meal plan with 1800 calories per day..."
 ```
 
 **Example Conversation:**
+
 ```
 ChatGPT: "Would you like me to save this meal plan to your account?"
 User: "Yes please"
@@ -110,15 +120,18 @@ ChatGPT: "Great! I've saved your meal plan. You can start it on Monday."
 
 ### 1.3 `get_affiliate_links`
 
-**Description:** Generates country-specific grocery affiliate links for ingredients in a meal plan. Supports 25 countries.
+**Description:** Generates country-specific grocery affiliate links for
+ingredients in a meal plan. Supports 25 countries.
 
 **When to Use:**
+
 - After generating a meal plan
 - User asks "where can I buy these ingredients?"
 - User wants grocery delivery
 - Need to monetize through affiliates
 
 **Input Parameters:**
+
 ```json
 {
   "ingredients": "array of strings (required) - ingredient names",
@@ -128,6 +141,7 @@ ChatGPT: "Great! I've saved your meal plan. You can start it on Monday."
 ```
 
 **Output:**
+
 ```json
 {
   "links": [
@@ -142,9 +156,11 @@ ChatGPT: "Great! I've saved your meal plan. You can start it on Monday."
 }
 ```
 
-**Supported Countries:** US, GB, DE, FR, ES, IT, NL, BE, AT, CH, SE, NO, DK, FI, IE, PT, PL, CZ, AU, NZ, CA, MX, BR, AR, CL
+**Supported Countries:** US, GB, DE, FR, ES, IT, NL, BE, AT, CH, SE, NO, DK, FI,
+IE, PT, PL, CZ, AU, NZ, CA, MX, BR, AR, CL
 
 **Example Conversation:**
+
 ```
 User: "Where can I buy these ingredients?"
 ChatGPT: "What country are you in?"
@@ -159,15 +175,18 @@ ChatGPT: "Here are grocery delivery options for your ingredients..."
 
 ### 2.1 `log_weight`
 
-**Description:** Records a daily weight entry for a user. Core component of the feedback loop.
+**Description:** Records a daily weight entry for a user. Core component of the
+feedback loop.
 
 **When to Use:**
+
 - User says "I weighed myself"
 - User reports their weight
 - Daily check-in
 - Progress tracking
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)",
@@ -178,6 +197,7 @@ ChatGPT: "Here are grocery delivery options for your ingredients..."
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -188,6 +208,7 @@ ChatGPT: "Here are grocery delivery options for your ingredients..."
 ```
 
 **Example Conversation:**
+
 ```
 User: "I weighed myself today, 75kg"
 ChatGPT: [calls log_weight with weight_kg=75]
@@ -201,12 +222,14 @@ ChatGPT: "Great! I've logged your weight at 75kg. Your BMI is 24.5 (healthy rang
 **Description:** Calculates weekly weight trends and statistics for a user.
 
 **When to Use:**
+
 - User asks "how am I doing?"
 - Weekly progress check
 - Before generating new meal plan
 - After completing a week
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)",
@@ -216,6 +239,7 @@ ChatGPT: "Great! I've logged your weight at 75kg. Your BMI is 24.5 (healthy rang
 ```
 
 **Output:**
+
 ```json
 {
   "average_weight": 74.8,
@@ -227,6 +251,7 @@ ChatGPT: "Great! I've logged your weight at 75kg. Your BMI is 24.5 (healthy rang
 ```
 
 **Example Conversation:**
+
 ```
 User: "How's my progress this week?"
 ChatGPT: [calls weekly_trend]
@@ -237,15 +262,18 @@ ChatGPT: "You're doing great! You've lost 0.5kg this week. Your average weight i
 
 ### 2.3 `evaluate_plan_outcome`
 
-**Description:** Evaluates the effectiveness of a meal plan by comparing actual weight results against goals.
+**Description:** Evaluates the effectiveness of a meal plan by comparing actual
+weight results against goals.
 
 **When to Use:**
+
 - At end of meal plan period
 - User completed a week
 - Need to adjust future plans
 - Feedback loop optimization
 
 **Input Parameters:**
+
 ```json
 {
   "plan_id": "string (required)",
@@ -256,6 +284,7 @@ ChatGPT: "You're doing great! You've lost 0.5kg this week. Your average weight i
 ```
 
 **Output:**
+
 ```json
 {
   "outcome": "met_goal",
@@ -267,6 +296,7 @@ ChatGPT: "You're doing great! You've lost 0.5kg this week. Your average weight i
 ```
 
 **Example Conversation:**
+
 ```
 User: "I finished the meal plan, I'm now 73.8kg"
 ChatGPT: [calls evaluate_plan_outcome]
@@ -282,12 +312,14 @@ ChatGPT: "Excellent! You exceeded your goal by 0.2kg. Your plan was 95% effectiv
 **Description:** Searches for restaurants near a location using MealMe API.
 
 **When to Use:**
+
 - User wants to order food
 - User asks "what restaurants deliver here?"
 - User wants to eat out
 - Need restaurant recommendations
 
 **Input Parameters:**
+
 ```json
 {
   "latitude": "number (required)",
@@ -298,6 +330,7 @@ ChatGPT: "Excellent! You exceeded your goal by 0.2kg. Your plan was 95% effectiv
 ```
 
 **Output:**
+
 ```json
 {
   "restaurants": [
@@ -314,6 +347,7 @@ ChatGPT: "Excellent! You exceeded your goal by 0.2kg. Your plan was 95% effectiv
 ```
 
 **Example Conversation:**
+
 ```
 User: "I want to order Italian food"
 ChatGPT: "What's your location?"
@@ -329,12 +363,14 @@ ChatGPT: "Here are 5 Italian restaurants that deliver to you..."
 **Description:** Places a restaurant order via MealMe API.
 
 **When to Use:**
+
 - User selected a restaurant
 - User wants to order specific items
 - After browsing menu
 - Ready to checkout
 
 **Input Parameters:**
+
 ```json
 {
   "restaurant_id": "string (required)",
@@ -346,6 +382,7 @@ ChatGPT: "Here are 5 Italian restaurants that deliver to you..."
 ```
 
 **Output:**
+
 ```json
 {
   "order_id": "order-789",
@@ -356,6 +393,7 @@ ChatGPT: "Here are 5 Italian restaurants that deliver to you..."
 ```
 
 **Example Conversation:**
+
 ```
 User: "Order the Margherita pizza and Caesar salad"
 ChatGPT: [calls place_order]
@@ -371,12 +409,14 @@ ChatGPT: "Your order is confirmed! Estimated delivery: 7:30 PM. Total: $32.50"
 **Description:** Logs a meal with nutrition information for tracking.
 
 **When to Use:**
+
 - User ate something
 - User wants to track calories
 - After meal completion
 - Daily food logging
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)",
@@ -388,6 +428,7 @@ ChatGPT: "Your order is confirmed! Estimated delivery: 7:30 PM. Total: $32.50"
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -398,6 +439,7 @@ ChatGPT: "Your order is confirmed! Estimated delivery: 7:30 PM. Total: $32.50"
 ```
 
 **Example Conversation:**
+
 ```
 User: "I just had chicken and rice for lunch"
 ChatGPT: [calls log_meal]
@@ -411,12 +453,14 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 **Description:** Searches for food nutrition information in database.
 
 **When to Use:**
+
 - User asks "how many calories in X?"
 - Need nutrition info
 - Before logging meal
 - Food database lookup
 
 **Input Parameters:**
+
 ```json
 {
   "query": "string (required) - food name",
@@ -425,6 +469,7 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 ```
 
 **Output:**
+
 ```json
 {
   "foods": [
@@ -447,12 +492,14 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 **Description:** Gets detailed nutrition information for a specific food.
 
 **When to Use:**
+
 - User wants detailed macros
 - Need micronutrient info
 - Detailed food analysis
 - Nutrition education
 
 **Input Parameters:**
+
 ```json
 {
   "food_id": "string (required) - from search_food",
@@ -461,6 +508,7 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 ```
 
 **Output:**
+
 ```json
 {
   "name": "Chicken Breast",
@@ -484,12 +532,14 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 **Description:** Gets daily nutrition summary for a user.
 
 **When to Use:**
+
 - End of day check-in
 - User asks "how did I do today?"
 - Progress tracking
 - Goal comparison
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)",
@@ -498,6 +548,7 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 ```
 
 **Output:**
+
 ```json
 {
   "date": "2025-12-06",
@@ -518,15 +569,18 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 
 ### 5.1 `loopkitchen_recipes.generate`
 
-**Description:** Generates personalized recipes from ingredients using LeftoverGPT with recommendation engine scoring.
+**Description:** Generates personalized recipes from ingredients using
+LeftoverGPT with recommendation engine scoring.
 
 **When to Use:**
+
 - User has ingredients and wants recipes
 - "What can I make with X?"
 - Leftover ingredients
 - Recipe inspiration
 
 **Input Parameters:**
+
 ```json
 {
   "ingredients": "array of strings (required) - ingredient names",
@@ -538,6 +592,7 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 ```
 
 **Output:**
+
 ```json
 {
   "widgets": [
@@ -558,6 +613,7 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 ```
 
 **Recommendation Engine Features:**
+
 - ✅ Scores recipes 0-100 points
 - ✅ Learns from user behavior (accepts/rejects)
 - ✅ Respects dietary restrictions
@@ -565,6 +621,7 @@ ChatGPT: "Logged! That's 650 calories. You've had 1450 calories today."
 - ✅ Aligns with calorie goals
 
 **Example Conversation:**
+
 ```
 User: "I have chicken, rice, and soy sauce. What can I make?"
 ChatGPT: [calls loopkitchen_recipes.generate]
@@ -578,15 +635,18 @@ ChatGPT: "Here are 3 personalized recipes for you:
 
 ### 5.2 `loopkitchen_mealplan.generate`
 
-**Description:** Generates a 7-day meal plan using MealPlannerGPT with user context enrichment.
+**Description:** Generates a 7-day meal plan using MealPlannerGPT with user
+context enrichment.
 
 **When to Use:**
+
 - User wants a weekly meal plan
 - Meal prep planning
 - Diet planning
 - Variety in meals
 
 **Input Parameters:**
+
 ```json
 {
   "ingredients": "array of strings (optional) - pantry items",
@@ -599,6 +659,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Output:**
+
 ```json
 {
   "type": "WeekPlanner",
@@ -609,7 +670,11 @@ ChatGPT: "Here are 3 personalized recipes for you:
         "date": "2025-12-06",
         "dayName": "Monday",
         "meals": {
-          "breakfast": { "recipeId": "...", "title": "...", "approxCalories": 400 },
+          "breakfast": {
+            "recipeId": "...",
+            "title": "...",
+            "approxCalories": 400
+          },
           "lunch": { "recipeId": "...", "title": "...", "approxCalories": 600 },
           "dinner": { "recipeId": "...", "title": "...", "approxCalories": 700 }
         },
@@ -626,6 +691,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Context Enrichment Features:**
+
 - ✅ Fetches user's ingredient profile (top 10 frequently used)
 - ✅ Fetches user's recipe preferences (acceptance rate, preferred persona)
 - ✅ Appends context to GPT prompt for better personalization
@@ -634,15 +700,18 @@ ChatGPT: "Here are 3 personalized recipes for you:
 
 ### 5.3 `loopkitchen_recipes.accept`
 
-**Description:** Logs when a user accepts/likes a recipe (for behavioral learning).
+**Description:** Logs when a user accepts/likes a recipe (for behavioral
+learning).
 
 **When to Use:**
+
 - User says "I like this recipe"
 - User clicks "save recipe"
 - User cooks the recipe
 - Positive feedback
 
 **Input Parameters:**
+
 ```json
 {
   "recipeId": "string (required)",
@@ -652,6 +721,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -663,15 +733,18 @@ ChatGPT: "Here are 3 personalized recipes for you:
 
 ### 5.4 `loopkitchen_recipes.reject`
 
-**Description:** Logs when a user rejects/dislikes a recipe (for behavioral learning).
+**Description:** Logs when a user rejects/dislikes a recipe (for behavioral
+learning).
 
 **When to Use:**
+
 - User says "I don't like this"
 - User skips recipe
 - Negative feedback
 - "Show me something else"
 
 **Input Parameters:**
+
 ```json
 {
   "recipeId": "string (required)",
@@ -681,6 +754,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -692,15 +766,18 @@ ChatGPT: "Here are 3 personalized recipes for you:
 
 ### 5.5 `loopkitchen_recipes.get_details`
 
-**Description:** Gets full recipe details (ingredients, instructions, nutrition).
+**Description:** Gets full recipe details (ingredients, instructions,
+nutrition).
 
 **When to Use:**
+
 - User wants full recipe
 - User selected a recipe
 - Need cooking instructions
 - Detailed view
 
 **Input Parameters:**
+
 ```json
 {
   "recipeId": "string (required)"
@@ -708,6 +785,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Output:**
+
 ```json
 {
   "id": "recipe-001",
@@ -738,6 +816,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ### 5.6-5.12 Additional LoopKitchen Tools
 
 **Other tools in this category:**
+
 - `loopkitchen_recipes.search` - Search recipe database
 - `loopkitchen_recipes.filter` - Filter by diet/cuisine/time
 - `loopkitchen_recipes.save` - Save recipe to favorites
@@ -752,15 +831,18 @@ ChatGPT: "Here are 3 personalized recipes for you:
 
 ### 6.1 `get_user_profile`
 
-**Description:** Gets user profile information (goals, preferences, dietary restrictions).
+**Description:** Gets user profile information (goals, preferences, dietary
+restrictions).
 
 **When to Use:**
+
 - First interaction with user
 - Need to check user settings
 - Personalization context
 - Profile lookup
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)"
@@ -768,6 +850,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Output:**
+
 ```json
 {
   "user_id": "user-123",
@@ -794,12 +877,14 @@ ChatGPT: "Here are 3 personalized recipes for you:
 **Description:** Updates user profile information.
 
 **When to Use:**
+
 - User changes goals
 - User updates preferences
 - Profile editing
 - Settings change
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)",
@@ -808,6 +893,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -822,12 +908,14 @@ ChatGPT: "Here are 3 personalized recipes for you:
 **Description:** Sets or updates user's health/fitness goal.
 
 **When to Use:**
+
 - User sets new goal
 - Goal change
 - Initial setup
 - Goal tracking
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)",
@@ -839,6 +927,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -854,12 +943,14 @@ ChatGPT: "Here are 3 personalized recipes for you:
 **Description:** Gets user's recipe and meal preferences.
 
 **When to Use:**
+
 - Need personalization context
 - Before generating recipes
 - Preference lookup
 - Recommendation engine input
 
 **Input Parameters:**
+
 ```json
 {
   "user_id": "string (required)"
@@ -867,6 +958,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 **Output:**
+
 ```json
 {
   "dietary_restrictions": ["vegetarian"],
@@ -892,13 +984,13 @@ ChatGPT: "Here are 3 personalized recipes for you:
 
 ### Average Response Times
 
-| Tool Category | Avg Response Time |
-|---------------|-------------------|
-| Recipe Generation | 2-4 seconds |
-| Meal Planning | 3-5 seconds |
-| Weight Tracking | <1 second |
-| Nutrition Lookup | <1 second |
-| User Profile | <500ms |
+| Tool Category     | Avg Response Time |
+| ----------------- | ----------------- |
+| Recipe Generation | 2-4 seconds       |
+| Meal Planning     | 3-5 seconds       |
+| Weight Tracking   | <1 second         |
+| Nutrition Lookup  | <1 second         |
+| User Profile      | <500ms            |
 
 ---
 
@@ -906,24 +998,25 @@ ChatGPT: "Here are 3 personalized recipes for you:
 
 ### When User Says... → Use This Tool
 
-| User Intent | Tool to Use |
-|-------------|-------------|
-| "I want to lose weight" | `generate_week_plan` + `set_user_goal` |
-| "What can I make with X?" | `loopkitchen_recipes.generate` |
-| "I weighed myself today" | `log_weight` + `weekly_trend` |
-| "How many calories in X?" | `search_food` |
-| "I want to order food" | `search_restaurants` |
-| "Show me my progress" | `weekly_trend` + `daily_summary` |
-| "I ate X for lunch" | `log_meal` |
-| "Create a meal plan" | `generate_week_plan` |
-| "Where can I buy these?" | `get_affiliate_links` |
-| "I like this recipe" | `loopkitchen_recipes.accept` |
+| User Intent               | Tool to Use                            |
+| ------------------------- | -------------------------------------- |
+| "I want to lose weight"   | `generate_week_plan` + `set_user_goal` |
+| "What can I make with X?" | `loopkitchen_recipes.generate`         |
+| "I weighed myself today"  | `log_weight` + `weekly_trend`          |
+| "How many calories in X?" | `search_food`                          |
+| "I want to order food"    | `search_restaurants`                   |
+| "Show me my progress"     | `weekly_trend` + `daily_summary`       |
+| "I ate X for lunch"       | `log_meal`                             |
+| "Create a meal plan"      | `generate_week_plan`                   |
+| "Where can I buy these?"  | `get_affiliate_links`                  |
+| "I like this recipe"      | `loopkitchen_recipes.accept`           |
 
 ---
 
 ## 🔄 Common Tool Chains
 
 ### Chain 1: New User Onboarding
+
 ```
 1. get_user_profile (check if exists)
 2. set_user_goal (if new user)
@@ -933,6 +1026,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 ### Chain 2: Daily Check-In
+
 ```
 1. log_weight (record weight)
 2. weekly_trend (analyze progress)
@@ -941,6 +1035,7 @@ ChatGPT: "Here are 3 personalized recipes for you:
 ```
 
 ### Chain 3: Recipe Discovery
+
 ```
 1. get_user_preferences (personalization context)
 2. loopkitchen_recipes.generate (generate recipes)
@@ -950,13 +1045,13 @@ ChatGPT: "Here are 3 personalized recipes for you:
 
 ---
 
-**Total Tools:** 28  
-**Categories:** 6  
-**Avg Tools per Category:** 4.7  
-**Most Complex Tool:** `generate_week_plan` (7 parameters)  
+**Total Tools:** 28\
+**Categories:** 6\
+**Avg Tools per Category:** 4.7\
+**Most Complex Tool:** `generate_week_plan` (7 parameters)\
 **Simplest Tool:** `log_weight` (2 required parameters)
 
 ---
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.0.0\
 **Last Updated:** December 6, 2025

@@ -1,33 +1,33 @@
 /**
  * OpenAI Model Helper for LoopGPT
- * 
+ *
  * Wrapper for calling OpenAI chat completions with JSON mode.
  * Adapted from LoopKitchen for Deno/Supabase environment.
  */
 
-import { OpenAI } from 'https://deno.land/x/openai@v4.24.0/mod.ts';
+import { OpenAI } from "https://deno.land/x/openai@v4.24.0/mod.ts";
 
 /**
  * Initialize OpenAI client
  */
 const getOpenAIClient = () => {
-  const apiKey = Deno.env.get('OPENAI_API_KEY');
-  
+  const apiKey = Deno.env.get("OPENAI_API_KEY");
+
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY environment variable is not set');
+    throw new Error("OPENAI_API_KEY environment variable is not set");
   }
-  
+
   return new OpenAI({ apiKey });
 };
 
 /**
  * Default model to use for completions
  */
-const DEFAULT_MODEL = Deno.env.get('OPENAI_MODEL') || 'gpt-4o-mini';
+const DEFAULT_MODEL = Deno.env.get("OPENAI_MODEL") || "gpt-4o-mini";
 
 /**
  * Call OpenAI model with system and user prompts
- * 
+ *
  * @param systemPrompt - System message defining the AI's role and output format
  * @param userPrompt - User message with the specific request
  * @param options - Optional configuration
@@ -40,7 +40,7 @@ export async function callModel<T = any>(
     model?: string;
     temperature?: number;
     maxTokens?: number;
-  } = {}
+  } = {},
 ): Promise<T> {
   const {
     model = DEFAULT_MODEL,
@@ -54,18 +54,18 @@ export async function callModel<T = any>(
     const response = await openai.chat.completions.create({
       model,
       messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
       ],
-      response_format: { type: 'json_object' },
+      response_format: { type: "json_object" },
       temperature,
       max_tokens: maxTokens,
     });
 
     const content = response.choices[0]?.message?.content;
-    
+
     if (!content) {
-      throw new Error('No response content from OpenAI');
+      throw new Error("No response content from OpenAI");
     }
 
     // Parse JSON response
@@ -73,7 +73,7 @@ export async function callModel<T = any>(
     return parsed as T;
   } catch (error) {
     if (error instanceof Error) {
-      console.error('OpenAI API error:', error.message);
+      console.error("OpenAI API error:", error.message);
       throw new Error(`Failed to call OpenAI: ${error.message}`);
     }
     throw error;
@@ -82,7 +82,7 @@ export async function callModel<T = any>(
 
 /**
  * Call model with retry logic
- * 
+ *
  * @param systemPrompt - System message
  * @param userPrompt - User message
  * @param options - Configuration options
@@ -97,7 +97,7 @@ export async function callModelWithRetry<T = any>(
     temperature?: number;
     maxTokens?: number;
   } = {},
-  maxRetries: number = 2
+  maxRetries: number = 2,
 ): Promise<T> {
   let lastError: Error | undefined;
 
@@ -105,15 +105,17 @@ export async function callModelWithRetry<T = any>(
     try {
       return await callModel<T>(systemPrompt, userPrompt, options);
     } catch (error) {
-      lastError = error instanceof Error ? error : new Error('Unknown error');
-      
+      lastError = error instanceof Error ? error : new Error("Unknown error");
+
       if (attempt < maxRetries) {
         console.error(`Attempt ${attempt + 1} failed, retrying...`);
         // Exponential backoff: 1s, 2s, 4s...
-        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000 * Math.pow(2, attempt))
+        );
       }
     }
   }
 
-  throw lastError || new Error('Failed to call model after retries');
+  throw lastError || new Error("Failed to call model after retries");
 }

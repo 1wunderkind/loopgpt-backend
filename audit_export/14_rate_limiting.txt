@@ -1,0 +1,819 @@
+=== Rate Limiting ===
+./scripts/security-smoke-test.ts:102:async function testRateLimiting(): Promise<{ passed: boolean; message: string }> {
+./scripts/security-smoke-test.ts:307:  await runTest("1. Rate Limiting", testRateLimiting);
+./scripts/load-test.ts:36:    // Throttle to match RPS
+./supabase/functions/_lib/rateLimit.ts:11:export interface RateLimitResult {
+./supabase/functions/_lib/rateLimit.ts:19:export interface RateLimitConfig {
+./supabase/functions/_lib/rateLimit.ts:30: * @returns RateLimitResult with allowed status and metadata
+./supabase/functions/_lib/rateLimit.ts:34: * const result = await checkRateLimit(userId, "plan_create_meal_plan");
+./supabase/functions/_lib/rateLimit.ts:36: *   return createRateLimitResponse(result);
+./supabase/functions/_lib/rateLimit.ts:40:export async function checkRateLimit(
+./supabase/functions/_lib/rateLimit.ts:43:  config: RateLimitConfig = {}
+./supabase/functions/_lib/rateLimit.ts:44:): Promise<RateLimitResult> {
+./supabase/functions/_lib/rateLimit.ts:55:    const { data, error } = await supabase.rpc("check_rate_limit", {
+./supabase/functions/_lib/rateLimit.ts:74:    return data as RateLimitResult;
+./supabase/functions/_lib/rateLimit.ts:91: * @param result - The rate limit result from checkRateLimit
+./supabase/functions/_lib/rateLimit.ts:97: *   return createRateLimitResponse(result);
+./supabase/functions/_lib/rateLimit.ts:101:export function createRateLimitResponse(result: RateLimitResult): Response {
+./supabase/functions/_lib/rateLimit.ts:110:      rate_limit: {
+./supabase/functions/_lib/rateLimit.ts:121:        "X-RateLimit-Limit": result.limit.toString(),
+./supabase/functions/_lib/rateLimit.ts:122:        "X-RateLimit-Remaining": result.remaining.toString(),
+./supabase/functions/_lib/rateLimit.ts:123:        "X-RateLimit-Reset": result.reset_at,
+./supabase/functions/_lib/rateLimit.ts:140: * return addRateLimitHeaders(response, rateLimitResult);
+./supabase/functions/_lib/rateLimit.ts:143:export function addRateLimitHeaders(
+./supabase/functions/_lib/rateLimit.ts:145:  result: RateLimitResult
+./supabase/functions/_lib/rateLimit.ts:148:  headers.set("X-RateLimit-Limit", result.limit.toString());
+./supabase/functions/_lib/rateLimit.ts:149:  headers.set("X-RateLimit-Remaining", result.remaining.toString());
+./supabase/functions/_lib/rateLimit.ts:150:  headers.set("X-RateLimit-Reset", result.reset_at);
+./supabase/functions/_lib/rateLimit.ts:163:export const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
+./supabase/functions/_lib/rateLimit.ts:191: * @returns RateLimitConfig for the endpoint
+./supabase/functions/_lib/rateLimit.ts:193:export function getRateLimitConfig(endpoint: string): RateLimitConfig {
+./supabase/functions/_lib/rateLimit.ts:210: * export default withRateLimit(handler, "plan_create_meal_plan");
+./supabase/functions/_lib/rateLimit.ts:213:export function withRateLimit(
+./supabase/functions/_lib/rateLimit.ts:238:    const config = getRateLimitConfig(endpoint);
+./supabase/functions/_lib/rateLimit.ts:239:    const result = await checkRateLimit(user.id, endpoint, config);
+./supabase/functions/_lib/rateLimit.ts:243:      return createRateLimitResponse(result);
+./supabase/functions/_lib/rateLimit.ts:248:    return addRateLimitHeaders(response, result);
+./supabase/functions/_shared/errors/ErrorHandler.ts:64:export class RateLimitError extends AppError {
+./supabase/functions/_shared/errors/ErrorHandler.ts:67:    this.name = 'RateLimitError';
+./supabase/functions/_shared/monitoring/middleware.ts:94:export function withRateLimit(
+./supabase/functions/_shared/monitoring/middleware.ts:217:    enableRateLimit?: boolean;
+./supabase/functions/_shared/monitoring/middleware.ts:218:    rateLimitConfig?: {
+./supabase/functions/_shared/monitoring/middleware.ts:230:  if (options.enableRateLimit) {
+./supabase/functions/_shared/monitoring/middleware.ts:231:    wrappedHandler = withRateLimit(wrappedHandler, options.rateLimitConfig || {
+./supabase/functions/_shared/security/RateLimiter.ts:8:const logger = new Logger({ context: 'RateLimiter' });
+./supabase/functions/_shared/security/RateLimiter.ts:10:export interface RateLimitConfig {
+./supabase/functions/_shared/security/RateLimiter.ts:16:export interface RateLimitResult {
+./supabase/functions/_shared/security/RateLimiter.ts:25:export class RateLimiter {
+./supabase/functions/_shared/security/RateLimiter.ts:27:  private config: RateLimitConfig;
+./supabase/functions/_shared/security/RateLimiter.ts:29:  constructor(config: RateLimitConfig) {
+./supabase/functions/_shared/security/RateLimiter.ts:39:  check(identifier: string): RateLimitResult {
+./supabase/functions/_shared/security/RateLimiter.ts:123:  getConfig(): RateLimitConfig {
+./supabase/functions/_shared/security/RateLimiter.ts:131:export function rateLimitMiddleware(config: RateLimitConfig) {
+./supabase/functions/_shared/security/RateLimiter.ts:132:  const limiter = new RateLimiter(config);
+./supabase/functions/_shared/security/RateLimiter.ts:145:    headers.set('X-RateLimit-Limit', config.maxRequests.toString());
+./supabase/functions/_shared/security/RateLimiter.ts:146:    headers.set('X-RateLimit-Remaining', result.remaining.toString());
+./supabase/functions/_shared/security/RateLimiter.ts:147:    headers.set('X-RateLimit-Reset', new Date(result.resetTime).toISOString());
+./supabase/functions/_shared/security/RateLimiter.ts:184:export const RateLimitPresets = {
+./supabase/functions/_shared/security/RateLimiter.ts:225:export const authLimiter = new RateLimiter(RateLimitPresets.auth);
+./supabase/functions/_shared/security/RateLimiter.ts:226:export const apiLimiter = new RateLimiter(RateLimitPresets.api);
+./supabase/functions/_shared/security/RateLimiter.ts:227:export const readOnlyLimiter = new RateLimiter(RateLimitPresets.readOnly);
+./supabase/functions/_shared/security/RateLimiter.ts:228:export const expensiveLimiter = new RateLimiter(RateLimitPresets.expensive);
+./supabase/functions/_shared/security/applyMiddleware.ts:6:import { RateLimiter, RateLimitPresets } from './RateLimiter.ts';
+./supabase/functions/_shared/security/applyMiddleware.ts:31:  skipRateLimit?: boolean;
+./supabase/functions/_shared/security/applyMiddleware.ts:39:function getRateLimiterForCategory(category: FunctionCategory): RateLimiter | null {
+./supabase/functions/_shared/security/applyMiddleware.ts:42:      return new RateLimiter(RateLimitPresets.api);
+./supabase/functions/_shared/security/applyMiddleware.ts:44:      return new RateLimiter({ maxRequests: 30, windowMs: 60 * 1000 });
+./supabase/functions/_shared/security/applyMiddleware.ts:46:      return new RateLimiter(RateLimitPresets.expensive);
+./supabase/functions/_shared/security/applyMiddleware.ts:48:      return new RateLimiter({ maxRequests: 20, windowMs: 60 * 1000 });
+./supabase/functions/_shared/security/applyMiddleware.ts:50:      return new RateLimiter({ maxRequests: 5, windowMs: 60 * 60 * 1000 }); // 5 per hour
+./supabase/functions/_shared/security/applyMiddleware.ts:52:      return new RateLimiter(RateLimitPresets.readOnly);
+./supabase/functions/_shared/security/applyMiddleware.ts:56:      return new RateLimiter(RateLimitPresets.api);
+./supabase/functions/_shared/security/applyMiddleware.ts:105:      if (!config.skipRateLimit) {
+./supabase/functions/_shared/security/applyMiddleware.ts:106:        const rateLimiter = getRateLimiterForCategory(config.category);
+./supabase/functions/_shared/security/applyMiddleware.ts:108:        if (rateLimiter) {
+./supabase/functions/_shared/security/applyMiddleware.ts:110:          const result = rateLimiter.check(identifier);
+./supabase/functions/_shared/security/applyMiddleware.ts:126:                  'X-RateLimit-Limit': rateLimiter.getConfig().maxRequests.toString(),
+./supabase/functions/_shared/security/applyMiddleware.ts:127:                  'X-RateLimit-Remaining': result.remaining.toString(),
+./supabase/functions/_shared/security/applyMiddleware.ts:128:                  'X-RateLimit-Reset': new Date(result.resetTime).toISOString(),
+./supabase/functions/_shared/security/applyMiddleware.ts:196:    skipRateLimit: true, // Webhooks don't need rate limiting
+./supabase/functions/_shared/governance/RateLimiter.ts:9:interface RateLimitConfig {
+./supabase/functions/_shared/governance/RateLimiter.ts:14:const LIMITS: Record<string, RateLimitConfig> = {
+./supabase/functions/_shared/governance/RateLimiter.ts:25:export class RateLimiter {
+./supabase/functions/ccpa_opt_out/index.ts:119:    enableRateLimit: true,
+./supabase/functions/ccpa_opt_out/index.ts:120:    rateLimitConfig: {
+./supabase/functions/gdpr_delete/index.ts:156:    enableRateLimit: true,
+./supabase/functions/gdpr_delete/index.ts:157:    rateLimitConfig: {
+./supabase/functions/gdpr_export/index.ts:188:    enableRateLimit: true,
+./supabase/functions/gdpr_export/index.ts:189:    rateLimitConfig: {
+./supabase/functions/mcp-server/lib/rateLimit.ts:10: * Uses atomic upserts to analytics.rate_limit_counters table
+./supabase/functions/mcp-server/lib/rateLimit.ts:22:export type RateLimitWindow = "minute" | "hour" | "day";
+./supabase/functions/mcp-server/lib/rateLimit.ts:23:export type RateLimitScope = "ip" | "user" | "tool" | "global";
+./supabase/functions/mcp-server/lib/rateLimit.ts:28:export interface RateLimitRule {
+./supabase/functions/mcp-server/lib/rateLimit.ts:33:  window: RateLimitWindow;
+./supabase/functions/mcp-server/lib/rateLimit.ts:39:  scope: RateLimitScope;
+./supabase/functions/mcp-server/lib/rateLimit.ts:45:export interface RateLimitContext {
+./supabase/functions/mcp-server/lib/rateLimit.ts:59:export interface RateLimitDecision {
+./supabase/functions/mcp-server/lib/rateLimit.ts:70:  rule: RateLimitRule;
+./supabase/functions/mcp-server/lib/rateLimit.ts:88:function getWindowStart(window: RateLimitWindow, now: Date = new Date()): Date {
+./supabase/functions/mcp-server/lib/rateLimit.ts:114:function getWindowEnd(window: RateLimitWindow, windowStart: Date): Date {
+./supabase/functions/mcp-server/lib/rateLimit.ts:149:  scope: RateLimitScope,
+./supabase/functions/mcp-server/lib/rateLimit.ts:151:  window: RateLimitWindow
+./supabase/functions/mcp-server/lib/rateLimit.ts:160:  scope: RateLimitScope,
+./supabase/functions/mcp-server/lib/rateLimit.ts:161:  ctx: RateLimitContext
+./supabase/functions/mcp-server/lib/rateLimit.ts:198:  ctx: RateLimitContext,
+./supabase/functions/mcp-server/lib/rateLimit.ts:199:  rule: RateLimitRule
+./supabase/functions/mcp-server/lib/rateLimit.ts:200:): Promise<RateLimitDecision> {
+./supabase/functions/mcp-server/lib/rateLimit.ts:224:      .from("rate_limit_counters")
+./supabase/functions/mcp-server/lib/rateLimit.ts:244:      console.error("[RateLimit] Database error:", error);
+./supabase/functions/mcp-server/lib/rateLimit.ts:269:    console.error("[RateLimit] Unexpected error:", err);
+./supabase/functions/mcp-server/lib/rateLimit.ts:289:export async function checkRateLimits(
+./supabase/functions/mcp-server/lib/rateLimit.ts:290:  ctx: RateLimitContext,
+./supabase/functions/mcp-server/lib/rateLimit.ts:291:  rules: RateLimitRule[]
+./supabase/functions/mcp-server/lib/rateLimit.ts:292:): Promise<RateLimitDecision | null> {
+./supabase/functions/mcp-server/lib/rateLimit.ts:320: * The actual rules are defined in config/rateLimits.ts.
+./supabase/functions/mcp-server/lib/rateLimit.ts:329:): RateLimitRule[] {
+./supabase/functions/mcp-server/lib/rateLimit.ts:330:  // This will be implemented in config/rateLimits.ts
+./supabase/functions/mcp-server/lib/rateLimit.ts:375:export function formatRateLimitDecision(decision: RateLimitDecision): string {
+./supabase/functions/mcp-server/lib/security.ts:14:import { checkRateLimits, extractClientIp, type RateLimitContext } from "./rateLimit.ts";
+./supabase/functions/mcp-server/lib/security.ts:15:import { getRulesForTool } from "../config/rateLimits.ts";
+./supabase/functions/mcp-server/lib/security.ts:91:  const rateLimitCtx: RateLimitContext = {
+./supabase/functions/mcp-server/lib/security.ts:98:  const rateLimitDecision = await checkRateLimits(rateLimitCtx, rules);
+./supabase/functions/mcp-server/lib/security.ts:100:  if (rateLimitDecision && !rateLimitDecision.allowed) {
+./supabase/functions/mcp-server/lib/security.ts:106:      rule: rateLimitDecision.rule.name,
+./supabase/functions/mcp-server/lib/security.ts:107:      resetAt: rateLimitDecision.resetAt.toISOString(),
+./supabase/functions/mcp-server/lib/security.ts:118:          rule: rateLimitDecision.rule.name,
+./supabase/functions/mcp-server/lib/security.ts:119:          resetAt: rateLimitDecision.resetAt.toISOString(),
+./supabase/functions/mcp-server/lib/security.ts:120:          remaining: rateLimitDecision.remaining,
+./supabase/functions/mcp-server/lib/security.ts:121:          limit: rateLimitDecision.rule.max,
+./supabase/functions/mcp-server/lib/security.ts:122:          window: rateLimitDecision.rule.window,
+./supabase/functions/mcp-server/lib/auditLog.ts:289:export async function logRateLimitExceeded(
+./supabase/functions/mcp-server/lib/auditLog.ts:388:  logRateLimitExceeded,
+./supabase/functions/mcp-server/config/rateLimits.ts:15:import type { RateLimitRule } from "../lib/rateLimit.ts";
+./supabase/functions/mcp-server/config/rateLimits.ts:25:export const GLOBAL_IP_LIMITS: RateLimitRule[] = [
+./supabase/functions/mcp-server/config/rateLimits.ts:44:export const GLOBAL_USER_LIMITS: RateLimitRule[] = [
+./supabase/functions/mcp-server/config/rateLimits.ts:67:export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
+./supabase/functions/mcp-server/config/rateLimits.ts:281:export const ANONYMOUS_IP_LIMITS: RateLimitRule[] = [
+./supabase/functions/mcp-server/config/rateLimits.ts:314:): RateLimitRule[] {
+./supabase/functions/mcp-server/config/rateLimits.ts:315:  const rules: RateLimitRule[] = [];
+./supabase/functions/mcp-server/config/rateLimits.ts:356:export function getRateLimitSummary(toolName: string, userId?: string): string {
+./supabase/functions/mcp-tools-full/index.ts:11:import { checkRateLimit } from "./tools/shared/rateLimit.ts";
+./supabase/functions/mcp-tools-full/index.ts:118:          await checkRateLimit(userId);
+./supabase/functions/mcp-tools-full/index.ts:240:  rateLimitingEnabled: ENV.ENABLE_RATE_LIMITING
+./supabase/functions/mcp-tools-full/tools/shared/errors.ts:50:export class RateLimitError extends Error {
+./supabase/functions/mcp-tools-full/tools/shared/errors.ts:51:  readonly type = "RateLimitError";
+./supabase/functions/mcp-tools-full/tools/shared/errors.ts:57:    this.name = "RateLimitError";
+./supabase/functions/mcp-tools-full/tools/shared/errors.ts:100:  if (error instanceof RateLimitError) {
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:7:import { RateLimitError } from "./errors.ts";
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:18:      throw new RateLimitError("Supabase credentials not configured");
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:26:interface RateLimitConfig {
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:32:const DEFAULT_CONFIG: RateLimitConfig = {
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:39: * Throws RateLimitError if limit exceeded
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:41:export async function checkRateLimit(
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:43:  config: RateLimitConfig = DEFAULT_CONFIG
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:51:      .from("rate_limits")
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:66:        throw new RateLimitError(
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:74:        .from("rate_limits")
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:82:        .from("rate_limits")
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:92:    if (err instanceof RateLimitError) {
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:112:      .from("rate_limits")
+./supabase/functions/mcp-tools-full/tools/shared/rateLimit.ts:141:      .from("rate_limits")
+./supabase/functions/mcp-tools-full/tools/utils.ts:9:import { getUserUsage } from "./shared/rateLimit.ts";
+./supabase/functions/mcp-tools/errors.ts:5:export class RateLimitError extends Error {
+./supabase/functions/mcp-tools/errors.ts:8:    this.name = "RateLimitError";
+./supabase/functions/mcp-tools/index.ts:11:import { checkRateLimit } from "./rateLimit.ts";
+./supabase/functions/mcp-tools/index.ts:294:            await checkRateLimit(userId);
+./supabase/functions/mcp-tools/index.ts:313:        await checkRateLimit(userId);
+./supabase/functions/mcp-tools/index.ts:314:      } catch (rateLimitError: any) {
+./supabase/functions/mcp-tools/index.ts:318:            message: rateLimitError.message,
+./supabase/functions/mcp-tools/rateLimit.ts:19:      console.warn("[rateLimit] Supabase not configured, rate limiting disabled");
+./supabase/functions/mcp-tools/rateLimit.ts:33:export async function checkRateLimit(userId: string): Promise<void> {
+./supabase/functions/mcp-tools/rateLimit.ts:43:      .from("mcp_rate_limits")
+./supabase/functions/mcp-tools/rateLimit.ts:50:      console.error("[rateLimit] Check error:", error.message);
+./supabase/functions/mcp-tools/rateLimit.ts:57:        .from("mcp_rate_limits")
+./supabase/functions/mcp-tools/rateLimit.ts:67:      console.log("[rateLimit] New window", { userId, count: 1 });
+./supabase/functions/mcp-tools/rateLimit.ts:84:      .from("mcp_rate_limits")
+./supabase/functions/mcp-tools/rateLimit.ts:91:    console.log("[rateLimit] Request counted", { 
+./supabase/functions/mcp-tools/rateLimit.ts:104:    console.error("[rateLimit] Check error:", error.message);
+./supabase/functions/mcp-tools/rateLimit.ts:112:export async function getRateLimitStatus(userId: string): Promise<{
+./supabase/functions/mcp-tools/rateLimit.ts:123:      .from("mcp_rate_limits")
+./supabase/functions/mcp-tools/rateLimit.ts:139:    console.error("[rateLimit] Status error:", error.message);
+./supabase/functions/sys_healthcheck/index.ts:37:          rate_limiting: true,
+./tests/security/security_test.ts:119:  const rateLimited = responses.some(r => r.status === 429);
+./tests/security/security_test.ts:124:  console.log(`Rate limiting ${rateLimited ? 'working' : 'not implemented yet'}`);
+./tests/phase_x_governance.test.ts:2:import { RateLimiter } from "../supabase/functions/_shared/governance/RateLimiter.ts";
+./tests/phase_x_governance.test.ts:19:  RateLimiter.checkLimit(userId, "order", logger);
+./tests/phase_x_governance.test.ts:20:  RateLimiter.checkLimit(userId, "order", logger);
+./tests/phase_x_governance.test.ts:21:  RateLimiter.checkLimit(userId, "order", logger);
+./tests/phase_x_governance.test.ts:25:    () => RateLimiter.checkLimit(userId, "order", logger),
+
+=== Input Validation ===
+./metadata-config/index.ts:176: * Validate tool invocation
+./metadata-config/index.ts:178:export function validateToolInvocation(
+./metadata-config/metadata.test.ts:21:  validateToolInvocation,
+./metadata-config/metadata.test.ts:77:    // Validate arrays are not empty where expected
+./metadata-config/metadata.test.ts:290:Deno.test("validateToolInvocation - validates required params", () => {
+./metadata-config/metadata.test.ts:291:  const result1 = validateToolInvocation("plan_generate_from_leftovers", {
+./metadata-config/metadata.test.ts:297:  const result2 = validateToolInvocation("plan_generate_from_leftovers", {});
+./metadata-config/toolDescriptions.ts:425:    "Validates recipes for dietary compliance (keto, vegan, etc.)",
+./scripts/build_food_database.ts:107:    sodium: 0, // Not in existing schema
+./scripts/test_nutrition_engine.ts:4: * Validates core functionality without running full Deno test suite.
+./scripts/test_nutrition_engine.ts:79:console.log("✅ All core functionality validated");
+./scripts/chaos-test.ts:90:    }, { schema: 'commerce' }).select().single();
+./supabase/functions/_lib/auth.ts:142: * Validates that a user is authenticated and returns their ID.
+./supabase/functions/_lib/deliveryAffiliate.ts:136: * Validate affiliate link format
+./supabase/functions/_lib/deliveryAffiliate.ts:138:export function validateAffiliateLink(url: string): boolean {
+./supabase/functions/_lib/ingredientNormalizer.ts:127:    // Validate unit if present
+./supabase/functions/_lib/ingredientNormalizer.ts:267: * Validate ingredient list
+./supabase/functions/_lib/ingredientNormalizer.ts:269:export function validateIngredients(ingredients: string[]): { valid: boolean; errors: string[] } {
+./supabase/functions/_lib/locationUtils.ts:152: * Validate country code format
+./supabase/functions/_lib/locationUtils.ts:154: * @param countryCode - Country code to validate
+./supabase/functions/_shared/analytics/types.ts:5: * Auto-generated from database schema
+./supabase/functions/_shared/analytics/Analytics.ts:27:      schemaVersion: 1
+./supabase/functions/_shared/cache/RedisCache.ts:192:   * Invalidate multiple keys by pattern
+./supabase/functions/_shared/cache/RedisCache.ts:194:  async invalidatePattern(pattern: string): Promise<number> {
+./supabase/functions/_shared/cache/RedisCache.ts:210:      console.error('Cache invalidate pattern error:', error);
+./supabase/functions/_shared/cache/RedisCache.ts:219:    return (await this.invalidatePattern('*')) > 0;
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:175: * Invalidate food search cache
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:178:export async function invalidateFoodCache(foodId?: string): Promise<void> {
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:180:    // Invalidate specific food
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:183:    logger.info('Food cache invalidated', { foodId });
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:185:    // Invalidate all food searches
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:186:    const count = await cache.invalidatePattern('food:*');
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:187:    logger.info('All food cache invalidated', { count });
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:307:  // Invalidate cache
+./supabase/functions/_shared/cache/examples/CachedFoodSearch.ts:308:  await invalidateFoodCache();
+./supabase/functions/_shared/commerce/ScoringLearner.ts:151:    // Validate rating
+./supabase/functions/_shared/commerce/providers/ICommerceProvider.ts:78:   * Optional: called during startup to validate config / env variables
+./supabase/functions/_shared/commerce/providers/ICommerceProvider.ts:80:   * @param config - Provider configuration to validate
+./supabase/functions/_shared/commerce/providers/krogerProvider.ts:290:    // Try to get a client (validates credentials)
+./supabase/functions/_shared/commerce/providers/walmartProvider.ts:289:    // Try to get a client (validates credentials)
+./supabase/functions/_shared/commerce/cartSession.ts:37:    .schema('commerce')
+./supabase/functions/_shared/commerce/cartSession.ts:52:    .schema('commerce')
+./supabase/functions/_shared/commerce/cartSession.ts:81:    .schema('commerce')
+./supabase/functions/_shared/commerce/CommerceAnalytics.ts:21:  schemaVersion: "1.0";
+./supabase/functions/_shared/commerce/CommerceAnalytics.ts:57:    event: Omit<LoopGPTEvent, "timestamp" | "schemaVersion">,
+./supabase/functions/_shared/commerce/CommerceAnalytics.ts:62:      schemaVersion: "1.0",
+./supabase/functions/_shared/errors/ErrorHandler.ts:345:   * Validate request body
+./supabase/functions/_shared/errors/ErrorHandler.ts:347:  static validateRequired(
+./supabase/functions/_shared/errors/ErrorHandler.ts:364:   * Validate email format
+./supabase/functions/_shared/errors/ErrorHandler.ts:366:  static validateEmail(email: string): void {
+./supabase/functions/_shared/errors/ErrorHandler.ts:374:   * Validate URL format
+./supabase/functions/_shared/errors/ErrorHandler.ts:376:  static validateUrl(url: string): void {
+./supabase/functions/_shared/errors/ErrorHandler.ts:385:   * Validate number range
+./supabase/functions/_shared/errors/ErrorHandler.ts:387:  static validateRange(
+./supabase/functions/_shared/loopkitchen/prompts.ts:15:Schema:
+./supabase/functions/_shared/loopkitchen/prompts.ts:51:Return a JSON object following the specified schema.`;
+./supabase/functions/_shared/loopkitchen/prompts.ts:77:Output MUST be valid JSON and follow this exact schema (no extra fields):
+./supabase/functions/_shared/loopkitchen/prompts.ts:118:Generate one full recipe as JSON following the specified schema.`;
+./supabase/functions/_shared/loopkitchen/prompts.ts:127:Schema:
+./supabase/functions/_shared/loopkitchen/prompts.ts:158:Return a JSON object following the schema specified in the system prompt.`;
+./supabase/functions/_shared/loopkitchen/prompts.ts:167:Schema:
+./supabase/functions/_shared/loopkitchen/prompts.ts:198:Schema:
+./supabase/functions/_shared/loopkitchen/types/Widget.ts:4: * Shared widget schemas for LoopGPT recipe generation.
+./supabase/functions/_shared/monitoring/middleware.ts:181:      const validated = validator(body);
+./supabase/functions/_shared/monitoring/middleware.ts:182:      return await handler(req, validated);
+./supabase/functions/_shared/security/SecurityMiddleware.ts:175: * Validate email
+./supabase/functions/_shared/security/SecurityMiddleware.ts:183: * Validate URL
+./supabase/functions/_shared/security/SecurityMiddleware.ts:195: * Validate phone number (US format)
+./supabase/functions/_shared/env.ts:35: * Validate and retrieve environment variables
+./supabase/functions/_shared/env.ts:69: * Validate environment at startup
+./supabase/functions/_shared/env.ts:72:export function validateEnv(): void {
+./supabase/functions/_shared/learning/LearningLoop.ts:3: * Defines the schema for learning events and feature vectors.
+./supabase/functions/_tests/commerce/integration/e2e.test.ts:382:// E2E Test: Response Schema Validation
+./supabase/functions/_tests/commerce/integration/e2e.test.ts:385:Deno.test("E2E - Response Schema - All required fields present", async () => {
+./supabase/functions/_tests/commerce/integration/e2e.test.ts:420:Deno.test("E2E - Response Schema - Item availability matches request", async () => {
+./supabase/functions/_tests/commerce/integration/e2e.test.ts:448:Deno.test("E2E - Response Schema - Alternative quotes structure", async () => {
+./supabase/functions/_tests/loopkitchen/phase1_validation.test.ts:4: * Validates that all LoopKitchen components are properly imported and functional.
+./supabase/functions/_tests/loopkitchen/phase2_validation.test.ts:4: * Validates LoopKitchen recipe generation tools.
+./supabase/functions/_tests/loopkitchen/phase2_validation.test.ts:15:  // This test will fail without real API key, but validates structure
+./supabase/functions/_tests/loopkitchen/phase2_validation.test.ts:29:    console.log('✓ generateRecipes structure validated (API call failed as expected)');
+./supabase/functions/_tests/loopkitchen/phase2_validation.test.ts:34:  // This test will fail without real API key, but validates structure
+./supabase/functions/_tests/loopkitchen/phase2_validation.test.ts:47:    console.log('✓ getRecipeDetails structure validated (API call failed as expected)');
+./supabase/functions/ccpa_opt_out/index.ts:31:  // Validate required fields
+./supabase/functions/ccpa_opt_out/index.ts:32:  ErrorHandler.validateRequired(body, ['user_id', 'email']);
+./supabase/functions/ccpa_opt_out/index.ts:33:  ErrorHandler.validateEmail(body.email);
+./supabase/functions/change_location/index.ts:10:import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+./supabase/functions/change_location/index.ts:40:    // Validate required fields
+./supabase/functions/change_location/index.ts:41:    validateRequired(body, ["chatgpt_user_id", "new_country"]);
+./supabase/functions/change_location/index.ts:45:    // Normalize and validate country code
+./supabase/functions/check_entitlement/index.ts:4: * Purpose: Validate if user has premium access (active subscription or trial)
+./supabase/functions/check_entitlement/index.ts:45:    // Validate input
+./supabase/functions/create_checkout_session/index.ts:43:    // Validate input
+./supabase/functions/create_customer_portal/index.ts:44:    // Validate input
+./supabase/functions/delivery_get_menu/index.ts:10:  validateRequired,
+./supabase/functions/delivery_get_menu/index.ts:30:    // Validate required fields
+./supabase/functions/delivery_get_menu/index.ts:31:    validateRequired(body, ["chatgpt_user_id"]);
+./supabase/functions/delivery_get_menu/index_geolocation.ts:12:  validateRequired,
+./supabase/functions/delivery_get_menu/index_geolocation.ts:38:    // Validate required fields
+./supabase/functions/delivery_get_menu/index_geolocation.ts:39:    validateRequired(body, ["chatgpt_user_id"]);
+./supabase/functions/delivery_get_menu/index_multilingual.ts:7:import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+./supabase/functions/delivery_get_menu/index_multilingual.ts:17:    // Validate required fields
+./supabase/functions/delivery_get_menu/index_multilingual.ts:18:    validateRequired(body, ["chatgpt_user_id"]);
+./supabase/functions/delivery_place_order/index.ts:241:    // Validate required fields
+./supabase/functions/delivery_search_restaurants/index.ts:46:  // Validate inputs
+./supabase/functions/gdpr_delete/index.ts:35:  // Validate required fields
+./supabase/functions/gdpr_delete/index.ts:36:  ErrorHandler.validateRequired(body, ['user_id', 'confirmation']);
+./supabase/functions/gdpr_export/index.ts:32:  // Validate required fields
+./supabase/functions/gdpr_export/index.ts:33:  ErrorHandler.validateRequired(body, ['user_id']);
+./supabase/functions/get_affiliate_by_country/index.ts:17:import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+./supabase/functions/get_affiliate_by_country/index.ts:49:    // Validate required fields
+./supabase/functions/get_affiliate_by_country/index.ts:50:    validateRequired(body, ["country"]);
+./supabase/functions/get_affiliate_by_country/index.ts:56:    // Validate country code format (2-letter ISO code)
+./supabase/functions/get_user_location/index.ts:14:import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+./supabase/functions/get_user_location/index.ts:37:    // Validate required fields
+./supabase/functions/get_user_location/index.ts:38:    validateRequired(body, ["chatgpt_user_id"]);
+./supabase/functions/health/index.ts:156:      'Cache-Control': 'no-cache, no-store, must-revalidate',
+./supabase/functions/loopgpt_cancel_order/index.ts:6: * 1. Validates confirmation token
+./supabase/functions/loopgpt_cancel_order/index.ts:8: * 3. Invalidates confirmation token
+./supabase/functions/loopgpt_cancel_order/index.ts:43:    // Validate request
+./supabase/functions/loopgpt_cancel_order/index.ts:68:    // 1. Validate confirmation token (check if exists, not expired, matches user_id)
+./supabase/functions/loopgpt_cancel_order/index.ts:70:    // 3. Invalidate confirmation token
+./supabase/functions/loopgpt_cancel_order/index.ts:76:      message: 'Order cancelled successfully. Your confirmation token has been invalidated.',
+./supabase/functions/loopgpt_confirm_order/index.ts:6: * 1. Validates confirmation token and retrieves routing context
+./supabase/functions/loopgpt_confirm_order/index.ts:223:    // Validate request
+./supabase/functions/loopgpt_record_outcome/index.ts:40:    // Validate request
+./supabase/functions/loopgpt_route_order/index.ts:71:    // Validate request
+./supabase/functions/mcp-server/index.ts:12:// - Validates inputs against manifest schemas
+./supabase/functions/mcp-server/index.ts:1094:    "Validates recipes for dietary compliance (keto, vegan, etc.)",
+./supabase/functions/mcp-server/index.ts:4249: * Validate tool invocation
+./supabase/functions/mcp-server/index.ts:4251:export function validateToolInvocation(
+./supabase/functions/mcp-server/index.ts:4376: * Validates that a tool name exists in the manifest
+./supabase/functions/mcp-server/index.ts:4378:function validateToolName(toolName: string, manifest: any): boolean {
+./supabase/functions/mcp-server/index.ts:4383: * Validates request body against tool's input schema
+./supabase/functions/mcp-server/index.ts:4386:function validateInput(toolName: string, body: Record<string, any>, manifest: any): { valid: boolean; errors: string[] } {
+./supabase/functions/mcp-server/index.ts:4393:  const schema = tool.input_schema;
+./supabase/functions/mcp-server/index.ts:4397:  if (schema.required && Array.isArray(schema.required)) {
+./supabase/functions/mcp-server/index.ts:4398:    for (const field of schema.required) {
+./supabase/functions/mcp-server/index.ts:4406:  if (schema.properties) {
+./supabase/functions/mcp-server/index.ts:4408:      const propSchema = schema.properties[key];
+./supabase/functions/mcp-server/index.ts:4409:      if (propSchema && propSchema.type) {
+./supabase/functions/mcp-server/index.ts:4412:        const isValidType = actualType === propSchema.type || 
+./supabase/functions/mcp-server/index.ts:4413:                           (propSchema.type === 'integer' && actualType === 'number') ||
+./supabase/functions/mcp-server/index.ts:4414:                           (propSchema.type === 'number' && actualType === 'number');
+./supabase/functions/mcp-server/index.ts:4416:          errors.push(`Field '${key}' should be type '${propSchema.type}' but got '${actualType}'`);
+./supabase/functions/mcp-server/index.ts:4582:    // Validate OAuth token from ChatGPT
+./supabase/functions/mcp-server/index.ts:4676:      // Validate tool exists
+./supabase/functions/mcp-server/index.ts:4677:      if (!validateToolName(toolName, manifest)) {
+./supabase/functions/mcp-server/index.ts:4727:      // Validate empty body
+./supabase/functions/mcp-server/index.ts:4734:            { hint: "Provide JSON parameters matching the manifest schema" },
+./supabase/functions/mcp-server/index.ts:4747:      // Validate input against schema
+./supabase/functions/mcp-server/index.ts:4748:      const validation = validateInput(toolName, body, manifest);
+./supabase/functions/mcp-server/lib/rateLimit.ts:298:      db: { schema: "analytics" },
+./supabase/functions/mcp-server/lib/validation.ts:5: * Uses Zod schemas for runtime type checking.
+./supabase/functions/mcp-server/lib/validation.ts:10:import { z } from "zod";
+./supabase/functions/mcp-server/lib/validation.ts:56: * Read and validate request body size
+./supabase/functions/mcp-server/lib/validation.ts:78:// Schema Validation
+./supabase/functions/mcp-server/lib/validation.ts:82: * Validate input against a Zod schema
+./supabase/functions/mcp-server/lib/validation.ts:84: * @param schema - Zod schema
+./supabase/functions/mcp-server/lib/validation.ts:85: * @param input - Input data to validate
+./supabase/functions/mcp-server/lib/validation.ts:88:export function validateInput(
+./supabase/functions/mcp-server/lib/validation.ts:89:  schema: z.ZodSchema,
+./supabase/functions/mcp-server/lib/validation.ts:92:  const result = schema.safeParse(input);
+./supabase/functions/mcp-server/lib/validation.ts:142:// Common Schemas
+./supabase/functions/mcp-server/lib/validation.ts:146: * Common schema for pagination parameters
+./supabase/functions/mcp-server/lib/validation.ts:148:export const PaginationSchema = z.object({
+./supabase/functions/mcp-server/lib/validation.ts:154: * Common schema for location
+./supabase/functions/mcp-server/lib/validation.ts:156:export const LocationSchema = z.object({
+./supabase/functions/mcp-server/lib/validation.ts:162: * Common schema for date range
+./supabase/functions/mcp-server/lib/validation.ts:164:export const DateRangeSchema = z.object({
+./supabase/functions/mcp-server/lib/validation.ts:170:// Tool Schema Registry
+./supabase/functions/mcp-server/lib/validation.ts:174: * Registry of tool schemas
+./supabase/functions/mcp-server/lib/validation.ts:175: * Maps tool name to Zod schema
+./supabase/functions/mcp-server/lib/validation.ts:177:const TOOL_SCHEMAS: Map<string, z.ZodSchema> = new Map();
+./supabase/functions/mcp-server/lib/validation.ts:180: * Register a schema for a tool
+./supabase/functions/mcp-server/lib/validation.ts:183: * @param schema - Zod schema
+./supabase/functions/mcp-server/lib/validation.ts:185:export function registerSchema(toolName: string, schema: z.ZodSchema): void {
+./supabase/functions/mcp-server/lib/validation.ts:186:  TOOL_SCHEMAS.set(toolName, schema);
+./supabase/functions/mcp-server/lib/validation.ts:190: * Get schema for a tool
+./supabase/functions/mcp-server/lib/validation.ts:193: * @returns Zod schema or undefined if not registered
+./supabase/functions/mcp-server/lib/validation.ts:195:export function getSchema(toolName: string): z.ZodSchema | undefined {
+./supabase/functions/mcp-server/lib/validation.ts:200: * Check if a tool has a registered schema
+./supabase/functions/mcp-server/lib/validation.ts:203: * @returns true if schema is registered
+./supabase/functions/mcp-server/lib/validation.ts:205:export function hasSchema(toolName: string): boolean {
+./supabase/functions/mcp-server/lib/validation.ts:210: * Validate tool input using registered schema
+./supabase/functions/mcp-server/lib/validation.ts:214: * @returns Validation result or null if no schema registered
+./supabase/functions/mcp-server/lib/validation.ts:216:export function validateToolInput(
+./supabase/functions/mcp-server/lib/validation.ts:220:  const schema = getSchema(toolName);
+./supabase/functions/mcp-server/lib/validation.ts:222:  if (!schema) {
+./supabase/functions/mcp-server/lib/validation.ts:223:    return null; // No schema registered, skip validation
+./supabase/functions/mcp-server/lib/validation.ts:226:  return validateInput(schema, input);
+./supabase/functions/mcp-server/lib/validation.ts:230:// Auto-register schemas
+./supabase/functions/mcp-server/lib/validation.ts:233:// Import and register tool schemas
+./supabase/functions/mcp-server/lib/validation.ts:234:// This will be expanded as more schemas are added
+./supabase/functions/mcp-server/lib/validation.ts:236:// Example: Register search_restaurants schema
+./supabase/functions/mcp-server/lib/validation.ts:238:  const { SearchRestaurantsSchema } = await import("../schemas/search_restaurants.ts");
+./supabase/functions/mcp-server/lib/validation.ts:239:  registerSchema("search_restaurants", SearchRestaurantsSchema);
+./supabase/functions/mcp-server/lib/validation.ts:241:  // Schema not found, skip registration
+./supabase/functions/mcp-server/lib/validation.ts:251:  validateInput,
+./supabase/functions/mcp-server/lib/validation.ts:252:  validateToolInput,
+./supabase/functions/mcp-server/lib/validation.ts:254:  registerSchema,
+./supabase/functions/mcp-server/lib/validation.ts:255:  getSchema,
+./supabase/functions/mcp-server/lib/validation.ts:256:  hasSchema,
+./supabase/functions/mcp-server/lib/security.ts:16:import { validateAccess } from "../config/toolAccess.ts";
+./supabase/functions/mcp-server/lib/security.ts:17:import { validateToolInput, isPayloadTooLarge, formatValidationErrors } from "./validation.ts";
+./supabase/functions/mcp-server/lib/security.ts:63:  const accessCheck = validateAccess(ctx.toolName, ctx.userId, ctx.isServiceRole);
+./supabase/functions/mcp-server/lib/security.ts:132:  const validationResult = validateToolInput(ctx.toolName, ctx.requestBody);
+./supabase/functions/mcp-server/lib/auditLog.ts:68:        db: { schema: "analytics" },
+./supabase/functions/mcp-server/manifest_embedded.ts:2:{"name":"TheLoopGPT.ai","description":"A comprehensive AI-powered meal planning and nutrition platform. TheLoopGPT.ai provides personalized meal plans, weight tracking with adaptive feedback loops, restaurant ordering via MealMe, and multi-country grocery affiliate links. Built on a robust microservices architecture with support for 100+ languages across 25 countries.","version":"1.0.0","schema_version":"v1","namespace":"loopgpt","contact_email":"support@theloopgpt.ai","api":{"type":"openai-mcp","url":"https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server"},"authentication":{"type":"none"},"tools":[{"name":"generate_week_plan","category":"Meal Planning","description":"Generates a personalized 7-day meal plan based on user dietary preferences, calorie targets, allergies, and cuisine preferences. Returns a complete week of breakfast, lunch, and dinner with recipes and shopping lists.","input_schema":{"type":"object","properties":{"user_id":{"type":"string","description":"Unique user identifier"},"diet":{"type":"string","description":"Diet type (e.g., vegetarian, vegan, keto, paleo, pescatarian, omnivore)"},"calories_per_day":{"type":"number","description":"Target daily calorie intake"},"meals_per_day":{"type":"integer","description":"Number of meals per day (typically 2-4)","default":3},"allergies":{"type":"array","items":{"type":"string"},"description":"List of food allergies or ingredients to exclude"},"cuisine_preferences":{"type":"array","items":{"type":"string"},"description":"Preferred cuisines (e.g., Italian, Mexican, Asian, Mediterranean)"},"language":{"type":"string","description":"Language code for meal plan (e.g., en, es, fr, de)","default":"en"}},"required":["user_id","diet","calories_per_day"]},"output_schema":{"type":"object","properties":{"plan_id":{"type":"string","description":"Unique identifier for this meal plan"},"week_start":{"type":"string","description":"Start date of the week (ISO 8601)"},"meals":{"type":"array","description":"Array of meals for the week"},"shopping_list":{"type":"array","description":"Aggregated shopping list for the week"},"total_calories":{"type":"number","description":"Total calories for the week"}}}},{"name":"log_meal_plan","category":"Meal Planning","description":"Saves a generated meal plan to the user's account for tracking and future reference. This creates a permanent record that can be used for outcome evaluation and plan adaptation.","input_schema":{"type":"object","properties":{"user_id":{"type":"string","description":"Unique user identifier"},"plan_id":{"type":"string","description":"Meal plan identifier from generate_week_plan"},"plan_data":{"type":"object","description":"Complete meal plan data to store"},"start_date":{"type":"string","description":"When the user will start this plan (ISO 8601)"}},"required":["user_id","plan_id","plan_data"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"message":{"type":"string"},"stored_plan_id":{"type":"string"}}}},{"name":"get_affiliate_links","category":"Meal Planning","description":"Generates country-specific grocery affiliate links for ingredients in a meal plan. Supports 25 countries with localized grocery delivery services and affiliate partnerships.","input_schema":{"type":"object","properties":{"ingredients":{"type":"array","items":{"type":"string"},"description":"List of ingredient names"},"country_code":{"type":"string","description":"ISO 3166-1 alpha-2 country code (e.g., US, GB, DE, FR)"},"user_id":{"type":"string","description":"User ID for tracking affiliate conversions"}},"required":["ingredients","country_code"]},"output_schema":{"type":"object","properties":{"links":{"type":"array","items":{"type":"object","properties":{"ingredient":{"type":"string"},"url":{"type":"string"},"provider":{"type":"string"},"estimated_price":{"type":"number"}}}},"total_estimated_cost":{"type":"number"}}}},{"name":"log_weight","category":"Weight Tracking","description":"Records a daily weight entry for a user. This is a core component of the feedback loop that enables plan adaptation based on actual results.","input_schema":{"type":"object","properties":{"user_id":{"type":"string","description":"Unique user identifier"},"weight_kg":{"type":"number","description":"Weight in kilograms"},"date":{"type":"string","description":"Date of measurement (ISO 8601)","default":"today"},"notes":{"type":"string","description":"Optional notes about the measurement"}},"required":["user_id","weight_kg"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"message":{"type":"string"},"log_id":{"type":"string"},"bmi":{"type":"number","description":"Calculated BMI if height is available"}}}},{"name":"weekly_trend","category":"Weight Tracking","description":"Calculates weekly weight trends and statistics for a user. Shows average weight, change from previous week, and trend direction (increasing, decreasing, stable).","input_schema":{"type":"object","properties":{"user_id":{"type":"string","description":"Unique user identifier"},"week_start":{"type":"string","description":"Start date of the week to analyze (ISO 8601)"},"include_graph_data":{"type":"boolean","description":"Whether to include daily data points for graphing","default":false}},"required":["user_id","week_start"]},"output_schema":{"type":"object","properties":{"average_weight":{"type":"number"},"weight_change":{"type":"number","description":"Change from previous week in kg"},"trend":{"type":"string","enum":["increasing","decreasing","stable"]},"data_points":{"type":"integer","description":"Number of measurements in the week"},"daily_data":{"type":"array","description":"Daily weight measurements if requested"}}}},{"name":"evaluate_plan_outcome","category":"Weight Tracking","description":"Evaluates the effectiveness of a meal plan by comparing actual weight results against goals. This drives the adaptive feedback loop that improves future meal plans.","input_schema":{"type":"object","properties":{"plan_id":{"type":"string","description":"Meal plan identifier to evaluate"},"user_id":{"type":"string","description":"Unique user identifier"},"end_weight":{"type":"number","description":"Weight at end of plan period (kg)"},"adherence_score":{"type":"number","description":"How closely user followed the plan (0-100)","default":100}},"required":["plan_id","user_id","end_weight"]},"output_schema":{"type":"object","properties":{"outcome":{"type":"string","enum":["exceeded_goal","met_goal","partial_progress","no_progress","opposite_direction"]},"weight_change":{"type":"number"},"goal_achievement_percentage":{"type":"number"},"recommendations":{"type":"array","items":{"type":"string"},"description":"Suggestions for next meal plan"}}}},{"name":"push_plan_feedback","category":"Weight Tracking","description":"Submits user feedback on a meal plan including ratings, comments, and specific meal preferences. This qualitative data complements quantitative weight tracking for plan optimization.","input_schema":{"type":"object","properties":{"plan_id":{"type":"string","description":"Meal plan identifier"},"user_id":{"type":"string","description":"Unique user identifier"},"overall_rating":{"type":"integer","description":"Overall satisfaction (1-5 stars)","minimum":1,"maximum":5},"feedback_text":{"type":"string","description":"Detailed feedback comments"},"liked_meals":{"type":"array","items":{"type":"string"},"description":"Meal IDs that user enjoyed"},"disliked_meals":{"type":"array","items":{"type":"string"},"description":"Meal IDs that user didn't enjoy"}},"required":["plan_id","user_id","overall_rating"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"message":{"type":"string"},"feedback_id":{"type":"string"}}}},{"name":"get_weight_prefs","category":"Weight Tracking","description":"Retrieves a user's weight goals and preferences including target weight, weekly goal, height, activity level, and weight loss/gain strategy.","input_schema":{"type":"object","properties":{"user_id":{"type":"string","description":"Unique user identifier"}},"required":["user_id"]},"output_schema":{"type":"object","properties":{"target_weight_kg":{"type":"number"},"weekly_goal_kg":{"type":"number","description":"Target weight change per week (negative for loss)"},"height_cm":{"type":"number"},"activity_level":{"type":"string","enum":["sedentary","lightly_active","moderately_active","very_active","extremely_active"]},"strategy":{"type":"string","enum":["lose_weight","gain_weight","maintain_weight","build_muscle"]}}}},{"name":"update_weight_prefs","category":"Weight Tracking","description":"Updates a user's weight goals and preferences. This affects future meal plan generation and calorie calculations.","input_schema":{"type":"object","properties":{"user_id":{"type":"string","description":"Unique user identifier"},"target_weight_kg":{"type":"number"},"weekly_goal_kg":{"type":"number"},"height_cm":{"type":"number"},"activity_level":{"type":"string","enum":["sedentary","lightly_active","moderately_active","very_active","extremely_active"]},"strategy":{"type":"string","enum":["lose_weight","gain_weight","maintain_weight","build_muscle"]}},"required":["user_id"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"message":{"type":"string"},"updated_preferences":{"type":"object"}}}},{"name":"get_delivery_recommendations","category":"Delivery Integration","description":"Provides personalized meal delivery service recommendations based on user location, meal plan, and preferences. Integrates with multiple delivery providers across 25 countries.","input_schema":{"type":"object","properties":{"user_id":{"type":"string","description":"Unique user identifier"},"location":{"type":"object","properties":{"latitude":{"type":"number"},"longitude":{"type":"number"}},"required":["latitude","longitude"]},"meal_plan_id":{"type":"string","description":"Optional meal plan to match against"},"budget":{"type":"number","description":"Maximum weekly budget in local currency"}},"required":["user_id","location"]},"output_schema":{"type":"object","properties":{"providers":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"rating":{"type":"number"},"estimated_cost":{"type":"number"},"delivery_days":{"type":"integer"},"match_score":{"type":"number","description":"How well this matches the meal plan (0-100)"}}}}}}},{"name":"mealme_search","category":"MealMe Integration","description":"Searches for restaurants and meals via the MealMe API based on location, cuisine type, and dietary filters. Returns available restaurants with menu items.","input_schema":{"type":"object","properties":{"location":{"type":"object","properties":{"latitude":{"type":"number"},"longitude":{"type":"number"}},"required":["latitude","longitude"]},"query":{"type":"string","description":"Search term (e.g., 'pizza', 'vegan', 'thai food')"},"radius_km":{"type":"number","description":"Search radius in kilometers","default":5},"diet_filters":{"type":"array","items":{"type":"string"},"description":"Dietary filters (e.g., vegan, gluten-free, halal)"}},"required":["location"]},"output_schema":{"type":"object","properties":{"restaurants":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"},"name":{"type":"string"},"cuisine":{"type":"string"},"rating":{"type":"number"},"distance_km":{"type":"number"},"menu_items":{"type":"array"}}}}}}},{"name":"mealme_create_cart","category":"MealMe Integration","description":"Creates a shopping cart in the MealMe system with selected menu items from a restaurant. This is the first step in the ordering process.","input_schema":{"type":"object","properties":{"restaurant_id":{"type":"string","description":"MealMe restaurant identifier"},"items":{"type":"array","items":{"type":"object","properties":{"item_id":{"type":"string"},"quantity":{"type":"integer"},"customizations":{"type":"object"}},"required":["item_id","quantity"]}},"user_id":{"type":"string"}},"required":["restaurant_id","items"]},"output_schema":{"type":"object","properties":{"cart_id":{"type":"string"},"subtotal":{"type":"number"},"tax":{"type":"number"},"total":{"type":"number"}}}},{"name":"mealme_get_quotes","category":"MealMe Integration","description":"Retrieves delivery quotes for a cart from available delivery providers. Shows estimated delivery time and cost for each option.","input_schema":{"type":"object","properties":{"cart_id":{"type":"string","description":"Cart identifier from mealme_create_cart"},"delivery_address":{"type":"object","properties":{"street":{"type":"string"},"city":{"type":"string"},"state":{"type":"string"},"zip":{"type":"string"},"country":{"type":"string"}},"required":["street","city","zip"]}},"required":["cart_id","delivery_address"]},"output_schema":{"type":"object","properties":{"quotes":{"type":"array","items":{"type":"object","properties":{"quote_id":{"type":"string"},"provider":{"type":"string"},"delivery_fee":{"type":"number"},"estimated_delivery_time":{"type":"string"},"total_cost":{"type":"number"}}}}}}},{"name":"mealme_checkout_url","category":"MealMe Integration","description":"Generates a checkout URL for completing the order payment. Users are redirected to MealMe's secure checkout to finalize the purchase.","input_schema":{"type":"object","properties":{"cart_id":{"type":"string"},"quote_id":{"type":"string","description":"Selected delivery quote"},"return_url":{"type":"string","description":"URL to redirect after checkout"}},"required":["cart_id","quote_id"]},"output_schema":{"type":"object","properties":{"checkout_url":{"type":"string","description":"URL for user to complete payment"},"expires_at":{"type":"string","description":"When this checkout URL expires"}}}},{"name":"mealme_webhook","category":"MealMe Integration","description":"Internal webhook handler for MealMe order status updates. This is called by MealMe's system, not by end users. Processes order confirmations, delivery updates, and cancellations.","input_schema":{"type":"object","properties":{"event_type":{"type":"string","enum":["order_confirmed","order_preparing","order_out_for_delivery","order_delivered","order_cancelled"]},"order_id":{"type":"string"},"timestamp":{"type":"string"},"data":{"type":"object"}},"required":["event_type","order_id"]},"output_schema":{"type":"object","properties":{"acknowledged":{"type":"boolean"}}}},{"name":"mealme_order_plan","category":"MealMe Integration","description":"Orders an entire meal plan through MealMe by creating multiple carts and scheduling deliveries across the week. This is a high-level convenience function that automates the full ordering workflow.","input_schema":{"type":"object","properties":{"plan_id":{"type":"string","description":"Meal plan to order"},"user_id":{"type":"string"},"delivery_schedule":{"type":"array","items":{"type":"object","properties":{"date":{"type":"string"},"meals":{"type":"array","items":{"type":"string"}}}},"description":"When to deliver which meals"},"delivery_address":{"type":"object"}},"required":["plan_id","user_id","delivery_schedule","delivery_address"]},"output_schema":{"type":"object","properties":{"orders":{"type":"array","items":{"type":"object","properties":{"order_id":{"type":"string"},"delivery_date":{"type":"string"},"status":{"type":"string"},"total_cost":{"type":"number"}}}},"total_plan_cost":{"type":"number"}}}},{"name":"normalize_ingredients","category":"MealMe Integration","description":"Normalizes ingredient names to standard forms for better matching across recipes, grocery lists, and restaurant menus. Handles plurals, synonyms, and common variations.","input_schema":{"type":"object","properties":{"ingredients":{"type":"array","items":{"type":"string"},"description":"List of ingredient names to normalize"}},"required":["ingredients"]},"output_schema":{"type":"object","properties":{"normalized":{"type":"array","items":{"type":"object","properties":{"original":{"type":"string"},"normalized":{"type":"string"},"category":{"type":"string","description":"Food category (e.g., vegetable, protein, grain)"},"confidence":{"type":"number","description":"Confidence in normalization (0-1)"}}}}}}},{"name":"get_user_location","category":"Geolocation","description":"Detects user's geographic location from IP address or explicit coordinates. Returns country, city, and coordinates for localization and service availability.","input_schema":{"type":"object","properties":{"ip":{"type":"string","description":"IP address to geolocate (optional, uses request IP if not provided)"},"user_id":{"type":"string","description":"User ID to associate location with"}}},"output_schema":{"type":"object","properties":{"country_code":{"type":"string"},"country_name":{"type":"string"},"city":{"type":"string"},"latitude":{"type":"number"},"longitude":{"type":"number"},"supported":{"type":"boolean","description":"Whether this country is supported by TheLoopGPT.ai"}}}},{"name":"update_user_location","category":"Geolocation","description":"Updates a user's stored location preferences. This affects which grocery affiliates, delivery services, and restaurants are shown.","input_schema":{"type":"object","properties":{"user_id":{"type":"string"},"country_code":{"type":"string"},"city":{"type":"string"},"latitude":{"type":"number"},"longitude":{"type":"number"},"timezone":{"type":"string","description":"IANA timezone identifier (e.g., America/New_York)"}},"required":["user_id","country_code"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"message":{"type":"string"},"updated_location":{"type":"object"}}}},{"name":"get_affiliate_by_country","category":"Geolocation","description":"Retrieves available grocery and meal delivery affiliate partners for a specific country. Returns providers with commission rates and service details.","input_schema":{"type":"object","properties":{"country_code":{"type":"string","description":"ISO 3166-1 alpha-2 country code"},"service_type":{"type":"string","enum":["grocery","meal_delivery","both"],"default":"both"}},"required":["country_code"]},"output_schema":{"type":"object","properties":{"country":{"type":"string"},"affiliates":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"type":{"type":"string"},"url":{"type":"string"},"commission_rate":{"type":"number"},"coverage":{"type":"string","description":"Geographic coverage (e.g., nationwide, major cities)"}}}}}}},{"name":"change_location","category":"Geolocation","description":"Changes a user's active country/region, updating all associated preferences including language, currency, available services, and affiliate partners.","input_schema":{"type":"object","properties":{"user_id":{"type":"string"},"new_country_code":{"type":"string"},"update_language":{"type":"boolean","description":"Whether to update language to country default","default":true},"update_currency":{"type":"boolean","description":"Whether to update currency to country default","default":true}},"required":["user_id","new_country_code"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"message":{"type":"string"},"new_settings":{"type":"object","properties":{"country":{"type":"string"},"language":{"type":"string"},"currency":{"type":"string"},"available_services":{"type":"array"}}}}}},{"name":"loopgpt_route_order","category":"Commerce","description":"Routes an order across multiple commerce providers (MealMe, Instacart, Shipt, Amazon Fresh, Walmart) to find the best price, delivery time, and availability. Supports split orders across multiple providers for optimal fulfillment. Returns a quote with confirmation token - order is NOT placed until loopgpt_confirm_order is called.","input_schema":{"type":"object","properties":{"user_id":{"type":"string","description":"Unique user identifier"},"items":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string","description":"Product name"},"quantity":{"type":"integer","description":"Quantity to order"},"preferences":{"type":"object","description":"Optional product preferences (size, brand, etc.)"}},"required":["name","quantity"]},"description":"List of items to order"},"delivery_address":{"type":"object","properties":{"street":{"type":"string"},"city":{"type":"string"},"state":{"type":"string"},"zip":{"type":"string"},"country":{"type":"string","default":"US"}},"required":["street","city","state","zip"],"description":"Delivery address"},"preferences":{"type":"object","properties":{"max_delivery_time_minutes":{"type":"integer","description":"Maximum acceptable delivery time"},"max_delivery_fee":{"type":"number","description":"Maximum acceptable delivery fee"},"preferred_providers":{"type":"array","items":{"type":"string"},"description":"Preferred provider names (mealme, instacart, shipt, amazon_fresh, walmart)"},"allow_split_orders":{"type":"boolean","description":"Allow splitting order across multiple providers","default":true},"split_strategy":{"type":"string","enum":["cost","speed","providers"],"description":"Strategy for split orders: cost (minimize total), speed (minimize time), providers (minimize provider count)","default":"cost"}},"description":"Optional ordering preferences"}},"required":["user_id","items","delivery_address"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"quote":{"type":"object","properties":{"confirmation_token":{"type":"string","description":"Token to confirm this order (expires in 15 minutes)"},"is_split_order":{"type":"boolean","description":"Whether order is split across multiple providers"},"orders":{"type":"array","description":"Array of provider quotes (1 for single provider, multiple for split orders)","items":{"type":"object","properties":{"provider":{"type":"string"},"items":{"type":"array"},"subtotal":{"type":"number"},"delivery_fee":{"type":"number"},"tax":{"type":"number"},"total":{"type":"number"},"estimated_delivery_minutes":{"type":"integer"},"score":{"type":"number","description":"Provider score (0-100, higher is better)"}}}},"total_cost":{"type":"number","description":"Total cost across all providers"},"total_items":{"type":"integer"},"unavailable_items":{"type":"array","description":"Items that couldn't be found at any provider"},"expires_at":{"type":"string","description":"When this quote expires (ISO 8601)"}}},"message":{"type":"string"}}}},{"name":"loopgpt_confirm_order","category":"Commerce","description":"Confirms and places a pending order using the confirmation token from loopgpt_route_order. This actually charges the user and submits the order to the provider(s).","input_schema":{"type":"object","properties":{"confirmation_token":{"type":"string","description":"Confirmation token from loopgpt_route_order"},"user_id":{"type":"string","description":"Unique user identifier"},"payment_method":{"type":"object","properties":{"type":{"type":"string","enum":["card","paypal","apple_pay","google_pay"]},"token":{"type":"string","description":"Payment method token from payment processor"}},"required":["type","token"],"description":"Payment method details"}},"required":["confirmation_token","user_id","payment_method"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"order_ids":{"type":"array","items":{"type":"string"},"description":"Order IDs from provider(s)"},"tracking_urls":{"type":"array","items":{"type":"string"},"description":"Tracking URLs for each order"},"estimated_delivery":{"type":"string","description":"Estimated delivery time (ISO 8601)"},"message":{"type":"string"}}}},{"name":"loopgpt_cancel_order","category":"Commerce","description":"Cancels a pending order before it's confirmed. Can only cancel orders that haven't been submitted to providers yet (within 15-minute confirmation window).","input_schema":{"type":"object","properties":{"confirmation_token":{"type":"string","description":"Confirmation token from loopgpt_route_order"},"user_id":{"type":"string","description":"Unique user identifier"}},"required":["confirmation_token","user_id"]},"output_schema":{"type":"object","properties":{"success":{"type":"boolean"},"message":{"type":"string"}}}}]}
+./supabase/functions/mcp-server/config/toolAccess.ts:155: * Validate access to a tool
+./supabase/functions/mcp-server/config/toolAccess.ts:162:export function validateAccess(
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:2: * Input Schema for search_restaurants Tool
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:4: * Validates input parameters before calling the tool.
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:5: * Uses Zod for runtime type checking and validation.
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:10:import { z } from "zod";
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:13: * Schema for search_restaurants tool input
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:15:export const SearchRestaurantsSchema = z.object({
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:57: * TypeScript type inferred from schema
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:59:export type SearchRestaurantsInput = z.infer<typeof SearchRestaurantsSchema>;
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:62: * Validate input and return parsed result
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:67:export function validateSearchRestaurantsInput(input: unknown) {
+./supabase/functions/mcp-server/schemas/search_restaurants.ts:68:  return SearchRestaurantsSchema.safeParse(input);
+./supabase/functions/mcp-tools-full/config/env.ts:28: * Validate required environment variables
+./supabase/functions/mcp-tools-full/config/env.ts:30:export function validateEnv(): { valid: boolean; missing: string[] } {
+./supabase/functions/mcp-tools-full/index.ts:8:import { ENV, validateEnv } from "./config/env.ts";
+./supabase/functions/mcp-tools-full/index.ts:51:    // Validate environment on startup
+./supabase/functions/mcp-tools-full/index.ts:52:    const envCheck = validateEnv();
+./supabase/functions/mcp-tools-full/manifest.ts:3: * Defines all available tools and their schemas
+./supabase/functions/mcp-tools-full/manifest.ts:18:      inputSchema: {
+./supabase/functions/mcp-tools-full/manifest.ts:72:      inputSchema: {
+./supabase/functions/mcp-tools-full/manifest.ts:125:      inputSchema: {
+./supabase/functions/mcp-tools-full/manifest.ts:170:      inputSchema: {
+./supabase/functions/mcp-tools-full/manifest.ts:213:      inputSchema: {
+./supabase/functions/mcp-tools-full/manifest.ts:256:      inputSchema: {
+./supabase/functions/mcp-tools-full/manifest.ts:328:      inputSchema: {
+./supabase/functions/mcp-tools-full/manifest.ts:337:      inputSchema: {
+./supabase/functions/mcp-tools-full/tools/grocery.ts:6:import { GroceryListJsonSchema } from "./shared/jsonSchema.ts";
+./supabase/functions/mcp-tools-full/tools/grocery.ts:8:  GroceryInputSchema,
+./supabase/functions/mcp-tools-full/tools/grocery.ts:9:  GroceryListSchema,
+./supabase/functions/mcp-tools-full/tools/grocery.ts:11:} from "./shared/schemas.ts";
+./supabase/functions/mcp-tools-full/tools/grocery.ts:15:import { validateInput } from "./shared/validation.ts";
+./supabase/functions/mcp-tools-full/tools/grocery.ts:30:    // Validate input
+./supabase/functions/mcp-tools-full/tools/grocery.ts:31:    const input = validateInput(GroceryInputSchema, params, toolName);
+./supabase/functions/mcp-tools-full/tools/grocery.ts:92:    // Use pre-defined JSON Schema for Structured Outputs
+./supabase/functions/mcp-tools-full/tools/grocery.ts:103:        type: "json_schema",
+./supabase/functions/mcp-tools-full/tools/grocery.ts:104:        json_schema: {
+./supabase/functions/mcp-tools-full/tools/grocery.ts:107:          schema: GroceryListJsonSchema,
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:6:import { MealPlanJsonSchema } from "./shared/jsonSchema.ts";
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:8:  MealPlanRequestSchema,
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:9:  MealPlanWithGroceryInputSchema,
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:10:  MealPlanSchema,
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:13:} from "./shared/schemas.ts";
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:17:import { validateInput } from "./shared/validation.ts";
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:33:    // Validate input
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:34:    const input = validateInput(MealPlanRequestSchema, params, toolName);
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:72:    // Use pre-defined JSON Schema for Structured Outputs
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:83:        type: "json_schema",
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:84:        json_schema: {
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:87:          schema: MealPlanJsonSchema,
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:131:    // Validate input
+./supabase/functions/mcp-tools-full/tools/mealplan.ts:132:    const input = validateInput(MealPlanWithGroceryInputSchema, params, toolName);
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:6:import { NutritionAnalysisJsonSchema } from "./shared/jsonSchema.ts";
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:8:  NutritionInputSchema,
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:9:  NutritionAnalysisSchema,
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:11:} from "./shared/schemas.ts";
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:15:import { validateInput } from "./shared/validation.ts";
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:30:    // Validate input
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:31:    const input = validateInput(NutritionInputSchema, params, toolName);
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:69:    // Use pre-defined JSON Schema for Structured Outputs
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:80:        type: "json_schema",
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:81:        json_schema: {
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:84:          schema: NutritionAnalysisJsonSchema,
+./supabase/functions/mcp-tools-full/tools/nutrition.ts:116:      const input = validateInput(NutritionInputSchema, params, toolName);
+./supabase/functions/mcp-tools-full/tools/recipes.ts:6:import { RecipeListJsonSchema } from "./shared/jsonSchema.ts";
+./supabase/functions/mcp-tools-full/tools/recipes.ts:8:  RecipesInputSchema,
+./supabase/functions/mcp-tools-full/tools/recipes.ts:9:  RecipesWithNutritionInputSchema,
+./supabase/functions/mcp-tools-full/tools/recipes.ts:10:  RecipeListSchema,
+./supabase/functions/mcp-tools-full/tools/recipes.ts:13:} from "./shared/schemas.ts";
+./supabase/functions/mcp-tools-full/tools/recipes.ts:17:import { validateInput } from "./shared/validation.ts";
+./supabase/functions/mcp-tools-full/tools/recipes.ts:33:    // Validate input
+./supabase/functions/mcp-tools-full/tools/recipes.ts:34:    const input = validateInput(RecipesInputSchema, params, toolName);
+./supabase/functions/mcp-tools-full/tools/recipes.ts:69:    // Use pre-defined JSON Schema for Structured Outputs
+./supabase/functions/mcp-tools-full/tools/recipes.ts:80:        type: "json_schema",
+./supabase/functions/mcp-tools-full/tools/recipes.ts:81:        json_schema: {
+./supabase/functions/mcp-tools-full/tools/recipes.ts:84:          schema: RecipeListJsonSchema,
+./supabase/functions/mcp-tools-full/tools/recipes.ts:129:    // Validate input
+./supabase/functions/mcp-tools-full/tools/recipes.ts:130:    const input = validateInput(RecipesWithNutritionInputSchema, params, toolName);
+./supabase/functions/mcp-tools-full/tools/shared/jsonSchema.ts:2: * JSON Schema Definitions for OpenAI Structured Outputs
+./supabase/functions/mcp-tools-full/tools/shared/jsonSchema.ts:6:export const RecipeListJsonSchema = {
+./supabase/functions/mcp-tools-full/tools/shared/jsonSchema.ts:54:export const NutritionAnalysisJsonSchema = {
+./supabase/functions/mcp-tools-full/tools/shared/jsonSchema.ts:120:export const MealPlanJsonSchema = {
+./supabase/functions/mcp-tools-full/tools/shared/jsonSchema.ts:210:export const GroceryListJsonSchema = {
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:2: * Shared Zod Schemas for TheLoopGPT MCP Tools
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:6:import { z } from "zod";
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:9:// Core Data Schemas
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:12:export const IngredientSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:18:export const RecipeSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:21:  ingredients: z.array(IngredientSchema),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:30:export const RecipeListSchema = z.array(RecipeSchema);
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:32:export const NutritionSummarySchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:42:export const NutritionAnalysisSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:47:      summary: NutritionSummarySchema,
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:49:      perServing: NutritionSummarySchema.optional(),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:52:  total: NutritionSummarySchema.optional(),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:55:export const MealPlanRequestSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:64:export const MealPlanSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:69:      recipes: RecipeListSchema,
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:70:      nutrition: NutritionSummarySchema.optional(),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:74:  totalNutrition: NutritionSummarySchema.optional(),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:78:export const GroceryItemSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:87:export const GroceryListSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:88:  items: z.array(GroceryItemSchema),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:89:  categorized: z.record(z.string(), z.array(GroceryItemSchema)).optional(),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:95:// Tool Input Schemas
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:98:export const RecipesInputSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:100:  ingredients: z.array(IngredientSchema).min(1, "At least one ingredient required"),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:107:export const RecipesWithNutritionInputSchema = RecipesInputSchema.extend({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:111:export const NutritionInputSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:113:  recipes: RecipeListSchema.min(1, "At least one recipe required"),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:117:export const GroceryInputSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:119:  recipes: RecipeListSchema.optional(),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:120:  mealPlan: MealPlanSchema.optional(),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:121:  additionalItems: z.array(GroceryItemSchema).optional(),
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:125:export const MealPlanWithGroceryInputSchema = MealPlanRequestSchema.extend({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:130:// Utility Schemas
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:133:export const HealthCheckSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:143:export const UsageStatsSchema = z.object({
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:155:export type Ingredient = z.infer<typeof IngredientSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:156:export type Recipe = z.infer<typeof RecipeSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:157:export type RecipeList = z.infer<typeof RecipeListSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:158:export type NutritionSummary = z.infer<typeof NutritionSummarySchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:159:export type NutritionAnalysis = z.infer<typeof NutritionAnalysisSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:160:export type MealPlanRequest = z.infer<typeof MealPlanRequestSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:161:export type MealPlan = z.infer<typeof MealPlanSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:162:export type GroceryItem = z.infer<typeof GroceryItemSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:163:export type GroceryList = z.infer<typeof GroceryListSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:164:export type HealthCheck = z.infer<typeof HealthCheckSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/schemas.ts:165:export type UsageStats = z.infer<typeof UsageStatsSchema>;
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:3: * Zod schema validation with user-friendly error messages
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:6:import { z } from "zod";
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:10: * Validate input against a Zod schema
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:13:export function validateInput<T>(
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:14:  schema: z.ZodSchema<T>,
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:18:  const result = schema.safeParse(input);
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:36: * Validate output against a Zod schema
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:39:export function validateOutput<T>(
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:40:  schema: z.ZodSchema<T>,
+./supabase/functions/mcp-tools-full/tools/shared/validation.ts:44:  const result = schema.safeParse(output);
+./supabase/functions/mcp-tools-full/tools/utils.ts:6:import { HealthCheckSchema, UsageStatsSchema, type HealthCheck, type UsageStats } from "./shared/schemas.ts";
+./supabase/functions/mcp-tools-full/tools/utils.ts:8:import { ENV, validateEnv } from "../config/env.ts";
+./supabase/functions/mcp-tools-full/tools/utils.ts:20:  const envCheck = validateEnv();
+./supabase/functions/mcp-tools/commerce.ts:11:  validateLocation,
+./supabase/functions/mcp-tools/commerce.ts:12:  validatePreferences,
+./supabase/functions/mcp-tools/commerce.ts:20:} from "./commerceSchemas.ts";
+./supabase/functions/mcp-tools/commerce.ts:38: * Validate prepareCart input
+./supabase/functions/mcp-tools/commerce.ts:40:function validatePrepareCartInput(params: Record<string, unknown>) {
+./supabase/functions/mcp-tools/commerce.ts:62:    location: validateLocation(params.location),
+./supabase/functions/mcp-tools/commerce.ts:63:    preferences: validatePreferences(params.preferences),
+./supabase/functions/mcp-tools/commerce.ts:104:    // Validate input
+./supabase/functions/mcp-tools/commerce.ts:105:    const input = validatePrepareCartInput(params);
+./supabase/functions/mcp-tools/commerce.ts:256:    // 2. Validate ownership (userId check should be done by caller/middleware, but we check if passed)
+./supabase/functions/mcp-tools/commerce.ts:261:    // 3. Validate status
+./supabase/functions/mcp-tools/commerce.ts:266:    // 4. Validate expiry
+./supabase/functions/mcp-tools/commerce.ts:316:    // 1. Validate Input
+./supabase/functions/mcp-tools/commerce.ts:349:    // 4. Validate State
+./supabase/functions/mcp-tools/commerceSchemas.ts:2: * Commerce Schemas
+./supabase/functions/mcp-tools/commerceSchemas.ts:4: * Types and schemas for pantry management, cart preparation,
+./supabase/functions/mcp-tools/commerceSchemas.ts:28: * Validate pantry input
+./supabase/functions/mcp-tools/commerceSchemas.ts:30:export function validatePantry(pantry: any): Pantry {
+./supabase/functions/mcp-tools/commerceSchemas.ts:257: * Validate user location
+./supabase/functions/mcp-tools/commerceSchemas.ts:259:export function validateLocation(location: any): UserLocation {
+./supabase/functions/mcp-tools/commerceSchemas.ts:281: * Validate order preferences
+./supabase/functions/mcp-tools/commerceSchemas.ts:283:export function validatePreferences(preferences: any): OrderPreferences {
+./supabase/functions/mcp-tools/ctaSchemas.ts:2: * CTA (Call-to-Action) Schemas for Engagement Layer
+./supabase/functions/mcp-tools/errorTypes.ts:118:      message.includes("schema")) {
+./supabase/functions/mcp-tools/foodIntent.ts:137:    // Validate the response
+./supabase/functions/mcp-tools/foodRouter.ts:20:// Input schema for the router
+./supabase/functions/mcp-tools/foodRouter.ts:32:// Output schema - discriminated union based on intent type
+./supabase/functions/mcp-tools/foodRouter.ts:67: * Validate router input
+./supabase/functions/mcp-tools/foodRouter.ts:69:function validateRouterInput(params: Record<string, unknown>): FoodRouterInput {
+./supabase/functions/mcp-tools/foodRouter.ts:148:    // Validate input
+./supabase/functions/mcp-tools/foodRouter.ts:149:    const input = validateRouterInput(params);
+./supabase/functions/mcp-tools/grocery.ts:10:import { generateGroceryCtas, addCtasToResponse } from "./ctaSchemas.ts";
+./supabase/functions/mcp-tools/grocery.ts:11:import { validatePantry, type Pantry } from "./commerceSchemas.ts";
+./supabase/functions/mcp-tools/grocery.ts:16:function validateGroceryInput(params: Record<string, any>) {
+./supabase/functions/mcp-tools/grocery.ts:29:    pantry: params.pantry ? validatePantry(params.pantry) : undefined,
+./supabase/functions/mcp-tools/grocery.ts:33:// JSON Schema for OpenAI Structured Outputs
+./supabase/functions/mcp-tools/grocery.ts:34:const GroceryListJsonSchema = {
+./supabase/functions/mcp-tools/grocery.ts:92:    // Validate input
+./supabase/functions/mcp-tools/grocery.ts:93:    const input = validateGroceryInput(params);
+./supabase/functions/mcp-tools/grocery.ts:177:        type: "json_schema" as any,
+./supabase/functions/mcp-tools/grocery.ts:178:        json_schema: {
+./supabase/functions/mcp-tools/grocery.ts:181:          schema: GroceryListJsonSchema,
+./supabase/functions/mcp-tools/ingredientMatcher.ts:9:import type { PantryItem } from "./commerceSchemas.ts";
+./supabase/functions/mcp-tools/loopkitchen_mealplan.ts:89:function validateMealPlanInput(params: Record<string, unknown>): MealPlanInput {
+./supabase/functions/mcp-tools/loopkitchen_mealplan.ts:115:// GPT Response Schema
+./supabase/functions/mcp-tools/loopkitchen_mealplan.ts:118:const mealPlannerSchema = {
+./supabase/functions/mcp-tools/loopkitchen_mealplan.ts:201:    // Validate input
+./supabase/functions/mcp-tools/loopkitchen_mealplan.ts:202:    const input = validateMealPlanInput(params);
+./supabase/functions/mcp-tools/loopkitchen_mealplan.ts:413:    const grocerySchema = {
+./supabase/functions/mcp-tools/loopkitchen_mealplan.ts:656:    // Validate required fields
+./supabase/functions/mcp-tools/loopkitchen_mealplan.ts:747:    // Validate required fields
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:78:function validateNutritionInput(params: Record<string, unknown>): NutritionInput {
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:84:  // Validate recipes if provided
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:91:  // Validate ingredients if provided
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:107:// GPT Response Schema
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:110:    const nutritionAnalysisSchema = {
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:188:    // Validate input
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:189:    const input = validateNutritionInput(params);
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:305: * Schema: /database/schemas/loopkitchen_meal_logs.sql
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:328:    // Validate required fields
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:461: * Schema: /database/schemas/loopkitchen_meal_logs.sql
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:476:    // Validate required fields
+./supabase/functions/mcp-tools/loopkitchen_nutrition.ts:617:      message: `Daily nutrition tracking is ready for database integration in Phase 4. Schema created at /database/schemas/loopkitchen_meal_logs.sql. Would query meals for: ${targetDate}`,
+./supabase/functions/mcp-tools/loopkitchen_recipe_details.ts:59: * Validate input
+./supabase/functions/mcp-tools/loopkitchen_recipe_details.ts:61:function validateInput(params: any): GetRecipeDetailsInput {
+./supabase/functions/mcp-tools/loopkitchen_recipe_details.ts:89:    // Validate input
+./supabase/functions/mcp-tools/loopkitchen_recipe_details.ts:90:    const input = validateInput(params);
+./supabase/functions/mcp-tools/loopkitchen_recipes.ts:57: * Validate and normalize input
+./supabase/functions/mcp-tools/loopkitchen_recipes.ts:59:function validateInput(params: any): GenerateRecipesInput {
+./supabase/functions/mcp-tools/loopkitchen_recipes.ts:87:    // Validate input
+./supabase/functions/mcp-tools/loopkitchen_recipes.ts:88:    const input = validateInput(params);
+./supabase/functions/mcp-tools/mealplan.ts:10:import { generateMealPlanCtas, addCtasToResponse } from "./ctaSchemas.ts";
+./supabase/functions/mcp-tools/mealplan.ts:38:export function validateMealPlanInput(params: unknown): MealPlanInput {
+./supabase/functions/mcp-tools/mealplan.ts:64:// JSON Schema for OpenAI Structured Outputs
+./supabase/functions/mcp-tools/mealplan.ts:65:const MealPlanJsonSchema = {
+./supabase/functions/mcp-tools/mealplan.ts:156:    // Validate input first to ensure we have typed params
+./supabase/functions/mcp-tools/mealplan.ts:157:    const input = validateMealPlanInput(params);
+./supabase/functions/mcp-tools/mealplan.ts:199:    // Validate input
+./supabase/functions/mcp-tools/mealplan.ts:200:    const input = validateMealPlanInput(params);
+./supabase/functions/mcp-tools/mealplan.ts:271:        type: "json_schema" as any,
+./supabase/functions/mcp-tools/mealplan.ts:272:        json_schema: {
+./supabase/functions/mcp-tools/mealplan.ts:275:          schema: MealPlanJsonSchema,
+./supabase/functions/mcp-tools/nutrition.ts:10:import { generateNutritionCtas, addCtasToResponse } from "./ctaSchemas.ts";
+./supabase/functions/mcp-tools/nutrition.ts:50:export function validateNutritionInput(params: unknown): NutritionInput {
+./supabase/functions/mcp-tools/nutrition.ts:66:// JSON Schema for OpenAI Structured Outputs
+./supabase/functions/mcp-tools/nutrition.ts:67:const NutritionAnalysisJsonSchema = {
+./supabase/functions/mcp-tools/nutrition.ts:133:    // Validate input
+./supabase/functions/mcp-tools/nutrition.ts:134:    const input = validateNutritionInput(params);
+./supabase/functions/mcp-tools/nutrition.ts:202:        type: "json_schema" as any,
+./supabase/functions/mcp-tools/nutrition.ts:203:        json_schema: {
+./supabase/functions/mcp-tools/nutrition.ts:206:          schema: NutritionAnalysisJsonSchema,
+./supabase/functions/mcp-tools/nutrition_deterministic.ts:70:function validateNutritionInput(params: any): NutritionInput {
+./supabase/functions/mcp-tools/nutrition_deterministic.ts:76:  // Validate recipes if provided
+./supabase/functions/mcp-tools/nutrition_deterministic.ts:83:  // Validate ingredients if provided
+./supabase/functions/mcp-tools/nutrition_deterministic.ts:212:    // Validate input
+./supabase/functions/mcp-tools/nutrition_deterministic.ts:213:    const input = validateNutritionInput(params);
+./supabase/functions/mcp-tools/recipes.ts:11:import { generateRecipesCtas, addCtasToResponse } from "./ctaSchemas.ts";
+./supabase/functions/mcp-tools/recipes.ts:32:function validateRecipesInput(params: Record<string, any>) {
+./supabase/functions/mcp-tools/recipes.ts:46:// JSON Schema for OpenAI Structured Outputs
+./supabase/functions/mcp-tools/recipes.ts:47:const RecipeListJsonSchema = {
+./supabase/functions/mcp-tools/recipes.ts:136:    // Validate input
+./supabase/functions/mcp-tools/recipes.ts:137:    const input = validateRecipesInput(params);
+./supabase/functions/mcp-tools/recipes.ts:227:        type: "json_schema" as any,
+./supabase/functions/mcp-tools/recipes.ts:228:        json_schema: {
+./supabase/functions/mcp-tools/recipes.ts:231:          schema: RecipeListJsonSchema,
+./supabase/functions/mcp-tools/retention.ts:11:import { type Cta } from "./ctaSchemas.ts";
+./supabase/functions/mcp-tools/retention.ts:75: * Validate daily suggestion input
+./supabase/functions/mcp-tools/retention.ts:77:function validateDailySuggestionInput(input: unknown): DailySuggestionInput {
+./supabase/functions/mcp-tools/retention.ts:95: * Validate weekly refresh input
+./supabase/functions/mcp-tools/retention.ts:97:function validateWeeklyRefreshInput(input: unknown): WeeklyRefreshInput {
+./supabase/functions/mcp-tools/retention.ts:161:    // Validate input
+./supabase/functions/mcp-tools/retention.ts:162:    const validatedInput = validateDailySuggestionInput(input);
+./supabase/functions/mcp-tools/retention.ts:165:    const profile = await getProfileOrDefaults(validatedInput.userId);
+./supabase/functions/mcp-tools/retention.ts:171:      locale: validatedInput.locale,
+./supabase/functions/mcp-tools/retention.ts:241:            userId: validatedInput.userId,
+./supabase/functions/mcp-tools/retention.ts:249:      userId: validatedInput.userId,
+./supabase/functions/mcp-tools/retention.ts:279:    // Validate input
+./supabase/functions/mcp-tools/retention.ts:280:    const validatedInput = validateWeeklyRefreshInput(input);
+./supabase/functions/mcp-tools/retention.ts:283:    const profile = await getProfileOrDefaults(validatedInput.userId);
+./supabase/functions/mcp-tools/retention.ts:287:      days: validatedInput.days!,
+./supabase/functions/mcp-tools/retention.ts:288:      locale: validatedInput.locale,
+./supabase/functions/mcp-tools/retention.ts:314:            userId: validatedInput.userId,
+./supabase/functions/mcp-tools/retention.ts:315:            days: validatedInput.days,
+./supabase/functions/mcp-tools/retention.ts:327:            userId: validatedInput.userId,
+./supabase/functions/mcp-tools/retention.ts:340:            days: validatedInput.days,
+./supabase/functions/mcp-tools/retention.ts:351:      userId: validatedInput.userId,
+./supabase/functions/mcp-tools/retention.ts:352:      days: validatedInput.days,
+./supabase/functions/mcp-tools/sentiment.ts:41: * Validate sentiment feedback input
+./supabase/functions/mcp-tools/sentiment.ts:43:function validateSentimentInput(input: unknown): SentimentFeedbackInput {
+./supabase/functions/mcp-tools/sentiment.ts:50:  // Validate contentType
+./supabase/functions/mcp-tools/sentiment.ts:57:  // Validate eventType
+./supabase/functions/mcp-tools/sentiment.ts:64:  // Validate rating for RATED events
+./supabase/functions/mcp-tools/sentiment.ts:74:  // Validate userId if provided
+./supabase/functions/mcp-tools/sentiment.ts:79:  // Validate contentId if provided
+./supabase/functions/mcp-tools/sentiment.ts:106:    // Validate input
+./supabase/functions/mcp-tools/sentiment.ts:107:    const validatedInput = validateSentimentInput(input);
+./supabase/functions/mcp-tools/sentiment.ts:114:      userId: validatedInput.userId,
+./supabase/functions/mcp-tools/sentiment.ts:115:      contentType: validatedInput.contentType,
+./supabase/functions/mcp-tools/sentiment.ts:116:      contentId: validatedInput.contentId,
+./supabase/functions/mcp-tools/sentiment.ts:117:      eventType: validatedInput.eventType,
+./supabase/functions/mcp-tools/sentiment.ts:118:      rating: validatedInput.rating,
+./supabase/functions/mcp-tools/sentiment.ts:126:    if (validatedInput.eventType === "FAVORITED" && validatedInput.userId && validatedInput.contentId) {
+./supabase/functions/mcp-tools/sentiment.ts:128:        userId: validatedInput.userId,
+./supabase/functions/mcp-tools/sentiment.ts:129:        contentType: validatedInput.contentType,
+./supabase/functions/mcp-tools/sentiment.ts:130:        contentId: validatedInput.contentId,
+./supabase/functions/mcp-tools/sentiment.ts:131:        contentName: validatedInput.contentName,
+./supabase/functions/mcp-tools/sentiment.ts:132:        contentData: validatedInput.contentData,
+./supabase/functions/mcp-tools/sentiment.ts:134:    } else if (validatedInput.eventType === "UNFAVORITED" && validatedInput.userId && validatedInput.contentId) {
+./supabase/functions/mcp-tools/sentiment.ts:136:        validatedInput.userId,
+./supabase/functions/mcp-tools/sentiment.ts:137:        validatedInput.contentType,
+./supabase/functions/mcp-tools/sentiment.ts:138:        validatedInput.contentId
+./supabase/functions/mcp-tools/sentiment.ts:144:      eventType: validatedInput.eventType,
+./supabase/functions/mcp-tools/sentiment.ts:145:      contentType: validatedInput.contentType,
+./supabase/functions/mcp-tools/sentiment.ts:146:      hasUserId: !!validatedInput.userId,
+./supabase/functions/mcp-tools/sentiment.ts:147:      hasContentId: !!validatedInput.contentId,
+./supabase/functions/mcp-tools/sentiment.ts:152:      message: `Feedback recorded: ${validatedInput.eventType}`,
+./supabase/functions/mcp-tools/sentiment.ts:154:        eventType: validatedInput.eventType,
+./supabase/functions/mcp-tools/sentiment.ts:155:        contentType: validatedInput.contentType,
+./supabase/functions/mcp-tools/sentiment.ts:156:        contentId: validatedInput.contentId,
+./supabase/functions/mcp-tools/sentiment.ts:196:    // Validate input
+./supabase/functions/mcp-tools/sentiment.ts:276:    // Validate input
+./supabase/functions/mcp-tools/userPreferences.ts:30: * Validate update preferences input
+./supabase/functions/mcp-tools/userPreferences.ts:32:function validateUpdatePreferencesInput(input: any): UpdatePreferencesInput {
+./supabase/functions/mcp-tools/userPreferences.ts:41:  // Validate dietTags if provided
+./supabase/functions/mcp-tools/userPreferences.ts:51:  // Validate caloriesPerDay if provided
+./supabase/functions/mcp-tools/userPreferences.ts:61:  // Validate cuisines if provided
+./supabase/functions/mcp-tools/userPreferences.ts:91:    // Validate input
+./supabase/functions/mcp-tools/userPreferences.ts:92:    const validatedInput = validateUpdatePreferencesInput(input);
+./supabase/functions/mcp-tools/userPreferences.ts:98:    let profile = await store.getProfile(validatedInput.userId);
+./supabase/functions/mcp-tools/userPreferences.ts:103:        userId: validatedInput.userId,
+./supabase/functions/mcp-tools/userPreferences.ts:111:    if (validatedInput.dietTags !== undefined) {
+./supabase/functions/mcp-tools/userPreferences.ts:112:      profile.dietTags = validatedInput.dietTags;
+./supabase/functions/mcp-tools/userPreferences.ts:114:    if (validatedInput.caloriesPerDay !== undefined) {
+./supabase/functions/mcp-tools/userPreferences.ts:115:      profile.caloriesPerDay = validatedInput.caloriesPerDay;
+./supabase/functions/mcp-tools/userPreferences.ts:117:    if (validatedInput.cuisines !== undefined) {
+./supabase/functions/mcp-tools/userPreferences.ts:118:      profile.cuisines = validatedInput.cuisines;
+./supabase/functions/mcp-tools/userPreferences.ts:126:      userId: validatedInput.userId,
+./supabase/functions/mcp-tools/loopkitchen_share.ts:97: * Validate input
+./supabase/functions/mcp-tools/loopkitchen_share.ts:99:function validateInput(params: any): CreateShareSnapshotInput {
+./supabase/functions/mcp-tools/loopkitchen_share.ts:133:    // Validate input
+./supabase/functions/mcp-tools/loopkitchen_share.ts:134:    const input = validateInput(params);
+./supabase/functions/mealme_checkout_url/index.ts:27:  // Validate inputs
+./supabase/functions/mealme_create_cart/index.ts:46:  // Validate inputs
+./supabase/functions/mealme_get_quotes/index.ts:51:  // Validate inputs
+./supabase/functions/mealme_get_quotes/index.ts:153:    // Validate request body
+./supabase/functions/nutrition_analyze_food/index.ts:665:    // Validate input
+./supabase/functions/nutrition_analyze_food/index_deterministic.ts:228:    // Validate input
+./supabase/functions/nutrition_get_macros/index.ts:14:  validateIngredients,
+./supabase/functions/nutrition_get_macros/index.ts:40:  // Validate ingredients
+./supabase/functions/nutrition_get_macros/index.ts:41:  const validation = validateIngredients(ingredients);
+./supabase/functions/plan_create_meal_plan/index.ts:8:import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+./supabase/functions/plan_create_meal_plan/index.ts:28:    // Validate required fields
+./supabase/functions/plan_create_meal_plan/index.ts:29:    validateRequired(body, ["chatgpt_user_id"]);
+./supabase/functions/plan_create_meal_plan/index_backup.ts:7:import { createErrorResponse, createSuccessResponse, validateRequired, AppError, ErrorCodes } from "../../middleware/errorHandler.ts";
+./supabase/functions/plan_create_meal_plan/index_backup.ts:18:    // Validate required fields
+./supabase/functions/plan_create_meal_plan/index_backup.ts:19:    validateRequired(body, ["chatgpt_user_id"]);
+./supabase/functions/plan_create_meal_plan/index_multilingual.ts:7:import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+./supabase/functions/plan_create_meal_plan/index_multilingual.ts:18:    // Validate required fields
+./supabase/functions/plan_create_meal_plan/index_multilingual.ts:19:    validateRequired(body, ["chatgpt_user_id"]);
+./supabase/functions/plan_generate_from_leftovers/index.ts:343:    // Validate ingredients
+./supabase/functions/shared/deliveryAffiliate.ts:137: * Validate affiliate link format
+./supabase/functions/shared/deliveryAffiliate.ts:139:export function validateAffiliateLink(url: string): boolean {
+./supabase/functions/shared/ingredientNormalizer.ts:127:    // Validate unit if present
+./supabase/functions/shared/ingredientNormalizer.ts:267: * Validate ingredient list
+./supabase/functions/shared/ingredientNormalizer.ts:269:export function validateIngredients(ingredients: string[]): { valid: boolean; errors: string[] } {
+./supabase/functions/shared/locationUtils.ts:152: * Validate country code format
+./supabase/functions/shared/locationUtils.ts:154: * @param countryCode - Country code to validate
+./supabase/functions/tracker_log_meal/index.ts:38:    // Validate required fields
+./supabase/functions/tracker_log_weight/index.ts:63:    // Validate converted weight is within reasonable bounds
+./supabase/functions/tracker_log_weight/index.ts:77:    // Validate date format (YYYY-MM-DD)
+./supabase/functions/tracker_quick_add_calories/index.ts:31:    // Validate
+./supabase/functions/tracker_summary/index.ts:22:    // Validate
+./supabase/functions/update_user_location/index.ts:17:import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+./supabase/functions/update_user_location/index.ts:44:    // Validate required fields
+./supabase/functions/update_user_location/index.ts:45:    validateRequired(body, ["chatgpt_user_id", "confirmed_country"]);
+./supabase/functions/update_user_location/index.ts:51:    // Validate country code format (2-letter ISO code)
+./supabase/functions/upgrade_to_premium/index.ts:51:    // Validate input
+./supabase/functions/user_set_weight_goal/index.ts:39:    // Validate
+./supabase/functions/user_update_diet_preferences/index.ts:58:    // Validate unit if provided
+./supabase/functions/user_update_diet_preferences/index.ts:66:    // Validate safe_loss_kg_per_week if provided
+./supabase/functions/user_update_diet_preferences/index.ts:80:    // Validate reminder_time format if provided (HH:MM)
+./supabase/middleware/errorHandler.ts:59:export function validateRequired(body: any, fields: string[]): string | null {
+./tests/integration/api/api_integration_test.ts:78:Deno.test("integration: food search validates empty query", async () => {
+./tests/integration/api/api_integration_test.ts:200:Deno.test("integration: add weight validates positive weight", async () => {
+./tests/integration/api/api_integration_test.ts:347:Deno.test("integration: route order validates items", async () => {
+./tests/integration/api/api_integration_test.ts:362:Deno.test("integration: route order validates location", async () => {
+./tests/integration/api/api_integration_test.ts:452:Deno.test("integration: confirm order validates token expiration", async () => {
+./tests/integration/api/api_integration_test.ts:463:Deno.test("integration: cancel order validates order exists", async () => {
+./tests/phase3_scoring_test.ts:144:  // This test validates the price scoring formula
+./tests/phase3_scoring_test.ts:296:  // For now, just validate the structure
+./tests/phase3_scoring_test.ts:342:  // This would be validated by actually running the scorer
+./tests/security/security_test.ts:44:Deno.test("security: validates JWT token format", async () => {
+./tests/security/security_test.ts:75:Deno.test("security: validates token signature", async () => {
+./tests/security/security_test.ts:160:Deno.test("security: validates user permissions", async () => {
+./tests/security/security_test.ts:211:Deno.test("security: validates email format", async () => {
+./tests/security/security_test.ts:254:Deno.test("security: validates numeric ranges", async () => {
+./tests/security/security_test.ts:281:Deno.test("security: validates URL format", async () => {
+./tests/security/security_test.ts:307:Deno.test("security: validates JSON structure", async () => {
+./tests/unit/delivery/delivery_test.ts:199:Deno.test("order: validates items", async () => {
+./tests/unit/delivery/delivery_test.ts:237:Deno.test("order: validates delivery address", async () => {
+./tests/unit/delivery/delivery_test.ts:252:Deno.test("order: validates minimum order amount", async () => {
+./tests/unit/delivery/delivery_test.ts:278:Deno.test("order: validates provider availability", async () => {
+./tests/unit/food/meal_logging_test.ts:32:Deno.test("meal_logging: validates meal type", async () => {
+./tests/unit/food/nutrition_calculation_test.ts:118:Deno.test("nutrition_calc: validates negative values", async () => {
+./tests/unit/meal/adjust_calories_test.ts:27:Deno.test("adjust: validates minimum calories", async () => {
+./tests/unit/meal/adjust_calories_test.ts:33:Deno.test("adjust: validates maximum calories", async () => {
+./tests/unit/meal/create_plan_test.ts:88:Deno.test("meal_plan: validates calorie range", async () => {
+./tests/unit/meal/evaluate_plan_test.ts:19:Deno.test("evaluate: validates macro balance", async () => {
+./tests/unit/meal/evaluate_plan_test.ts:30:Deno.test("evaluate: validates micronutrients", async () => {
+./tests/unit/meal/evaluate_plan_test.ts:41:Deno.test("evaluate: validates meal timing", async () => {
+./tests/unit/meal/predict_outcome_test.ts:30:Deno.test("predict: validates safe weight loss rate", async () => {
+./tests/unit/meal/predict_outcome_test.ts:94:Deno.test("optimize: validates macro ratios", async () => {
+./tests/unit/user/user_billing_test.ts:29:Deno.test("profile: validates email format", async () => {
+./tests/unit/user/user_billing_test.ts:51:Deno.test("profile: validates phone number", async () => {
+./tests/unit/user/user_billing_test.ts:73:Deno.test("profile: validates required fields", async () => {
+./tests/unit/user/user_billing_test.ts:106:Deno.test("location: validates address format", async () => {
+./tests/unit/user/user_billing_test.ts:182:Deno.test("checkout: validates payment amount", async () => {
+./tests/unit/user/user_billing_test.ts:204:Deno.test("checkout: validates payment method", async () => {
+./tests/unit/user/user_billing_test.ts:249:Deno.test("subscription: validates plan tiers", async () => {
+./tests/unit/user/user_billing_test.ts:295:Deno.test("webhook: validates signature", async () => {
+./tests/unit/weight/add_entry_test.ts:23:Deno.test("weight_add: validates weight is positive", async () => {
+./tests/unit/weight/add_entry_test.ts:33:Deno.test("weight_add: validates weight is reasonable", async () => {
+./tests/unit/weight/predict_trend_test.ts:90:Deno.test("weight_predict: validates prediction confidence", async () => {
+./tests/phase_v_gates.test.ts:11:import { validateNutritionInput } from "../supabase/functions/mcp-tools/nutrition.ts";
+./tests/phase_v_gates.test.ts:12:import { validateMealPlanInput } from "../supabase/functions/mcp-tools/mealplan.ts";
+./tests/phase_v_gates.test.ts:16:    validateNutritionInput({});
+./tests/phase_v_gates.test.ts:27:    validateNutritionInput({ recipes: [] });
+./tests/phase_v_gates.test.ts:38:    validateMealPlanInput({ days: 7 });
+./tests/phase_v_gates.test.ts:48:  const result = validateMealPlanInput({ 
+./tests/phase_vi_regression.test.ts:2:import { validateNutritionInput, analyzeNutrition } from "../supabase/functions/mcp-tools/nutrition.ts";
+./tests/phase_vi_regression.test.ts:3:import { validateMealPlanInput, generateMealPlan } from "../supabase/functions/mcp-tools/mealplan.ts";
+./tests/phase_vi_regression.test.ts:43:    validateNutritionInput(null);
+./tests/phase_vi_regression.test.ts:46:    // Check if it's a standard Error (since we throw Error in validate function, not ValidationError yet in the tool itself, 
+./tests/phase_vi_regression.test.ts:69:  const valid = validateNutritionInput({ recipes: [{ name: "Test" }] });
+./tests/phase_vi_regression.test.ts:74:    validateNutritionInput({ recipes: [] });
+./tests/phase_vi_regression.test.ts:83:  const valid = validateMealPlanInput({ goals: { calories: 2000 }, days: 5 });
+./tests/phase_vi_regression.test.ts:89:    validateMealPlanInput({ days: 5 }); // Missing goals
+./validate-metadata.js:4: * Validates the metadata configuration files for completeness and correctness.
+./validate-metadata.js:5: * Run with: node validate-metadata.js

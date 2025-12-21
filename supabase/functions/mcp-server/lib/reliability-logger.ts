@@ -1,11 +1,11 @@
 /**
  * Structured Logging for Reliability Layer
- * 
+ *
  * Logs reliability events (timeouts, retries, errors) in JSON format
  * for observability and debugging.
  */
 
-import type { ToolErrorResponse, ToolErrorCode } from "./reliability.ts";
+import type { ToolErrorCode, ToolErrorResponse } from "./reliability.ts";
 
 export interface ReliabilityLogEntry {
   timestamp: string;
@@ -30,7 +30,7 @@ export function logReliabilityEvent(entry: ReliabilityLogEntry): void {
     service: "mcp-reliability",
     version: "1.0.0",
   });
-  
+
   // Log to console (Supabase Edge Functions capture stdout)
   console.log(logLine);
 }
@@ -41,7 +41,7 @@ export function logReliabilityEvent(entry: ReliabilityLogEntry): void {
 export function logTimeout(
   toolName: string,
   timeoutMs: number,
-  attemptNumber: number = 1
+  attemptNumber: number = 1,
 ): void {
   logReliabilityEvent({
     timestamp: new Date().toISOString(),
@@ -63,7 +63,7 @@ export function logRetry(
   attemptNumber: number,
   maxRetries: number,
   errorCode: ToolErrorCode,
-  delayMs: number
+  delayMs: number,
 ): void {
   logReliabilityEvent({
     timestamp: new Date().toISOString(),
@@ -87,7 +87,7 @@ export function logRetryExhausted(
   toolName: string,
   attemptNumber: number,
   errorCode: ToolErrorCode,
-  errorMessage: string
+  errorMessage: string,
 ): void {
   logReliabilityEvent({
     timestamp: new Date().toISOString(),
@@ -105,7 +105,7 @@ export function logRetryExhausted(
  */
 export function logToolError(
   error: ToolErrorResponse,
-  durationMs: number
+  durationMs: number,
 ): void {
   logReliabilityEvent({
     timestamp: new Date().toISOString(),
@@ -130,7 +130,7 @@ export function logToolSuccess(
   toolName: string,
   durationMs: number,
   attemptNumber: number = 1,
-  hadRetries: boolean = false
+  hadRetries: boolean = false,
 ): void {
   logReliabilityEvent({
     timestamp: new Date().toISOString(),
@@ -152,7 +152,7 @@ export function logNetworkError(
   toolName: string,
   url: string,
   errorMessage: string,
-  attemptNumber: number = 1
+  attemptNumber: number = 1,
 ): void {
   logReliabilityEvent({
     timestamp: new Date().toISOString(),
@@ -176,10 +176,12 @@ export function logUpstreamError(
   url: string,
   statusCode: number,
   errorMessage: string,
-  attemptNumber: number = 1
+  attemptNumber: number = 1,
 ): void {
-  const errorCode: ToolErrorCode = statusCode >= 500 ? "UPSTREAM_5XX" : "UPSTREAM_4XX";
-  
+  const errorCode: ToolErrorCode = statusCode >= 500
+    ? "UPSTREAM_5XX"
+    : "UPSTREAM_4XX";
+
   logReliabilityEvent({
     timestamp: new Date().toISOString(),
     level: "error",
@@ -209,7 +211,7 @@ export class ReliabilityLogger {
     attemptNumber: number,
     maxRetries: number,
     errorCode: ToolErrorCode,
-    delayMs: number
+    delayMs: number,
   ): void {
     logRetry(this.toolName, attemptNumber, maxRetries, errorCode, delayMs);
   }
@@ -217,7 +219,7 @@ export class ReliabilityLogger {
   retryExhausted(
     attemptNumber: number,
     errorCode: ToolErrorCode,
-    errorMessage: string
+    errorMessage: string,
   ): void {
     logRetryExhausted(this.toolName, attemptNumber, errorCode, errorMessage);
   }
@@ -226,11 +228,19 @@ export class ReliabilityLogger {
     logToolError(error, durationMs);
   }
 
-  success(durationMs: number, attemptNumber: number = 1, hadRetries: boolean = false): void {
+  success(
+    durationMs: number,
+    attemptNumber: number = 1,
+    hadRetries: boolean = false,
+  ): void {
     logToolSuccess(this.toolName, durationMs, attemptNumber, hadRetries);
   }
 
-  networkError(url: string, errorMessage: string, attemptNumber: number = 1): void {
+  networkError(
+    url: string,
+    errorMessage: string,
+    attemptNumber: number = 1,
+  ): void {
     logNetworkError(this.toolName, url, errorMessage, attemptNumber);
   }
 
@@ -238,8 +248,14 @@ export class ReliabilityLogger {
     url: string,
     statusCode: number,
     errorMessage: string,
-    attemptNumber: number = 1
+    attemptNumber: number = 1,
   ): void {
-    logUpstreamError(this.toolName, url, statusCode, errorMessage, attemptNumber);
+    logUpstreamError(
+      this.toolName,
+      url,
+      statusCode,
+      errorMessage,
+      attemptNumber,
+    );
   }
 }

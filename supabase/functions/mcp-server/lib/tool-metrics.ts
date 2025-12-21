@@ -1,21 +1,21 @@
 /**
  * Tool Metrics & Invocation Logging
- * 
+ *
  * Provides database logging for all MCP tool invocations to analytics.tool_invocations.
  * Used for observability, monitoring, and performance analysis.
- * 
+ *
  * Key principles:
  * - Non-throwing: Failures to log metrics must never break tool execution
  * - Async: Database inserts happen asynchronously (fire-and-forget)
  * - Structured: All logs include standardized fields for aggregation
- * 
+ *
  * Usage:
  *   import { logToolInvocationToDb } from "./lib/tool-metrics";
- *   
+ *
  *   const startedAt = new Date();
  *   const result = await executeTool(...);
  *   const finishedAt = new Date();
- *   
+ *
  *   await logToolInvocationToDb({
  *     toolName: "delivery_search_restaurants",
  *     startedAt,
@@ -42,10 +42,10 @@ export interface ToolInvocationLogInput {
   // Optional context fields
   userId?: string;
   sessionId?: string;
-  gptName?: string;          // e.g. 'LeftoverGPT', 'MealPlannerGPT', 'RecipeGPT'
-  provider?: string;         // e.g. 'MealMe', 'Instacart', 'Affiliate:US'
-  sourceGpt?: string;        // Optional extra source classification
-  errorCode?: string;        // ToolErrorCode when success = false
+  gptName?: string; // e.g. 'LeftoverGPT', 'MealPlannerGPT', 'RecipeGPT'
+  provider?: string; // e.g. 'MealMe', 'Instacart', 'Affiliate:US'
+  sourceGpt?: string; // Optional extra source classification
+  errorCode?: string; // ToolErrorCode when success = false
   metadata?: Record<string, any>; // Arbitrary JSON for debugging
 }
 
@@ -55,7 +55,7 @@ export interface ToolInvocationLogInput {
 
 /**
  * Get Supabase client with service role key for analytics writes
- * 
+ *
  * Uses environment variables:
  * - SUPABASE_URL
  * - SUPABASE_SERVICE_ROLE_KEY
@@ -66,7 +66,7 @@ function getSupabaseClient() {
 
   if (!supabaseUrl || !supabaseServiceKey) {
     throw new Error(
-      "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables"
+      "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables",
     );
   }
 
@@ -84,14 +84,14 @@ function getSupabaseClient() {
 
 /**
  * Log a tool invocation to analytics.tool_invocations table
- * 
+ *
  * This function is non-throwing and fire-and-forget. Failures to log metrics
  * are logged to console but do not propagate errors.
- * 
+ *
  * @param input - Tool invocation data
  */
 export async function logToolInvocationToDb(
-  input: ToolInvocationLogInput
+  input: ToolInvocationLogInput,
 ): Promise<void> {
   const durationMs = input.finishedAt.getTime() - input.startedAt.getTime();
 
@@ -150,12 +150,12 @@ export async function logToolInvocationToDb(
 
 /**
  * Extract user ID from request context
- * 
+ *
  * Attempts to extract user ID from various sources:
  * - Authorization header (JWT)
  * - Request body
  * - Query parameters
- * 
+ *
  * @param req - Request object
  * @returns User ID or undefined
  */
@@ -187,14 +187,14 @@ export function extractUserIdFromRequest(req: Request): string | undefined {
 
 /**
  * Infer GPT name from tool name
- * 
+ *
  * Maps tool names to their corresponding GPT:
  * - leftover_* → LeftoverGPT
  * - mealplan_* → MealPlannerGPT
  * - recipe_* → RecipeGPT
  * - delivery_* → RestaurantGPT
  * - etc.
- * 
+ *
  * @param toolName - MCP tool name
  * @returns GPT name or undefined
  */
@@ -217,12 +217,12 @@ export function inferGptNameFromTool(toolName: string): string | undefined {
 
 /**
  * Infer provider from tool name
- * 
+ *
  * Maps tool names to their external service provider:
  * - delivery_* → MealMe
  * - affiliate_* → Varies by country
  * - grocery_* → OpenAI (for generation)
- * 
+ *
  * @param toolName - MCP tool name
  * @returns Provider name or undefined
  */
@@ -240,14 +240,14 @@ export function inferProviderFromTool(toolName: string): string | undefined {
 
 /**
  * Sanitize metadata for database storage
- * 
+ *
  * Removes sensitive fields and limits size to prevent storage bloat.
- * 
+ *
  * @param metadata - Raw metadata object
  * @returns Sanitized metadata
  */
 export function sanitizeMetadata(
-  metadata: Record<string, any>
+  metadata: Record<string, any>,
 ): Record<string, any> {
   const sanitized = { ...metadata };
 

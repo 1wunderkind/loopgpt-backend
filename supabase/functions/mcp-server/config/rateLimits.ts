@@ -1,14 +1,14 @@
 /**
  * Rate Limit Configuration
- * 
+ *
  * Defines pragmatic and safe rate limits for all MCP tools.
- * 
+ *
  * Strategy:
  * - Global per-IP limits (prevent DDoS)
  * - Per-user limits (fair usage)
  * - Per-tool limits (protect expensive operations)
  * - Anonymous users get stricter IP-only limits
- * 
+ *
  * Part of: Step 5 - Security Hardening
  */
 
@@ -68,7 +68,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
   // ========================================================================
   // Commerce Tools (expensive, external APIs)
   // ========================================================================
-  
+
   "search_restaurants": [
     {
       name: "Search Restaurants - User/Minute",
@@ -83,7 +83,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "ip",
     },
   ],
-  
+
   "place_order": [
     {
       name: "Place Order - User/Minute",
@@ -98,7 +98,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   "confirm_order": [
     {
       name: "Confirm Order - User/Minute",
@@ -113,7 +113,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   "cancel_order": [
     {
       name: "Cancel Order - User/Minute",
@@ -122,7 +122,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   "get_affiliate_links": [
     {
       name: "Get Affiliate Links - User/Minute",
@@ -137,11 +137,11 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   // ========================================================================
   // Meal Planning (expensive, LLM-based)
   // ========================================================================
-  
+
   "generate_week_plan": [
     {
       name: "Generate Week Plan - User/Hour",
@@ -156,7 +156,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   "generate_meal_plan": [
     {
       name: "Generate Meal Plan - User/Hour",
@@ -165,11 +165,11 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   // ========================================================================
   // Recipe Generation (moderate cost, LLM-based)
   // ========================================================================
-  
+
   "loopkitchen_recipes.generate": [
     {
       name: "Generate Recipes - User/Minute",
@@ -184,11 +184,11 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "ip",
     },
   ],
-  
+
   // ========================================================================
   // Nutrition Tools (cheap, deterministic)
   // ========================================================================
-  
+
   "estimate_recipe_nutrition": [
     {
       name: "Estimate Nutrition - User/Minute",
@@ -197,7 +197,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   "nutrition.analyze": [
     {
       name: "Analyze Nutrition - User/Minute",
@@ -206,11 +206,11 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   // ========================================================================
   // Tracking Tools (moderate frequency)
   // ========================================================================
-  
+
   "log_meal": [
     {
       name: "Log Meal - User/Minute",
@@ -225,7 +225,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   "log_weight": [
     {
       name: "Log Weight - User/Minute",
@@ -240,11 +240,11 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   // ========================================================================
   // User Settings (low frequency)
   // ========================================================================
-  
+
   "set_user_goals": [
     {
       name: "Set User Goals - User/Minute",
@@ -259,7 +259,7 @@ export const TOOL_SPECIFIC_LIMITS: Record<string, RateLimitRule[]> = {
       scope: "user",
     },
   ],
-  
+
   "get_user_goals": [
     {
       name: "Get User Goals - User/Minute",
@@ -299,21 +299,21 @@ export const ANONYMOUS_IP_LIMITS: RateLimitRule[] = [
 
 /**
  * Get rate limit rules for a specific tool
- * 
+ *
  * Returns:
  * 1. Global limits (IP or user, depending on auth)
  * 2. Tool-specific limits (if defined)
- * 
+ *
  * @param toolName - MCP tool name
  * @param userId - User ID (if authenticated)
  * @returns Array of rules to check
  */
 export function getRulesForTool(
   toolName: string,
-  userId?: string
+  userId?: string,
 ): RateLimitRule[] {
   const rules: RateLimitRule[] = [];
-  
+
   // Add global limits
   if (userId) {
     // Authenticated user: apply user limits
@@ -322,16 +322,16 @@ export function getRulesForTool(
     // Anonymous user: apply stricter IP limits
     rules.push(...ANONYMOUS_IP_LIMITS);
   }
-  
+
   // Add global IP limits (always apply)
   rules.push(...GLOBAL_IP_LIMITS);
-  
+
   // Add tool-specific limits (if defined)
   const toolLimits = TOOL_SPECIFIC_LIMITS[toolName];
   if (toolLimits) {
     rules.push(...toolLimits);
   }
-  
+
   return rules;
 }
 
@@ -355,9 +355,9 @@ export function getToolsWithCustomLimits(): string[] {
  */
 export function getRateLimitSummary(toolName: string, userId?: string): string {
   const rules = getRulesForTool(toolName, userId);
-  const summary = rules.map(rule => 
+  const summary = rules.map((rule) =>
     `${rule.name}: ${rule.max}/${rule.window}`
   ).join(", ");
-  
+
   return summary || "No specific limits";
 }

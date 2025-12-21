@@ -1,13 +1,13 @@
 /**
  * Nutrition Dictionary
- * 
+ *
  * Canonical food database with USDA-based nutrition data and synonym mappings.
  * This is the single source of truth for ingredient → nutrition lookups.
- * 
+ *
  * All mappings are deterministic and documented.
- * 
+ *
  * Part of: Step 4 - Deterministic Nutrition Engine
- * 
+ *
  * UPDATED: Now uses 1,000-food USDA database from dictionary.generated.ts
  */
 
@@ -19,8 +19,8 @@ import type { FoodEntry, UnitConversion } from "./types.ts";
 
 import {
   FOOD_DATABASE as FOOD_DATABASE_GENERATED,
-  SYNONYM_MAP as SYNONYM_MAP_GENERATED,
   normalizeIngredientName as normalizeIngredientNameGenerated,
+  SYNONYM_MAP as SYNONYM_MAP_GENERATED,
 } from "./dictionary.generated.ts";
 
 // Re-export for use by other modules
@@ -49,7 +49,7 @@ export const UNIT_CONVERSIONS: Record<string, UnitConversion> = {
   "lb": { factor: 453.59, baseUnit: "g" },
   "pound": { factor: 453.59, baseUnit: "g" },
   "pounds": { factor: 453.59, baseUnit: "g" },
-  
+
   // Volume units → milliliters
   "ml": { factor: 1, baseUnit: "ml" },
   "milliliter": { factor: 1, baseUnit: "ml" },
@@ -68,7 +68,7 @@ export const UNIT_CONVERSIONS: Record<string, UnitConversion> = {
   "fl oz": { factor: 29.57, baseUnit: "ml" },
   "fluid ounce": { factor: 29.57, baseUnit: "ml" },
   "fluid ounces": { factor: 29.57, baseUnit: "ml" },
-  
+
   // Count units (handled by ingredient gramsPerUnit)
   "piece": { factor: 1, baseUnit: "g" },
   "pieces": { factor: 1, baseUnit: "g" },
@@ -77,10 +77,10 @@ export const UNIT_CONVERSIONS: Record<string, UnitConversion> = {
   "whole": { factor: 1, baseUnit: "g" },
   "item": { factor: 1, baseUnit: "g" },
   "items": { factor: 1, baseUnit: "g" },
-  
+
   // Special units (fixed assumptions)
-  "pinch": { factor: 0.3, baseUnit: "g" },  // ~0.3g salt
-  "dash": { factor: 0.6, baseUnit: "g" },   // ~0.6g
+  "pinch": { factor: 0.3, baseUnit: "g" }, // ~0.3g salt
+  "dash": { factor: 0.6, baseUnit: "g" }, // ~0.6g
   "handful": { factor: 30, baseUnit: "g" }, // ~30g
 };
 
@@ -98,27 +98,27 @@ export const INGREDIENT_SYNONYMS: Record<string, string> = {
   "table salt": "salt",
   "kosher salt": "salt",
   "iodized salt": "salt",
-  
+
   // Rice variations
   "rice": "white rice",
   "cooked rice": "white rice",
   "steamed rice": "white rice",
-  
+
   // Cheese variations
   "cheese": "cheddar cheese",
   "shredded cheese": "cheddar cheese",
-  
+
   // International names
-  "盐": "salt",  // Chinese
-  "sal": "salt",  // Spanish
-  "sel": "salt",  // French
+  "盐": "salt", // Chinese
+  "sal": "salt", // Spanish
+  "sel": "salt", // French
   "salz": "salt", // German
-  
+
   // Cooking oils
   "cooking oil": "vegetable oil",
   "canola": "canola oil",
   "sunflower": "sunflower oil",
-  
+
   // Common misspellings and variations
   "chick pea": "chickpeas",
   "garbanzo beans": "chickpeas",
@@ -127,7 +127,7 @@ export const INGREDIENT_SYNONYMS: Record<string, string> = {
 
 /**
  * Normalize ingredient name with both auto-generated and manual synonyms
- * 
+ *
  * Priority:
  * 1. Check auto-generated SYNONYM_MAP (1,129 synonyms)
  * 2. Check manual INGREDIENT_SYNONYMS
@@ -135,17 +135,17 @@ export const INGREDIENT_SYNONYMS: Record<string, string> = {
  */
 export function normalizeIngredientName(name: string): string {
   const normalized = name.toLowerCase().trim();
-  
+
   // Check auto-generated synonyms first
   if (SYNONYM_MAP_GENERATED[normalized]) {
     return SYNONYM_MAP_GENERATED[normalized];
   }
-  
+
   // Check manual synonyms
   if (INGREDIENT_SYNONYMS[normalized]) {
     return INGREDIENT_SYNONYMS[normalized];
   }
-  
+
   // Return normalized name
   return normalized;
 }

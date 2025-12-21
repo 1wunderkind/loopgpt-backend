@@ -3,11 +3,11 @@
  * Applies rate limiting, request size limits, and security headers to edge functions
  */
 
-import { RateLimiter, RateLimitPresets } from './RateLimiter.ts';
+import { RateLimiter, RateLimitPresets } from "./RateLimiter.ts";
 import {
   addSecurityHeaders,
   getUserIdentifier as getSecurityUserIdentifier,
-} from './SecurityMiddleware.ts';
+} from "./SecurityMiddleware.ts";
 
 /**
  * Get user identifier for rate limiting
@@ -17,13 +17,13 @@ function getUserIdentifier(req: Request): string {
 }
 
 export type FunctionCategory =
-  | 'api-standard'
-  | 'api-search'
-  | 'api-order'
-  | 'heavy'
-  | 'webhook'
-  | 'system'
-  | 'compliance';
+  | "api-standard"
+  | "api-search"
+  | "api-order"
+  | "heavy"
+  | "webhook"
+  | "system"
+  | "compliance";
 
 export interface MiddlewareConfig {
   category: FunctionCategory;
@@ -36,21 +36,23 @@ export interface MiddlewareConfig {
 /**
  * Get rate limiter for category
  */
-function getRateLimiterForCategory(category: FunctionCategory): RateLimiter | null {
+function getRateLimiterForCategory(
+  category: FunctionCategory,
+): RateLimiter | null {
   switch (category) {
-    case 'api-standard':
+    case "api-standard":
       return new RateLimiter(RateLimitPresets.api);
-    case 'api-search':
+    case "api-search":
       return new RateLimiter({ maxRequests: 30, windowMs: 60 * 1000 });
-    case 'api-order':
+    case "api-order":
       return new RateLimiter(RateLimitPresets.expensive);
-    case 'heavy':
+    case "heavy":
       return new RateLimiter({ maxRequests: 20, windowMs: 60 * 1000 });
-    case 'compliance':
+    case "compliance":
       return new RateLimiter({ maxRequests: 5, windowMs: 60 * 60 * 1000 }); // 5 per hour
-    case 'system':
+    case "system":
       return new RateLimiter(RateLimitPresets.readOnly);
-    case 'webhook':
+    case "webhook":
       return null; // No rate limiting for webhooks
     default:
       return new RateLimiter(RateLimitPresets.api);
@@ -61,22 +63,22 @@ function getRateLimiterForCategory(category: FunctionCategory): RateLimiter | nu
  * Check request size
  */
 function checkRequestSize(req: Request, maxSize: number): Response | null {
-  const contentLength = parseInt(req.headers.get('content-length') || '0');
+  const contentLength = parseInt(req.headers.get("content-length") || "0");
 
   if (contentLength > maxSize) {
     return new Response(
       JSON.stringify({
         success: false,
         error: {
-          code: 'REQUEST_TOO_LARGE',
+          code: "REQUEST_TOO_LARGE",
           message: `Request body must be less than ${maxSize / 1024 / 1024}MB`,
           maxSize,
         },
       }),
       {
         status: 413,
-        headers: { 'Content-Type': 'application/json' },
-      }
+        headers: { "Content-Type": "application/json" },
+      },
     );
   }
 
@@ -88,7 +90,7 @@ function checkRequestSize(req: Request, maxSize: number): Response | null {
  */
 export function withMiddleware(
   handler: (req: Request) => Promise<Response>,
-  config: MiddlewareConfig
+  config: MiddlewareConfig,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     try {
@@ -114,21 +116,24 @@ export function withMiddleware(
               JSON.stringify({
                 success: false,
                 error: {
-                  code: 'RATE_LIMIT_EXCEEDED',
-                  message: 'Too many requests. Please try again later.',
+                  code: "RATE_LIMIT_EXCEEDED",
+                  message: "Too many requests. Please try again later.",
                   retryAfter: Math.ceil((result.resetTime - Date.now()) / 1000),
                 },
               }),
               {
                 status: 429,
                 headers: {
-                  'Content-Type': 'application/json',
-                  'X-RateLimit-Limit': rateLimiter.getConfig().maxRequests.toString(),
-                  'X-RateLimit-Remaining': result.remaining.toString(),
-                  'X-RateLimit-Reset': new Date(result.resetTime).toISOString(),
-                  'Retry-After': Math.ceil((result.resetTime - Date.now()) / 1000).toString(),
+                  "Content-Type": "application/json",
+                  "X-RateLimit-Limit": rateLimiter.getConfig().maxRequests
+                    .toString(),
+                  "X-RateLimit-Remaining": result.remaining.toString(),
+                  "X-RateLimit-Reset": new Date(result.resetTime).toISOString(),
+                  "Retry-After": Math.ceil(
+                    (result.resetTime - Date.now()) / 1000,
+                  ).toString(),
                 },
-              }
+              },
             );
 
             return addSecurityHeaders(response);
@@ -149,20 +154,20 @@ export function withMiddleware(
       return response;
     } catch (error) {
       // Error handling
-      console.error('Middleware error:', error);
+      console.error("Middleware error:", error);
 
       const errorResponse = new Response(
         JSON.stringify({
           success: false,
           error: {
-            code: 'INTERNAL_ERROR',
-            message: 'An internal error occurred',
+            code: "INTERNAL_ERROR",
+            message: "An internal error occurred",
           },
         }),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
+          headers: { "Content-Type": "application/json" },
+        },
       );
 
       return addSecurityHeaders(errorResponse);
@@ -175,32 +180,36 @@ export function withMiddleware(
  */
 
 export function withStandardAPI(handler: (req: Request) => Promise<Response>) {
-  return withMiddleware(handler, { category: 'api-standard' });
+  return withMiddleware(handler, { category: "api-standard" });
 }
 
 export function withSearchAPI(handler: (req: Request) => Promise<Response>) {
-  return withMiddleware(handler, { category: 'api-search' });
+  return withMiddleware(handler, { category: "api-search" });
 }
 
 export function withOrderAPI(handler: (req: Request) => Promise<Response>) {
-  return withMiddleware(handler, { category: 'api-order' });
+  return withMiddleware(handler, { category: "api-order" });
 }
 
-export function withHeavyOperation(handler: (req: Request) => Promise<Response>) {
-  return withMiddleware(handler, { category: 'heavy' });
+export function withHeavyOperation(
+  handler: (req: Request) => Promise<Response>,
+) {
+  return withMiddleware(handler, { category: "heavy" });
 }
 
 export function withWebhook(handler: (req: Request) => Promise<Response>) {
   return withMiddleware(handler, {
-    category: 'webhook',
+    category: "webhook",
     skipRateLimit: true, // Webhooks don't need rate limiting
   });
 }
 
 export function withSystemAPI(handler: (req: Request) => Promise<Response>) {
-  return withMiddleware(handler, { category: 'system' });
+  return withMiddleware(handler, { category: "system" });
 }
 
-export function withComplianceAPI(handler: (req: Request) => Promise<Response>) {
-  return withMiddleware(handler, { category: 'compliance' });
+export function withComplianceAPI(
+  handler: (req: Request) => Promise<Response>,
+) {
+  return withMiddleware(handler, { category: "compliance" });
 }

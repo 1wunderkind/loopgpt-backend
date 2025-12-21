@@ -4,11 +4,11 @@
  */
 
 export enum LogLevel {
-  DEBUG = 'DEBUG',
-  INFO = 'INFO',
-  WARN = 'WARN',
-  ERROR = 'ERROR',
-  FATAL = 'FATAL',
+  DEBUG = "DEBUG",
+  INFO = "INFO",
+  WARN = "WARN",
+  ERROR = "ERROR",
+  FATAL = "FATAL",
 }
 
 export interface LogContext {
@@ -55,7 +55,7 @@ export class Logger {
   child(additionalContext: LogContext): Logger {
     return new Logger(
       { ...this.context, ...additionalContext },
-      this.minLevel
+      this.minLevel,
     );
   }
 
@@ -86,12 +86,12 @@ export class Logger {
   error(message: string, error?: Error, context?: LogContext): void {
     const errorContext = error
       ? {
-          error: {
-            name: error.name,
-            message: error.message,
-            stack: error.stack,
-          },
-        }
+        error: {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        },
+      }
       : {};
 
     this.log(LogLevel.ERROR, message, { ...context, ...errorContext });
@@ -103,12 +103,12 @@ export class Logger {
   fatal(message: string, error?: Error, context?: LogContext): void {
     const errorContext = error
       ? {
-          error: {
-            name: error.name,
-            message: error.message,
-            stack: error.stack,
-          },
-        }
+        error: {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        },
+      }
       : {};
 
     this.log(LogLevel.FATAL, message, { ...context, ...errorContext });
@@ -131,7 +131,7 @@ export class Logger {
     };
 
     // Output to console (structured JSON for production)
-    if (Deno.env.get('ENVIRONMENT') === 'production') {
+    if (Deno.env.get("ENVIRONMENT") === "production") {
       console.log(JSON.stringify(entry));
     } else {
       // Pretty print for development
@@ -165,26 +165,26 @@ export class Logger {
    */
   private prettyPrint(entry: LogEntry): void {
     const colors = {
-      DEBUG: '\x1b[36m', // Cyan
-      INFO: '\x1b[32m', // Green
-      WARN: '\x1b[33m', // Yellow
-      ERROR: '\x1b[31m', // Red
-      FATAL: '\x1b[35m', // Magenta
+      DEBUG: "\x1b[36m", // Cyan
+      INFO: "\x1b[32m", // Green
+      WARN: "\x1b[33m", // Yellow
+      ERROR: "\x1b[31m", // Red
+      FATAL: "\x1b[35m", // Magenta
     };
 
-    const reset = '\x1b[0m';
+    const reset = "\x1b[0m";
     const color = colors[entry.level];
 
     console.log(
-      `${color}[${entry.level}]${reset} ${entry.timestamp} - ${entry.message}`
+      `${color}[${entry.level}]${reset} ${entry.timestamp} - ${entry.message}`,
     );
 
     if (entry.context && Object.keys(entry.context).length > 0) {
-      console.log('  Context:', entry.context);
+      console.log("  Context:", entry.context);
     }
 
     if (entry.error) {
-      console.log('  Error:', entry.error);
+      console.log("  Error:", entry.error);
     }
   }
 
@@ -202,23 +202,23 @@ export class Logger {
     }
 
     try {
-      const logtailToken = Deno.env.get('LOGTAIL_TOKEN');
+      const logtailToken = Deno.env.get("LOGTAIL_TOKEN");
       if (!logtailToken) {
         return; // No token configured, skip
       }
 
       // Send to Better Stack (Logtail)
-      await fetch('https://in.logtail.com/', {
-        method: 'POST',
+      await fetch("https://in.logtail.com/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${logtailToken}`,
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${logtailToken}`,
         },
         body: JSON.stringify(entry),
       });
     } catch (error) {
       // Don't throw if logging fails
-      console.error('Failed to send log to external service:', error);
+      console.error("Failed to send log to external service:", error);
     }
   }
 
@@ -226,7 +226,7 @@ export class Logger {
    * Log HTTP request
    */
   logRequest(req: Request, context?: LogContext): void {
-    this.info('HTTP Request', {
+    this.info("HTTP Request", {
       method: req.method,
       url: req.url,
       headers: Object.fromEntries(req.headers.entries()),
@@ -238,7 +238,7 @@ export class Logger {
    * Log HTTP response
    */
   logResponse(res: Response, duration: number, context?: LogContext): void {
-    this.info('HTTP Response', {
+    this.info("HTTP Response", {
       status: res.status,
       duration,
       ...context,
@@ -251,7 +251,7 @@ export class Logger {
   async logExecutionTime<T>(
     fn: () => Promise<T>,
     operation: string,
-    context?: LogContext
+    context?: LogContext,
   ): Promise<T> {
     const startTime = Date.now();
 
@@ -276,7 +276,7 @@ export class Logger {
           duration,
           ok: false,
           ...context,
-        }
+        },
       );
 
       throw error;
@@ -295,10 +295,10 @@ export class Logger {
    */
   static extractUserId(req: Request): string | undefined {
     // Try to extract from Authorization header
-    const authHeader = req.headers.get('Authorization');
+    const authHeader = req.headers.get("Authorization");
     if (authHeader) {
       // This is a simplified example - in production, decode JWT
-      return authHeader.split('_')[1] || 'unknown';
+      return authHeader.split("_")[1] || "unknown";
     }
     return undefined;
   }
@@ -308,7 +308,8 @@ export class Logger {
    */
   static fromRequest(req: Request, functionName: string): Logger {
     // Use existing x-request-id if present, otherwise generate new one
-    const requestId = req.headers.get('x-request-id') || Logger.generateRequestId();
+    const requestId = req.headers.get("x-request-id") ||
+      Logger.generateRequestId();
     const userId = Logger.extractUserId(req);
 
     return new Logger({
@@ -331,7 +332,7 @@ export const logger = new Logger();
  */
 export function withLogging(
   handler: (req: Request, logger: Logger) => Promise<Response>,
-  functionName: string
+  functionName: string,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     const logger = Logger.fromRequest(req, functionName);
@@ -350,9 +351,9 @@ export function withLogging(
       const duration = Date.now() - startTime;
 
       logger.error(
-        'Request failed',
+        "Request failed",
         error instanceof Error ? error : undefined,
-        { duration }
+        { duration },
       );
 
       throw error;

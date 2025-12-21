@@ -1,9 +1,9 @@
 /**
  * WeightTrackerGPT Multilingual Support
- * 
+ *
  * Provides formatting functions for weight tracking responses in 100+ languages
  * using the "SAME LANGUAGE" pattern from the ecosystem.
- * 
+ *
  * Pattern: User input (any language) → WeightTracker logic → GPT-4.1-mini formatting → Response (same language)
  */
 
@@ -29,7 +29,7 @@ export function getOpenAIClient(): OpenAI {
 
 /**
  * Format weight logging confirmation in user's language
- * 
+ *
  * @param data - Weight log data (weight_kg, weight_display, date)
  * @param userInput - User's original input (e.g., "165 pounds", "75公斤")
  * @returns Formatted confirmation message in user's language
@@ -40,11 +40,12 @@ export async function formatWeightLogConfirmation(
     weight_display: string;
     date: string;
   },
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
 
-  const systemPrompt = `You are a helpful weight tracking assistant. Format weight logging confirmations in a friendly, encouraging tone. Use emojis appropriately.`;
+  const systemPrompt =
+    `You are a helpful weight tracking assistant. Format weight logging confirmations in a friendly, encouraging tone. Use emojis appropriately.`;
 
   const userPrompt = `
 User input: "${userInput}"
@@ -79,7 +80,7 @@ Keep it concise and friendly.
 
 /**
  * Format weekly trend data in user's language
- * 
+ *
  * @param data - Trend data (raw series, smoothed series, change)
  * @param userInput - User's original input for language detection
  * @returns Formatted trend summary in user's language
@@ -92,11 +93,12 @@ export async function formatWeeklyTrend(
     change_rate_kg_per_week: number;
     unit: string;
   },
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
 
-  const systemPrompt = `You are a weight tracking expert. Format weekly trend data into a clear, visual summary with emojis and bullet points. Be encouraging and supportive.`;
+  const systemPrompt =
+    `You are a weight tracking expert. Format weekly trend data into a clear, visual summary with emojis and bullet points. Be encouraging and supportive.`;
 
   const userPrompt = `
 User input: "${userInput}"
@@ -134,7 +136,7 @@ Keep it visual and easy to scan.
 
 /**
  * Format plan evaluation with recommendation in user's language
- * 
+ *
  * @param data - Evaluation data (target, observed, recommendation)
  * @param userInput - User's original input for language detection
  * @returns Formatted evaluation with recommendation in user's language
@@ -148,11 +150,12 @@ export async function formatPlanEvaluation(
     recommendation_text: string;
     rationale: string;
   },
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
 
-  const systemPrompt = `You are a nutrition coach. Format plan evaluation results with clear recommendations and encouraging feedback. Be supportive and actionable.`;
+  const systemPrompt =
+    `You are a nutrition coach. Format plan evaluation results with clear recommendations and encouraging feedback. Be supportive and actionable.`;
 
   const userPrompt = `
 User input: "${userInput}"
@@ -196,7 +199,7 @@ Keep it actionable and motivating.
 
 /**
  * Format preferences confirmation in user's language
- * 
+ *
  * @param data - Preferences data (unit, reminder settings, etc.)
  * @param userInput - User's original input for language detection
  * @param isUpdate - Whether this is an update (true) or initial get (false)
@@ -212,11 +215,12 @@ export async function formatPreferencesMessage(
     reminder_timezone?: string;
   },
   userInput: string,
-  isUpdate: boolean = false
+  isUpdate: boolean = false,
 ): Promise<string> {
   const client = getOpenAIClient();
 
-  const systemPrompt = `You are a helpful weight tracking assistant. Format user preferences in a clear, organized way.`;
+  const systemPrompt =
+    `You are a helpful weight tracking assistant. Format user preferences in a clear, organized way.`;
 
   const userPrompt = `
 User input: "${userInput}"
@@ -230,11 +234,21 @@ CRITICAL: You MUST respond entirely in the SAME LANGUAGE as the user input "${us
 All headers, labels, units, and text must be in that language.
 
 Format as:
-${isUpdate ? "- ✅ Confirmation message: 'Preferences updated successfully' (translated)" : "- Header: 'Your Weight Tracking Preferences' (translated)"}
+${
+    isUpdate
+      ? "- ✅ Confirmation message: 'Preferences updated successfully' (translated)"
+      : "- Header: 'Your Weight Tracking Preferences' (translated)"
+  }
 - Unit preference: ${data.unit}
 - Safe loss rate: ${data.safe_loss_kg_per_week} kg/week (convert to user's unit if needed)
-- Daily reminders: ${data.daily_reminder_enabled ? "Enabled" : "Disabled"} (translated)
-${data.daily_reminder_enabled && data.reminder_time ? `- Reminder time: ${data.reminder_time} ${data.reminder_timezone || ""}` : ""}
+- Daily reminders: ${
+    data.daily_reminder_enabled ? "Enabled" : "Disabled"
+  } (translated)
+${
+    data.daily_reminder_enabled && data.reminder_time
+      ? `- Reminder time: ${data.reminder_time} ${data.reminder_timezone || ""}`
+      : ""
+  }
 ${data.weigh_in_time ? `- Preferred weigh-in time: ${data.weigh_in_time}` : ""}
 
 Keep it clear and organized with bullet points or a simple list.
@@ -254,7 +268,7 @@ Keep it clear and organized with bullet points or a simple list.
 
 /**
  * Format feedback push confirmation in user's language
- * 
+ *
  * @param data - Feedback data (meal_plan_id, recommendation applied)
  * @param userInput - User's original input for language detection
  * @returns Formatted confirmation message in user's language
@@ -265,11 +279,12 @@ export async function formatFeedbackConfirmation(
     recommendation_kcal_per_day: number;
     applied: boolean;
   },
-  userInput: string
+  userInput: string,
 ): Promise<string> {
   const client = getOpenAIClient();
 
-  const systemPrompt = `You are a helpful weight tracking assistant. Format feedback confirmations in a brief, encouraging way.`;
+  const systemPrompt =
+    `You are a helpful weight tracking assistant. Format feedback confirmations in a brief, encouraging way.`;
 
   const userPrompt = `
 User input: "${userInput}"
@@ -282,8 +297,12 @@ All headers, labels, units, and text must be in that language.
 
 Format as:
 - ✅ emoji
-- Brief confirmation: "Recommendation ${data.applied ? "applied" : "recorded"}" (translated)
-- Calorie adjustment: ${data.recommendation_kcal_per_day > 0 ? "+" : ""}${data.recommendation_kcal_per_day} kcal/day
+- Brief confirmation: "Recommendation ${
+    data.applied ? "applied" : "recorded"
+  }" (translated)
+- Calorie adjustment: ${
+    data.recommendation_kcal_per_day > 0 ? "+" : ""
+  }${data.recommendation_kcal_per_day} kcal/day
 - Next step message (e.g., "MealPlanner will adjust your next plan")
 
 Keep it very brief (1-2 sentences).
@@ -304,7 +323,7 @@ Keep it very brief (1-2 sentences).
 /**
  * Detect language from user input
  * Simple heuristic - checks for common language patterns
- * 
+ *
  * @param input - User's input text
  * @returns ISO language code (en, zh, es, fr, de, ja, etc.) or "en" as default
  */
@@ -350,7 +369,7 @@ export function detectLanguage(input: string): string {
 
 /**
  * Get language name from ISO code
- * 
+ *
  * @param code - ISO language code (en, zh, es, etc.)
  * @returns Human-readable language name
  */
@@ -376,4 +395,3 @@ export function getLanguageName(code: string): string {
 
   return languages[code] || "English";
 }
-

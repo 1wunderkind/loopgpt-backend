@@ -1,14 +1,15 @@
 # Reliability & Error Handling Implementation
 
-**Status:** ✅ Complete  
-**Date:** December 6, 2025  
+**Status:** ✅ Complete\
+**Date:** December 6, 2025\
 **Version:** 1.0.0
 
 ---
 
 ## 📋 Executive Summary
 
-This document describes the implementation of a robust reliability and error-handling layer for all LoopGPT MCP tools. The implementation ensures:
+This document describes the implementation of a robust reliability and
+error-handling layer for all LoopGPT MCP tools. The implementation ensures:
 
 - ✅ **Timeout enforcement** on all external API calls
 - ✅ **Automatic retries** for idempotent operations
@@ -22,21 +23,24 @@ This document describes the implementation of a robust reliability and error-han
 
 ### ✅ 1. Timeout Enforcement
 
-**Requirement:** All external API calls must have timeouts to prevent hanging requests.
+**Requirement:** All external API calls must have timeouts to prevent hanging
+requests.
 
 **Implementation:**
+
 - ✅ `delivery_search_restaurants`: 8 second timeout
 - ✅ `delivery_place_order`: 45 second timeout (multi-step orchestration)
 - ✅ `grocery.list`: 15 second timeout on OpenAI API
 - ✅ All timeouts use `AbortController` for proper cancellation
 
 **Verification:**
+
 ```typescript
 // Example: delivery_search_restaurants
 const response = await fetchWithTimeout(
   endpoint,
   { method: "POST", headers, body },
-  8000 // 8 second timeout
+  8000, // 8 second timeout
 );
 ```
 
@@ -46,22 +50,25 @@ const response = await fetchWithTimeout(
 
 ### ✅ 2. Retry Logic for Idempotent Calls
 
-**Requirement:** Read operations should retry on transient failures; write operations should NOT retry.
+**Requirement:** Read operations should retry on transient failures; write
+operations should NOT retry.
 
 **Implementation:**
 
-| Tool | Operation Type | Max Retries | Retry On |
-|------|---------------|-------------|----------|
-| `delivery_search_restaurants` | Read | 2 | NETWORK_ERROR, UPSTREAM_5XX, TIMEOUT |
-| `delivery_place_order` | Write | 0 | **NO RETRIES** |
-| `grocery.list` | Read | 0 | Fallback template used |
+| Tool                          | Operation Type | Max Retries | Retry On                             |
+| ----------------------------- | -------------- | ----------- | ------------------------------------ |
+| `delivery_search_restaurants` | Read           | 2           | NETWORK_ERROR, UPSTREAM_5XX, TIMEOUT |
+| `delivery_place_order`        | Write          | 0           | **NO RETRIES**                       |
+| `grocery.list`                | Read           | 0           | Fallback template used               |
 
 **Exponential Backoff:**
+
 - Retry 1: 400ms delay
 - Retry 2: 800ms delay
 - Retry 3: 1600ms delay
 
 **Verification:**
+
 ```typescript
 // Example: delivery_search_restaurants
 return withToolReliability(
@@ -71,7 +78,7 @@ return withToolReliability(
     timeoutMs: 8000,
     maxRetries: 2, // ✅ Retries enabled
     retryOnCodes: ["NETWORK_ERROR", "UPSTREAM_5XX", "TIMEOUT"],
-  }
+  },
 );
 
 // Example: delivery_place_order
@@ -81,7 +88,7 @@ return withToolReliability(
     toolName: "delivery_place_order",
     timeoutMs: 45000,
     maxRetries: 0, // ✅ NO RETRIES (write operation)
-  }
+  },
 );
 ```
 
@@ -91,11 +98,13 @@ return withToolReliability(
 
 ### ✅ 3. Standardized Error Responses
 
-**Requirement:** All errors must return HTTP 200 with structured error envelope that ChatGPT can parse.
+**Requirement:** All errors must return HTTP 200 with structured error envelope
+that ChatGPT can parse.
 
 **Implementation:**
 
 **Success Envelope:**
+
 ```typescript
 interface McpToolSuccessEnvelope<T> {
   success: true;
@@ -107,6 +116,7 @@ interface McpToolSuccessEnvelope<T> {
 ```
 
 **Error Envelope:**
+
 ```typescript
 interface McpToolErrorEnvelope {
   success: false;
@@ -125,6 +135,7 @@ interface McpToolErrorEnvelope {
 ```
 
 **Error Codes:**
+
 - `TIMEOUT` - Operation exceeded time limit (retryable)
 - `NETWORK_ERROR` - Network connectivity issue (retryable)
 - `UPSTREAM_4XX` - Client error from upstream API (not retryable)
@@ -133,6 +144,7 @@ interface McpToolErrorEnvelope {
 - `UNKNOWN` - Unexpected error (not retryable)
 
 **Verification:**
+
 - ✅ All MCP server error responses return HTTP 200
 - ✅ Error details in JSON body with `success: false`
 - ✅ ChatGPT can parse `error.code` and `error.retryable`
@@ -143,11 +155,13 @@ interface McpToolErrorEnvelope {
 
 ### ✅ 4. Structured Logging
 
-**Requirement:** All reliability events must be logged in JSON format for observability.
+**Requirement:** All reliability events must be logged in JSON format for
+observability.
 
 **Implementation:**
 
 **Log Format:**
+
 ```json
 {
   "timestamp": "2025-12-06T21:30:00.000Z",
@@ -167,6 +181,7 @@ interface McpToolErrorEnvelope {
 ```
 
 **Event Types:**
+
 - `timeout` - Operation timed out
 - `retry` - Retry attempt started
 - `retry_exhausted` - All retries failed
@@ -174,6 +189,7 @@ interface McpToolErrorEnvelope {
 - `success` - Operation succeeded
 
 **Verification:**
+
 - ✅ All reliability events logged to stdout
 - ✅ JSON format compatible with log aggregation tools
 - ✅ Metadata includes debugging information
@@ -184,14 +200,17 @@ interface McpToolErrorEnvelope {
 
 ### ✅ 5. No Duplicate Operations on Write Endpoints
 
-**Requirement:** Write operations must never be retried to prevent duplicate orders/payments.
+**Requirement:** Write operations must never be retried to prevent duplicate
+orders/payments.
 
 **Implementation:**
+
 - ✅ `delivery_place_order` has `maxRetries: 0`
 - ✅ Timeout still enforced (45s) to prevent hanging
 - ✅ Error response indicates operation failed (user can manually retry)
 
 **Verification:**
+
 ```typescript
 // delivery_place_order configuration
 {
@@ -292,34 +311,34 @@ supabase/functions/
 // Wraps a tool function with timeout + retry logic
 export async function withToolReliability<T>(
   fn: () => Promise<T>,
-  options: WithToolReliabilityOptions
-): Promise<ToolResult<T>>
+  options: WithToolReliabilityOptions,
+): Promise<ToolResult<T>>;
 
 // Enforces timeout on a promise
 export async function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
-  operationName: string
-): Promise<T>
+  operationName: string,
+): Promise<T>;
 
 // Retries a function with exponential backoff
 export async function withRetry<T>(
   fn: () => Promise<T>,
-  options: RetryOptions
-): Promise<T>
+  options: RetryOptions,
+): Promise<T>;
 
 // Classifies errors into standard codes
 export function classifyError(
   error: unknown,
-  toolName: string
-): ToolErrorResponse
+  toolName: string,
+): ToolErrorResponse;
 
 // Fetch with timeout using AbortController
 export async function fetchWithTimeout(
   url: string,
   options: RequestInit,
-  timeoutMs: number
-): Promise<Response>
+  timeoutMs: number,
+): Promise<Response>;
 ```
 
 ---
@@ -357,20 +376,23 @@ export class ReliabilityLogger {
 **File:** `supabase/functions/mcp-server/index.ts`
 
 **Changes:**
+
 - ✅ All error responses return HTTP 200 (not 400/404/500)
 - ✅ Error details in JSON body with `success: false`
 - ✅ Added `McpToolSuccessEnvelope<T>` and `McpToolErrorEnvelope` types
 - ✅ Added `errorResponseFromToolError()` helper
 
 **Before:**
+
 ```typescript
 return new Response(
   JSON.stringify({ error: "Tool not found" }),
-  { status: 404 } // ❌ HTTP error
+  { status: 404 }, // ❌ HTTP error
 );
 ```
 
 **After:**
+
 ```typescript
 return new Response(
   JSON.stringify({
@@ -390,21 +412,21 @@ return new Response(
 
 ### Latency Overhead
 
-| Tool | Before | After | Overhead |
-|------|--------|-------|----------|
-| `delivery_search_restaurants` | 2.5s | 2.7s | +8% |
-| `delivery_place_order` | 12s | 12.2s | +1.6% |
-| `grocery.list` | 3.5s | 3.6s | +2.8% |
+| Tool                          | Before | After | Overhead |
+| ----------------------------- | ------ | ----- | -------- |
+| `delivery_search_restaurants` | 2.5s   | 2.7s  | +8%      |
+| `delivery_place_order`        | 12s    | 12.2s | +1.6%    |
+| `grocery.list`                | 3.5s   | 3.6s  | +2.8%    |
 
 **Overhead is minimal and acceptable for the reliability benefits.**
 
 ### Retry Impact
 
-| Scenario | Attempts | Total Time | Success Rate |
-|----------|----------|------------|--------------|
-| No errors | 1 | 2.5s | 100% |
-| Transient 5xx | 2 | 3.3s | 95% |
-| Persistent 5xx | 3 | 4.5s | 0% (fails) |
+| Scenario       | Attempts | Total Time | Success Rate |
+| -------------- | -------- | ---------- | ------------ |
+| No errors      | 1        | 2.5s       | 100%         |
+| Transient 5xx  | 2        | 3.3s       | 95%          |
+| Persistent 5xx | 3        | 4.5s       | 0% (fails)   |
 
 ---
 
@@ -415,6 +437,7 @@ return new Response(
 **File:** `supabase/functions/_tests/reliability.test.ts`
 
 **Coverage:**
+
 - ✅ 18 test cases
 - ✅ Timeout enforcement
 - ✅ Retry logic with exponential backoff
@@ -423,6 +446,7 @@ return new Response(
 - ✅ Error message sanitization
 
 **Run Tests:**
+
 ```bash
 deno test --allow-net --allow-env supabase/functions/_tests/reliability.test.ts
 ```
@@ -444,6 +468,7 @@ See `RELIABILITY_TESTING.md` for detailed manual validation guide.
 ### Deployment Steps
 
 1. **Deploy Edge Functions:**
+
 ```bash
 supabase functions deploy delivery_search_restaurants
 supabase functions deploy delivery_place_order
@@ -451,6 +476,7 @@ supabase functions deploy mcp-server
 ```
 
 2. **Verify Deployment:**
+
 ```bash
 curl https://your-project.supabase.co/functions/v1/delivery_search_restaurants \
   -H "Content-Type: application/json" \
@@ -458,6 +484,7 @@ curl https://your-project.supabase.co/functions/v1/delivery_search_restaurants \
 ```
 
 3. **Monitor Logs:**
+
 ```bash
 supabase functions logs delivery_search_restaurants --json
 ```
@@ -476,16 +503,19 @@ supabase functions logs delivery_search_restaurants --json
 ### Log Queries
 
 **Find all timeouts:**
+
 ```bash
 supabase functions logs mcp-server --json | jq 'select(.event == "timeout")'
 ```
 
 **Find all retries:**
+
 ```bash
 supabase functions logs mcp-server --json | jq 'select(.event == "retry")'
 ```
 
 **Find all errors:**
+
 ```bash
 supabase functions logs mcp-server --json | jq 'select(.level == "error")'
 ```
@@ -497,6 +527,7 @@ supabase functions logs mcp-server --json | jq 'select(.level == "error")'
 ### Issue: High timeout rate
 
 **Diagnosis:**
+
 ```bash
 supabase functions logs delivery_search_restaurants --json | \
   jq 'select(.event == "timeout") | .metadata.timeoutMs'
@@ -507,6 +538,7 @@ supabase functions logs delivery_search_restaurants --json | \
 ### Issue: High retry rate
 
 **Diagnosis:**
+
 ```bash
 supabase functions logs delivery_search_restaurants --json | \
   jq 'select(.event == "retry") | .errorCode' | sort | uniq -c
@@ -532,8 +564,8 @@ supabase functions logs delivery_search_restaurants --json | \
 
 ## ✅ Sign-Off
 
-**Implementation Complete:** ✅ December 6, 2025  
-**Tested By:** Automated test suite + manual validation  
+**Implementation Complete:** ✅ December 6, 2025\
+**Tested By:** Automated test suite + manual validation\
 **Approved By:** [Pending]
 
 **All acceptance criteria met. Ready for production deployment.**

@@ -4,7 +4,7 @@
  */
 
 import { ExternalApiError } from "./errors.ts";
-import { logWarn, logError } from "./logging.ts";
+import { logError, logWarn } from "./logging.ts";
 
 interface FetchOptions extends RequestInit {
   retries?: number;
@@ -17,7 +17,7 @@ interface FetchOptions extends RequestInit {
  */
 export async function safeFetch(
   url: string,
-  options: FetchOptions = {}
+  options: FetchOptions = {},
 ): Promise<Response> {
   const {
     retries = 2,
@@ -45,7 +45,7 @@ export async function safeFetch(
         throw new ExternalApiError(
           `HTTP ${response.status} from ${url}`,
           new URL(url).hostname,
-          response.status
+          response.status,
         );
       }
 
@@ -54,7 +54,10 @@ export async function safeFetch(
       lastError = err;
 
       // Don't retry on 4xx errors (client errors)
-      if (err instanceof ExternalApiError && err.statusCode && err.statusCode >= 400 && err.statusCode < 500) {
+      if (
+        err instanceof ExternalApiError && err.statusCode &&
+        err.statusCode >= 400 && err.statusCode < 500
+      ) {
         throw err;
       }
 
@@ -85,7 +88,7 @@ export async function safeFetch(
  */
 export async function safeFetchJson<T = any>(
   url: string,
-  options: FetchOptions = {}
+  options: FetchOptions = {},
 ): Promise<T> {
   const response = await safeFetch(url, {
     ...options,
@@ -104,7 +107,7 @@ export async function safeFetchJson<T = any>(
 export async function safePostJson<T = any>(
   url: string,
   body: any,
-  options: FetchOptions = {}
+  options: FetchOptions = {},
 ): Promise<T> {
   return await safeFetchJson<T>(url, {
     ...options,
@@ -114,5 +117,5 @@ export async function safePostJson<T = any>(
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

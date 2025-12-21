@@ -1,6 +1,7 @@
 # LoopGPT Commerce Layer - Operations Runbook
 
-Complete guide for operating, monitoring, and troubleshooting the production commerce routing system.
+Complete guide for operating, monitoring, and troubleshooting the production
+commerce routing system.
 
 ---
 
@@ -46,13 +47,13 @@ Complete guide for operating, monitoring, and troubleshooting the production com
 
 ### Key Components
 
-| Component | Purpose | Location |
-|-----------|---------|----------|
-| Router | Main routing logic | `loopgpt_route_order/index.ts` |
-| Provider Registry | Provider management | `_shared/commerce/providers/providerRegistry.ts` |
-| Provider Scorer | Quote ranking | `_shared/commerce/ProviderScorer.ts` |
-| Kroger Provider | Kroger API integration | `_shared/commerce/providers/krogerProvider.ts` |
-| Walmart Provider | Walmart API integration | `_shared/commerce/providers/walmartProvider.ts` |
+| Component         | Purpose                 | Location                                         |
+| ----------------- | ----------------------- | ------------------------------------------------ |
+| Router            | Main routing logic      | `loopgpt_route_order/index.ts`                   |
+| Provider Registry | Provider management     | `_shared/commerce/providers/providerRegistry.ts` |
+| Provider Scorer   | Quote ranking           | `_shared/commerce/ProviderScorer.ts`             |
+| Kroger Provider   | Kroger API integration  | `_shared/commerce/providers/krogerProvider.ts`   |
+| Walmart Provider  | Walmart API integration | `_shared/commerce/providers/walmartProvider.ts`  |
 
 ---
 
@@ -61,6 +62,7 @@ Complete guide for operating, monitoring, and troubleshooting the production com
 ### Morning Checklist
 
 **1. Check System Health** (5 min)
+
 ```bash
 # Run health check
 curl -X POST https://your-project.supabase.co/functions/v1/loopgpt_route_order \
@@ -71,6 +73,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/loopgpt_route_order \
 **Expected:** All providers return `healthy: true`
 
 **2. Review Overnight Metrics** (10 min)
+
 ```sql
 -- Check overnight request volume
 SELECT
@@ -85,6 +88,7 @@ ORDER BY hour DESC;
 ```
 
 **3. Check Error Rate** (5 min)
+
 ```sql
 -- Check error rate by provider
 SELECT
@@ -99,6 +103,7 @@ GROUP BY provider_id;
 **Expected:** Error rate < 5% for all providers
 
 **4. Review Alerts** (5 min)
+
 - Check PagerDuty for overnight alerts
 - Review Slack #loopgpt-commerce channel
 - Check email for automated alerts
@@ -108,6 +113,7 @@ GROUP BY provider_id;
 ### Weekly Checklist
 
 **1. Provider Performance Review** (30 min)
+
 ```sql
 -- Weekly provider stats
 SELECT
@@ -123,6 +129,7 @@ GROUP BY provider_id;
 ```
 
 **2. Cost Analysis** (15 min)
+
 ```sql
 -- Weekly API call costs
 SELECT
@@ -137,6 +144,7 @@ GROUP BY provider_id;
 ```
 
 **3. Provider Selection Distribution** (10 min)
+
 ```sql
 -- Which providers are winning?
 SELECT
@@ -153,6 +161,7 @@ ORDER BY selection_count DESC;
 ```
 
 **4. Update Documentation** (15 min)
+
 - Update runbook with new issues/solutions
 - Document any configuration changes
 - Update team on Slack
@@ -164,26 +173,31 @@ ORDER BY selection_count DESC;
 ### Key Metrics
 
 **1. Request Volume**
+
 - **Metric:** `loopgpt.router.requests_total`
 - **Alert:** < 10 requests/hour (off-peak) or < 100 requests/hour (peak)
 - **Action:** Check if frontend is down
 
 **2. Provider Success Rate**
+
 - **Metric:** `loopgpt.provider.success_rate`
 - **Alert:** < 90% for any provider
 - **Action:** Investigate provider errors
 
 **3. Latency P95**
+
 - **Metric:** `loopgpt.router.latency_p95_ms`
 - **Alert:** > 5000ms
 - **Action:** Check provider timeouts
 
 **4. Error Rate**
+
 - **Metric:** `loopgpt.router.error_rate`
 - **Alert:** > 5%
 - **Action:** Review error logs
 
 **5. Provider Selection Distribution**
+
 - **Metric:** `loopgpt.provider.selection_pct`
 - **Alert:** One provider > 80% (possible misconfiguration)
 - **Action:** Review scoring weights
@@ -197,7 +211,7 @@ ORDER BY selection_count DESC;
 - name: No Providers Available
   condition: error_rate > 50% for 5 minutes
   severity: critical
-  
+
 - name: Provider API Down
   condition: provider_success_rate < 50% for 10 minutes
   severity: critical
@@ -206,7 +220,7 @@ ORDER BY selection_count DESC;
 - name: High Latency
   condition: p95_latency_ms > 5000 for 15 minutes
   severity: warning
-  
+
 - name: Provider Error Rate
   condition: provider_error_rate > 10% for 15 minutes
   severity: warning
@@ -220,18 +234,21 @@ ORDER BY selection_count DESC;
 ### Dashboards
 
 **1. Real-Time Dashboard**
+
 - Request volume (last hour)
 - Provider success rate (last hour)
 - Latency P50/P95 (last hour)
 - Error rate (last hour)
 
 **2. Provider Performance Dashboard**
+
 - Provider selection distribution (pie chart)
 - Provider latency comparison (bar chart)
 - Provider error rate over time (line chart)
 - Provider cost analysis (table)
 
 **3. Business Metrics Dashboard**
+
 - Total orders routed (last 24h/7d/30d)
 - Average cart value (last 24h/7d/30d)
 - Commission earned (last 24h/7d/30d)
@@ -244,6 +261,7 @@ ORDER BY selection_count DESC;
 ### Issue 1: Provider Timeout
 
 **Symptoms:**
+
 ```json
 {
   "event": "provider_quote_error",
@@ -253,11 +271,13 @@ ORDER BY selection_count DESC;
 ```
 
 **Diagnosis:**
+
 1. Check provider API status page
 2. Check network connectivity
 3. Check if timeout is too aggressive
 
 **Solution:**
+
 ```bash
 # Temporary: Increase timeout
 supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
@@ -267,6 +287,7 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ```
 
 **Prevention:**
+
 - Set reasonable timeouts (10-15s)
 - Monitor provider API status
 - Have fallback providers enabled
@@ -276,6 +297,7 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ### Issue 2: All Providers Failing
 
 **Symptoms:**
+
 ```json
 {
   "error": {
@@ -286,11 +308,13 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ```
 
 **Diagnosis:**
+
 1. Check if all provider APIs are down
 2. Check if credentials expired
 3. Check if network issue
 
 **Solution:**
+
 ```bash
 # Emergency: Enable mock mode
 supabase secrets set \
@@ -305,6 +329,7 @@ supabase functions deploy loopgpt_route_order
 ```
 
 **Prevention:**
+
 - Monitor provider API status
 - Rotate credentials before expiry
 - Have mock mode as fallback
@@ -314,15 +339,18 @@ supabase functions deploy loopgpt_route_order
 ### Issue 3: Incorrect Provider Selected
 
 **Symptoms:**
+
 - User reports expensive provider selected
 - Metrics show unexpected provider distribution
 
 **Diagnosis:**
+
 1. Check scoring weights
 2. Check provider priority boosts
 3. Check provider configs
 
 **Solution:**
+
 ```bash
 # Adjust scoring weights
 supabase secrets set \
@@ -337,6 +365,7 @@ supabase functions deploy loopgpt_route_order
 ```
 
 **Prevention:**
+
 - Test scoring changes in staging first
 - Monitor provider selection distribution
 - Document scoring strategy
@@ -346,15 +375,18 @@ supabase functions deploy loopgpt_route_order
 ### Issue 4: High Latency
 
 **Symptoms:**
+
 - P95 latency > 5 seconds
 - User complaints about slow loading
 
 **Diagnosis:**
+
 1. Check which provider is slowest
 2. Check if parallel querying is working
 3. Check if network issue
 
 **Solution:**
+
 ```bash
 # Check provider latencies
 curl -X POST https://your-project.supabase.co/functions/v1/loopgpt_route_order \
@@ -369,6 +401,7 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ```
 
 **Prevention:**
+
 - Set aggressive timeouts
 - Monitor provider latency
 - Have fast fallback providers
@@ -378,6 +411,7 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ### Issue 5: API Credentials Expired
 
 **Symptoms:**
+
 ```json
 {
   "event": "provider_quote_error",
@@ -387,11 +421,13 @@ supabase secrets set LOOPGPT_KROGER_TIMEOUT=15000
 ```
 
 **Diagnosis:**
+
 1. Check credential expiry date
 2. Test credentials manually
 3. Check if API key revoked
 
 **Solution:**
+
 ```bash
 # Get new credentials from provider
 # Update in Supabase
@@ -404,6 +440,7 @@ supabase functions deploy loopgpt_route_order
 ```
 
 **Prevention:**
+
 - Set calendar reminders for credential expiry
 - Monitor for 401/403 errors
 - Have backup credentials ready
@@ -415,10 +452,12 @@ supabase functions deploy loopgpt_route_order
 ### Emergency 1: Complete System Outage
 
 **Symptoms:**
+
 - All requests failing
 - No providers returning quotes
 
 **Immediate Actions (5 min):**
+
 ```bash
 # 1. Enable mock mode for all providers
 supabase secrets set \
@@ -437,6 +476,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/loopgpt_route_order \
 ```
 
 **Follow-Up (30 min):**
+
 1. Investigate root cause
 2. Fix underlying issue
 3. Re-enable real APIs one by one
@@ -447,11 +487,13 @@ curl -X POST https://your-project.supabase.co/functions/v1/loopgpt_route_order \
 ### Emergency 2: Provider API Compromised
 
 **Symptoms:**
+
 - Unusual provider behavior
 - Security alerts from provider
 - Unauthorized charges
 
 **Immediate Actions (2 min):**
+
 ```bash
 # 1. Disable compromised provider
 supabase secrets set LOOPGPT_ENABLE_KROGER=false
@@ -466,6 +508,7 @@ supabase secrets set \
 ```
 
 **Follow-Up (1 hour):**
+
 1. Contact provider security team
 2. Review access logs
 3. Audit all API calls
@@ -476,10 +519,12 @@ supabase secrets set \
 ### Emergency 3: High Error Rate
 
 **Symptoms:**
+
 - Error rate > 20%
 - Multiple providers failing
 
 **Immediate Actions (5 min):**
+
 ```bash
 # 1. Check provider health
 curl -X POST https://your-project.supabase.co/functions/v1/loopgpt_route_order \
@@ -497,6 +542,7 @@ supabase functions deploy loopgpt_route_order
 ```
 
 **Follow-Up (30 min):**
+
 1. Identify root cause
 2. Fix or escalate to provider
 3. Re-enable when stable
@@ -509,6 +555,7 @@ supabase functions deploy loopgpt_route_order
 ### Monthly Tasks
 
 **1. Credential Rotation** (30 min)
+
 ```bash
 # Rotate all provider credentials
 # Kroger
@@ -526,12 +573,14 @@ supabase functions deploy loopgpt_route_order
 ```
 
 **2. Performance Review** (1 hour)
+
 - Review monthly metrics
 - Analyze provider performance
 - Adjust scoring weights if needed
 - Update cost projections
 
 **3. Dependency Updates** (30 min)
+
 ```bash
 # Update Deno dependencies
 cd supabase/functions/loopgpt_route_order
@@ -545,6 +594,7 @@ supabase functions deploy loopgpt_route_order
 ```
 
 **4. Documentation Update** (30 min)
+
 - Update runbook with new issues
 - Update API documentation
 - Update deployment guide
@@ -555,24 +605,28 @@ supabase functions deploy loopgpt_route_order
 ### Quarterly Tasks
 
 **1. Provider Contract Review** (2 hours)
+
 - Review provider agreements
 - Negotiate better rates
 - Evaluate new providers
 - Sunset underperforming providers
 
 **2. Architecture Review** (2 hours)
+
 - Review system architecture
 - Identify bottlenecks
 - Plan improvements
 - Update roadmap
 
 **3. Disaster Recovery Test** (2 hours)
+
 - Test rollback procedures
 - Test emergency procedures
 - Update runbook
 - Train team
 
 **4. Security Audit** (2 hours)
+
 - Review access logs
 - Rotate all credentials
 - Update security policies
@@ -587,6 +641,7 @@ supabase functions deploy loopgpt_route_order
 **Goal:** Maximize user satisfaction + revenue
 
 **Current Baseline:**
+
 ```bash
 LOOPGPT_SCORE_PRICE_WEIGHT=0.30
 LOOPGPT_SCORE_SPEED_WEIGHT=0.15
@@ -594,12 +649,14 @@ LOOPGPT_SCORE_COMMISSION_WEIGHT=0.20
 ```
 
 **Tuning Process:**
+
 1. Run A/B test with different weights
 2. Measure user satisfaction (surveys)
 3. Measure revenue (commission earned)
 4. Find optimal balance
 
 **Example Optimization:**
+
 ```bash
 # Test 1: Price-first (user satisfaction)
 LOOPGPT_SCORE_PRICE_WEIGHT=0.50
@@ -621,18 +678,21 @@ LOOPGPT_SCORE_PRICE_WEIGHT=0.20
 **Goal:** Minimize latency while maximizing success rate
 
 **Current Baseline:**
+
 ```bash
 LOOPGPT_KROGER_TIMEOUT=10000
 LOOPGPT_WALMART_TIMEOUT=10000
 ```
 
 **Tuning Process:**
+
 1. Measure P95 provider latency
 2. Set timeout = P95 + 2 seconds
 3. Monitor success rate
 4. Adjust if success rate drops
 
 **Example:**
+
 ```bash
 # Kroger P95 = 3.5s → timeout = 5.5s
 LOOPGPT_KROGER_TIMEOUT=5500
@@ -648,11 +708,13 @@ LOOPGPT_WALMART_TIMEOUT=4800
 **Goal:** Reduce API calls while maintaining freshness
 
 **Strategy:**
+
 1. Cache provider quotes for 5 minutes
 2. Cache store locations for 24 hours
 3. Cache product SKUs for 1 hour
 
 **Implementation:**
+
 ```typescript
 // Cache provider quotes
 const cacheKey = `quote:${providerId}:${cartHash}`;
@@ -669,21 +731,25 @@ return quote;
 ## Contact Information
 
 **On-Call Rotation:**
+
 - Week 1: Alice (alice@loopgpt.com)
 - Week 2: Bob (bob@loopgpt.com)
 - Week 3: Charlie (charlie@loopgpt.com)
 
 **Escalation:**
+
 - L1: On-call engineer
 - L2: Engineering manager
 - L3: CTO
 
 **External Contacts:**
+
 - Kroger API Support: kroger-api@kroger.com
 - Walmart API Support: walmart-api@walmart.com
 - Supabase Support: support@supabase.com
 
 **Communication Channels:**
+
 - Slack: #loopgpt-commerce
 - PagerDuty: loopgpt-commerce
 - Email: devops@loopgpt.com

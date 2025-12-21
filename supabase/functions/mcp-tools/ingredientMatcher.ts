@@ -1,6 +1,6 @@
 /**
  * Ingredient Matcher
- * 
+ *
  * Detects missing ingredients by comparing required ingredients
  * against user's pantry using smart normalization.
  */
@@ -36,24 +36,30 @@ export interface MissingIngredientResult {
 function ingredientsMatch(required: string, pantryItem: string): boolean {
   const normalizedRequired = normalizeIngredient(required);
   const normalizedPantry = normalizeIngredient(pantryItem);
-  
+
   // Exact match after normalization
   if (normalizedRequired === normalizedPantry) {
     return true;
   }
-  
+
   // Partial match (one contains the other)
-  if (normalizedRequired.includes(normalizedPantry) || normalizedPantry.includes(normalizedRequired)) {
+  if (
+    normalizedRequired.includes(normalizedPantry) ||
+    normalizedPantry.includes(normalizedRequired)
+  ) {
     return true;
   }
-  
+
   return false;
 }
 
 /**
  * Find matching pantry item for a required ingredient
  */
-function findPantryMatch(requiredIngredient: string, pantry: PantryItem[]): PantryItem | undefined {
+function findPantryMatch(
+  requiredIngredient: string,
+  pantry: PantryItem[],
+): PantryItem | undefined {
   for (const pantryItem of pantry) {
     if (ingredientsMatch(requiredIngredient, pantryItem.name)) {
       return pantryItem;
@@ -64,21 +70,23 @@ function findPantryMatch(requiredIngredient: string, pantry: PantryItem[]): Pant
 
 /**
  * Detect missing ingredients by comparing required ingredients against pantry
- * 
+ *
  * @param requiredIngredients - List of ingredients needed for recipes/meal plan
  * @param pantry - User's pantry (items they already have)
  * @returns Result with missing and available ingredients
  */
 export function detectMissingIngredients(
-  requiredIngredients: Array<{ name: string; quantity: string; category?: string }>,
-  pantry: PantryItem[]
+  requiredIngredients: Array<
+    { name: string; quantity: string; category?: string }
+  >,
+  pantry: PantryItem[],
 ): MissingIngredientResult {
   const missingIngredients: IngredientAvailability[] = [];
   const availableIngredients: IngredientAvailability[] = [];
-  
+
   for (const ingredient of requiredIngredients) {
     const pantryMatch = findPantryMatch(ingredient.name, pantry);
-    
+
     if (pantryMatch) {
       // Ingredient found in pantry
       availableIngredients.push({
@@ -98,7 +106,7 @@ export function detectMissingIngredients(
       });
     }
   }
-  
+
   return {
     missingIngredients,
     availableIngredients,
@@ -110,20 +118,30 @@ export function detectMissingIngredients(
 
 /**
  * Annotate grocery list items with missing status
- * 
+ *
  * @param groceryItems - Grocery list items
  * @param pantry - User's pantry
  * @returns Grocery items with missing flag added
  */
 export function annotateGroceryListWithMissing(
   groceryItems: Array<{ name: string; quantity: string; category?: string }>,
-  pantry: PantryItem[]
-): Array<{ name: string; quantity: string; category?: string; missing: boolean; source: string }> {
+  pantry: PantryItem[],
+): Array<
+  {
+    name: string;
+    quantity: string;
+    category?: string;
+    missing: boolean;
+    source: string;
+  }
+> {
   const result = detectMissingIngredients(groceryItems, pantry);
-  
+
   return groceryItems.map((item) => {
-    const isMissing = result.missingIngredients.some((missing) => missing.name === item.name);
-    
+    const isMissing = result.missingIngredients.some((missing) =>
+      missing.name === item.name
+    );
+
     return {
       ...item,
       missing: isMissing,
@@ -139,11 +157,11 @@ export function getMissingSummary(result: MissingIngredientResult): string {
   if (result.totalMissing === 0) {
     return "You have all ingredients in your pantry!";
   }
-  
+
   if (result.totalAvailable === 0) {
     return `You need to buy all ${result.totalRequired} ingredients.`;
   }
-  
+
   return `You need to buy ${result.totalMissing} out of ${result.totalRequired} ingredients. You already have ${result.totalAvailable} in your pantry.`;
 }
 

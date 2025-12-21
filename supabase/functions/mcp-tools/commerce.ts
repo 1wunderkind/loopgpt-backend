@@ -1,6 +1,6 @@
 /**
  * Commerce Tool
- * 
+ *
  * Prepares carts and routes orders through the LoopGPT Commerce Router.
  * This is the intelligence layer that sits between MCP Tools and the Commerce Router.
  */
@@ -8,22 +8,31 @@
 import {
   buildCartPayload,
   buildOrderRoutingRequest,
-  validateLocation,
-  validatePreferences,
   type CartPayload,
-  type UserLocation,
+  type OrderConfirmationRequest,
+  type OrderConfirmationResponse,
   type OrderPreferences,
   type OrderRoutingRequest,
   type OrderRoutingResponse,
-  type OrderConfirmationRequest,
-  type OrderConfirmationResponse,
+  type UserLocation,
+  validateLocation,
+  validatePreferences,
 } from "./commerceSchemas.ts";
-import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
-import { createCartSession, getCartSession, updateCartSession, getLatestActiveSession } from "../_shared/commerce/cartSession.ts";
+import {
+  categorizeError,
+  logStructuredError,
+  logSuccess,
+} from "./errorTypes.ts";
+import {
+  createCartSession,
+  getCartSession,
+  getLatestActiveSession,
+  updateCartSession,
+} from "../_shared/commerce/cartSession.ts";
 import { FaultInjection } from "../_shared/testing/faultInjection.ts";
 
 // Commerce Router endpoints (Supabase Edge Functions)
-const COMMERCE_ROUTER_BASE_URL = Deno.env.get("COMMERCE_ROUTER_URL") || 
+const COMMERCE_ROUTER_BASE_URL = Deno.env.get("COMMERCE_ROUTER_URL") ||
   "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1";
 
 const ROUTE_ORDER_URL = `${COMMERCE_ROUTER_BASE_URL}/loopgpt_route_order`;
@@ -41,19 +50,20 @@ function validatePrepareCartInput(params: Record<string, unknown>) {
   if (!params.userId || typeof params.userId !== "string") {
     throw new Error("userId is required (string)");
   }
-  
+
   if (!params.location) {
     throw new Error("location is required");
   }
-  
-  const hasGroceryList = params.groceryList && typeof params.groceryList === "object";
+
+  const hasGroceryList = params.groceryList &&
+    typeof params.groceryList === "object";
   const hasRecipes = params.recipes && Array.isArray(params.recipes);
   const hasMealPlan = params.mealPlan && typeof params.mealPlan === "object";
-  
+
   if (!hasGroceryList && !hasRecipes && !hasMealPlan) {
     throw new Error("Either groceryList, recipes, or mealPlan is required");
   }
-  
+
   return {
     userId: params.userId,
     groceryList: params.groceryList,
@@ -67,11 +77,15 @@ function validatePrepareCartInput(params: Record<string, unknown>) {
 /**
  * Call the commerce router to get provider quotes
  */
-async function callCommerceRouter(request: OrderRoutingRequest): Promise<OrderRoutingResponse> {
+async function callCommerceRouter(
+  request: OrderRoutingRequest,
+): Promise<OrderRoutingResponse> {
   if (!SERVICE_ROLE_KEY) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY environment variable is not set");
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY environment variable is not set",
+    );
   }
-  
+
   const response = await fetch(ROUTE_ORDER_URL, {
     method: "POST",
     headers: {
@@ -80,42 +94,52 @@ async function callCommerceRouter(request: OrderRoutingRequest): Promise<OrderRo
     },
     body: JSON.stringify(request),
   });
-  
+
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Commerce router error (${response.status}): ${errorText}`);
   }
-  
+
   return await response.json();
 }
 
 /**
  * Prepare cart and route order through commerce router
- * 
+ *
  * This is the main commerce tool that:
  * 1. Builds cart payload from grocery list/recipes/meal plan
  * 2. Calls the commerce router to get provider quotes
  * 3. Returns the best provider with quote and confirmation token
  */
-export async function prepareCart(params: Record<string, unknown>): Promise<OrderRoutingResponse> {
+export async function prepareCart(
+  params: Record<string, unknown>,
+): Promise<OrderRoutingResponse> {
   const startTime = Date.now();
-  
+
   try {
     // Validate input
     const input = validatePrepareCartInput(params);
-    
+
     // Build cart payload
     let cartPayload: CartPayload;
-    
+
     if (input.groceryList) {
       // Use existing grocery list
-      const items = input.groceryList.categories?.flatMap((cat: { items: unknown[] }) => cat.items) || [];
+      const items =
+        input.groceryList.categories?.flatMap((cat: { items: unknown[] }) =>
+          cat.items
+        ) || [];
       cartPayload = buildCartPayload(items, {
         missingItemsCount: input.groceryList.missingCount,
       });
     } else if (input.recipes) {
       // Extract ingredients from recipes
-      const items = input.recipes.flatMap((recipe: { ingredients?: { name: string; quantity?: string }[]; id: string }) =>
+      const items = input.recipes.flatMap((
+        recipe: {
+          ingredients?: { name: string; quantity?: string }[];
+          id: string;
+        },
+      ) =>
         recipe.ingredients?.map((ing) => ({
           name: ing.name,
           quantity: ing.quantity || "1",
@@ -128,17 +152,17 @@ export async function prepareCart(params: Record<string, unknown>): Promise<Orde
     } else if (input.mealPlan) {
       // Extract ingredients from meal plan
       const items: { name: string; quantity: string; category: string }[] = [];
-      const mealPlan = input.mealPlan as { 
-        id: string; 
-        days?: { 
-          meals?: { 
-            recipes?: { 
-              ingredients?: { name: string; quantity?: string }[] 
-            }[] 
-          }[] 
-        }[] 
+      const mealPlan = input.mealPlan as {
+        id: string;
+        days?: {
+          meals?: {
+            recipes?: {
+              ingredients?: { name: string; quantity?: string }[];
+            }[];
+          }[];
+        }[];
       };
-      
+
       for (const day of mealPlan.days || []) {
         for (const meal of day.meals || []) {
           for (const recipe of meal.recipes || []) {
@@ -158,15 +182,15 @@ export async function prepareCart(params: Record<string, unknown>): Promise<Orde
     } else {
       throw new Error("No valid input provided");
     }
-    
+
     // Build order routing request
     const routingRequest = buildOrderRoutingRequest(
       input.userId,
       cartPayload,
       input.location,
-      input.preferences
+      input.preferences,
     );
-    
+
     // Call commerce router
     console.log("[commerce.prepareCart] Calling commerce router", {
       userId: input.userId,
@@ -174,7 +198,7 @@ export async function prepareCart(params: Record<string, unknown>): Promise<Orde
       location: input.location.city,
       optimizeFor: input.preferences?.optimizeFor,
     });
-    
+
     // Call real commerce router
     const routingResponse = await callCommerceRouter(routingRequest);
 
@@ -191,7 +215,7 @@ export async function prepareCart(params: Record<string, unknown>): Promise<Orde
       confirmation_token: routingResponse.confirmationToken,
       status: "awaiting_consent",
     });
-    
+
     const duration = Date.now() - startTime;
     logSuccess("commerce.prepareCart", duration, {
       provider: routingResponse.provider,
@@ -202,7 +226,7 @@ export async function prepareCart(params: Record<string, unknown>): Promise<Orde
       fallbackUsed: false,
       cartSessionId: cartSession.id,
     });
-    
+
     // Log commerce event
     console.log(JSON.stringify({
       level: "info",
@@ -210,27 +234,31 @@ export async function prepareCart(params: Record<string, unknown>): Promise<Orde
       provider: routingResponse.provider,
       itemCount: cartPayload.items.length,
       total: routingResponse.quote.total,
-      source: input.groceryList ? "groceryList" : input.recipes ? "recipes" : "mealPlan",
+      source: input.groceryList
+        ? "groceryList"
+        : input.recipes
+        ? "recipes"
+        : "mealPlan",
       missingItemsCount: cartPayload.metadata?.missingItemsCount,
       cartSessionId: cartSession.id,
       timestamp: new Date().toISOString(),
     }));
-    
+
     // Return enhanced response with session ID and narrative
     return {
       ...routingResponse,
       cartSessionId: cartSession.id,
       status: "awaiting_consent",
-      message: `I found the best option via ${routingResponse.provider}. Would you like me to place this order? I can switch providers automatically if something fails.`,
+      message:
+        `I found the best option via ${routingResponse.provider}. Would you like me to place this order? I can switch providers automatically if something fails.`,
     };
-    
   } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.prepareCart");
-    
+
     // Log structured error
     logStructuredError(categorized, false, duration);
-    
+
     // Re-throw error (no fallback for commerce)
     throw error;
   }
@@ -239,42 +267,46 @@ export async function prepareCart(params: Record<string, unknown>): Promise<Orde
 /**
  * Confirm user consent for a cart session
  */
-export async function confirmConsent(params: Record<string, unknown>): Promise<{ success: boolean; message: string }> {
+export async function confirmConsent(
+  params: Record<string, unknown>,
+): Promise<{ success: boolean; message: string }> {
   const startTime = Date.now();
-  
+
   try {
     if (!params.cartSessionId || typeof params.cartSessionId !== "string") {
       throw new Error("cartSessionId is required (string)");
     }
-    
+
     // 1. Get session
     const session = await getCartSession(params.cartSessionId);
     if (!session) {
       throw new Error("Cart session not found");
     }
-    
+
     // 2. Validate ownership (userId check should be done by caller/middleware, but we check if passed)
     if (params.userId && session.user_id !== params.userId) {
       throw new Error("Unauthorized access to cart session");
     }
-    
+
     // 3. Validate status
     if (session.status !== "awaiting_consent") {
-      throw new Error(`Invalid session status: ${session.status}. Expected: awaiting_consent`);
+      throw new Error(
+        `Invalid session status: ${session.status}. Expected: awaiting_consent`,
+      );
     }
-    
+
     // 4. Validate expiry
     if (new Date(session.expires_at) < new Date()) {
       throw new Error("Cart session has expired");
     }
-    
+
     // 5. Update session
     await updateCartSession(session.id, {
       allow_failover: !!params.allowFailover,
       allow_auto_confirm: !!params.allowAutoConfirm,
       status: "confirmed_pending_execution",
     });
-    
+
     // 6. Log audit event
     console.log(JSON.stringify({
       level: "info",
@@ -285,19 +317,19 @@ export async function confirmConsent(params: Record<string, unknown>): Promise<{
       allowAutoConfirm: !!params.allowAutoConfirm,
       timestamp: new Date().toISOString(),
     }));
-    
+
     const duration = Date.now() - startTime;
     logSuccess("commerce.confirmConsent", duration, {
       cartSessionId: session.id,
       cached: false,
       fallbackUsed: false,
     });
-    
+
     return {
       success: true,
-      message: "Got it — I’ll place the order and switch providers automatically if needed.",
+      message:
+        "Got it — I’ll place the order and switch providers automatically if needed.",
     };
-    
   } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.confirmConsent");
@@ -309,21 +341,25 @@ export async function confirmConsent(params: Record<string, unknown>): Promise<{
 /**
  * Confirm order through commerce router (Idempotent & Session-Aware)
  */
-export async function confirmOrder(params: Record<string, unknown>): Promise<OrderConfirmationResponse> {
+export async function confirmOrder(
+  params: Record<string, unknown>,
+): Promise<OrderConfirmationResponse> {
   const startTime = Date.now();
-  
+
   try {
     // 1. Validate Input
     if (!params.cartSessionId || typeof params.cartSessionId !== "string") {
       throw new Error("cartSessionId is required (string)");
     }
-    
+
     if (!params.paymentMethod || typeof params.paymentMethod !== "object") {
       throw new Error("paymentMethod is required (object)");
     }
-    
+
     if (!SERVICE_ROLE_KEY) {
-      throw new Error("SUPABASE_SERVICE_ROLE_KEY environment variable is not set");
+      throw new Error(
+        "SUPABASE_SERVICE_ROLE_KEY environment variable is not set",
+      );
     }
 
     // 2. Load Session
@@ -334,7 +370,9 @@ export async function confirmOrder(params: Record<string, unknown>): Promise<Ord
 
     // 3. Check Idempotency
     if (session.status === "confirmed") {
-      console.log(`[commerce.confirmOrder] Session ${session.id} already confirmed. Returning success.`);
+      console.log(
+        `[commerce.confirmOrder] Session ${session.id} already confirmed. Returning success.`,
+      );
       return {
         success: true,
         orderId: "idempotent-replay", // In real world, store orderId in session
@@ -348,7 +386,9 @@ export async function confirmOrder(params: Record<string, unknown>): Promise<Ord
 
     // 4. Validate State
     if (session.status !== "confirmed_pending_execution") {
-      throw new Error(`Invalid session status: ${session.status}. Must be confirmed_pending_execution.`);
+      throw new Error(
+        `Invalid session status: ${session.status}. Must be confirmed_pending_execution.`,
+      );
     }
 
     if (new Date(session.expires_at) < new Date()) {
@@ -363,20 +403,25 @@ export async function confirmOrder(params: Record<string, unknown>): Promise<Ord
 
     while (attempts < maxAttempts) {
       attempts++;
-      
+
       try {
         if (!currentToken) throw new Error("No confirmation token available");
 
-        console.log(`[commerce.confirmOrder] Attempt ${attempts}/${maxAttempts} with ${currentProvider}`);
+        console.log(
+          `[commerce.confirmOrder] Attempt ${attempts}/${maxAttempts} with ${currentProvider}`,
+        );
 
         const request: OrderConfirmationRequest = {
           confirmationToken: currentToken,
           paymentMethod: params.paymentMethod,
         };
-        
+
         // Fault Injection Hook
         await FaultInjection.injectLatency("confirm_order");
-        FaultInjection.injectFailure(currentProvider || "unknown", "confirm_order");
+        FaultInjection.injectFailure(
+          currentProvider || "unknown",
+          "confirm_order",
+        );
 
         const response = await fetch(CONFIRM_ORDER_URL, {
           method: "POST",
@@ -386,12 +431,14 @@ export async function confirmOrder(params: Record<string, unknown>): Promise<Ord
           },
           body: JSON.stringify(request),
         });
-        
+
         if (!response.ok) {
           const errorText = await response.text();
-          throw new Error(`Order confirmation error (${response.status}): ${errorText}`);
+          throw new Error(
+            `Order confirmation error (${response.status}): ${errorText}`,
+          );
         }
-        
+
         const result = await response.json();
 
         // Success! Update session
@@ -408,7 +455,7 @@ export async function confirmOrder(params: Record<string, unknown>): Promise<Ord
           fallbackUsed: attempts > 1,
           cartSessionId: session.id,
         });
-        
+
         console.log(JSON.stringify({
           level: "info",
           event: "checkout_completed",
@@ -417,49 +464,53 @@ export async function confirmOrder(params: Record<string, unknown>): Promise<Ord
           cartSessionId: session.id,
           timestamp: new Date().toISOString(),
         }));
-        
-        return result;
 
+        return result;
       } catch (error: unknown) {
-        console.error(`[commerce.confirmOrder] Attempt ${attempts} failed:`, error);
-        
+        console.error(
+          `[commerce.confirmOrder] Attempt ${attempts} failed:`,
+          error,
+        );
+
         // Record failure
         await updateCartSession(session.id, {
           last_error: {
             message: error.message,
             provider: currentProvider,
             timestamp: new Date().toISOString(),
-          }
+          },
         });
 
         // If failover allowed, try next alternative
-        if (session.allow_failover && session.alternatives && session.alternatives.length > 0) {
+        if (
+          session.allow_failover && session.alternatives &&
+          session.alternatives.length > 0
+        ) {
           // Simple logic: pick next alternative (in real world, iterate properly)
-          // For now, we assume alternatives contains tokens. 
+          // For now, we assume alternatives contains tokens.
           // Note: Real router would need to provide alternative tokens or we re-quote.
           // Assuming alternatives have tokens for simplicity of this step.
           const nextAlt = session.alternatives.shift(); // Destructive shift for retry queue
           if (nextAlt && nextAlt.confirmationToken) {
-             currentToken = nextAlt.confirmationToken;
-             currentProvider = nextAlt.provider;
-             // Update session with new candidate
-             await updateCartSession(session.id, {
-               alternatives: session.alternatives, // Save reduced list
-               selected_provider: currentProvider,
-               confirmation_token: currentToken
-             });
-             continue; // Retry loop
+            currentToken = nextAlt.confirmationToken;
+            currentProvider = nextAlt.provider;
+            // Update session with new candidate
+            await updateCartSession(session.id, {
+              alternatives: session.alternatives, // Save reduced list
+              selected_provider: currentProvider,
+              confirmation_token: currentToken,
+            });
+            continue; // Retry loop
           }
         }
-        
+
         // No more alternatives or failover disabled
         await updateCartSession(session.id, { status: "failed" });
         throw error;
       }
     }
-    
+
     throw new Error("Max confirmation attempts reached");
-    
   } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.confirmOrder");
@@ -473,21 +524,22 @@ export async function confirmOrder(params: Record<string, unknown>): Promise<Ord
  */
 export async function resumeCart(params: any): Promise<any> {
   const startTime = Date.now();
-  
+
   try {
     if (!params.userId || typeof params.userId !== "string") {
       throw new Error("userId is required (string)");
     }
-    
+
     const session = await getLatestActiveSession(params.userId);
-    
+
     if (!session) {
       return {
         status: "none",
-        message: "No active cart session found. Would you like to start a new order?",
+        message:
+          "No active cart session found. Would you like to start a new order?",
       };
     }
-    
+
     const duration = Date.now() - startTime;
     logSuccess("commerce.resumeCart", duration, {
       cartSessionId: session.id,
@@ -495,7 +547,7 @@ export async function resumeCart(params: any): Promise<any> {
       cached: false,
       fallbackUsed: false,
     });
-    
+
     // Construct safe summary
     const summary = {
       cartSessionId: session.id,
@@ -505,19 +557,20 @@ export async function resumeCart(params: any): Promise<any> {
       itemCount: session.cart.items.length,
       expiresAt: session.expires_at,
     };
-    
+
     let message = "";
     if (session.status === "awaiting_consent") {
-      message = `You were about to order groceries from ${session.selected_provider} ($${session.quote.total}). Do you want me to continue?`;
+      message =
+        `You were about to order groceries from ${session.selected_provider} ($${session.quote.total}). Do you want me to continue?`;
     } else if (session.status === "confirmed_pending_execution") {
-      message = `Your order with ${session.selected_provider} is confirmed and ready to execute. Should I proceed?`;
+      message =
+        `Your order with ${session.selected_provider} is confirmed and ready to execute. Should I proceed?`;
     }
-    
+
     return {
       ...summary,
       message,
     };
-    
   } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.resumeCart");
@@ -529,18 +582,24 @@ export async function resumeCart(params: any): Promise<any> {
 /**
  * Cancel order through commerce router
  */
-export async function cancelOrder(params: any): Promise<{ success: boolean; message: string }> {
+export async function cancelOrder(
+  params: any,
+): Promise<{ success: boolean; message: string }> {
   const startTime = Date.now();
-  
+
   try {
-    if (!params.confirmationToken || typeof params.confirmationToken !== "string") {
+    if (
+      !params.confirmationToken || typeof params.confirmationToken !== "string"
+    ) {
       throw new Error("confirmationToken is required (string)");
     }
-    
+
     if (!SERVICE_ROLE_KEY) {
-      throw new Error("SUPABASE_SERVICE_ROLE_KEY environment variable is not set");
+      throw new Error(
+        "SUPABASE_SERVICE_ROLE_KEY environment variable is not set",
+      );
     }
-    
+
     const response = await fetch(CANCEL_ORDER_URL, {
       method: "POST",
       headers: {
@@ -549,29 +608,30 @@ export async function cancelOrder(params: any): Promise<{ success: boolean; mess
       },
       body: JSON.stringify({ confirmationToken: params.confirmationToken }),
     });
-    
+
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Order cancellation error (${response.status}): ${errorText}`);
+      throw new Error(
+        `Order cancellation error (${response.status}): ${errorText}`,
+      );
     }
-    
+
     const result = await response.json();
-    
+
     const duration = Date.now() - startTime;
     logSuccess("commerce.cancelOrder", duration, {
       cached: false,
       fallbackUsed: false,
     });
-    
+
     return result;
-    
   } catch (error: unknown) {
     const duration = Date.now() - startTime;
     const categorized = categorizeError(error, "commerce.cancelOrder");
-    
+
     // Log structured error
     logStructuredError(categorized, false, duration);
-    
+
     // Re-throw error
     throw error;
   }

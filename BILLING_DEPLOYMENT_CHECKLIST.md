@@ -1,6 +1,6 @@
 # Billing System Deployment Checklist
 
-**Status:** ✅ Code Complete - Ready for Deployment  
+**Status:** ✅ Code Complete - Ready for Deployment\
 **Date:** November 1, 2025
 
 ---
@@ -8,11 +8,13 @@
 ## 📦 What Was Built
 
 ### **Database (3 Tables)**
+
 - ✅ `subscriptions` - User subscription management
 - ✅ `entitlements` - Usage credits and limits
 - ✅ `analytics_events` - Billing analytics
 
 ### **Edge Functions (6 Functions)**
+
 - ✅ `create_checkout_session` - Generate Stripe checkout
 - ✅ `stripe_webhook` - Handle subscription lifecycle
 - ✅ `create_customer_portal` - Self-service billing
@@ -21,13 +23,16 @@
 - ✅ `trial_reminder` - Cron job for trial emails
 
 ### **Middleware**
+
 - ✅ `check-premium.ts` - Reusable entitlement validation
 
 ### **MCP Integration**
+
 - ✅ Updated manifest with 3 new billing tools
 - ✅ Total tools: 30 (was 27)
 
 ### **Documentation**
+
 - ✅ `STRIPE_SETUP_GUIDE.md` - Complete setup instructions
 - ✅ `.env.example` - Updated with Stripe variables
 - ✅ This deployment checklist
@@ -50,6 +55,7 @@ git push origin main
 ```
 
 The GitHub Actions workflow will:
+
 1. Run database migrations
 2. Deploy all Edge Functions
 3. Verify deployment
@@ -78,7 +84,8 @@ supabase functions deploy trial_reminder
 **Option C: Direct SQL Execution (Emergency)**
 
 1. Go to Supabase Dashboard → SQL Editor
-2. Copy contents of `supabase/migrations/20251101180000_create_billing_tables.sql`
+2. Copy contents of
+   `supabase/migrations/20251101180000_create_billing_tables.sql`
 3. Paste and run
 4. Deploy Edge Functions via Dashboard or CLI
 
@@ -106,7 +113,8 @@ APP_URL=https://theloopgpt.ai
 CRON_SECRET=your_random_secret
 ```
 
-**Note:** Use placeholder values until you set up Stripe (see `STRIPE_SETUP_GUIDE.md`)
+**Note:** Use placeholder values until you set up Stripe (see
+`STRIPE_SETUP_GUIDE.md`)
 
 ---
 
@@ -170,6 +178,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/check_entitle
 ```
 
 Expected response:
+
 ```json
 {
   "has_access": false,
@@ -246,7 +255,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/upgrade_to_pr
    # Use Stripe CLI
    stripe trigger checkout.session.completed
    stripe trigger customer.subscription.deleted
-   
+
    # Check database for updates
    ```
 
@@ -255,7 +264,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/upgrade_to_pr
    curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/create_customer_portal \
      -H "Content-Type: application/json" \
      -d '{"chatgpt_user_id": "test_user_001"}'
-   
+
    # Expected: portal_url returned
    ```
 
@@ -301,6 +310,7 @@ AND trial_end > NOW();
 ## ✅ Deployment Checklist
 
 ### **Pre-Deployment:**
+
 - [x] Database migration created
 - [x] Edge Functions created
 - [x] Middleware created
@@ -309,6 +319,7 @@ AND trial_end > NOW();
 - [x] .env.example updated
 
 ### **Deployment:**
+
 - [ ] Push code to GitHub
 - [ ] Verify GitHub Actions deployment
 - [ ] Check database tables created
@@ -317,6 +328,7 @@ AND trial_end > NOW();
 - [ ] Test MCP manifest (30 tools)
 
 ### **Stripe Setup (When Ready):**
+
 - [ ] Create Stripe account
 - [ ] Create products and prices
 - [ ] Get API keys
@@ -327,6 +339,7 @@ AND trial_end > NOW();
 - [ ] Enable Customer Portal
 
 ### **Testing:**
+
 - [ ] Test database functions
 - [ ] Test check_entitlement
 - [ ] Test upgrade_to_premium
@@ -336,6 +349,7 @@ AND trial_end > NOW();
 - [ ] Test trial reminder cron
 
 ### **Go Live:**
+
 - [ ] Migrate Stripe to live mode
 - [ ] Update environment variables with live keys
 - [ ] Test with real payment
@@ -408,9 +422,8 @@ If you encounter issues:
 
 ---
 
-**Deployment Status:** ⏳ Ready to Deploy  
-**Estimated Time:** 30 minutes  
+**Deployment Status:** ⏳ Ready to Deploy\
+**Estimated Time:** 30 minutes\
 **Risk Level:** Low (can rollback easily)
 
 **Good luck with the deployment!** 🎉
-

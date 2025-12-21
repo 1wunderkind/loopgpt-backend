@@ -3,9 +3,9 @@
  * OpenTelemetry-compatible tracing for edge functions
  */
 
-import { Logger } from '../monitoring/Logger.ts';
+import { Logger } from "../monitoring/Logger.ts";
 
-const logger = new Logger('Tracer');
+const logger = new Logger("Tracer");
 
 export interface SpanContext {
   traceId: string;
@@ -31,17 +31,17 @@ export interface Span {
 }
 
 export enum SpanKind {
-  INTERNAL = 'INTERNAL',
-  SERVER = 'SERVER',
-  CLIENT = 'CLIENT',
-  PRODUCER = 'PRODUCER',
-  CONSUMER = 'CONSUMER',
+  INTERNAL = "INTERNAL",
+  SERVER = "SERVER",
+  CLIENT = "CLIENT",
+  PRODUCER = "PRODUCER",
+  CONSUMER = "CONSUMER",
 }
 
 export enum SpanStatus {
-  UNSET = 'UNSET',
-  OK = 'OK',
-  ERROR = 'ERROR',
+  UNSET = "UNSET",
+  OK = "OK",
+  ERROR = "ERROR",
 }
 
 export interface SpanEvent {
@@ -58,7 +58,7 @@ export class Tracer {
   private activeSpanId?: string;
   private serviceName: string;
 
-  constructor(serviceName: string = 'loopgpt') {
+  constructor(serviceName: string = "loopgpt") {
     this.serviceName = serviceName;
   }
 
@@ -71,7 +71,7 @@ export class Tracer {
       kind?: SpanKind;
       attributes?: SpanAttributes;
       parentSpanId?: string;
-    }
+    },
   ): Span {
     const context = this.createSpanContext(options?.parentSpanId);
 
@@ -81,7 +81,7 @@ export class Tracer {
       kind: options?.kind || SpanKind.INTERNAL,
       startTime: Date.now(),
       attributes: {
-        'service.name': this.serviceName,
+        "service.name": this.serviceName,
         ...options?.attributes,
       },
       events: [],
@@ -91,7 +91,7 @@ export class Tracer {
     this.spans.set(context.spanId, span);
     this.activeSpanId = context.spanId;
 
-    logger.debug('Span started', {
+    logger.debug("Span started", {
       traceId: context.traceId,
       spanId: context.spanId,
       name,
@@ -108,7 +108,7 @@ export class Tracer {
     span.duration = span.endTime - span.startTime;
     span.status = status;
 
-    logger.debug('Span ended', {
+    logger.debug("Span ended", {
       traceId: span.context.traceId,
       spanId: span.context.spanId,
       name: span.name,
@@ -137,7 +137,7 @@ export class Tracer {
 
     span.events.push(event);
 
-    logger.debug('Span event added', {
+    logger.debug("Span event added", {
       spanId: span.context.spanId,
       event: name,
     });
@@ -154,10 +154,10 @@ export class Tracer {
    * Record exception in span
    */
   recordException(span: Span, error: Error): void {
-    this.addEvent(span, 'exception', {
-      'exception.type': error.name,
-      'exception.message': error.message,
-      'exception.stacktrace': error.stack,
+    this.addEvent(span, "exception", {
+      "exception.type": error.name,
+      "exception.message": error.message,
+      "exception.stacktrace": error.stack,
     });
 
     span.status = SpanStatus.ERROR;
@@ -220,8 +220,8 @@ export class Tracer {
    * Generate random ID
    */
   private generateId(length: number): string {
-    const chars = '0123456789abcdef';
-    let result = '';
+    const chars = "0123456789abcdef";
+    let result = "";
 
     for (let i = 0; i < length; i++) {
       result += chars[Math.floor(Math.random() * chars.length)];
@@ -236,7 +236,7 @@ export class Tracer {
   private exportSpan(span: Span): void {
     // In production, send to OpenTelemetry collector
     // For now, just log
-    logger.info('Span exported', {
+    logger.info("Span exported", {
       traceId: span.context.traceId,
       spanId: span.context.spanId,
       name: span.name,
@@ -263,7 +263,7 @@ export class Tracer {
       resourceSpans: [{
         resource: {
           attributes: [
-            { key: 'service.name', value: { stringValue: this.serviceName } },
+            { key: "service.name", value: { stringValue: this.serviceName } },
           ],
         },
         scopeSpans: [{
@@ -279,16 +279,22 @@ export class Tracer {
               key,
               value: this.formatAttributeValue(value),
             })),
-            events: span.events.map(event => ({
+            events: span.events.map((event) => ({
               timeUnixNano: event.timestamp * 1000000,
               name: event.name,
-              attributes: event.attributes ? Object.entries(event.attributes).map(([key, value]) => ({
-                key,
-                value: this.formatAttributeValue(value),
-              })) : [],
+              attributes: event.attributes
+                ? Object.entries(event.attributes).map(([key, value]) => ({
+                  key,
+                  value: this.formatAttributeValue(value),
+                }))
+                : [],
             })),
             status: {
-              code: span.status === SpanStatus.OK ? 1 : span.status === SpanStatus.ERROR ? 2 : 0,
+              code: span.status === SpanStatus.OK
+                ? 1
+                : span.status === SpanStatus.ERROR
+                ? 2
+                : 0,
             },
           }],
         }],
@@ -300,11 +306,13 @@ export class Tracer {
    * Format attribute value for OTLP
    */
   private formatAttributeValue(value: any): any {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       return { stringValue: value };
-    } else if (typeof value === 'number') {
-      return Number.isInteger(value) ? { intValue: value } : { doubleValue: value };
-    } else if (typeof value === 'boolean') {
+    } else if (typeof value === "number") {
+      return Number.isInteger(value)
+        ? { intValue: value }
+        : { doubleValue: value };
+    } else if (typeof value === "boolean") {
       return { boolValue: value };
     } else {
       return { stringValue: String(value) };
@@ -315,7 +323,7 @@ export class Tracer {
 /**
  * Global tracer instance
  */
-export const tracer = new Tracer('loopgpt');
+export const tracer = new Tracer("loopgpt");
 
 /**
  * Decorator to automatically trace function calls
@@ -324,7 +332,7 @@ export function trace(name?: string, kind: SpanKind = SpanKind.INTERNAL) {
   return function (
     target: any,
     propertyKey: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
     const spanName = name || `${target.constructor.name}.${propertyKey}`;
@@ -356,7 +364,7 @@ export async function traceAsync<T>(
   options?: {
     kind?: SpanKind;
     attributes?: SpanAttributes;
-  }
+  },
 ): Promise<T> {
   const span = tracer.startSpan(name, options);
 
@@ -380,7 +388,7 @@ export function traceSync<T>(
   options?: {
     kind?: SpanKind;
     attributes?: SpanAttributes;
-  }
+  },
 ): T {
   const span = tracer.startSpan(name, options);
 
@@ -400,27 +408,27 @@ export function traceSync<T>(
  */
 export const SpanAttributes = {
   // HTTP attributes
-  HTTP_METHOD: 'http.method',
-  HTTP_URL: 'http.url',
-  HTTP_STATUS_CODE: 'http.status_code',
-  HTTP_USER_AGENT: 'http.user_agent',
+  HTTP_METHOD: "http.method",
+  HTTP_URL: "http.url",
+  HTTP_STATUS_CODE: "http.status_code",
+  HTTP_USER_AGENT: "http.user_agent",
 
   // Database attributes
-  DB_SYSTEM: 'db.system',
-  DB_NAME: 'db.name',
-  DB_STATEMENT: 'db.statement',
-  DB_OPERATION: 'db.operation',
+  DB_SYSTEM: "db.system",
+  DB_NAME: "db.name",
+  DB_STATEMENT: "db.statement",
+  DB_OPERATION: "db.operation",
 
   // RPC attributes
-  RPC_SERVICE: 'rpc.service',
-  RPC_METHOD: 'rpc.method',
+  RPC_SERVICE: "rpc.service",
+  RPC_METHOD: "rpc.method",
 
   // User attributes
-  USER_ID: 'user.id',
-  USER_EMAIL: 'user.email',
+  USER_ID: "user.id",
+  USER_EMAIL: "user.email",
 
   // Custom attributes
-  ORDER_ID: 'order.id',
-  PROVIDER: 'provider',
-  CACHE_HIT: 'cache.hit',
+  ORDER_ID: "order.id",
+  PROVIDER: "provider",
+  CACHE_HIT: "cache.hit",
 };

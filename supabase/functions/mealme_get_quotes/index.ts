@@ -1,11 +1,15 @@
 /**
  * MealMe Get Quotes Edge Function
- * 
+ *
  * Retrieves delivery quotes for a cart from MealMe API.
  */
 
-import { withLogging, Logger } from "../../middleware/logging.ts";
-import { ErrorHandler, ValidationError, ExternalServiceError } from "../../middleware/errorHandler.ts";
+import { Logger, withLogging } from "../../middleware/logging.ts";
+import {
+  ErrorHandler,
+  ExternalServiceError,
+  ValidationError,
+} from "../../middleware/errorHandler.ts";
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
 import { createClient } from "@supabase/supabase-js";
 
@@ -41,7 +45,10 @@ interface MealMeQuotesResponse {
   [key: string]: unknown;
 }
 
-async function getQuotes(req: GetQuotesRequest, logger: Logger): Promise<GetQuotesResponse> {
+async function getQuotes(
+  req: GetQuotesRequest,
+  logger: Logger,
+): Promise<GetQuotesResponse> {
   if (!API_KEY) {
     throw new Error("MEALME_API_KEY environment variable is not set");
   }
@@ -78,16 +85,20 @@ async function getQuotes(req: GetQuotesRequest, logger: Logger): Promise<GetQuot
 
   if (!response.ok) {
     const errorText = await response.text();
-    logger.error(`MealMe API error`, undefined, { 
-      statusCode: response.status, 
+    logger.error(`MealMe API error`, undefined, {
+      statusCode: response.status,
       errorText,
-      duration 
+      duration,
     });
-    throw new ExternalServiceError("MealMe", `API error: ${response.status} - ${errorText}`, response.status >= 500);
+    throw new ExternalServiceError(
+      "MealMe",
+      `API error: ${response.status} - ${errorText}`,
+      response.status >= 500,
+    );
   }
 
   const quotesData = await response.json() as MealMeQuotesResponse | Quote[];
-  
+
   // Handle both array response and object with quotes property
   let quotes: Quote[] = [];
   if (Array.isArray(quotesData)) {
@@ -103,12 +114,15 @@ async function getQuotes(req: GetQuotesRequest, logger: Logger): Promise<GetQuot
   let fastest: Quote | null = null;
 
   if (quotes.length > 0) {
-    cheapest = quotes.reduce((prev, curr) => 
+    cheapest = quotes.reduce((prev, curr) =>
       ((curr.fee || 0) < (prev.fee || 0)) ? curr : prev
     );
 
-    fastest = quotes.reduce((prev, curr) => 
-      ((curr.eta_minutes || curr.eta || 0) < (prev.eta_minutes || prev.eta || 0)) ? curr : prev
+    fastest = quotes.reduce((prev, curr) =>
+      ((curr.eta_minutes || curr.eta || 0) <
+          (prev.eta_minutes || prev.eta || 0))
+        ? curr
+        : prev
     );
   }
 
@@ -133,7 +147,10 @@ async function getQuotes(req: GetQuotesRequest, logger: Logger): Promise<GetQuot
     if (quotesError) {
       logger.error(`Failed to store quotes`, new Error(quotesError.message));
     } else {
-      logger.info(`Stored quotes for order`, { orderId: order_id, count: quoteRecords.length });
+      logger.info(`Stored quotes for order`, {
+        orderId: order_id,
+        count: quoteRecords.length,
+      });
     }
   }
 
@@ -149,26 +166,28 @@ const handler = async (req: Request, logger: Logger): Promise<Response> => {
   try {
     // Parse request body
     const body = await req.json() as unknown;
-    
+
     // Validate request body
-    if (!body || typeof body !== 'object') {
+    if (!body || typeof body !== "object") {
       throw new ValidationError("Invalid request body");
     }
-    
+
     const typedBody = body as Record<string, unknown>;
-    
-    if (typeof typedBody.cartId !== 'string') {
+
+    if (typeof typedBody.cartId !== "string") {
       throw new ValidationError("cartId is required and must be a string");
     }
-    
-    if (typedBody.mode !== 'groceries' && typedBody.mode !== 'restaurants') {
+
+    if (typedBody.mode !== "groceries" && typedBody.mode !== "restaurants") {
       throw new ValidationError("mode must be 'groceries' or 'restaurants'");
     }
-    
+
     const request: GetQuotesRequest = {
       cartId: typedBody.cartId,
       mode: typedBody.mode,
-      order_id: typeof typedBody.order_id === 'string' ? typedBody.order_id : undefined
+      order_id: typeof typedBody.order_id === "string"
+        ? typedBody.order_id
+        : undefined,
     };
 
     // Get quotes

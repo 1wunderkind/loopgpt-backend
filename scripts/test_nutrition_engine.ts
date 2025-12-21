@@ -1,14 +1,14 @@
 /**
  * Simple Nutrition Engine Validation Script
- * 
+ *
  * Validates core functionality without running full Deno test suite.
  * Run with: npx ts-node scripts/test_nutrition_engine.ts
- * 
+ *
  * Part of: Step 4 - Deterministic Nutrition Engine
  */
 
 console.log("🧪 Nutrition Engine Validation\n");
-console.log("=" .repeat(60));
+console.log("=".repeat(60));
 
 // Test 1: Determinism
 console.log("\n✓ Test 1: Determinism");
@@ -106,7 +106,9 @@ console.log("  - supabase/functions/_shared/nutrition/index.ts");
 console.log("  - supabase/functions/_shared/nutrition/engine.test.ts");
 console.log("  - supabase/functions/mcp-tools/nutrition_deterministic.ts");
 console.log("  - supabase/functions/nutrition_analyze_deterministic/index.ts");
-console.log("  - supabase/functions/nutrition_analyze_food/index_deterministic.ts");
+console.log(
+  "  - supabase/functions/nutrition_analyze_food/index_deterministic.ts",
+);
 
 console.log("\n🚀 Next Steps:");
 console.log("  1. Push code to GitHub");

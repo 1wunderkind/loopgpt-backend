@@ -26,7 +26,7 @@ export function recordToolCall(
   meta?: {
     userId?: string;
     errorType?: string;
-  }
+  },
 ) {
   const metric: ToolMetrics = {
     toolName,
@@ -52,7 +52,7 @@ export function recordToolCall(
  */
 export function getMetricsSummary() {
   const total = metricsBuffer.length;
-  const successful = metricsBuffer.filter(m => m.success).length;
+  const successful = metricsBuffer.filter((m) => m.success).length;
   const failed = total - successful;
 
   const avgDuration = total > 0

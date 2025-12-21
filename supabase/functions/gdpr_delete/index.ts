@@ -3,9 +3,13 @@
  * Allows users to delete all their personal data (Right to be Forgotten)
  */
 
-import { createEdgeFunction } from '../_shared/monitoring/middleware.ts';
-import { Logger } from '../_shared/monitoring/Logger.ts';
-import { ErrorHandler, ValidationError, AuthenticationError } from '../_shared/errors/ErrorHandler.ts';
+import { createEdgeFunction } from "../_shared/monitoring/middleware.ts";
+import { Logger } from "../_shared/monitoring/Logger.ts";
+import {
+  AuthenticationError,
+  ErrorHandler,
+  ValidationError,
+} from "../_shared/errors/ErrorHandler.ts";
 
 interface DeleteRequest {
   user_id: string;
@@ -26,30 +30,30 @@ interface DeletionResult {
 }
 
 async function handler(req: Request, logger: Logger): Promise<Response> {
-  if (req.method !== 'POST') {
-    throw new ValidationError('Method not allowed');
+  if (req.method !== "POST") {
+    throw new ValidationError("Method not allowed");
   }
 
   const body: DeleteRequest = await req.json();
-  
+
   // Validate required fields
-  ErrorHandler.validateRequired(body, ['user_id', 'confirmation']);
-  
+  ErrorHandler.validateRequired(body, ["user_id", "confirmation"]);
+
   const { user_id, confirmation, reason } = body;
-  
+
   // Verify confirmation
-  if (confirmation !== 'DELETE') {
+  if (confirmation !== "DELETE") {
     throw new ValidationError('Invalid confirmation. Must be "DELETE"');
   }
-  
-  logger.info('GDPR data deletion requested', { user_id, reason });
-  
+
+  logger.info("GDPR data deletion requested", { user_id, reason });
+
   // TODO: Verify user authentication
   // const authUserId = extractUserIdFromToken(req);
   // if (authUserId !== user_id) {
   //   throw new AuthorizationError('Cannot delete data for other users');
   // }
-  
+
   try {
     // Delete all user data from various tables
     const result: DeletionResult = {
@@ -63,20 +67,23 @@ async function handler(req: Request, logger: Logger): Promise<Response> {
       },
       deletion_timestamp: new Date().toISOString(),
     };
-    
+
     // Log deletion for compliance
     await logDeletion(user_id, reason, result);
-    
-    logger.info('User data deleted', {
+
+    logger.info("User data deleted", {
       user_id,
-      total_records: Object.values(result.deleted_records).reduce((a, b) => a + b, 0),
+      total_records: Object.values(result.deleted_records).reduce(
+        (a, b) => a + b,
+        0,
+      ),
     });
-    
+
     return new Response(JSON.stringify(result), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    logger.error('Failed to delete user data', error as Error, { user_id });
+    logger.error("Failed to delete user data", error as Error, { user_id });
     throw error;
   }
 }
@@ -137,26 +144,29 @@ async function deleteUserPreferences(userId: string): Promise<number> {
 async function logDeletion(
   userId: string,
   reason: string | undefined,
-  result: DeletionResult
+  result: DeletionResult,
 ): Promise<void> {
   // TODO: Implement actual audit log
   // INSERT INTO deletion_log (user_id, reason, deleted_records, timestamp)
-  logger.info('Deletion logged for audit', {
+  logger.info("Deletion logged for audit", {
     user_id: userId,
     reason,
-    total_records: Object.values(result.deleted_records).reduce((a, b) => a + b, 0),
+    total_records: Object.values(result.deleted_records).reduce(
+      (a, b) => a + b,
+      0,
+    ),
   });
 }
 
 // Export with monitoring
 Deno.serve(
   createEdgeFunction(handler, {
-    functionName: 'gdpr_delete',
+    functionName: "gdpr_delete",
     enableCORS: true,
     enableRateLimit: true,
     rateLimitConfig: {
       maxRequests: 5, // Very limited to prevent abuse
       windowMs: 86400000, // 24 hours
     },
-  })
+  }),
 );

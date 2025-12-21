@@ -4,13 +4,13 @@
  */
 
 import {
-  assertEquals,
-  assertExists,
   assert,
+  assertEquals,
+  assertErrorResponse,
+  assertExists,
+  assertSuccessResponse,
   createMockRequest,
   parseJsonResponse,
-  assertSuccessResponse,
-  assertErrorResponse,
   testData,
 } from "../../helpers.ts";
 
@@ -77,13 +77,13 @@ Deno.test("food_search: limits results to specified count", async () => {
 
 Deno.test("food_search: handles case-insensitive search", async () => {
   const queries = ["CHICKEN", "chicken", "ChIcKeN"];
-  
+
   for (const query of queries) {
     const mockResults = {
       foods: [testData.food({ description: "Chicken Breast" })],
       total: 1,
     };
-    
+
     assertExists(mockResults.foods);
     assert(mockResults.foods.length > 0);
   }
@@ -112,7 +112,7 @@ Deno.test("food_search: handles pagination correctly", async () => {
   const query = "chicken";
   const page = 2;
   const limit = 10;
-  
+
   const mockResults = {
     foods: Array(10).fill(null).map(() => testData.food()),
     total: 50,
@@ -141,7 +141,10 @@ Deno.test("food_search: returns branded and generic foods", async () => {
   const mockResults = {
     foods: [
       testData.food({ description: "Milk, whole", brand_name: null }),
-      testData.food({ description: "Whole Milk", brand_name: "Organic Valley" }),
+      testData.food({
+        description: "Whole Milk",
+        brand_name: "Organic Valley",
+      }),
     ],
     total: 2,
   };

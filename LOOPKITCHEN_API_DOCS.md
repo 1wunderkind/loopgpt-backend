@@ -1,6 +1,6 @@
 # LoopKitchen API Documentation
 
-**Version**: 1.8.0  
+**Version**: 1.8.0\
 **Last Updated**: December 6, 2025
 
 ---
@@ -22,9 +22,12 @@
 
 ## Overview
 
-LoopKitchen provides AI-powered recipe generation, nutrition analysis, and meal planning through a set of MCP (Model Context Protocol) tools. All responses use a widget-based architecture for easy UI rendering.
+LoopKitchen provides AI-powered recipe generation, nutrition analysis, and meal
+planning through a set of MCP (Model Context Protocol) tools. All responses use
+a widget-based architecture for easy UI rendering.
 
 **Key Features**:
+
 - 🍳 Recipe generation with chaos mode
 - 📊 Nutrition analysis with health scoring
 - 🗓️ Weekly meal planning
@@ -44,7 +47,8 @@ curl -X POST <base_url>/tools/<tool_name> \
   -d '<request-body>'
 ```
 
-**Note**: For public MCP servers, authentication may be handled at the server level.
+**Note**: For public MCP servers, authentication may be handled at the server
+level.
 
 ---
 
@@ -55,6 +59,7 @@ https://your-project.supabase.co/functions/v1/mcp-tools
 ```
 
 **Endpoints**:
+
 - `GET /` - Get manifest (list all tools)
 - `GET /health` - Health check
 - `POST /tools/<tool_name>` - Execute tool
@@ -67,14 +72,14 @@ All LoopKitchen tools return structured widgets for easy UI rendering.
 
 ### Widget Types
 
-| Widget Type | Description | Used By |
-|------------|-------------|---------|
-| `RecipeCardCompact` | Compact recipe card | Recipe generation |
-| `RecipeCardDetailed` | Detailed recipe with nutrition | Recipe details |
-| `NutritionSummary` | Nutrition information | Nutrition analysis |
-| `WeekPlanner` | Weekly meal plan | Meal planning |
-| `GroceryList` | Categorized shopping list | Grocery generation |
-| `InfoMessage` | System messages/errors | All tools (errors) |
+| Widget Type          | Description                    | Used By            |
+| -------------------- | ------------------------------ | ------------------ |
+| `RecipeCardCompact`  | Compact recipe card            | Recipe generation  |
+| `RecipeCardDetailed` | Detailed recipe with nutrition | Recipe details     |
+| `NutritionSummary`   | Nutrition information          | Nutrition analysis |
+| `WeekPlanner`        | Weekly meal plan               | Meal planning      |
+| `GroceryList`        | Categorized shopping list      | Grocery generation |
+| `InfoMessage`        | System messages/errors         | All tools (errors) |
 
 ### Base Widget Structure
 
@@ -101,6 +106,7 @@ All LoopKitchen tools return structured widgets for easy UI rendering.
 Generate multiple recipe variations with chaos mode for creativity.
 
 **Request**:
+
 ```json
 {
   "ingredients": ["chicken", "rice", "soy sauce", "ginger"],
@@ -114,16 +120,17 @@ Generate multiple recipe variations with chaos mode for creativity.
 
 **Parameters**:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `ingredients` | `string[]` | ✅ | List of available ingredients |
-| `vibes` | `string[]` | ❌ | Cooking style/mood (e.g., "Quick", "Comfort food") |
-| `timeLimit` | `number` | ❌ | Max prep+cook time (minutes) |
-| `chaosTarget` | `number` | ❌ | Creativity level (0-10, default: 5) |
-| `count` | `number` | ❌ | Number of recipes (1-10, default: 3) |
-| `dietConstraints` | `string[]` | ❌ | Diet restrictions (soft constraints) |
+| Field             | Type       | Required | Description                                        |
+| ----------------- | ---------- | -------- | -------------------------------------------------- |
+| `ingredients`     | `string[]` | ✅       | List of available ingredients                      |
+| `vibes`           | `string[]` | ❌       | Cooking style/mood (e.g., "Quick", "Comfort food") |
+| `timeLimit`       | `number`   | ❌       | Max prep+cook time (minutes)                       |
+| `chaosTarget`     | `number`   | ❌       | Creativity level (0-10, default: 5)                |
+| `count`           | `number`   | ❌       | Number of recipes (1-10, default: 3)               |
+| `dietConstraints` | `string[]` | ❌       | Diet restrictions (soft constraints)               |
 
 **Response**:
+
 ```json
 [
   {
@@ -151,6 +158,7 @@ Generate multiple recipe variations with chaos mode for creativity.
 ```
 
 **cURL Example**:
+
 ```bash
 curl -X POST https://your-project.supabase.co/functions/v1/mcp-tools/tools/loopkitchen.recipes.generate \
   -H "Content-Type: application/json" \
@@ -171,6 +179,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/mcp-tools/tools/loopk
 Get detailed recipe with full instructions and nutrition analysis.
 
 **Request**:
+
 ```json
 {
   "recipeId": "quick-chicken-rice-bowl-0",
@@ -183,15 +192,16 @@ Get detailed recipe with full instructions and nutrition analysis.
 
 **Parameters**:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `recipeId` | `string` | ✅ | Recipe ID from compact card |
-| `recipeTitle` | `string` | ✅ | Recipe title |
-| `ingredients` | `string[]` | ✅ | Original ingredients list |
-| `vibes` | `string[]` | ❌ | Original vibes |
-| `chaosTarget` | `number` | ❌ | Original chaos level |
+| Field         | Type       | Required | Description                 |
+| ------------- | ---------- | -------- | --------------------------- |
+| `recipeId`    | `string`   | ✅       | Recipe ID from compact card |
+| `recipeTitle` | `string`   | ✅       | Recipe title                |
+| `ingredients` | `string[]` | ✅       | Original ingredients list   |
+| `vibes`       | `string[]` | ❌       | Original vibes              |
+| `chaosTarget` | `number`   | ❌       | Original chaos level        |
 
 **Response**:
+
 ```json
 {
   "type": "RecipeCardDetailed",
@@ -255,6 +265,7 @@ Get detailed recipe with full instructions and nutrition analysis.
 Analyze nutrition from recipes or raw ingredients.
 
 **Request (from recipe)**:
+
 ```json
 {
   "recipes": [{
@@ -269,6 +280,7 @@ Analyze nutrition from recipes or raw ingredients.
 ```
 
 **Request (from ingredients)**:
+
 ```json
 {
   "ingredients": [
@@ -282,13 +294,14 @@ Analyze nutrition from recipes or raw ingredients.
 
 **Parameters**:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `recipes` | `Recipe[]` | One of | Array of recipe objects |
-| `ingredients` | `Ingredient[]` | One of | Array of ingredient objects |
-| `servings` | `number` | ❌ | Number of servings (default: 1) |
+| Field         | Type           | Required | Description                     |
+| ------------- | -------------- | -------- | ------------------------------- |
+| `recipes`     | `Recipe[]`     | One of   | Array of recipe objects         |
+| `ingredients` | `Ingredient[]` | One of   | Array of ingredient objects     |
+| `servings`    | `number`       | ❌       | Number of servings (default: 1) |
 
 **Response**:
+
 ```json
 {
   "type": "NutritionSummary",
@@ -343,6 +356,7 @@ Analyze nutrition from recipes or raw ingredients.
 Log a meal for daily nutrition tracking.
 
 **Request**:
+
 ```json
 {
   "userId": "user_123",
@@ -365,6 +379,7 @@ Log a meal for daily nutrition tracking.
 ```
 
 **Current Response** (placeholder):
+
 ```json
 {
   "type": "InfoMessage",
@@ -388,6 +403,7 @@ Log a meal for daily nutrition tracking.
 Get aggregated nutrition summary for a day.
 
 **Request**:
+
 ```json
 {
   "userId": "user_123",
@@ -396,6 +412,7 @@ Get aggregated nutrition summary for a day.
 ```
 
 **Future Response**:
+
 ```json
 {
   "type": "NutritionSummary",
@@ -439,6 +456,7 @@ Get aggregated nutrition summary for a day.
 Generate 7-day meal plan with breakfast, lunch, and dinner.
 
 **Request**:
+
 ```json
 {
   "ingredients": ["chicken", "rice", "broccoli", "eggs", "olive oil"],
@@ -451,15 +469,16 @@ Generate 7-day meal plan with breakfast, lunch, and dinner.
 
 **Parameters**:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `ingredients` | `string[]` | ❌ | Base ingredients (default: common pantry) |
-| `caloriesPerDay` | `number` | ❌ | Daily calorie target (null = no target) |
-| `dietNotes` | `string` | ❌ | Diet preferences (e.g., "high-protein") |
-| `days` | `number` | ❌ | Number of days (1-14, default: 7) |
-| `startDate` | `string` | ❌ | Start date (ISO, default: today) |
+| Field            | Type       | Required | Description                               |
+| ---------------- | ---------- | -------- | ----------------------------------------- |
+| `ingredients`    | `string[]` | ❌       | Base ingredients (default: common pantry) |
+| `caloriesPerDay` | `number`   | ❌       | Daily calorie target (null = no target)   |
+| `dietNotes`      | `string`   | ❌       | Diet preferences (e.g., "high-protein")   |
+| `days`           | `number`   | ❌       | Number of days (1-14, default: 7)         |
+| `startDate`      | `string`   | ❌       | Start date (ISO, default: today)          |
 
 **Response**:
+
 ```json
 {
   "type": "WeekPlanner",
@@ -513,6 +532,7 @@ Generate 7-day meal plan with breakfast, lunch, and dinner.
 Generate meal plan and aggregated grocery list in one call.
 
 **Request**:
+
 ```json
 {
   "ingredients": ["chicken", "pasta", "tomatoes", "garlic", "cheese"],
@@ -523,6 +543,7 @@ Generate meal plan and aggregated grocery list in one call.
 ```
 
 **Response**:
+
 ```json
 {
   "mealPlan": {
@@ -581,6 +602,7 @@ Generate meal plan and aggregated grocery list in one call.
 Generate grocery list and get provider quotes for delivery.
 
 **Request**:
+
 ```json
 {
   "userId": "user_123",
@@ -602,6 +624,7 @@ Generate grocery list and get provider quotes for delivery.
 ```
 
 **Response**:
+
 ```json
 {
   "groceryList": {
@@ -644,6 +667,7 @@ Generate grocery list and get provider quotes for delivery.
 Generate meal plan + grocery list + provider quotes in one call.
 
 **Request**:
+
 ```json
 {
   "userId": "user_123",
@@ -660,6 +684,7 @@ Generate meal plan + grocery list + provider quotes in one call.
 ```
 
 **Response**:
+
 ```json
 {
   "mealPlan": {
@@ -706,33 +731,37 @@ All errors return an `InfoMessage` widget:
 ```
 
 **Severity Levels**:
+
 - `error` - Operation failed
 - `warning` - Operation succeeded with warnings
 - `info` - Informational message
 
 **Common Errors**:
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| "ingredients is required" | Missing ingredients | Provide ingredients array |
-| "OpenAI API error" | API key invalid/quota | Check API key and quota |
-| "location is required" | Missing location for commerce | Provide location object |
-| "Database not configured" | Missing DB credentials | Set SUPABASE_URL and SERVICE_ROLE_KEY |
+| Error                     | Cause                         | Solution                              |
+| ------------------------- | ----------------------------- | ------------------------------------- |
+| "ingredients is required" | Missing ingredients           | Provide ingredients array             |
+| "OpenAI API error"        | API key invalid/quota         | Check API key and quota               |
+| "location is required"    | Missing location for commerce | Provide location object               |
+| "Database not configured" | Missing DB credentials        | Set SUPABASE_URL and SERVICE_ROLE_KEY |
 
 ---
 
 ## Rate Limits
 
 **Supabase Edge Functions**:
+
 - Default: 1000 requests/minute per IP
 - Bursts: 100 requests/second
 
 **OpenAI API**:
+
 - Tier 1: 500 requests/minute
 - Tier 2: 5000 requests/minute
 - Monitor usage in OpenAI dashboard
 
 **Recommendations**:
+
 - Implement client-side caching
 - Use debouncing for user input
 - Batch requests when possible
@@ -808,16 +837,19 @@ curl -X POST https://your-project.supabase.co/functions/v1/mcp-tools/tools/loopk
 const MCP_URL = "https://your-project.supabase.co/functions/v1/mcp-tools";
 
 async function generateRecipes(ingredients: string[]) {
-  const response = await fetch(`${MCP_URL}/tools/loopkitchen.recipes.generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ingredients,
-      vibes: ["Quick"],
-      count: 3
-    })
-  });
-  
+  const response = await fetch(
+    `${MCP_URL}/tools/loopkitchen.recipes.generate`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ingredients,
+        vibes: ["Quick"],
+        count: 3,
+      }),
+    },
+  );
+
   return await response.json();
 }
 
@@ -851,4 +883,5 @@ print(recipes)
 
 ---
 
-*For more information, see the deployment guide and phase completion documentation.*
+_For more information, see the deployment guide and phase completion
+documentation._

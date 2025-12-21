@@ -1,6 +1,6 @@
 /**
  * Food Search Endpoint
- * 
+ *
  * Provides fuzzy search for the FoodSearchInput autocomplete component.
  * Returns top N matching foods with nutrition data.
  */
@@ -8,7 +8,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { getFoodSuggestions } from "../../lib/food_lookup_helper.ts";
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
-
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -51,7 +50,7 @@ const handler = async (req) => {
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -87,7 +86,7 @@ const handler = async (req) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-      }
+      },
     );
   } catch (error) {
     console.error("Error in food_search:", error);
@@ -102,11 +101,10 @@ const handler = async (req) => {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
-      }
+      },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withSearchAPI(handler));
-

@@ -1,4 +1,4 @@
-# LoopGPT Commerce Layer - API Documentation
+# LooptOS Commerce Layer - API Documentation
 
 Complete API reference for the multi-provider commerce routing system.
 
@@ -18,7 +18,7 @@ Complete API reference for the multi-provider commerce routing system.
 
 ## Overview
 
-The LoopGPT Commerce Layer provides intelligent routing across multiple grocery delivery providers (MealMe, Instacart, Kroger, Walmart) to find the best price, speed, and availability for your cart.
+The LooptOS Commerce Layer provides intelligent routing across multiple grocery delivery providers (MealMe, Instacart, Kroger, Walmart) to find the best price, speed, and availability for your cart.
 
 **Base URL:** `https://your-project.supabase.co/functions/v1`
 
@@ -225,7 +225,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/loopgpt_route_order \
       "substituted": false
     }
   ],
-  "affiliateUrl": "https://www.walmart.com/cart?cartId=abc123&affId=LOOPGPT",
+  "affiliateUrl": "https://www.walmart.com/cart?cartId=abc123&affId=LOOPTOS",
   "alternativeQuotes": [
     {
       "provider": {
@@ -311,11 +311,11 @@ Check health status of all providers.
 
 ```typescript
 interface RequestedItem {
-  id: string;                    // Client-side item ID
-  name: string;                  // Item name (e.g., "Chicken Breast")
-  quantity: number;              // Quantity to purchase
-  unit: string;                  // Unit (e.g., "lbs", "pcs", "bag")
-  priceCents?: number;           // Optional: expected price in cents
+  id: string; // Client-side item ID
+  name: string; // Item name (e.g., "Chicken Breast")
+  quantity: number; // Quantity to purchase
+  unit: string; // Unit (e.g., "lbs", "pcs", "bag")
+  priceCents?: number; // Optional: expected price in cents
 }
 ```
 
@@ -323,11 +323,11 @@ interface RequestedItem {
 
 ```typescript
 interface ShippingAddress {
-  street: string;                // Street address
-  city: string;                  // City name
-  state?: string;                // State code (e.g., "CA")
-  postalCode: string;            // ZIP/postal code
-  country: string;               // Country code (e.g., "US")
+  street: string; // Street address
+  city: string; // City name
+  state?: string; // State code (e.g., "CA")
+  postalCode: string; // ZIP/postal code
+  country: string; // Country code (e.g., "US")
 }
 ```
 
@@ -335,7 +335,7 @@ interface ShippingAddress {
 
 ```typescript
 interface Preferences {
-  optimize?: 'price' | 'speed' | 'margin' | 'balanced';
+  optimize?: "price" | "speed" | "margin" | "balanced";
   excludeProviders?: ProviderId[];
   maxDeliveryMinutes?: number;
 }
@@ -343,17 +343,17 @@ interface Preferences {
 
 **Optimization Strategies:**
 
-| Strategy | Description | Use Case |
-|----------|-------------|----------|
-| `price` | Minimize total cost | Budget-conscious users |
-| `speed` | Minimize delivery time | Urgent orders |
-| `margin` | Maximize commission | Revenue optimization |
-| `balanced` | Balance all factors | Default |
+| Strategy   | Description            | Use Case               |
+| ---------- | ---------------------- | ---------------------- |
+| `price`    | Minimize total cost    | Budget-conscious users |
+| `speed`    | Minimize delivery time | Urgent orders          |
+| `margin`   | Maximize commission    | Revenue optimization   |
+| `balanced` | Balance all factors    | Default                |
 
 ### ProviderId
 
 ```typescript
-type ProviderId = 'MEALME' | 'INSTACART' | 'KROGER_API' | 'WALMART_API';
+type ProviderId = "MEALME" | "INSTACART" | "KROGER_API" | "WALMART_API";
 ```
 
 ### ProviderConfig
@@ -363,11 +363,11 @@ interface ProviderConfig {
   id: ProviderId;
   name: string;
   enabled: boolean;
-  priority: number;              // Base priority (0-100)
-  commissionRate: number;        // Commission as decimal (0.03 = 3%)
-  regions: string[];             // Supported regions (e.g., ["US"])
-  timeout?: number;              // Timeout in milliseconds
-  maxRetries?: number;           // Max retry attempts
+  priority: number; // Base priority (0-100)
+  commissionRate: number; // Commission as decimal (0.03 = 3%)
+  regions: string[]; // Supported regions (e.g., ["US"])
+  timeout?: number; // Timeout in milliseconds
+  maxRetries?: number; // Max retry attempts
 }
 ```
 
@@ -375,12 +375,12 @@ interface ProviderConfig {
 
 ```typescript
 interface Quote {
-  subtotalCents: number;         // Item total in cents
-  feesCents: number;             // Delivery/service fees in cents
-  taxCents: number;              // Tax in cents
-  totalCents: number;            // Grand total in cents
-  currency: string;              // Currency code (e.g., "USD")
-  estimatedDeliveryMinutes?: number;  // ETA in minutes
+  subtotalCents: number; // Item total in cents
+  feesCents: number; // Delivery/service fees in cents
+  taxCents: number; // Tax in cents
+  totalCents: number; // Grand total in cents
+  currency: string; // Currency code (e.g., "USD")
+  estimatedDeliveryMinutes?: number; // ETA in minutes
 }
 ```
 
@@ -388,10 +388,10 @@ interface Quote {
 
 ```typescript
 interface ItemAvailability {
-  clientItemId: string;          // Matches RequestedItem.id
-  inStock: boolean;              // Is item available?
-  providerSku?: string;          // Provider's SKU
-  substituted?: boolean;         // Was item substituted?
+  clientItemId: string; // Matches RequestedItem.id
+  inStock: boolean; // Is item available?
+  providerSku?: string; // Provider's SKU
+  substituted?: boolean; // Was item substituted?
 }
 ```
 
@@ -409,7 +409,7 @@ interface ProviderQuote {
   quote: Quote;
   itemAvailability: ItemAvailability[];
   affiliateUrl?: string;
-  raw?: unknown;                 // Raw provider response
+  raw?: unknown; // Raw provider response
 }
 ```
 
@@ -419,13 +419,14 @@ interface ProviderQuote {
 
 ### MealMe
 
-**Type:** Aggregator  
-**Coverage:** US (restaurants + grocery)  
-**Commission:** 3-5%  
-**ETA:** 30-45 minutes  
+**Type:** Aggregator\
+**Coverage:** US (restaurants + grocery)\
+**Commission:** 3-5%\
+**ETA:** 30-45 minutes\
 **Mock Mode:** `LOOPGPT_MEALME_MOCK=true`
 
 **Features:**
+
 - Restaurant delivery
 - Grocery delivery
 - Real-time tracking
@@ -433,13 +434,14 @@ interface ProviderQuote {
 
 ### Instacart
 
-**Type:** Aggregator  
-**Coverage:** US + Canada  
-**Commission:** 2-4%  
-**ETA:** 45-60 minutes  
+**Type:** Aggregator\
+**Coverage:** US + Canada\
+**Commission:** 2-4%\
+**ETA:** 45-60 minutes\
 **Mock Mode:** `LOOPGPT_INSTACART_MOCK=true`
 
 **Features:**
+
 - Multiple store partnerships
 - Same-day delivery
 - Alcohol delivery
@@ -447,38 +449,42 @@ interface ProviderQuote {
 
 ### Kroger API
 
-**Type:** Direct API  
-**Coverage:** US (Kroger stores)  
-**Commission:** 3%  
-**ETA:** 2-4 hours  
+**Type:** Direct API\
+**Coverage:** US (Kroger stores)\
+**Commission:** 3%\
+**ETA:** 2-4 hours\
 **Mock Mode:** `LOOPGPT_KROGER_MOCK=true`
 
 **Features:**
+
 - Direct store integration
 - Loyalty program support
 - Free delivery over $35
 - Pickup options
 
 **API Credentials:**
+
 - `KROGER_CLIENT_ID`
 - `KROGER_CLIENT_SECRET`
 - `KROGER_ENV` (sandbox | production)
 
 ### Walmart API
 
-**Type:** Direct API  
-**Coverage:** US (Walmart stores)  
-**Commission:** 3%  
-**ETA:** 1-2 hours  
+**Type:** Direct API\
+**Coverage:** US (Walmart stores)\
+**Commission:** 3%\
+**ETA:** 1-2 hours\
 **Mock Mode:** `LOOPGPT_WALMART_MOCK=true`
 
 **Features:**
+
 - Direct store integration
 - Lowest pricing
 - Fast delivery
 - Pickup options
 
 **API Credentials:**
+
 - `WALMART_API_KEY`
 - `WALMART_PARTNER_ID`
 - `WALMART_ENV` (sandbox | production)
@@ -490,236 +496,34 @@ interface ProviderQuote {
 ### Error Response Format
 
 ```typescript
-{
+interface ErrorResponse {
   error: {
     code: string;
     message: string;
     details?: unknown;
   };
-  requestId: string;
-  timestamp: string;
 }
 ```
 
-### Error Codes
+### Common Error Codes
 
-| Code | HTTP Status | Description | Retryable |
-|------|-------------|-------------|-----------|
-| `NO_PROVIDERS_AVAILABLE` | 503 | No providers returned quotes | Yes |
-| `INVALID_ADDRESS` | 400 | Shipping address is invalid | No |
-| `INVALID_ITEMS` | 400 | Cart items are invalid | No |
-| `PROVIDER_TIMEOUT` | 504 | Provider timed out | Yes |
-| `PROVIDER_ERROR` | 502 | Provider returned error | Maybe |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests | Yes |
-| `INTERNAL_ERROR` | 500 | Internal server error | Yes |
-
-### Example Error Response
-
-```json
-{
-  "error": {
-    "code": "NO_PROVIDERS_AVAILABLE",
-    "message": "No providers returned valid quotes. All providers failed or timed out.",
-    "details": {
-      "attemptedProviders": ["MEALME", "INSTACART", "KROGER_API", "WALMART_API"],
-      "errors": {
-        "KROGER_API": "Provider KROGER_API timed out after 10000ms",
-        "WALMART_API": "Unauthorized"
-      }
-    }
-  },
-  "requestId": "req_1733655000_abc123",
-  "timestamp": "2025-12-08T10:30:00.000Z"
-}
-```
-
-### Retry Strategy
-
-**Retryable Errors:**
-- 429 (Rate Limit) → Exponential backoff
-- 503 (No Providers) → Retry after 5s
-- 504 (Timeout) → Retry with longer timeout
-
-**Non-Retryable Errors:**
-- 400 (Invalid Request) → Fix request
-- 401 (Unauthorized) → Check API key
-- 403 (Forbidden) → Check permissions
+| Code | Description |
+| ---- | ----------- |
+| `INVALID_INPUT` | Request body validation failed |
+| `PROVIDER_ERROR` | Upstream provider returned an error |
+| `NO_PROVIDERS_AVAILABLE` | No providers could fulfill the request |
+| `AUTH_ERROR` | Invalid or missing API key |
+| `RATE_LIMIT_EXCEEDED` | Too many requests |
 
 ---
 
 ## Rate Limits
 
-### Default Limits
-
-| Tier | Requests/Minute | Requests/Hour | Requests/Day |
-|------|-----------------|---------------|--------------|
-| Free | 10 | 100 | 1,000 |
-| Pro | 60 | 1,000 | 10,000 |
-| Enterprise | Custom | Custom | Custom |
-
-### Rate Limit Headers
-
-```
-X-RateLimit-Limit: 60
-X-RateLimit-Remaining: 59
-X-RateLimit-Reset: 1733655060
-```
-
-### Handling Rate Limits
-
-```typescript
-async function routeOrderWithRetry(request: RouteOrderRequest) {
-  try {
-    return await routeOrder(request);
-  } catch (error) {
-    if (error.code === 'RATE_LIMIT_EXCEEDED') {
-      const resetTime = error.headers['X-RateLimit-Reset'];
-      const waitMs = (resetTime * 1000) - Date.now();
-      await sleep(waitMs);
-      return await routeOrder(request);
-    }
-    throw error;
-  }
-}
-```
+- **Anonymous:** 10 requests / minute
+- **Authenticated:** 1000 requests / minute
 
 ---
 
-## Best Practices
-
-### 1. Cache Results
-
-```typescript
-// Cache quotes for 5 minutes
-const cacheKey = `quote:${JSON.stringify(request)}`;
-const cached = await cache.get(cacheKey);
-if (cached) return cached;
-
-const quote = await routeOrder(request);
-await cache.set(cacheKey, quote, { ttl: 300 });
-return quote;
-```
-
-### 2. Handle Timeouts Gracefully
-
-```typescript
-const controller = new AbortController();
-const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-try {
-  const quote = await routeOrder(request, { signal: controller.signal });
-  return quote;
-} catch (error) {
-  if (error.name === 'AbortError') {
-    // Handle timeout
-    return fallbackQuote;
-  }
-  throw error;
-} finally {
-  clearTimeout(timeoutId);
-}
-```
-
-### 3. Provide Fallbacks
-
-```typescript
-try {
-  return await routeOrder(request);
-} catch (error) {
-  if (error.code === 'NO_PROVIDERS_AVAILABLE') {
-    // Show cached quotes or manual selection
-    return getCachedQuotes(request);
-  }
-  throw error;
-}
-```
-
-### 4. Monitor Performance
-
-```typescript
-const start = Date.now();
-try {
-  const quote = await routeOrder(request);
-  const latency = Date.now() - start;
-  metrics.record('route_order_latency', latency);
-  return quote;
-} catch (error) {
-  metrics.increment('route_order_error', { code: error.code });
-  throw error;
-}
-```
-
----
-
-## SDK Examples
-
-### JavaScript/TypeScript
-
-```typescript
-import { LoopGPTCommerce } from '@loopgpt/commerce-sdk';
-
-const client = new LoopGPTCommerce({
-  apiKey: 'your-api-key',
-  baseUrl: 'https://your-project.supabase.co/functions/v1',
-});
-
-const quote = await client.routeOrder({
-  items: [
-    { id: '1', name: 'Chicken', quantity: 2, unit: 'lbs' },
-    { id: '2', name: 'Rice', quantity: 1, unit: 'bag' },
-  ],
-  shippingAddress: {
-    street: '123 Main St',
-    city: 'San Francisco',
-    state: 'CA',
-    postalCode: '94102',
-    country: 'US',
-  },
-  preferences: {
-    optimize: 'price',
-  },
-});
-
-console.log(`Selected: ${quote.selectedProvider.name}`);
-console.log(`Total: $${quote.quote.totalCents / 100}`);
-console.log(`ETA: ${quote.quote.estimatedDeliveryMinutes} min`);
-```
-
-### Python
-
-```python
-from loopgpt_commerce import LoopGPTCommerce
-
-client = LoopGPTCommerce(
-    api_key='your-api-key',
-    base_url='https://your-project.supabase.co/functions/v1'
-)
-
-quote = client.route_order(
-    items=[
-        {'id': '1', 'name': 'Chicken', 'quantity': 2, 'unit': 'lbs'},
-        {'id': '2', 'name': 'Rice', 'quantity': 1, 'unit': 'bag'},
-    ],
-    shipping_address={
-        'street': '123 Main St',
-        'city': 'San Francisco',
-        'state': 'CA',
-        'postalCode': '94102',
-        'country': 'US',
-    },
-    preferences={'optimize': 'price'}
-)
-
-print(f"Selected: {quote['selectedProvider']['name']}")
-print(f"Total: ${quote['quote']['totalCents'] / 100}")
-print(f"ETA: {quote['quote']['estimatedDeliveryMinutes']} min")
-```
-
----
-
-## Support
-
-**Documentation:** https://docs.loopgpt.com/commerce  
-**API Status:** https://status.loopgpt.com  
-**Support Email:** api-support@loopgpt.com  
-**Slack Community:** https://loopgpt.slack.com
+**Support:** support@looptos.com\
+**Status:** https://status.looptos.com\
+**Slack:** #looptos-commerce

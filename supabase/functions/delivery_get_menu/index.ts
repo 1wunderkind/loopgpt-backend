@@ -5,21 +5,27 @@
 
 import { withLogging } from "../../middleware/logging.ts";
 import {
+  AppError,
   createErrorResponse,
   createSuccessResponse,
-  validateRequired,
-  AppError,
   ErrorCodes,
+  validateRequired,
 } from "../../middleware/errorHandler.ts";
-import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../_lib/deliveryAffiliate.ts";
-import { rankPartners, suggestAlternativeCuisines } from "../_lib/deliveryMatcher.ts";
+import {
+  buildDeliveryAffiliateLinks,
+  getAffiliateDisclosure,
+} from "../_lib/deliveryAffiliate.ts";
+import {
+  rankPartners,
+  suggestAlternativeCuisines,
+} from "../_lib/deliveryMatcher.ts";
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
 import type {
+  DeliveryMatchCriteria,
+  DeliveryPartner,
   GetDeliveryRecommendationsRequest,
   GetDeliveryRecommendationsResponse,
-  DeliveryPartner,
-  DeliveryMatchCriteria,
 } from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
@@ -40,59 +46,27 @@ async function handler(req: Request): Promise<Response> {
     } = body;
 
     console.log(
-      `Fetching delivery recommendations for user ${chatgpt_user_id}, cuisine: ${cuisine}, diet: ${diet}`
+      `Fetching delivery recommendations for user ${chatgpt_user_id}, cuisine: ${cuisine}, diet: ${diet}`,
     );
 
     // Get authenticated Supabase client (enforces RLS)
 
-
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-
-    
-
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: authError }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     if (!userId) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
@@ -106,7 +80,7 @@ async function handler(req: Request): Promise<Response> {
       throw new AppError(
         ErrorCodes.DATABASE_ERROR,
         `Failed to fetch delivery partners: ${partnersError.message}`,
-        500
+        500,
       );
     }
 
@@ -114,7 +88,7 @@ async function handler(req: Request): Promise<Response> {
       throw new AppError(
         ErrorCodes.NOT_FOUND,
         "No delivery partners available",
-        404
+        404,
       );
     }
 
@@ -129,23 +103,34 @@ async function handler(req: Request): Promise<Response> {
     };
 
     // Rank partners by match score
-    const rankedPartners = rankPartners(partners as DeliveryPartner[], criteria, limit);
+    const rankedPartners = rankPartners(
+      partners as DeliveryPartner[],
+      criteria,
+      limit,
+    );
 
     if (rankedPartners.length === 0) {
       // No matches found - suggest alternatives
       const alternatives = suggestAlternativeCuisines(
         cuisine || "pizza",
-        partners as DeliveryPartner[]
+        partners as DeliveryPartner[],
       );
 
-      console.log(`No matches for ${cuisine}, suggesting alternatives: ${alternatives.join(", ")}`);
+      console.log(
+        `No matches for ${cuisine}, suggesting alternatives: ${
+          alternatives.join(", ")
+        }`,
+      );
 
       return createSuccessResponse({
         success: true,
         recommendations: [],
         alternatives,
         disclaimer: getAffiliateDisclosure(),
-        message: `No ${cuisine} delivery options found. Try these alternatives: ${alternatives.join(", ")}`,
+        message:
+          `No ${cuisine} delivery options found. Try these alternatives: ${
+            alternatives.join(", ")
+          }`,
       });
     }
 
@@ -153,7 +138,7 @@ async function handler(req: Request): Promise<Response> {
     const affiliateLinks = buildDeliveryAffiliateLinks(
       rankedPartners.map((r) => r.partner),
       cuisine || "food",
-      country
+      country,
     );
 
     console.log(`Generated ${affiliateLinks.length} delivery recommendations`);
@@ -169,9 +154,13 @@ async function handler(req: Request): Promise<Response> {
       affiliate_url: link.affiliate_url,
       metadata: {
         country,
-        match_score: rankedPartners.find((r) => r.partner.id === link.partner_id)
+        match_score: rankedPartners.find((r) =>
+          r.partner.id === link.partner_id
+        )
           ?.matchScore,
-        match_reasons: rankedPartners.find((r) => r.partner.id === link.partner_id)
+        match_reasons: rankedPartners.find((r) =>
+          r.partner.id === link.partner_id
+        )
           ?.matchReasons,
       },
     }));
@@ -199,5 +188,6 @@ async function handler(req: Request): Promise<Response> {
   }
 }
 
-export default withSearchAPI(withLogging(handler, "get_delivery_recommendations"));
-
+export default withSearchAPI(
+  withLogging(handler, "get_delivery_recommendations"),
+);

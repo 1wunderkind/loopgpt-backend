@@ -1,13 +1,13 @@
 /**
  * MCP Tool Reliability & Error Handling Layer
- * 
+ *
  * Provides robust error handling, timeouts, and retries for all MCP tools.
  * Ensures graceful degradation and standardized error responses.
- * 
+ *
  * @module reliability
  */
 
-import { logDebug, logInfo, logWarn, logError } from "./logger.ts";
+import { logDebug, logError, logInfo, logWarn } from "./logger.ts";
 
 // ============================================================================
 // TYPES
@@ -24,14 +24,14 @@ export type ToolResult<T> =
  * Standardized error codes for tool failures
  */
 export type ToolErrorCode =
-  | "TIMEOUT"           // Request exceeded time limit
-  | "NETWORK_ERROR"     // DNS, connection, or network failure
-  | "UPSTREAM_4XX"      // Client error from external API (400-499)
-  | "UPSTREAM_5XX"      // Server error from external API (500-599)
-  | "VALIDATION_ERROR"  // Input validation failed
-  | "RATE_LIMITED"      // Rate limit exceeded (Step 5)
-  | "UNAUTHORIZED"      // Authentication required (Step 5)
-  | "UNKNOWN";          // Unexpected error
+  | "TIMEOUT" // Request exceeded time limit
+  | "NETWORK_ERROR" // DNS, connection, or network failure
+  | "UPSTREAM_4XX" // Client error from external API (400-499)
+  | "UPSTREAM_5XX" // Server error from external API (500-599)
+  | "VALIDATION_ERROR" // Input validation failed
+  | "RATE_LIMITED" // Rate limit exceeded (Step 5)
+  | "UNAUTHORIZED" // Authentication required (Step 5)
+  | "UNKNOWN"; // Unexpected error
 
 /**
  * Standardized error response structure
@@ -39,10 +39,10 @@ export type ToolErrorCode =
  */
 export interface ToolErrorResponse {
   code: ToolErrorCode;
-  message: string;              // User-facing, safe message
-  technicalMessage?: string;    // Internal debug string (not shown to user)
+  message: string; // User-facing, safe message
+  technicalMessage?: string; // Internal debug string (not shown to user)
   toolName: string;
-  retryable: boolean;           // Whether ChatGPT should suggest retrying
+  retryable: boolean; // Whether ChatGPT should suggest retrying
   details?: Record<string, unknown>; // Additional context (statusCode, provider, etc.)
 }
 
@@ -51,9 +51,9 @@ export interface ToolErrorResponse {
  */
 export interface WithToolReliabilityOptions {
   toolName: string;
-  timeoutMs?: number;           // Default: 8000ms (8 seconds)
-  maxRetries?: number;          // Default: 0 (no retries)
-  retryDelayMs?: number;        // Default: 300ms
+  timeoutMs?: number; // Default: 8000ms (8 seconds)
+  maxRetries?: number; // Default: 0 (no retries)
+  retryDelayMs?: number; // Default: 300ms
   retryOnCodes?: ToolErrorCode[]; // Which error codes should trigger retry
 }
 
@@ -66,10 +66,13 @@ export interface WithToolReliabilityOptions {
  * Used when no specific message is provided
  */
 const DEFAULT_USER_MESSAGES: Record<ToolErrorCode, string> = {
-  TIMEOUT: "The service is taking too long to respond. Please try again in a moment.",
-  NETWORK_ERROR: "I couldn't reach that service due to a network issue. Please try again.",
+  TIMEOUT:
+    "The service is taking too long to respond. Please try again in a moment.",
+  NETWORK_ERROR:
+    "I couldn't reach that service due to a network issue. Please try again.",
   UPSTREAM_4XX: "There was a problem with the request for this service.",
-  UPSTREAM_5XX: "The partner service is having an issue right now. Please try again later.",
+  UPSTREAM_5XX:
+    "The partner service is having an issue right now. Please try again later.",
   VALIDATION_ERROR: "The input data for this tool was invalid.",
   RATE_LIMITED: "You're doing that too often. Please try again in a bit.",
   UNAUTHORIZED: "Please sign in to use this feature.",
@@ -107,11 +110,11 @@ function classifyError(error: unknown): {
   // Handle HTTP response errors
   if (error && typeof error === "object" && "status" in error) {
     const status = (error as { status: number }).status;
-    
+
     if (status >= 400 && status < 500) {
       return { code: "UPSTREAM_4XX", retryable: false, statusCode: status };
     }
-    
+
     if (status >= 500) {
       return { code: "UPSTREAM_5XX", retryable: true, statusCode: status };
     }
@@ -132,23 +135,25 @@ function classifyError(error: unknown): {
 function createErrorResponse(
   error: unknown,
   toolName: string,
-  customMessage?: string
+  customMessage?: string,
 ): ToolErrorResponse {
   const classification = classifyError(error);
-  
-  const technicalMessage = error instanceof Error 
-    ? error.message 
+
+  const technicalMessage = error instanceof Error
+    ? error.message
     : String(error);
 
   const details: Record<string, unknown> = {};
-  
+
   if (classification.statusCode) {
     details.statusCode = classification.statusCode;
   }
 
   // Add stack trace for unknown errors (for debugging)
-  if (classification.code === "UNKNOWN" && error instanceof Error && error.stack) {
-    details.stackTrace = error.stack.split('\n').slice(0, 5).join('\n'); // First 5 lines only
+  if (
+    classification.code === "UNKNOWN" && error instanceof Error && error.stack
+  ) {
+    details.stackTrace = error.stack.split("\n").slice(0, 5).join("\n"); // First 5 lines only
   }
 
   return {
@@ -172,7 +177,7 @@ function createErrorResponse(
 export function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
-  abortController?: AbortController
+  abortController?: AbortController,
 ): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timeoutId = setTimeout(() => {
@@ -211,18 +216,18 @@ async function withRetry<T>(
     retryDelayMs: number;
     retryOnCodes: ToolErrorCode[];
     toolName: string;
-  }
+  },
 ): Promise<T> {
   let lastError: unknown;
-  
+
   for (let attempt = 0; attempt <= options.maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error;
-      
+
       const classification = classifyError(error);
-      
+
       // Don't retry if this error code is not in retryOnCodes
       if (!options.retryOnCodes.includes(classification.code)) {
         logDebug("Skipping retry - error code not retryable", {
@@ -248,7 +253,7 @@ async function withRetry<T>(
 
       // Calculate exponential backoff delay
       const delay = options.retryDelayMs * Math.pow(2, attempt);
-      
+
       logInfo("Retrying after error", {
         source: "mcp-reliability",
         toolName: options.toolName,
@@ -278,11 +283,11 @@ async function withRetry<T>(
  * - Automatic retries (for idempotent operations)
  * - Error classification and standardization
  * - Structured logging
- * 
+ *
  * @param fn - The tool function to wrap
  * @param opts - Configuration options
  * @returns ToolResult with either success data or standardized error
- * 
+ *
  * @example
  * ```typescript
  * const result = await withToolReliability(
@@ -295,7 +300,7 @@ async function withRetry<T>(
  *     retryOnCodes: ["NETWORK_ERROR", "UPSTREAM_5XX"],
  *   }
  * );
- * 
+ *
  * if (result.ok) {
  *   return result.data;
  * } else {
@@ -305,7 +310,7 @@ async function withRetry<T>(
  */
 export async function withToolReliability<T>(
   fn: () => Promise<T>,
-  opts: WithToolReliabilityOptions
+  opts: WithToolReliabilityOptions,
 ): Promise<ToolResult<T>> {
   const {
     toolName,
@@ -323,14 +328,15 @@ export async function withToolReliability<T>(
 
     // Wrap the function with retry logic (if maxRetries > 0)
     const fnWithRetry = maxRetries > 0
-      ? () => withRetry(fn, { maxRetries, retryDelayMs, retryOnCodes, toolName })
+      ? () =>
+        withRetry(fn, { maxRetries, retryDelayMs, retryOnCodes, toolName })
       : fn;
 
     // Execute with timeout
     const data = await withTimeout(fnWithRetry(), timeoutMs, abortController);
 
     const duration = Date.now() - startTime;
-    
+
     // Log success
     logDebug("Tool execution succeeded", {
       source: "mcp-reliability",
@@ -341,7 +347,7 @@ export async function withToolReliability<T>(
     return { ok: true, data };
   } catch (error) {
     const duration = Date.now() - startTime;
-    
+
     // Create standardized error response
     const errorResponse = createErrorResponse(error, toolName);
 
@@ -360,7 +366,10 @@ export async function withToolReliability<T>(
  * Logs tool errors in structured JSON format
  * Can be piped to external log sinks (Datadog, Sentry, etc.)
  */
-export function logToolError(error: ToolErrorResponse, durationMs?: number): void {
+export function logToolError(
+  error: ToolErrorResponse,
+  durationMs?: number,
+): void {
   logError(error.technicalMessage ?? error.message, {
     source: "mcp-reliability",
     toolName: error.toolName,
@@ -369,7 +378,7 @@ export function logToolError(error: ToolErrorResponse, durationMs?: number): voi
     durationMs,
     details: error.details ?? {},
   });
-  
+
   // Keep the old JSON.stringify for backward compatibility (can be removed later)
   console.error(
     JSON.stringify({
@@ -382,7 +391,7 @@ export function logToolError(error: ToolErrorResponse, durationMs?: number): voi
       details: error.details ?? null,
       message: error.technicalMessage ?? error.message,
       timestamp: new Date().toISOString(),
-    })
+    }),
   );
 }
 
@@ -393,7 +402,7 @@ export function logToolError(error: ToolErrorResponse, durationMs?: number): voi
 /**
  * Convenience wrapper for fetch() with timeout and AbortController
  * Use this for external API calls instead of raw fetch()
- * 
+ *
  * @example
  * ```typescript
  * const response = await fetchWithTimeout(
@@ -410,10 +419,10 @@ export function logToolError(error: ToolErrorResponse, durationMs?: number): voi
 export async function fetchWithTimeout(
   url: string,
   options: RequestInit = {},
-  timeoutMs: number = 8000
+  timeoutMs: number = 8000,
 ): Promise<Response> {
   const abortController = new AbortController();
-  
+
   const fetchPromise = fetch(url, {
     ...options,
     signal: abortController.signal,
@@ -442,7 +451,7 @@ export function createErrorResult(
   toolName: string,
   code: ToolErrorCode,
   message?: string,
-  details?: Record<string, any>
+  details?: Record<string, any>,
 ): ToolResult<never> {
   return {
     ok: false,
@@ -450,7 +459,8 @@ export function createErrorResult(
       code,
       message: message || DEFAULT_USER_MESSAGES[code],
       toolName,
-      retryable: code === "TIMEOUT" || code === "NETWORK_ERROR" || code === "UPSTREAM_5XX",
+      retryable: code === "TIMEOUT" || code === "NETWORK_ERROR" ||
+        code === "UPSTREAM_5XX",
       details,
     },
   };

@@ -1,7 +1,7 @@
 # LoopKitchen Deployment Verification Checklist
 
-**Version**: 1.8.0-loopkitchen-phase5  
-**Date**: December 6, 2025  
+**Version**: 1.8.0-loopkitchen-phase5\
+**Date**: December 6, 2025\
 **Purpose**: Step-by-step verification for safe deployment
 
 ---
@@ -13,11 +13,11 @@
 - [ ] **Dev/Staging Supabase project exists**
   - Project URL: `_______________________`
   - Project Ref: `_______________________`
-  
+
 - [ ] **OpenAI API key available**
   - Key starts with: `sk-...`
   - Quota confirmed: Yes / No
-  
+
 - [ ] **Supabase CLI installed**
   ```bash
   supabase --version
@@ -67,6 +67,7 @@ supabase functions deploy _shared
 - [ ] Function version created
 
 **Expected output**:
+
 ```
 Deploying _shared (project ref: ...)
 Deployed _shared successfully
@@ -83,6 +84,7 @@ supabase functions deploy mcp-tools
 - [ ] Function version created
 
 **Expected output**:
+
 ```
 Deploying mcp-tools (project ref: ...)
 Deployed mcp-tools successfully
@@ -108,6 +110,7 @@ curl https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/health | jq '
 ```
 
 **Expected Response**:
+
 ```json
 {
   "status": "healthy",
@@ -124,6 +127,7 @@ curl https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/health | jq '
 ```
 
 **Verification**:
+
 - [ ] `status` = `"healthy"`
 - [ ] `version` = `"1.8.0-loopkitchen-phase4"` or higher
 - [ ] `hasOpenAI` = `true`
@@ -137,6 +141,7 @@ curl https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/ | jq '.tools
 **Expected**: 9 LoopKitchen tools listed
 
 **Verification**:
+
 - [ ] `loopkitchen.recipes.generate` - status: `available`
 - [ ] `loopkitchen.recipes.details` - status: `available`
 - [ ] `loopkitchen.nutrition.analyze` - status: `available`
@@ -159,6 +164,7 @@ cd /home/ubuntu/loopgpt-backend
 ```
 
 **Expected Output**:
+
 ```
 ========================================
 LoopKitchen Integration Test Suite
@@ -182,19 +188,21 @@ Total:   Z
 ```
 
 **Verification**:
+
 - [ ] All critical tests passed
 - [ ] Failed count = 0 (or acceptable failures documented)
 - [ ] Performance tests within targets
 
 ### 3.2 Document Test Results
 
-**Test Run Date**: `_______________________`  
-**Total Tests**: `_______`  
-**Passed**: `_______`  
-**Failed**: `_______`  
+**Test Run Date**: `_______________________`\
+**Total Tests**: `_______`\
+**Passed**: `_______`\
+**Failed**: `_______`\
 **Skipped**: `_______`
 
 **Failed Tests** (if any):
+
 1. Test name: `_______________________`
    - Error: `_______________________`
    - Action: `_______________________`
@@ -216,6 +224,7 @@ curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools
 ```
 
 **Verification**:
+
 - [ ] Returns array of 3 recipes
 - [ ] Each recipe has `type: "RecipeCardCompact"`
 - [ ] Recipes have realistic titles
@@ -237,6 +246,7 @@ curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools
 ```
 
 **Verification**:
+
 - [ ] Returns `type: "NutritionSummary"`
 - [ ] Has `totalNutrition` and `perServing`
 - [ ] All 7 macros present (calories, protein, carbs, fat, fiber, sugar, sodium)
@@ -257,6 +267,7 @@ curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools
 ```
 
 **Verification**:
+
 - [ ] Returns `type: "WeekPlanner"`
 - [ ] Has 7 days
 - [ ] Each day has breakfast, lunch, dinner
@@ -283,6 +294,7 @@ curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools
 ```
 
 **Verification**:
+
 - [ ] Returns `type: "RecipeCardDetailed"`
 - [ ] Has `instructions` array
 - [ ] Has `nutrition` object (NutritionSummary)
@@ -302,6 +314,7 @@ curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools
 ```
 
 **Verification**:
+
 - [ ] Returns object with `mealPlan` and `groceryList`
 - [ ] `mealPlan` is WeekPlanner widget
 - [ ] `groceryList` is GroceryList widget
@@ -316,6 +329,7 @@ curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools
 ### 5.1 Measure Response Times
 
 **Recipe Generation**:
+
 ```bash
 time curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools/loopkitchen.recipes.generate \
   -H "Content-Type: application/json" \
@@ -325,6 +339,7 @@ time curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/
 - [ ] Time: `_______` seconds (target: < 5s)
 
 **Nutrition Analysis**:
+
 ```bash
 time curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools/loopkitchen.nutrition.analyze \
   -H "Content-Type: application/json" \
@@ -334,6 +349,7 @@ time curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/
 - [ ] Time: `_______` seconds (target: < 3s)
 
 **Meal Planning**:
+
 ```bash
 time curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools/loopkitchen.mealplan.generate \
   -H "Content-Type: application/json" \
@@ -361,6 +377,7 @@ curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools
 ```
 
 **Verification**:
+
 - [ ] Returns `type: "InfoMessage"`
 - [ ] `severity: "error"`
 - [ ] Message mentions missing ingredients
@@ -374,6 +391,7 @@ curl -X POST https://<your-dev-project>.supabase.co/functions/v1/mcp-tools/tools
 ```
 
 **Verification**:
+
 - [ ] Returns `type: "InfoMessage"`
 - [ ] `severity: "error"`
 - [ ] Error message is clear and helpful
@@ -389,14 +407,17 @@ supabase functions logs mcp-tools --tail
 ```
 
 **Look for**:
+
 - [ ] No critical errors
-- [ ] LoopKitchen logs present (`[loopkitchen.recipes]`, `[loopkitchen.nutrition]`, etc.)
+- [ ] LoopKitchen logs present (`[loopkitchen.recipes]`,
+      `[loopkitchen.nutrition]`, etc.)
 - [ ] Response times logged
 - [ ] No OpenAI API errors
 
 ### 7.2 Document Issues
 
 **Issues Found**:
+
 1. Issue: `_______________________`
    - Severity: Critical / Major / Minor
    - Action: `_______________________`
@@ -422,9 +443,9 @@ supabase functions logs mcp-tools --tail
 
 ### 8.3 Sign-Off
 
-**Verified By**: `_______________________`  
-**Date**: `_______________________`  
-**Dev Environment**: `_______________________`  
+**Verified By**: `_______________________`\
+**Date**: `_______________________`\
+**Dev Environment**: `_______________________`\
 **Status**: ✅ Ready for Production / ⏳ Issues to Fix
 
 ---
@@ -472,6 +493,7 @@ supabase functions deploy mcp-tools
 ### 9.5 Production Verification
 
 **Health Check**:
+
 ```bash
 curl https://<your-prod-project>.supabase.co/functions/v1/mcp-tools/health | jq '.'
 ```
@@ -481,6 +503,7 @@ curl https://<your-prod-project>.supabase.co/functions/v1/mcp-tools/health | jq 
 - [ ] OpenAI configured
 
 **Quick Test**:
+
 ```bash
 curl -X POST https://<your-prod-project>.supabase.co/functions/v1/mcp-tools/tools/loopkitchen.recipes.generate \
   -H "Content-Type: application/json" \
@@ -492,9 +515,9 @@ curl -X POST https://<your-prod-project>.supabase.co/functions/v1/mcp-tools/tool
 
 ### 9.6 Production Sign-Off
 
-**Deployed By**: `_______________________`  
-**Date**: `_______________________`  
-**Production URL**: `_______________________`  
+**Deployed By**: `_______________________`\
+**Date**: `_______________________`\
+**Production URL**: `_______________________`\
 **Status**: ✅ Live
 
 ---
@@ -547,12 +570,13 @@ curl -X POST https://<your-prod-project>.supabase.co/functions/v1/mcp-tools/tool
 ## 📞 Support Contacts
 
 **For Issues**:
+
 - OpenAI API: https://status.openai.com
 - Supabase: https://status.supabase.com
 - Documentation: See LOOPKITCHEN_DEPLOYMENT_GUIDE.md
 
 ---
 
-**Checklist Version**: 1.0  
-**Last Updated**: December 6, 2025  
+**Checklist Version**: 1.0\
+**Last Updated**: December 6, 2025\
 **LoopKitchen Integration Project**

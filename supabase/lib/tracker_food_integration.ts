@@ -1,6 +1,6 @@
 /**
  * TheLoop Tracker - Food Resolver Integration
- * 
+ *
  * This module provides helper functions to integrate the 1,000-food resolver
  * into the tracker_log_food function with graceful fallback to the existing
  * tracker_foods table.
@@ -19,7 +19,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
  */
 export async function lookupFoodForTracker(
   foodName: string,
-  userId?: string
+  userId?: string,
 ): Promise<{
   food_id: number | null;
   calories_per_100g: number;
@@ -33,7 +33,7 @@ export async function lookupFoodForTracker(
   // Try food resolver first
   try {
     const food = await findFood(foodName, userId);
-    
+
     if (food) {
       console.log(`✅ Found "${foodName}" in resolver (ID: ${food.id})`);
       return {
@@ -50,7 +50,7 @@ export async function lookupFoodForTracker(
   } catch (error) {
     console.error("Food resolver error, falling back to database:", error);
   }
-  
+
   // Fallback to tracker_foods database
   try {
     const { data: foodData, error: foodError } = await supabase
@@ -59,7 +59,7 @@ export async function lookupFoodForTracker(
       .ilike("name", `%${foodName}%`)
       .limit(1)
       .single();
-    
+
     if (foodData && !foodError) {
       console.log(`✅ Found "${foodName}" in database (ID: ${foodData.id})`);
       return {
@@ -76,7 +76,7 @@ export async function lookupFoodForTracker(
   } catch (error) {
     console.error("Database lookup error:", error);
   }
-  
+
   // Not found in either source
   console.warn(`⚠️  Food not found: "${foodName}"`);
   return {
@@ -113,16 +113,15 @@ export function convertToGrams(quantity: number, unit: string): number {
     "tsp": 5,
     "teaspoon": 5,
   };
-  
+
   const normalizedUnit = unit.toLowerCase().trim();
   const conversion = UNIT_CONVERSIONS[normalizedUnit];
-  
+
   if (conversion) {
     return quantity * conversion;
   }
-  
+
   // Default: assume grams
   console.warn(`Unknown unit "${unit}", assuming grams`);
   return quantity;
 }
-

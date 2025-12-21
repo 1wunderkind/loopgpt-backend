@@ -1,13 +1,13 @@
 /**
  * Create Stripe Checkout Session
- * 
+ *
  * Purpose: Generate a Stripe checkout session for LoopGPT Premium subscription
- * 
+ *
  * Input:
  * - chatgpt_user_id: User identifier from ChatGPT
  * - email: User email for magic link
  * - plan: 'monthly' | 'annual' | 'family' (default: 'monthly')
- * 
+ *
  * Output:
  * - checkout_url: Stripe checkout session URL
  * - session_id: Stripe session ID
@@ -18,16 +18,16 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 interface CheckoutRequest {
   chatgpt_user_id: string;
   email: string;
-  plan?: 'monthly' | 'annual' | 'family';
+  plan?: "monthly" | "annual" | "family";
 }
 
 const handler = async (req) => {
@@ -38,13 +38,17 @@ const handler = async (req) => {
 
   try {
     // Parse request
-    const { chatgpt_user_id, email, plan = 'monthly' }: CheckoutRequest = await req.json();
+    const { chatgpt_user_id, email, plan = "monthly" }: CheckoutRequest =
+      await req.json();
 
     // Validate input
     if (!chatgpt_user_id || !email) {
       return new Response(
         JSON.stringify({ error: "chatgpt_user_id and email are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -53,7 +57,10 @@ const handler = async (req) => {
     if (!emailRegex.test(email)) {
       return new Response(
         JSON.stringify({ error: "Invalid email format" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -66,9 +73,12 @@ const handler = async (req) => {
 
     // Get price ID based on plan
     const priceIds = {
-      monthly: Deno.env.get("STRIPE_PRICE_ID_MONTHLY") || "price_loop_premium_monthly_v1",
-      annual: Deno.env.get("STRIPE_PRICE_ID_ANNUAL") || "price_loop_premium_annual_v1",
-      family: Deno.env.get("STRIPE_PRICE_ID_FAMILY") || "price_loop_family_monthly_v1",
+      monthly: Deno.env.get("STRIPE_PRICE_ID_MONTHLY") ||
+        "price_loop_premium_monthly_v1",
+      annual: Deno.env.get("STRIPE_PRICE_ID_ANNUAL") ||
+        "price_loop_premium_annual_v1",
+      family: Deno.env.get("STRIPE_PRICE_ID_FAMILY") ||
+        "price_loop_family_monthly_v1",
     };
 
     const priceId = priceIds[plan];
@@ -123,7 +133,7 @@ const handler = async (req) => {
         metadata: {
           chatgpt_user_id,
           sku: `loop_${plan}_v1`,
-          tier: plan === 'family' ? 'family' : 'premium',
+          tier: plan === "family" ? "family" : "premium",
           launch_phase: "intro_499",
         },
       },
@@ -152,15 +162,17 @@ const handler = async (req) => {
       chatgpt_user_id,
       email,
       stripe_customer_id: customerId,
-      tier: plan === 'family' ? 'family' : 'premium',
-      status: 'inactive', // Will be updated by webhook
+      tier: plan === "family" ? "family" : "premium",
+      status: "inactive", // Will be updated by webhook
       sku: `loop_${plan}_v1`,
       launch_phase: "intro_499",
     }, {
-      onConflict: 'chatgpt_user_id',
+      onConflict: "chatgpt_user_id",
     });
 
-    console.log(`✅ Checkout session created for ${email} (${plan}): ${session.id}`);
+    console.log(
+      `✅ Checkout session created for ${email} (${plan}): ${session.id}`,
+    );
 
     return new Response(
       JSON.stringify({
@@ -169,12 +181,13 @@ const handler = async (req) => {
         session_id: session.id,
         plan,
         trial_days: 7,
-        message: "Checkout session created successfully. Redirecting to Stripe...",
+        message:
+          "Checkout session created successfully. Redirecting to Stripe...",
       }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("❌ Error creating checkout session:", error);
@@ -186,11 +199,10 @@ const handler = async (req) => {
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withStandardAPI(handler));
-

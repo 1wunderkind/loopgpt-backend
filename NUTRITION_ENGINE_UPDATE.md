@@ -1,14 +1,17 @@
 # Nutrition Engine Update: 1,000-Food USDA Database Integration
 
-**Date:** December 14, 2025  
-**Status:** ✅ Complete and Tested  
+**Date:** December 14, 2025\
+**Status:** ✅ Complete and Tested\
 **Impact:** Nutrition engine now uses 1,000 foods instead of ~50 hardcoded foods
 
 ---
 
 ## Summary
 
-Successfully updated the LoopGPT nutrition engine to use the existing **1,000-food USDA database** (`data/foods@v1.json`) instead of the small hardcoded dictionary. This dramatically improves ingredient matching and nutrition accuracy.
+Successfully updated the LoopGPT nutrition engine to use the existing
+**1,000-food USDA database** (`data/foods@v1.json`) instead of the small
+hardcoded dictionary. This dramatically improves ingredient matching and
+nutrition accuracy.
 
 ---
 
@@ -24,6 +27,7 @@ Successfully updated the LoopGPT nutrition engine to use the existing **1,000-fo
 - Outputs to `supabase/functions/_shared/nutrition/dictionary.generated.ts`
 
 **Features:**
+
 - ✅ Converts nutrition data from per-100g to per-gram format
 - ✅ Auto-generates 1,129 synonyms from food aliases
 - ✅ Adds diet flags (vegan, vegetarian, dairy, gluten-free, etc.)
@@ -31,6 +35,7 @@ Successfully updated the LoopGPT nutrition engine to use the existing **1,000-fo
 - ✅ Fully deterministic and reproducible
 
 **Usage:**
+
 ```bash
 deno run --allow-read --allow-write scripts/generate-food-dictionary.ts
 ```
@@ -40,15 +45,18 @@ deno run --allow-read --allow-write scripts/generate-food-dictionary.ts
 **File:** `supabase/functions/_shared/nutrition/dictionary.ts`
 
 **Before:**
+
 - ~50 hardcoded foods in FOOD_DATABASE
 - Manual synonym map
 
 **After:**
+
 - Imports 1,000 foods from `dictionary.generated.ts`
 - Combines auto-generated synonyms with manual overrides
 - Enhanced `normalizeIngredientName()` function with two-tier synonym lookup
 
 **Key Changes:**
+
 ```typescript
 // Import generated database
 import {
@@ -63,22 +71,23 @@ export { SYNONYM_MAP_GENERATED as SYNONYM_MAP };
 // Enhanced normalization with manual synonym overrides
 export function normalizeIngredientName(name: string): string {
   const normalized = name.toLowerCase().trim();
-  
+
   // Check auto-generated synonyms first (1,129 synonyms)
   if (SYNONYM_MAP_GENERATED[normalized]) {
     return SYNONYM_MAP_GENERATED[normalized];
   }
-  
+
   // Check manual synonyms (common variations)
   if (INGREDIENT_SYNONYMS[normalized]) {
     return INGREDIENT_SYNONYMS[normalized];
   }
-  
+
   return normalized;
 }
 ```
 
 **Manual Synonyms Added:**
+
 - `"rice"` → `"white rice"`
 - `"cheese"` → `"cheddar cheese"`
 - `"cooking oil"` → `"vegetable oil"`
@@ -90,12 +99,14 @@ export function normalizeIngredientName(name: string): string {
 **File:** `supabase/functions/_shared/nutrition/dictionary.generated.ts`
 
 **Statistics:**
+
 - **1,000 foods** with complete nutrition data
 - **1,129 auto-generated synonyms**
 - **2,129 total lookups** (foods + synonyms)
 - **576 KB** file size
 
 **Sample Entry:**
+
 ```typescript
 "chicken breast": {
   canonicalName: "chicken breast",
@@ -124,6 +135,7 @@ export function normalizeIngredientName(name: string): string {
 **File:** `test-nutrition-1000-foods.ts`
 
 Comprehensive test suite that verifies:
+
 - ✅ Database size (1,000 foods)
 - ✅ Sample food lookups
 - ✅ Recipe nutrition calculation
@@ -131,6 +143,7 @@ Comprehensive test suite that verifies:
 - ✅ Coverage analysis
 
 **Test Results:**
+
 ```
 📊 Test 1: Database Size
    ✅ PASS: Database has 1,000 foods
@@ -158,30 +171,30 @@ Comprehensive test suite that verifies:
 
 ### Food Categories (Top 10)
 
-| Category | Count |
-|----------|-------|
-| Chicken | 204 foods |
-| Cheese | 92 foods |
-| Oil | 70 foods |
-| Turkey | 66 foods |
-| Salad | 57 foods |
-| Milk | 54 foods |
-| Yogurt | 51 foods |
-| Spices | 42 foods |
-| Margarine-like | 27 foods |
-| Egg | 24 foods |
+| Category       | Count     |
+| -------------- | --------- |
+| Chicken        | 204 foods |
+| Cheese         | 92 foods  |
+| Oil            | 70 foods  |
+| Turkey         | 66 foods  |
+| Salad          | 57 foods  |
+| Milk           | 54 foods  |
+| Yogurt         | 51 foods  |
+| Spices         | 42 foods  |
+| Margarine-like | 27 foods  |
+| Egg            | 24 foods  |
 
 ### Food Groups
 
-| Group | Count |
-|-------|-------|
-| Fruit | 10 |
-| Vegetables | 11 |
-| Meat | 329 |
-| Dairy | 294 |
-| Fat | 228 |
-| Condiment | 60 |
-| Misc | 68 |
+| Group      | Count |
+| ---------- | ----- |
+| Fruit      | 10    |
+| Vegetables | 11    |
+| Meat       | 329   |
+| Dairy      | 294   |
+| Fat        | 228   |
+| Condiment  | 60    |
+| Misc       | 68    |
 
 ---
 
@@ -195,11 +208,11 @@ Comprehensive test suite that verifies:
   "name": "chicken breast",
   "aliases": ["Chicken Breasts"],
   "group": "meat",
-  "measures": [{"label": "tbsp", "grams": 10}],
-  "kcal": 165,      // per 100g
-  "protein": 31,    // per 100g
-  "carbs": 0,       // per 100g
-  "fat": 3.6,       // per 100g
+  "measures": [{ "label": "tbsp", "grams": 10 }],
+  "kcal": 165, // per 100g
+  "protein": 31, // per 100g
+  "carbs": 0, // per 100g
+  "fat": 3.6, // per 100g
   "fiber": 0,
   "sugar": 0,
   "sodium": 0
@@ -227,7 +240,8 @@ Comprehensive test suite that verifies:
 }
 ```
 
-**Why per-gram?** The nutrition engine multiplies by ingredient quantity in grams, so per-gram values ensure accurate calculations regardless of quantity.
+**Why per-gram?** The nutrition engine multiplies by ingredient quantity in
+grams, so per-gram values ensure accurate calculations regardless of quantity.
 
 ---
 
@@ -254,6 +268,7 @@ Comprehensive test suite that verifies:
 ### Accuracy Improvements
 
 **Example Recipe: Chicken and Rice Bowl**
+
 - Ingredients: 200g chicken breast, 1 cup rice, 100g broccoli, 1 tbsp olive oil
 - **Before:** Limited matching, low confidence
 - **After:** 100% match rate, high confidence, accurate macros
@@ -266,12 +281,14 @@ Comprehensive test suite that verifies:
 ### New Files
 
 1. ✅ `scripts/generate-food-dictionary.ts` - Dictionary generation script
-2. ✅ `supabase/functions/_shared/nutrition/dictionary.generated.ts` - Generated food database
+2. ✅ `supabase/functions/_shared/nutrition/dictionary.generated.ts` - Generated
+   food database
 3. ✅ `test-nutrition-1000-foods.ts` - Test suite
 
 ### Modified Files
 
-1. ✅ `supabase/functions/_shared/nutrition/dictionary.ts` - Updated to use generated database
+1. ✅ `supabase/functions/_shared/nutrition/dictionary.ts` - Updated to use
+   generated database
 2. ✅ No changes needed to `engine.ts` - Works seamlessly with new dictionary
 
 ### Existing Files (Unchanged)
@@ -279,7 +296,8 @@ Comprehensive test suite that verifies:
 - ✅ `data/foods@v1.json` - Source USDA database (1,000 foods)
 - ✅ `data/manifest@v1.json` - Database metadata
 - ✅ `data/index.ngram@v1.json` - Search index
-- ✅ `supabase/functions/_shared/nutrition/engine.ts` - Nutrition calculation engine
+- ✅ `supabase/functions/_shared/nutrition/engine.ts` - Nutrition calculation
+  engine
 - ✅ `supabase/functions/_shared/nutrition/types.ts` - Type definitions
 - ✅ `supabase/functions/_shared/nutrition/tags.ts` - Diet tag rules
 
@@ -302,7 +320,8 @@ deno run --allow-read test-nutrition-1000-foods.ts
 
 ### 3. Deploy to Supabase
 
-The updated nutrition engine will be automatically deployed with the next Edge Function deployment:
+The updated nutrition engine will be automatically deployed with the next Edge
+Function deployment:
 
 ```bash
 ./scripts/deploy-all.sh
@@ -337,6 +356,7 @@ curl -X POST https://your-project.supabase.co/functions/v1/nutrition_analyze_det
 ```
 
 Expected response:
+
 ```json
 {
   "perServing": {
@@ -413,12 +433,16 @@ For common ingredient variations not covered by auto-generated synonyms:
 
 ### Potential Improvements
 
-1. **Add more USDA foods** - Current database has 1,000, USDA SR Legacy has 8,000+
+1. **Add more USDA foods** - Current database has 1,000, USDA SR Legacy has
+   8,000+
 2. **Multi-language support** - Add ingredient names in other languages
 3. **Fuzzy matching** - Implement Levenshtein distance for typo tolerance
-4. **Measure conversion** - Auto-convert "1 cup rice" to grams based on food density
-5. **Confidence scoring** - Improve confidence calculation based on match quality
-6. **Nutrition ranges** - Add min/max ranges for variable foods (e.g., "chicken breast, cooked")
+4. **Measure conversion** - Auto-convert "1 cup rice" to grams based on food
+   density
+5. **Confidence scoring** - Improve confidence calculation based on match
+   quality
+6. **Nutrition ranges** - Add min/max ranges for variable foods (e.g., "chicken
+   breast, cooked")
 
 ### Data Sources
 
@@ -433,6 +457,7 @@ For common ingredient variations not covered by auto-generated synonyms:
 ### Issue: Ingredient not found
 
 **Solution:** Check if it exists under a different name:
+
 ```bash
 cd data
 jq '.[] | select(.name | contains("your ingredient")) | .name' foods@v1.json
@@ -443,6 +468,7 @@ If found, add a manual synonym in `dictionary.ts`.
 ### Issue: Incorrect nutrition values
 
 **Solution:** Verify source data in `foods@v1.json` and regenerate:
+
 ```bash
 deno run --allow-read --allow-write scripts/generate-food-dictionary.ts
 ```
@@ -450,6 +476,7 @@ deno run --allow-read --allow-write scripts/generate-food-dictionary.ts
 ### Issue: Synonym not working
 
 **Solution:** Check synonym priority:
+
 1. Auto-generated synonyms (from aliases)
 2. Manual synonyms (INGREDIENT_SYNONYMS)
 3. Partial matching (last resort)
@@ -473,7 +500,8 @@ deno run --allow-read --allow-write scripts/generate-food-dictionary.ts
 
 ## Conclusion
 
-The nutrition engine has been successfully upgraded to use the **1,000-food USDA database**, providing:
+The nutrition engine has been successfully upgraded to use the **1,000-food USDA
+database**, providing:
 
 - **20x more foods** (1,000 vs ~50)
 - **22x more lookups** (2,129 vs ~100)
@@ -481,9 +509,11 @@ The nutrition engine has been successfully upgraded to use the **1,000-food USDA
 - **Better user experience** with fewer "not found" errors
 - **Maintainable** with automated generation from source data
 
-The update is **backward compatible** - existing code continues to work without changes, but with dramatically improved ingredient matching and nutrition accuracy.
+The update is **backward compatible** - existing code continues to work without
+changes, but with dramatically improved ingredient matching and nutrition
+accuracy.
 
 ---
 
-**Status:** ✅ Ready for Production  
+**Status:** ✅ Ready for Production\
 **Next Steps:** Deploy to Supabase and monitor nutrition calculation accuracy

@@ -1,9 +1,9 @@
 /**
  * Provider Metrics Helper Module
- * 
+ *
  * Provides functions to query and use provider performance metrics
  * for dynamic scoring in the commerce router.
- * 
+ *
  * Part of: Step 3 - Provider Arbitrage Hardening & Failover
  */
 
@@ -18,27 +18,27 @@ export interface ProviderMetrics {
   cancelledOrders: number;
   totalGmv: number;
   totalCommission: number;
-  successRate: number | null;    // 0-100 percentage
-  avgMarginRate: number | null;  // 0-100 percentage
+  successRate: number | null; // 0-100 percentage
+  avgMarginRate: number | null; // 0-100 percentage
   lastOrderAt: string | null;
 }
 
 /**
  * Get provider metrics from analytics.provider_metrics table
- * 
+ *
  * @param db - Supabase client
  * @param providerId - Provider ID (e.g., 'instacart', 'walmart')
  * @returns Provider metrics or null if not found
  */
 export async function getProviderMetrics(
   db: SupabaseClient,
-  providerId: string
+  providerId: string,
 ): Promise<ProviderMetrics | null> {
   try {
     const { data, error } = await db
-      .from('provider_metrics')
-      .select('*')
-      .eq('provider_id', providerId)
+      .from("provider_metrics")
+      .select("*")
+      .eq("provider_id", providerId)
       .single();
 
     if (error || !data) {
@@ -52,32 +52,39 @@ export async function getProviderMetrics(
       successfulOrders: data.successful_orders || 0,
       failedOrders: data.failed_orders || 0,
       cancelledOrders: data.cancelled_orders || 0,
-      totalGmv: parseFloat(data.total_gmv || '0'),
-      totalCommission: parseFloat(data.total_commission || '0'),
+      totalGmv: parseFloat(data.total_gmv || "0"),
+      totalCommission: parseFloat(data.total_commission || "0"),
       successRate: data.success_rate ? parseFloat(data.success_rate) : null,
-      avgMarginRate: data.avg_margin_rate ? parseFloat(data.avg_margin_rate) : null,
+      avgMarginRate: data.avg_margin_rate
+        ? parseFloat(data.avg_margin_rate)
+        : null,
       lastOrderAt: data.last_order_at,
     };
   } catch (error) {
-    console.error(`[ProviderMetrics] Error fetching metrics for ${providerId}:`, error);
+    console.error(
+      `[ProviderMetrics] Error fetching metrics for ${providerId}:`,
+      error,
+    );
     return null;
   }
 }
 
 /**
  * Calculate reliability score from provider metrics
- * 
+ *
  * Maps success_rate (0-100%) to a reliability score (0-100)
  * with thresholds for better differentiation:
  * - 95%+ success rate → 90-100 score (excellent)
  * - 85-95% success rate → 70-90 score (good)
  * - 70-85% success rate → 50-70 score (acceptable)
  * - <70% success rate → 0-50 score (poor)
- * 
+ *
  * @param metrics - Provider metrics (can be null)
  * @returns Reliability score 0-100 (defaults to 50 if no data)
  */
-export function calculateReliabilityScore(metrics: ProviderMetrics | null): number {
+export function calculateReliabilityScore(
+  metrics: ProviderMetrics | null,
+): number {
   // No data = neutral score
   if (!metrics || metrics.successRate === null || metrics.totalOrders === 0) {
     return 50;
@@ -103,17 +110,17 @@ export function calculateReliabilityScore(metrics: ProviderMetrics | null): numb
 
 /**
  * Calculate margin score from provider metrics relative to other providers
- * 
+ *
  * Normalizes each provider's avg_margin_rate into a 0-100 range
  * based on the min/max margin rates among all providers in this routing decision.
- * 
+ *
  * @param metrics - Provider metrics (can be null)
  * @param allMetrics - Metrics for all providers in this routing decision
  * @returns Margin score 0-100 (defaults to 50 if no data)
  */
 export function calculateMarginScore(
   metrics: ProviderMetrics | null,
-  allMetrics: (ProviderMetrics | null)[]
+  allMetrics: (ProviderMetrics | null)[],
 ): number {
   // No data = neutral score
   if (!metrics || metrics.avgMarginRate === null) {
@@ -123,7 +130,7 @@ export function calculateMarginScore(
   // Extract all valid margin rates
   const validMarginRates = allMetrics
     .filter((m): m is ProviderMetrics => m !== null && m.avgMarginRate !== null)
-    .map(m => m.avgMarginRate!);
+    .map((m) => m.avgMarginRate!);
 
   // If only one provider has data, return neutral
   if (validMarginRates.length <= 1) {
@@ -139,44 +146,48 @@ export function calculateMarginScore(
   }
 
   // Higher margin = higher score
-  const normalized = (metrics.avgMarginRate - minMargin) / (maxMargin - minMargin);
+  const normalized = (metrics.avgMarginRate - minMargin) /
+    (maxMargin - minMargin);
   return Math.round(normalized * 100);
 }
 
 /**
  * Get metrics for multiple providers in parallel
- * 
+ *
  * @param db - Supabase client
  * @param providerIds - Array of provider IDs
  * @returns Map of providerId -> metrics (null if not found)
  */
 export async function getMultipleProviderMetrics(
   db: SupabaseClient,
-  providerIds: string[]
+  providerIds: string[],
 ): Promise<Map<string, ProviderMetrics | null>> {
   const results = new Map<string, ProviderMetrics | null>();
 
   try {
     const { data, error } = await db
-      .from('provider_metrics')
-      .select('*')
-      .in('provider_id', providerIds);
+      .from("provider_metrics")
+      .select("*")
+      .in("provider_id", providerIds);
 
     if (error) {
-      console.error('[ProviderMetrics] Error fetching multiple metrics:', error);
+      console.error(
+        "[ProviderMetrics] Error fetching multiple metrics:",
+        error,
+      );
       // Return null for all providers
-      providerIds.forEach(id => results.set(id, null));
+      providerIds.forEach((id) => results.set(id, null));
       return results;
     }
 
     // Build map from results
     const metricsMap = new Map<string, any>();
-    (data || []).forEach(row => {
+    (data || []).forEach((row) => {
       metricsMap.set(row.provider_id, row);
     });
 
     // Convert to ProviderMetrics objects
-    providerIds.forEach(providerId => {
+    providerIds.forEach((providerId) => {
       const row = metricsMap.get(providerId);
       if (row) {
         results.set(providerId, {
@@ -186,10 +197,12 @@ export async function getMultipleProviderMetrics(
           successfulOrders: row.successful_orders || 0,
           failedOrders: row.failed_orders || 0,
           cancelledOrders: row.cancelled_orders || 0,
-          totalGmv: parseFloat(row.total_gmv || '0'),
-          totalCommission: parseFloat(row.total_commission || '0'),
+          totalGmv: parseFloat(row.total_gmv || "0"),
+          totalCommission: parseFloat(row.total_commission || "0"),
           successRate: row.success_rate ? parseFloat(row.success_rate) : null,
-          avgMarginRate: row.avg_margin_rate ? parseFloat(row.avg_margin_rate) : null,
+          avgMarginRate: row.avg_margin_rate
+            ? parseFloat(row.avg_margin_rate)
+            : null,
           lastOrderAt: row.last_order_at,
         });
       } else {
@@ -199,9 +212,12 @@ export async function getMultipleProviderMetrics(
 
     return results;
   } catch (error) {
-    console.error('[ProviderMetrics] Error in getMultipleProviderMetrics:', error);
+    console.error(
+      "[ProviderMetrics] Error in getMultipleProviderMetrics:",
+      error,
+    );
     // Return null for all providers on error
-    providerIds.forEach(id => results.set(id, null));
+    providerIds.forEach((id) => results.set(id, null));
     return results;
   }
 }
@@ -213,17 +229,19 @@ export function logProviderMetrics(
   providerId: string,
   metrics: ProviderMetrics | null,
   reliabilityScore: number,
-  marginScore: number
+  marginScore: number,
 ): void {
   if (metrics) {
     console.log(`[ProviderMetrics] ${providerId}:`, {
       totalOrders: metrics.totalOrders,
-      successRate: metrics.successRate?.toFixed(2) + '%',
-      avgMarginRate: metrics.avgMarginRate?.toFixed(2) + '%',
+      successRate: metrics.successRate?.toFixed(2) + "%",
+      avgMarginRate: metrics.avgMarginRate?.toFixed(2) + "%",
       reliabilityScore,
       marginScore,
     });
   } else {
-    console.log(`[ProviderMetrics] ${providerId}: No metrics data, using defaults (reliability=50, margin=50)`);
+    console.log(
+      `[ProviderMetrics] ${providerId}: No metrics data, using defaults (reliability=50, margin=50)`,
+    );
   }
 }

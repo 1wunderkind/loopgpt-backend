@@ -3,10 +3,7 @@
  * Tests for predicting weight trends
  */
 
-import {
-  assertEquals,
-  assert,
-} from "../../helpers.ts";
+import { assert, assertEquals } from "../../helpers.ts";
 
 Deno.test("weight_predict: predicts weight loss trend", async () => {
   const entries = [
@@ -18,8 +15,10 @@ Deno.test("weight_predict: predicts weight loss trend", async () => {
   ];
 
   // Calculate average weekly loss
-  const totalLoss = entries[0].weight_kg - entries[entries.length - 1].weight_kg;
-  const totalWeeks = (entries[0].days_ago - entries[entries.length - 1].days_ago) / 7;
+  const totalLoss = entries[0].weight_kg -
+    entries[entries.length - 1].weight_kg;
+  const totalWeeks =
+    (entries[0].days_ago - entries[entries.length - 1].days_ago) / 7;
   const weeklyLoss = totalLoss / totalWeeks;
 
   assert(weeklyLoss > 0); // Losing weight
@@ -35,8 +34,10 @@ Deno.test("weight_predict: predicts weight gain trend", async () => {
     { weight_kg: 74, days_ago: 2 },
   ];
 
-  const totalGain = entries[entries.length - 1].weight_kg - entries[0].weight_kg;
-  const totalWeeks = (entries[0].days_ago - entries[entries.length - 1].days_ago) / 7;
+  const totalGain = entries[entries.length - 1].weight_kg -
+    entries[0].weight_kg;
+  const totalWeeks =
+    (entries[0].days_ago - entries[entries.length - 1].days_ago) / 7;
   const weeklyGain = totalGain / totalWeeks;
 
   assert(weeklyGain > 0); // Gaining weight
@@ -51,8 +52,10 @@ Deno.test("weight_predict: predicts stable weight", async () => {
     { weight_kg: 69.9, days_ago: 2 },
   ];
 
-  const totalChange = Math.abs(entries[entries.length - 1].weight_kg - entries[0].weight_kg);
-  
+  const totalChange = Math.abs(
+    entries[entries.length - 1].weight_kg - entries[0].weight_kg,
+  );
+
   assert(totalChange < 1); // Minimal change = stable
 });
 

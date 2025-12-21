@@ -1,20 +1,23 @@
 # LoopKitchen Phase 5: Database Activation Guide
 
-**Status**: Ready to activate  
-**Complexity**: Medium (30-60 minutes)  
-**Prerequisites**: Database access, Supabase CLI  
+**Status**: Ready to activate\
+**Complexity**: Medium (30-60 minutes)\
+**Prerequisites**: Database access, Supabase CLI
 
 ---
 
 ## Overview
 
-Phase 5 adds **meal logging with database integration** to LoopKitchen. The code and schema are ready, but the database tables haven't been deployed yet. This guide shows you how to activate these features when you're ready.
+Phase 5 adds **meal logging with database integration** to LoopKitchen. The code
+and schema are ready, but the database tables haven't been deployed yet. This
+guide shows you how to activate these features when you're ready.
 
 ---
 
 ## What Phase 5 Adds
 
 ### Features
+
 1. **Meal Logging** - Log meals with full nutrition data
 2. **Daily Summaries** - Aggregate nutrition by day
 3. **Weekly Summaries** - Track weekly trends
@@ -22,6 +25,7 @@ Phase 5 adds **meal logging with database integration** to LoopKitchen. The code
 5. **Progress Tracking** - Monitor nutrition over time
 
 ### Tools to Activate
+
 - `loopkitchen.nutrition.logMeal` (currently placeholder)
 - `loopkitchen.nutrition.daily` (currently placeholder)
 
@@ -30,13 +34,16 @@ Phase 5 adds **meal logging with database integration** to LoopKitchen. The code
 ## Current Status
 
 ### ✅ Ready
+
 - Database schema created (`database/schemas/loopkitchen_meal_logs.sql`)
-- Migration file ready (`supabase/migrations/20251206000000_loopkitchen_meal_logging.sql`)
+- Migration file ready
+  (`supabase/migrations/20251206000000_loopkitchen_meal_logging.sql`)
 - Code written (commented out in `loopkitchen_nutrition.ts`)
 - Helper functions implemented
 - Documentation complete
 
 ### ⏳ Pending
+
 - Database tables not yet created
 - Functions still return placeholder responses
 - No data persistence yet
@@ -92,6 +99,7 @@ psql "postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgre
 1. **Uncomment database integration code** (lines ~300-450)
 
 Find this section:
+
 ```typescript
 // ============================================================================
 // DATABASE INTEGRATION (Phase 4)
@@ -105,6 +113,7 @@ async function logMealToDatabase(/* ... */) {
 ```
 
 Change to:
+
 ```typescript
 // ============================================================================
 // DATABASE INTEGRATION (Phase 5)
@@ -117,6 +126,7 @@ async function logMealToDatabase(/* ... */) {
 2. **Update logMeal function** (line ~500)
 
 Find:
+
 ```typescript
 export async function logMeal(input: MealLogInput): Promise<InfoMessage> {
   // Placeholder response
@@ -125,12 +135,13 @@ export async function logMeal(input: MealLogInput): Promise<InfoMessage> {
     data: {
       message: "Meal logging will be available in Phase 4...",
       // ...
-    }
+    },
   };
 }
 ```
 
 Change to:
+
 ```typescript
 export async function logMeal(input: MealLogInput): Promise<InfoMessage> {
   try {
@@ -138,9 +149,10 @@ export async function logMeal(input: MealLogInput): Promise<InfoMessage> {
     return {
       type: "info",
       data: {
-        message: `Meal logged successfully! ${result.meal_type} on ${result.meal_date}`,
-        details: result
-      }
+        message:
+          `Meal logged successfully! ${result.meal_type} on ${result.meal_date}`,
+        details: result,
+      },
     };
   } catch (error) {
     console.error("[loopkitchen.nutrition.logMeal] Error:", error);
@@ -148,8 +160,8 @@ export async function logMeal(input: MealLogInput): Promise<InfoMessage> {
       type: "info",
       data: {
         message: "Failed to log meal",
-        error: error.message
-      }
+        error: error.message,
+      },
     };
   }
 }
@@ -158,26 +170,32 @@ export async function logMeal(input: MealLogInput): Promise<InfoMessage> {
 3. **Update getDailyNutrition function** (line ~550)
 
 Find:
+
 ```typescript
-export async function getDailyNutrition(input: DailyNutritionInput): Promise<NutritionSummary> {
+export async function getDailyNutrition(
+  input: DailyNutritionInput,
+): Promise<NutritionSummary> {
   // Placeholder response
   return {
     type: "nutrition_summary",
     data: {
       // ... placeholder data ...
-    }
+    },
   };
 }
 ```
 
 Change to:
+
 ```typescript
-export async function getDailyNutrition(input: DailyNutritionInput): Promise<NutritionSummary> {
+export async function getDailyNutrition(
+  input: DailyNutritionInput,
+): Promise<NutritionSummary> {
   try {
     const summary = await getDailyNutritionFromDatabase(input);
     return {
       type: "nutrition_summary",
-      data: summary
+      data: summary,
     };
   } catch (error) {
     console.error("[loopkitchen.nutrition.daily] Error:", error);
@@ -186,14 +204,30 @@ export async function getDailyNutrition(input: DailyNutritionInput): Promise<Nut
       type: "nutrition_summary",
       data: {
         servings: 0,
-        total: { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, sugar: 0, sodium: 0 },
-        perServing: { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, sugar: 0, sodium: 0 },
+        total: {
+          calories: 0,
+          protein: 0,
+          carbs: 0,
+          fat: 0,
+          fiber: 0,
+          sugar: 0,
+          sodium: 0,
+        },
+        perServing: {
+          calories: 0,
+          protein: 0,
+          carbs: 0,
+          fat: 0,
+          fiber: 0,
+          sugar: 0,
+          sodium: 0,
+        },
         healthScore: 0,
         tags: [],
         warnings: ["No meals logged for this date"],
         insights: [],
-        confidence: "low"
-      }
+        confidence: "low",
+      },
     };
   }
 }
@@ -203,26 +237,27 @@ export async function getDailyNutrition(input: DailyNutritionInput): Promise<Nut
 
 ### Step 3: Add Supabase Client (10 minutes)
 
-**File**: `supabase/functions/_shared/loopkitchen/supabaseClient.ts` (create new file)
+**File**: `supabase/functions/_shared/loopkitchen/supabaseClient.ts` (create new
+file)
 
 ```typescript
 /**
  * Supabase Client for LoopKitchen Database Operations
  */
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
  * Get Supabase client instance
  */
 export function getSupabaseClient() {
-  const supabaseUrl = Deno.env.get('SUPABASE_URL');
-  const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-  
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Supabase credentials not configured');
+    throw new Error("Supabase credentials not configured");
   }
-  
+
   return createClient(supabaseUrl, supabaseKey);
 }
 
@@ -231,20 +266,21 @@ export function getSupabaseClient() {
  */
 export async function executeSQL(query: string, params: any[] = []) {
   const client = getSupabaseClient();
-  const { data, error } = await client.rpc('exec_sql', {
+  const { data, error } = await client.rpc("exec_sql", {
     query,
-    params
+    params,
   });
-  
+
   if (error) {
     throw new Error(`SQL execution failed: ${error.message}`);
   }
-  
+
   return data;
 }
 ```
 
 **Then import in `loopkitchen_nutrition.ts`**:
+
 ```typescript
 import { getSupabaseClient } from "../_shared/loopkitchen/supabaseClient.ts";
 ```
@@ -292,6 +328,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ```
 
 **Expected response**:
+
 ```json
 {
   "type": "info",
@@ -320,6 +357,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ```
 
 **Expected response**:
+
 ```json
 {
   "type": "nutrition_summary",
@@ -344,18 +382,21 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ### Tables Created
 
 **1. `loopkitchen_meal_logs`** (Main meal logging table)
+
 - Stores individual meal entries
 - Nutrition breakdown per meal
 - Recipe references
 - Health scores and tags
 
 **2. `loopkitchen_user_nutrition_prefs`** (User preferences)
+
 - Daily calorie/macro targets
 - Dietary preferences
 - Allergies
 - Activity level
 
 **3. `loopkitchen_daily_nutrition`** (Materialized view)
+
 - Pre-aggregated daily summaries
 - Faster queries for common use cases
 - Auto-refreshed via triggers
@@ -363,14 +404,17 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ### Helper Functions
 
 **1. `refresh_daily_nutrition_summary(user_id, date)`**
+
 - Refreshes materialized view for specific user/date
 - Called automatically after meal logging
 
 **2. `get_weekly_nutrition(user_id, start_date, end_date)`**
+
 - Aggregates nutrition across date range
 - Returns weekly averages and totals
 
 **3. `get_nutrition_progress(user_id, days)`**
+
 - Tracks progress toward goals
 - Compares actual vs targets
 - Returns compliance percentage
@@ -382,6 +426,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ### Issue: "Supabase credentials not configured"
 
 **Solution**: Verify environment variables in Supabase Dashboard:
+
 1. Go to Project Settings → Edge Functions
 2. Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
 3. Redeploy functions
@@ -389,6 +434,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools/too
 ### Issue: "Table does not exist"
 
 **Solution**: Run database migration:
+
 ```bash
 supabase db push
 ```
@@ -398,6 +444,7 @@ Or execute SQL manually in Supabase Dashboard.
 ### Issue: "Permission denied"
 
 **Solution**: Check Row Level Security (RLS) policies:
+
 ```sql
 -- Disable RLS for testing (re-enable in production!)
 ALTER TABLE loopkitchen_meal_logs DISABLE ROW LEVEL SECURITY;
@@ -406,6 +453,7 @@ ALTER TABLE loopkitchen_meal_logs DISABLE ROW LEVEL SECURITY;
 ### Issue: "Function returns placeholder"
 
 **Solution**: Verify you uncommented the database code and redeployed:
+
 ```bash
 grep -n "logMealToDatabase" supabase/functions/mcp-tools/loopkitchen_nutrition.ts
 # Should show uncommented function
@@ -416,20 +464,25 @@ grep -n "logMealToDatabase" supabase/functions/mcp-tools/loopkitchen_nutrition.t
 ## Performance Considerations
 
 ### Indexes
+
 The schema includes optimized indexes for:
+
 - User ID lookups
 - Date range queries
 - User + date combinations
 
 ### Materialized Views
+
 Daily summaries are pre-aggregated for fast retrieval.
 
 **Refresh strategy**:
+
 - Auto-refresh on meal insert/update/delete
 - Manual refresh: `REFRESH MATERIALIZED VIEW loopkitchen_daily_nutrition;`
 
 ### Caching
-Meal logging responses are NOT cached (always fresh data).  
+
+Meal logging responses are NOT cached (always fresh data).\
 Daily summaries CAN be cached (1 hour TTL recommended).
 
 ---
@@ -439,6 +492,7 @@ Daily summaries CAN be cached (1 hour TTL recommended).
 ### Row Level Security (RLS)
 
 **Enable RLS in production**:
+
 ```sql
 -- Enable RLS on all tables
 ALTER TABLE loopkitchen_meal_logs ENABLE ROW LEVEL SECURITY;
@@ -467,6 +521,7 @@ CREATE POLICY "Users can delete own meals"
 ```
 
 ### Data Privacy
+
 - No PII in logs
 - User IDs are opaque
 - Nutrition data encrypted at rest
@@ -485,7 +540,7 @@ CREATE POLICY "Users can delete own meals"
        type: "info",
        data: {
          message: "Meal logging temporarily disabled for maintenance",
-       }
+       },
      };
    }
    ```
@@ -508,11 +563,13 @@ CREATE POLICY "Users can delete own meals"
 ### Key Metrics
 
 **Database**:
+
 - Table size growth
 - Query performance (p95 latency)
 - Index usage
 
 **Application**:
+
 - Meal logging success rate
 - Daily summary cache hit rate
 - Error rates
@@ -520,6 +577,7 @@ CREATE POLICY "Users can delete own meals"
 ### Alerts
 
 **Set up alerts for**:
+
 - Database table > 1GB (scale up)
 - Query latency > 500ms (optimize)
 - Error rate > 1% (investigate)
@@ -529,18 +587,21 @@ CREATE POLICY "Users can delete own meals"
 ## Next Steps After Activation
 
 ### Week 1
+
 1. Monitor error logs
 2. Track usage metrics
 3. Gather user feedback
 4. Optimize queries if needed
 
 ### Month 1
+
 1. Add weekly/monthly summaries
 2. Implement progress tracking
 3. Add nutrition insights
 4. Build analytics dashboard
 
 ### Future Enhancements
+
 1. Meal photo uploads
 2. Barcode scanning
 3. Restaurant menu integration
@@ -551,6 +612,7 @@ CREATE POLICY "Users can delete own meals"
 ## Summary
 
 **Activation Checklist**:
+
 - [ ] Deploy database schema (Step 1)
 - [ ] Uncomment database code (Step 2)
 - [ ] Add Supabase client (Step 3)
@@ -559,8 +621,8 @@ CREATE POLICY "Users can delete own meals"
 - [ ] Enable RLS (Security)
 - [ ] Set up monitoring (Monitoring)
 
-**Estimated Time**: 30-60 minutes  
-**Complexity**: Medium  
+**Estimated Time**: 30-60 minutes\
+**Complexity**: Medium\
 **Risk**: Low (can rollback easily)
 
 ---

@@ -1,6 +1,6 @@
 /**
  * Structured Logger for MCP Server
- * 
+ *
  * Provides JSON-formatted logging with levels and context for observability.
  * Designed to be compatible with:
  * - Supabase Edge Function logs
@@ -8,7 +8,7 @@
  * - Datadog
  * - CloudWatch
  * - Any JSON log aggregation tool
- * 
+ *
  * Usage:
  *   import { logInfo, logError } from "./lib/logger";
  *   logInfo("Tool executed successfully", { toolName: "foo", durationMs: 123 });
@@ -22,16 +22,16 @@
 export type LogLevel = "debug" | "info" | "warn" | "error";
 
 export interface LogContext {
-  source?: string;       // e.g. "mcp-tool", "mcp-server", "tool-metrics"
-  toolName?: string;     // MCP tool name
-  userId?: string;       // User identifier (if available)
-  sessionId?: string;    // Session identifier (if available)
-  gptName?: string;      // GPT name (LeftoverGPT, MealPlannerGPT, etc.)
-  errorCode?: string;    // Error code from ToolErrorCode
-  durationMs?: number;   // Execution duration
-  retryable?: boolean;   // Whether error is retryable
+  source?: string; // e.g. "mcp-tool", "mcp-server", "tool-metrics"
+  toolName?: string; // MCP tool name
+  userId?: string; // User identifier (if available)
+  sessionId?: string; // Session identifier (if available)
+  gptName?: string; // GPT name (LeftoverGPT, MealPlannerGPT, etc.)
+  errorCode?: string; // Error code from ToolErrorCode
+  durationMs?: number; // Execution duration
+  retryable?: boolean; // Whether error is retryable
   attemptNumber?: number; // Retry attempt number
-  [key: string]: any;    // Additional context fields
+  [key: string]: any; // Additional context fields
 }
 
 export interface LogPayload {
@@ -56,7 +56,7 @@ export interface LogPayload {
 
 /**
  * Log a message with structured context
- * 
+ *
  * @param level - Log level (debug, info, warn, error)
  * @param message - Human-readable log message
  * @param context - Additional context fields
@@ -64,7 +64,7 @@ export interface LogPayload {
 export function log(
   level: LogLevel,
   message: string,
-  context: LogContext = {}
+  context: LogContext = {},
 ): void {
   // Extract known fields for top-level placement
   const {
@@ -94,7 +94,8 @@ export function log(
     ...(durationMs !== undefined && { durationMs }),
     ...(retryable !== undefined && { retryable }),
     ...(attemptNumber !== undefined && { attemptNumber }),
-    ...(Object.keys(additionalContext).length > 0 && { context: additionalContext }),
+    ...(Object.keys(additionalContext).length > 0 &&
+      { context: additionalContext }),
   };
 
   // Route to appropriate console method based on level
@@ -112,7 +113,7 @@ export function log(
 
 /**
  * Log a debug message (verbose, development-only)
- * 
+ *
  * @param message - Debug message
  * @param context - Additional context
  */
@@ -121,7 +122,7 @@ export const logDebug = (message: string, context?: LogContext): void =>
 
 /**
  * Log an info message (normal operational events)
- * 
+ *
  * @param message - Info message
  * @param context - Additional context
  */
@@ -130,7 +131,7 @@ export const logInfo = (message: string, context?: LogContext): void =>
 
 /**
  * Log a warning message (potential issues, degraded performance)
- * 
+ *
  * @param message - Warning message
  * @param context - Additional context
  */
@@ -139,7 +140,7 @@ export const logWarn = (message: string, context?: LogContext): void =>
 
 /**
  * Log an error message (failures, exceptions)
- * 
+ *
  * @param message - Error message
  * @param context - Additional context
  */
@@ -152,10 +153,10 @@ export const logError = (message: string, context?: LogContext): void =>
 
 /**
  * Scoped logger that automatically includes common context
- * 
+ *
  * Useful for logging within a specific tool execution where you want
  * to avoid repeating toolName, userId, etc. in every log call.
- * 
+ *
  * Example:
  *   const logger = new ScopedLogger({ toolName: "foo", userId: "123" });
  *   logger.info("Starting execution");
@@ -203,9 +204,9 @@ export class ScopedLogger {
 
 /**
  * Sanitize sensitive data from log context
- * 
+ *
  * Removes or redacts fields that should not be logged (API keys, passwords, etc.)
- * 
+ *
  * @param context - Log context to sanitize
  * @returns Sanitized context
  */
@@ -243,7 +244,7 @@ export function sanitizeLogContext(context: LogContext): LogContext {
 
 /**
  * Format duration for human-readable logs
- * 
+ *
  * @param durationMs - Duration in milliseconds
  * @returns Formatted duration string
  */

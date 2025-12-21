@@ -8,7 +8,7 @@ export interface Metric {
   value: number;
   timestamp: number;
   tags?: Record<string, string>;
-  type: 'counter' | 'gauge' | 'histogram' | 'summary';
+  type: "counter" | "gauge" | "histogram" | "summary";
 }
 
 export interface HistogramBucket {
@@ -34,12 +34,12 @@ export class MetricsCollector {
   incrementCounter(
     name: string,
     value: number = 1,
-    tags?: Record<string, string>
+    tags?: Record<string, string>,
   ): void {
     const key = this.getMetricKey(name, tags);
     const existing = this.metrics.get(key);
 
-    if (existing && existing.type === 'counter') {
+    if (existing && existing.type === "counter") {
       existing.value += value;
       existing.timestamp = Date.now();
     } else {
@@ -48,7 +48,7 @@ export class MetricsCollector {
         value,
         timestamp: Date.now(),
         tags,
-        type: 'counter',
+        type: "counter",
       });
     }
   }
@@ -59,7 +59,7 @@ export class MetricsCollector {
   setGauge(
     name: string,
     value: number,
-    tags?: Record<string, string>
+    tags?: Record<string, string>,
   ): void {
     const key = this.getMetricKey(name, tags);
     this.metrics.set(key, {
@@ -67,7 +67,7 @@ export class MetricsCollector {
       value,
       timestamp: Date.now(),
       tags,
-      type: 'gauge',
+      type: "gauge",
     });
   }
 
@@ -77,7 +77,7 @@ export class MetricsCollector {
   recordHistogram(
     name: string,
     value: number,
-    tags?: Record<string, string>
+    tags?: Record<string, string>,
   ): void {
     const key = this.getMetricKey(name, tags);
     const values = this.histograms.get(key) || [];
@@ -90,7 +90,7 @@ export class MetricsCollector {
       value,
       timestamp: Date.now(),
       tags,
-      type: 'histogram',
+      type: "histogram",
     });
   }
 
@@ -100,7 +100,7 @@ export class MetricsCollector {
   recordTiming(
     name: string,
     durationMs: number,
-    tags?: Record<string, string>
+    tags?: Record<string, string>,
   ): void {
     this.recordHistogram(name, durationMs, tags);
   }
@@ -111,7 +111,7 @@ export class MetricsCollector {
   async time<T>(
     name: string,
     fn: () => Promise<T>,
-    tags?: Record<string, string>
+    tags?: Record<string, string>,
   ): Promise<T> {
     const startTime = Date.now();
 
@@ -121,7 +121,7 @@ export class MetricsCollector {
 
       this.recordTiming(name, duration, {
         ...tags,
-        status: 'success',
+        status: "success",
       });
 
       return result;
@@ -130,7 +130,7 @@ export class MetricsCollector {
 
       this.recordTiming(name, duration, {
         ...tags,
-        status: 'error',
+        status: "error",
       });
 
       throw error;
@@ -205,17 +205,19 @@ export class MetricsCollector {
     for (const metric of this.metrics.values()) {
       const labels = metric.tags
         ? Object.entries(metric.tags)
-            .map(([k, v]) => `${k}="${v}"`)
-            .join(',')
-        : '';
+          .map(([k, v]) => `${k}="${v}"`)
+          .join(",")
+        : "";
 
       const metricName = `loopgpt_${metric.name}`;
       lines.push(
-        `${metricName}${labels ? `{${labels}}` : ''} ${metric.value} ${metric.timestamp}`
+        `${metricName}${
+          labels ? `{${labels}}` : ""
+        } ${metric.value} ${metric.timestamp}`,
       );
     }
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 
   /**
@@ -229,8 +231,8 @@ export class MetricsCollector {
     }
 
     try {
-      const grafanaUrl = Deno.env.get('GRAFANA_PUSH_URL');
-      const grafanaToken = Deno.env.get('GRAFANA_TOKEN');
+      const grafanaUrl = Deno.env.get("GRAFANA_PUSH_URL");
+      const grafanaToken = Deno.env.get("GRAFANA_TOKEN");
 
       if (!grafanaUrl || !grafanaToken) {
         return; // No configuration, skip
@@ -238,17 +240,17 @@ export class MetricsCollector {
 
       // Send to Grafana Cloud
       await fetch(grafanaUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${grafanaToken}`,
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${grafanaToken}`,
         },
         body: JSON.stringify({
           streams: [
             {
               stream: {
-                job: 'loopgpt-edge-functions',
-                environment: Deno.env.get('ENVIRONMENT') || 'development',
+                job: "loopgpt-edge-functions",
+                environment: Deno.env.get("ENVIRONMENT") || "development",
               },
               values: metrics.map((m) => [
                 String(m.timestamp * 1000000), // nanoseconds
@@ -262,7 +264,7 @@ export class MetricsCollector {
       // Clear after successful flush
       this.clear();
     } catch (error) {
-      console.error('Failed to flush metrics:', error);
+      console.error("Failed to flush metrics:", error);
     }
   }
 
@@ -277,7 +279,7 @@ export class MetricsCollector {
     const tagString = Object.entries(tags)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}:${v}`)
-      .join(',');
+      .join(",");
 
     return `${name}{${tagString}}`;
   }
@@ -299,15 +301,15 @@ export class CommonMetrics {
     method: string,
     path: string,
     statusCode: number,
-    durationMs: number
+    durationMs: number,
   ): void {
-    metrics.incrementCounter('http_requests_total', 1, {
+    metrics.incrementCounter("http_requests_total", 1, {
       method,
       path,
       status: String(statusCode),
     });
 
-    metrics.recordTiming('http_request_duration_ms', durationMs, {
+    metrics.recordTiming("http_request_duration_ms", durationMs, {
       method,
       path,
       status: String(statusCode),
@@ -321,15 +323,15 @@ export class CommonMetrics {
     operation: string,
     table: string,
     durationMs: number,
-    success: boolean
+    success: boolean,
   ): void {
-    metrics.incrementCounter('db_queries_total', 1, {
+    metrics.incrementCounter("db_queries_total", 1, {
       operation,
       table,
-      status: success ? 'success' : 'error',
+      status: success ? "success" : "error",
     });
 
-    metrics.recordTiming('db_query_duration_ms', durationMs, {
+    metrics.recordTiming("db_query_duration_ms", durationMs, {
       operation,
       table,
     });
@@ -342,15 +344,15 @@ export class CommonMetrics {
     service: string,
     endpoint: string,
     durationMs: number,
-    success: boolean
+    success: boolean,
   ): void {
-    metrics.incrementCounter('external_api_calls_total', 1, {
+    metrics.incrementCounter("external_api_calls_total", 1, {
       service,
       endpoint,
-      status: success ? 'success' : 'error',
+      status: success ? "success" : "error",
     });
 
-    metrics.recordTiming('external_api_duration_ms', durationMs, {
+    metrics.recordTiming("external_api_duration_ms", durationMs, {
       service,
       endpoint,
     });
@@ -360,9 +362,9 @@ export class CommonMetrics {
    * Record cache hit/miss
    */
   static recordCacheAccess(key: string, hit: boolean): void {
-    metrics.incrementCounter('cache_accesses_total', 1, {
+    metrics.incrementCounter("cache_accesses_total", 1, {
       key,
-      result: hit ? 'hit' : 'miss',
+      result: hit ? "hit" : "miss",
     });
   }
 
@@ -372,17 +374,17 @@ export class CommonMetrics {
   static recordOrder(
     provider: string,
     totalAmount: number,
-    itemCount: number
+    itemCount: number,
   ): void {
-    metrics.incrementCounter('orders_total', 1, {
+    metrics.incrementCounter("orders_total", 1, {
       provider,
     });
 
-    metrics.setGauge('order_amount', totalAmount, {
+    metrics.setGauge("order_amount", totalAmount, {
       provider,
     });
 
-    metrics.setGauge('order_items', itemCount, {
+    metrics.setGauge("order_items", itemCount, {
       provider,
     });
   }
@@ -391,9 +393,9 @@ export class CommonMetrics {
    * Record user action
    */
   static recordUserAction(action: string, userId?: string): void {
-    metrics.incrementCounter('user_actions_total', 1, {
+    metrics.incrementCounter("user_actions_total", 1, {
       action,
-      user_id: userId || 'anonymous',
+      user_id: userId || "anonymous",
     });
   }
 }
@@ -403,7 +405,7 @@ export class CommonMetrics {
  */
 export function withMetrics(
   handler: (req: Request) => Promise<Response>,
-  functionName: string
+  _functionName: string,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     const startTime = Date.now();
@@ -417,7 +419,7 @@ export function withMetrics(
         req.method,
         url.pathname,
         response.status,
-        duration
+        duration,
       );
 
       // Flush metrics periodically
@@ -434,7 +436,7 @@ export function withMetrics(
         req.method,
         url.pathname,
         500,
-        duration
+        duration,
       );
 
       throw error;

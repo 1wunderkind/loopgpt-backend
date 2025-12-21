@@ -1,19 +1,22 @@
 /**
  * Multi-Layer Cache Performance Test
- * 
+ *
  * Tests the performance improvements from L1 (memory) + L2 (Postgres) caching
- * 
+ *
  * Expected results:
  * - L1 hit: ~5-50ms (memory access)
  * - L2 hit: ~500-650ms (Postgres query)
  * - Miss: ~8-12s (OpenAI API)
  */
 
-const MCP_TOOLS_URL = "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
+const MCP_TOOLS_URL =
+  "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!SERVICE_ROLE_KEY) {
-  console.error("ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable not set");
+  console.error(
+    "ERROR: SUPABASE_SERVICE_ROLE_KEY environment variable not set",
+  );
   Deno.exit(1);
 }
 
@@ -30,7 +33,7 @@ interface TestResult {
  */
 async function testRecipesCache(): Promise<TestResult[]> {
   const results: TestResult[] = [];
-  
+
   const testInput = {
     ingredients: ["chicken", "rice", "broccoli"],
     dietary_restrictions: [],
@@ -44,7 +47,7 @@ async function testRecipesCache(): Promise<TestResult[]> {
   // Run 3 times to test L1, L2, and repeated L1
   for (let i = 1; i <= 3; i++) {
     const startTime = Date.now();
-    
+
     try {
       const response = await fetch(`${MCP_TOOLS_URL}/tools/recipes.generate`, {
         method: "POST",
@@ -62,7 +65,7 @@ async function testRecipesCache(): Promise<TestResult[]> {
       }
 
       const result = await response.json();
-      
+
       const testResult: TestResult = {
         test: "recipes.generate",
         attempt: i,
@@ -83,8 +86,9 @@ async function testRecipesCache(): Promise<TestResult[]> {
       results.push(testResult);
 
       console.log(`Attempt ${i}: ${duration}ms - ${testResult.source}`);
-      console.log(`  Recipes returned: ${result.length || result.recipes?.length || 0}`);
-      
+      console.log(
+        `  Recipes returned: ${result.length || result.recipes?.length || 0}`,
+      );
     } catch (error: any) {
       const duration = Date.now() - startTime;
       results.push({
@@ -98,7 +102,7 @@ async function testRecipesCache(): Promise<TestResult[]> {
 
     // Small delay between attempts
     if (i < 3) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
 
@@ -131,7 +135,7 @@ async function testAllToolsCache(): Promise<TestResult[]> {
 
   for (let i = 1; i <= 2; i++) {
     const startTime = Date.now();
-    
+
     try {
       const response = await fetch(`${MCP_TOOLS_URL}/tools/nutrition.analyze`, {
         method: "POST",
@@ -149,7 +153,7 @@ async function testAllToolsCache(): Promise<TestResult[]> {
       }
 
       await response.json();
-      
+
       const source = duration < 100 ? "L1" : duration < 1000 ? "L2" : "compute";
       results.push({
         test: "nutrition.analyze",
@@ -160,13 +164,12 @@ async function testAllToolsCache(): Promise<TestResult[]> {
       });
 
       console.log(`  Attempt ${i}: ${duration}ms - ${source}`);
-      
     } catch (error: any) {
       console.error(`  Attempt ${i}: ERROR - ${error.message}`);
     }
 
     if (i < 2) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
 
@@ -183,7 +186,7 @@ async function testAllToolsCache(): Promise<TestResult[]> {
 
   for (let i = 1; i <= 2; i++) {
     const startTime = Date.now();
-    
+
     try {
       const response = await fetch(`${MCP_TOOLS_URL}/tools/mealplan.generate`, {
         method: "POST",
@@ -201,7 +204,7 @@ async function testAllToolsCache(): Promise<TestResult[]> {
       }
 
       await response.json();
-      
+
       const source = duration < 100 ? "L1" : duration < 1000 ? "L2" : "compute";
       results.push({
         test: "mealplan.generate",
@@ -212,13 +215,12 @@ async function testAllToolsCache(): Promise<TestResult[]> {
       });
 
       console.log(`  Attempt ${i}: ${duration}ms - ${source}`);
-      
     } catch (error: any) {
       console.error(`  Attempt ${i}: ERROR - ${error.message}`);
     }
 
     if (i < 2) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
 
@@ -233,7 +235,7 @@ function displaySummary(results: TestResult[]) {
 
   // Group by test
   const byTest = new Map<string, TestResult[]>();
-  results.forEach(r => {
+  results.forEach((r) => {
     if (!byTest.has(r.test)) {
       byTest.set(r.test, []);
     }
@@ -242,36 +244,51 @@ function displaySummary(results: TestResult[]) {
 
   byTest.forEach((testResults, testName) => {
     console.log(`${testName}:`);
-    
-    const successful = testResults.filter(r => r.success);
+
+    const successful = testResults.filter((r) => r.success);
     if (successful.length === 0) {
       console.log("  No successful attempts");
       return;
     }
 
-    const l1Results = successful.filter(r => r.source?.includes("L1"));
-    const l2Results = successful.filter(r => r.source?.includes("L2"));
-    const computeResults = successful.filter(r => r.source?.includes("compute"));
+    const l1Results = successful.filter((r) => r.source?.includes("L1"));
+    const l2Results = successful.filter((r) => r.source?.includes("L2"));
+    const computeResults = successful.filter((r) =>
+      r.source?.includes("compute")
+    );
 
     if (l1Results.length > 0) {
-      const avgL1 = l1Results.reduce((sum, r) => sum + r.durationMs, 0) / l1Results.length;
-      console.log(`  L1 (memory) hits: ${l1Results.length} - avg ${avgL1.toFixed(0)}ms`);
+      const avgL1 = l1Results.reduce((sum, r) => sum + r.durationMs, 0) /
+        l1Results.length;
+      console.log(
+        `  L1 (memory) hits: ${l1Results.length} - avg ${avgL1.toFixed(0)}ms`,
+      );
     }
 
     if (l2Results.length > 0) {
-      const avgL2 = l2Results.reduce((sum, r) => sum + r.durationMs, 0) / l2Results.length;
-      console.log(`  L2 (Postgres) hits: ${l2Results.length} - avg ${avgL2.toFixed(0)}ms`);
+      const avgL2 = l2Results.reduce((sum, r) => sum + r.durationMs, 0) /
+        l2Results.length;
+      console.log(
+        `  L2 (Postgres) hits: ${l2Results.length} - avg ${avgL2.toFixed(0)}ms`,
+      );
     }
 
     if (computeResults.length > 0) {
-      const avgCompute = computeResults.reduce((sum, r) => sum + r.durationMs, 0) / computeResults.length;
-      console.log(`  Compute (OpenAI) calls: ${computeResults.length} - avg ${avgCompute.toFixed(0)}ms`);
+      const avgCompute = computeResults.reduce((sum, r) =>
+        sum + r.durationMs, 0) / computeResults.length;
+      console.log(
+        `  Compute (OpenAI) calls: ${computeResults.length} - avg ${
+          avgCompute.toFixed(0)
+        }ms`,
+      );
     }
 
     // Calculate speedup
     if (l1Results.length > 0 && computeResults.length > 0) {
-      const l1Avg = l1Results.reduce((sum, r) => sum + r.durationMs, 0) / l1Results.length;
-      const computeAvg = computeResults.reduce((sum, r) => sum + r.durationMs, 0) / computeResults.length;
+      const l1Avg = l1Results.reduce((sum, r) => sum + r.durationMs, 0) /
+        l1Results.length;
+      const computeAvg = computeResults.reduce((sum, r) =>
+        sum + r.durationMs, 0) / computeResults.length;
       const speedup = computeAvg / l1Avg;
       console.log(`  Speedup (L1 vs compute): ${speedup.toFixed(1)}x faster`);
     }
@@ -280,8 +297,9 @@ function displaySummary(results: TestResult[]) {
   });
 
   // Overall stats
-  const allSuccessful = results.filter(r => r.success);
-  const avgDuration = allSuccessful.reduce((sum, r) => sum + r.durationMs, 0) / allSuccessful.length;
+  const allSuccessful = results.filter((r) => r.success);
+  const avgDuration = allSuccessful.reduce((sum, r) => sum + r.durationMs, 0) /
+    allSuccessful.length;
   console.log(`Overall average response time: ${avgDuration.toFixed(0)}ms`);
   console.log(`Total tests: ${results.length}`);
   console.log(`Successful: ${allSuccessful.length}`);
@@ -303,7 +321,7 @@ async function runPerformanceTests() {
   allResults.push(...recipesResults);
 
   // Wait a bit before next test
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   // Test 2: All tools (2 attempts each to test cache)
   const allToolsResults = await testAllToolsCache();

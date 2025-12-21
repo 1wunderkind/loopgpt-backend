@@ -3,7 +3,7 @@
  * Tests for creating meal plans
  */
 
-import { assertEquals, assertExists, assert, testData } from "../../helpers.ts";
+import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 Deno.test("meal_plan: creates plan with target calories", async () => {
   const targetCalories = 2000;
@@ -22,11 +22,11 @@ Deno.test("meal_plan: creates plan with target calories", async () => {
 Deno.test("meal_plan: includes all meal types", async () => {
   const mealTypes = ["breakfast", "lunch", "dinner", "snack"];
   const mockPlan = {
-    meals: mealTypes.map(type => ({ type, foods: [] })),
+    meals: mealTypes.map((type) => ({ type, foods: [] })),
   };
 
   assertEquals(mockPlan.meals.length, 4);
-  assert(mockPlan.meals.every(m => mealTypes.includes(m.type)));
+  assert(mockPlan.meals.every((m) => mealTypes.includes(m.type)));
 });
 
 Deno.test("meal_plan: distributes calories across meals", async () => {
@@ -49,7 +49,8 @@ Deno.test("meal_plan: respects macro targets", async () => {
     fat_percent: 30,
   };
 
-  const total = macroTargets.protein_percent + macroTargets.carbs_percent + macroTargets.fat_percent;
+  const total = macroTargets.protein_percent + macroTargets.carbs_percent +
+    macroTargets.fat_percent;
   assertEquals(total, 100);
 });
 

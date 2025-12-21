@@ -1,11 +1,11 @@
 /**
  * Update User Location Edge Function
- * 
+ *
  * Stores or updates user's confirmed country and language preference.
- * 
+ *
  * Purpose: Persist user location after confirmation for future sessions
  * Pattern: Upsert to user_profiles table
- * 
+ *
  * Use Cases:
  * - First-time user confirms location
  * - Returning user changes location (e.g., traveling)
@@ -14,7 +14,11 @@
 
 import { serve } from "std@0.168.0/http/server.ts";
 import { withLogging } from "../../middleware/logging.ts";
-import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  validateRequired,
+} from "../../middleware/errorHandler.ts";
 
 import { createAuthenticatedClient } from "../_lib/auth.ts";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
@@ -46,65 +50,37 @@ async function handler(req: Request): Promise<Response> {
 
     const { chatgpt_user_id, language, confirmed_country } = body;
 
-    console.log(`[UpdateUserLocation] User: ${chatgpt_user_id}, Country: ${confirmed_country}, Language: ${language}`);
+    console.log(
+      `[UpdateUserLocation] User: ${chatgpt_user_id}, Country: ${confirmed_country}, Language: ${language}`,
+    );
 
     // Validate country code format (2-letter ISO code)
     if (!/^[A-Z]{2}$/.test(confirmed_country)) {
       return createErrorResponse(
-        new Error(`Invalid country code: ${confirmed_country}. Must be 2-letter ISO code (e.g., US, IN, ES)`)
+        new Error(
+          `Invalid country code: ${confirmed_country}. Must be 2-letter ISO code (e.g., US, IN, ES)`,
+        ),
       );
     }
 
     // Get authenticated Supabase client (enforces RLS)
 
-
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-
-    
-
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: authError }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     if (!userId) {
-
-
       return new Response(
-
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
-
     }
-
-
-    
-
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
 
@@ -120,7 +96,7 @@ async function handler(req: Request): Promise<Response> {
         },
         {
           onConflict: "chatgpt_user_id",
-        }
+        },
       )
       .select()
       .single();
@@ -130,13 +106,14 @@ async function handler(req: Request): Promise<Response> {
       throw error;
     }
 
-    console.log(`[UpdateUserLocation] Successfully updated profile for user ${chatgpt_user_id}`);
+    console.log(
+      `[UpdateUserLocation] Successfully updated profile for user ${chatgpt_user_id}`,
+    );
 
     return createSuccessResponse<UpdateUserLocationResponse>({
       success: true,
       user: data,
     });
-
   } catch (error) {
     console.error("[UpdateUserLocation] Error:", error);
     return createErrorResponse(error);
@@ -145,4 +122,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export handler with logging middleware
 serve(withStandardAPI(withLogging(handler)));
-

@@ -5,6 +5,7 @@ Comprehensive test suite for the multi-provider commerce routing system.
 ## 🎯 Test Coverage
 
 ### Provider Tests
+
 - **Kroger Provider** (`providers/kroger.test.ts`)
   - Mock mode validation
   - Real API integration (skipped without keys)
@@ -20,6 +21,7 @@ Comprehensive test suite for the multi-provider commerce routing system.
   - Competitive pricing
 
 ### Router Tests
+
 - **Multi-Provider Routing** (`router/router.test.ts`)
   - Provider selection logic
   - Scoring algorithms (price, speed, margin)
@@ -27,6 +29,7 @@ Comprehensive test suite for the multi-provider commerce routing system.
   - Config-driven behavior
 
 ### E2E Integration Tests (Staging Only)
+
 - **End-to-End Routing** (`integration/e2e.test.ts`)
   - MealMe-only routing
   - Direct APIs-only routing
@@ -38,12 +41,14 @@ Comprehensive test suite for the multi-provider commerce routing system.
 ## 🚀 Running Tests
 
 ### Run All Tests
+
 ```bash
 cd /home/ubuntu/loopgpt-backend/supabase/functions/_tests
 ./run_tests.sh
 ```
 
 ### Run E2E Tests (Staging Only)
+
 ```bash
 # Set staging environment
 export LOOPGPT_ENV=staging
@@ -53,11 +58,13 @@ export LOOPGPT_ENV=staging
 ```
 
 ### Run Specific Test File
+
 ```bash
 deno test --allow-all commerce/providers/kroger.test.ts
 ```
 
 ### Run With Real API Keys (Optional)
+
 ```bash
 # Set API credentials
 export KROGER_CLIENT_ID="your-client-id"
@@ -76,12 +83,14 @@ export LOOPGPT_WALMART_MOCK=false
 ## 📊 Test Modes
 
 ### Mock Mode (Default)
+
 - Uses deterministic mock data
 - No external API calls
 - Fast and reliable
 - Perfect for CI/CD
 
 ### Real API Mode
+
 - Requires valid API credentials
 - Tests actual API integration
 - May be slower
@@ -107,6 +116,7 @@ _tests/
 ## ✅ Test Assertions
 
 ### Provider Quote Validation
+
 - Correct provider ID
 - Non-zero pricing
 - Valid item availability
@@ -114,6 +124,7 @@ _tests/
 - Affiliate URL present
 
 ### Router Validation
+
 - At least one quote returned
 - Correct provider selected based on optimization
 - Priority boosts applied correctly
@@ -122,6 +133,7 @@ _tests/
 ## 🔧 Environment Variables
 
 ### Provider Configuration
+
 ```bash
 # Enable/disable providers
 LOOPGPT_ENABLE_KROGER=true
@@ -137,6 +149,7 @@ LOOPGPT_WALMART_ALLOW_MOCK_FALLBACK=true
 ```
 
 ### API Credentials
+
 ```bash
 # Kroger
 KROGER_CLIENT_ID=your-client-id
@@ -150,6 +163,7 @@ WALMART_ENV=sandbox
 ```
 
 ### Scoring Weights
+
 ```bash
 LOOPGPT_SCORE_PRIORITY_WEIGHT=1.0
 LOOPGPT_SCORE_PRICE_WEIGHT=0.30
@@ -162,23 +176,28 @@ LOOPGPT_SCORE_RELIABILITY_WEIGHT=0.10
 ## 📝 Adding New Tests
 
 ### 1. Create Test File
+
 ```typescript
 // _tests/commerce/providers/newprovider.test.ts
 import { assertEquals } from "std/assert/mod.ts";
 import { newProvider } from "../../../_shared/commerce/providers/newProvider.ts";
-import { createSampleQuoteRequest, assertValidProviderQuote } from "../testUtils.ts";
+import {
+  assertValidProviderQuote,
+  createSampleQuoteRequest,
+} from "../testUtils.ts";
 
 Deno.test("New Provider - Mock Mode - Returns valid quote", async () => {
-  const request = createSampleQuoteRequest('NEW_PROVIDER');
-  const config = createSampleProviderConfig('NEW_PROVIDER');
-  
+  const request = createSampleQuoteRequest("NEW_PROVIDER");
+  const config = createSampleProviderConfig("NEW_PROVIDER");
+
   const quote = await newProvider.getQuote(request, config);
-  
-  assertValidProviderQuote(quote, 'NEW_PROVIDER', request.items.length);
+
+  assertValidProviderQuote(quote, "NEW_PROVIDER", request.items.length);
 });
 ```
 
 ### 2. Add to Test Runner
+
 ```bash
 # Edit run_tests.sh
 run_test "commerce/providers/newprovider.test.ts"
@@ -187,16 +206,19 @@ run_test "commerce/providers/newprovider.test.ts"
 ## 🐛 Debugging Tests
 
 ### View Detailed Output
+
 ```bash
 deno test --allow-all --no-check commerce/providers/kroger.test.ts
 ```
 
 ### Run Single Test
+
 ```bash
 deno test --allow-all --filter "Mock Mode - Returns valid quote" commerce/providers/kroger.test.ts
 ```
 
 ### Enable Debug Logging
+
 ```bash
 export LOOPGPT_DEBUG=true
 deno test --allow-all commerce/providers/kroger.test.ts

@@ -1,6 +1,6 @@
 # 🚀 Deploy TheLoopGPT.ai Backend - Quick Start
 
-**Time Required:** 5-10 minutes  
+**Time Required:** 5-10 minutes\
 **Difficulty:** Easy (just 3 commands!)
 
 ---
@@ -32,23 +32,27 @@ cd loopgpt-backend
 ## 🔧 Step 2: Install Supabase CLI (if needed)
 
 ### **macOS:**
+
 ```bash
 brew install supabase/tap/supabase
 ```
 
 ### **Windows:**
+
 ```bash
 scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
 scoop install supabase
 ```
 
 ### **Linux:**
+
 ```bash
 curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz | tar -xz
 sudo mv supabase /usr/local/bin/
 ```
 
 **Verify installation:**
+
 ```bash
 supabase --version
 ```
@@ -57,7 +61,8 @@ supabase --version
 
 ## ⚙️ Step 3: Configure Environment
 
-The `.env` file is already created with your credentials! Just verify it's there:
+The `.env` file is already created with your credentials! Just verify it's
+there:
 
 ```bash
 cat .env
@@ -76,6 +81,7 @@ You should see your Supabase URL, keys, and OpenAI API key.
 ```
 
 **What this does:**
+
 1. ✅ Logs you into Supabase (opens browser once)
 2. ✅ Links to your project
 3. ✅ Runs database migrations (creates 18 tables)
@@ -84,6 +90,7 @@ You should see your Supabase URL, keys, and OpenAI API key.
 6. ✅ Tests the deployment
 
 **Expected output:**
+
 ```
 🚀 TheLoopGPT.ai Backend Deployment
 ====================================
@@ -151,11 +158,13 @@ You should see your Supabase URL, keys, and OpenAI API key.
 
 ### **Problem: "Not logged in"**
 
-**Solution:** The script will automatically open your browser to log in. Just authorize it!
+**Solution:** The script will automatically open your browser to log in. Just
+authorize it!
 
 ### **Problem: "Migration failed"**
 
-**Solution:** 
+**Solution:**
+
 ```bash
 # Reset and try again
 supabase db reset
@@ -165,6 +174,7 @@ supabase db reset
 ### **Problem: "Function deployment failed"**
 
 **Solution:**
+
 ```bash
 # Deploy single function manually
 supabase functions deploy generate_week_plan --project-ref qmagnwxeijctkksqbcqz
@@ -175,6 +185,7 @@ supabase functions deploy generate_week_plan --project-ref qmagnwxeijctkksqbcqz
 ## 📊 What Gets Deployed
 
 ### **Database (18 tables):**
+
 - `user_profiles` - User data with Supabase Auth
 - `meal_plans` - Meal plan metadata
 - `meal_plan_items` - Individual meals
@@ -197,11 +208,13 @@ supabase functions deploy generate_week_plan --project-ref qmagnwxeijctkksqbcqz
 ### **Edge Functions (19 functions):**
 
 **Meal Planning (3):**
+
 - `generate_week_plan` - Generate 7-day meal plan
 - `log_meal_plan` - Log meals to K-Cal GPT
 - `get_affiliate_links` - Generate shopping links
 
 **Weight Tracking (6):**
+
 - `log_weight` - Log daily weight
 - `weekly_trend` - Calculate EWMA trend
 - `evaluate_plan_outcome` - Compare plan vs. result
@@ -210,9 +223,11 @@ supabase functions deploy generate_week_plan --project-ref qmagnwxeijctkksqbcqz
 - `update_weight_prefs` - Update preferences
 
 **Delivery (1):**
+
 - `get_delivery_recommendations` - Get delivery options
 
 **MealMe (7):**
+
 - `mealme_search` - Search local stores
 - `mealme_create_cart` - Build cart
 - `mealme_get_quotes` - Get delivery quotes
@@ -222,6 +237,7 @@ supabase functions deploy generate_week_plan --project-ref qmagnwxeijctkksqbcqz
 - `normalize_ingredients` - Normalize ingredient names
 
 **Geolocation (4):**
+
 - `get_user_location` - Get user's confirmed location
 - `update_user_location` - Update location
 - `get_affiliate_by_country` - Get affiliates for country
@@ -233,12 +249,12 @@ supabase functions deploy generate_week_plan --project-ref qmagnwxeijctkksqbcqz
 
 Once deployment completes, you'll have:
 
-✅ **Complete backend** running on Supabase  
-✅ **18 database tables** with Row Level Security  
-✅ **19 Edge Functions** ready to use  
-✅ **100+ languages** supported  
-✅ **25 countries** with geolocation  
-✅ **$80-250k/month** revenue potential  
+✅ **Complete backend** running on Supabase\
+✅ **18 database tables** with Row Level Security\
+✅ **19 Edge Functions** ready to use\
+✅ **100+ languages** supported\
+✅ **25 countries** with geolocation\
+✅ **$80-250k/month** revenue potential
 
 ---
 
@@ -263,4 +279,3 @@ Once deployment completes, you'll have:
 **You're ready to go live!** 🚀
 
 **Plan → Eat → Track → Result → Adapt** 🔄
-

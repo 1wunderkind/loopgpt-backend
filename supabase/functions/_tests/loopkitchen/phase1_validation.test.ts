@@ -1,44 +1,44 @@
 /**
  * Phase 1 Validation Tests
- * 
+ *
  * Validates that all LoopKitchen components are properly imported and functional.
  */
 
-import { assertEquals, assertExists } from 'std/assert/mod.ts';
+import { assertEquals, assertExists } from "std/assert/mod.ts";
 
 // Test imports
 import {
+  // Utilities
+  callModel,
+  callModelWithRetry,
+  GROCERYGPT_SYSTEM,
+  GROCERYGPT_USER,
+  GroceryList,
+  InfoMessage,
+  isGroceryList,
+  isInfoMessage,
+  isNutritionSummary,
+  isRecipeCardCompact,
+  isRecipeCardDetailed,
+  isWeekPlanner,
+  LEFTOVERGPT_DETAIL_SYSTEM,
+  LEFTOVERGPT_DETAIL_USER,
+  // Prompts
+  LEFTOVERGPT_LIST_SYSTEM,
+  LEFTOVERGPT_LIST_USER,
+  MEALPLANNERGPT_SYSTEM,
+  MEALPLANNERGPT_USER,
+  NUTRITIONGPT_SYSTEM,
+  NUTRITIONGPT_USER,
+  NutritionSummary,
   // Types
   RecipeCardCompact,
   RecipeCardDetailed,
   WeekPlanner,
-  NutritionSummary,
-  GroceryList,
-  InfoMessage,
   Widget,
-  isRecipeCardCompact,
-  isRecipeCardDetailed,
-  isWeekPlanner,
-  isNutritionSummary,
-  isGroceryList,
-  isInfoMessage,
-  // Prompts
-  LEFTOVERGPT_LIST_SYSTEM,
-  LEFTOVERGPT_LIST_USER,
-  LEFTOVERGPT_DETAIL_SYSTEM,
-  LEFTOVERGPT_DETAIL_USER,
-  NUTRITIONGPT_SYSTEM,
-  NUTRITIONGPT_USER,
-  GROCERYGPT_SYSTEM,
-  GROCERYGPT_USER,
-  MEALPLANNERGPT_SYSTEM,
-  MEALPLANNERGPT_USER,
-  // Utilities
-  callModel,
-  callModelWithRetry,
-} from '../../_shared/loopkitchen/index.ts';
+} from "../../_shared/loopkitchen/index.ts";
 
-Deno.test('Phase 1 - Type imports are available', () => {
+Deno.test("Phase 1 - Type imports are available", () => {
   // Just checking that imports don't throw
   assertExists(isRecipeCardCompact);
   assertExists(isRecipeCardDetailed);
@@ -48,7 +48,7 @@ Deno.test('Phase 1 - Type imports are available', () => {
   assertExists(isInfoMessage);
 });
 
-Deno.test('Phase 1 - Prompt templates are available', () => {
+Deno.test("Phase 1 - Prompt templates are available", () => {
   assertExists(LEFTOVERGPT_LIST_SYSTEM);
   assertExists(LEFTOVERGPT_DETAIL_SYSTEM);
   assertExists(NUTRITIONGPT_SYSTEM);
@@ -56,42 +56,42 @@ Deno.test('Phase 1 - Prompt templates are available', () => {
   assertExists(MEALPLANNERGPT_SYSTEM);
 });
 
-Deno.test('Phase 1 - Prompt functions generate correct output', () => {
+Deno.test("Phase 1 - Prompt functions generate correct output", () => {
   const userPrompt = LEFTOVERGPT_LIST_USER(
-    ['chicken', 'rice', 'broccoli'],
-    ['Comfort', 'Fast'],
+    ["chicken", "rice", "broccoli"],
+    ["Comfort", "Fast"],
     30,
-    ['gluten-free'],
-    'Quick dinner'
+    ["gluten-free"],
+    "Quick dinner",
   );
-  
+
   assertExists(userPrompt);
-  assertEquals(userPrompt.includes('chicken'), true);
-  assertEquals(userPrompt.includes('Comfort'), true);
-  assertEquals(userPrompt.includes('30'), true);
+  assertEquals(userPrompt.includes("chicken"), true);
+  assertEquals(userPrompt.includes("Comfort"), true);
+  assertEquals(userPrompt.includes("30"), true);
 });
 
-Deno.test('Phase 1 - Type guards work correctly', () => {
+Deno.test("Phase 1 - Type guards work correctly", () => {
   const compactRecipe: RecipeCardCompact = {
-    id: 'test-recipe',
-    type: 'RecipeCardCompact',
-    title: 'Test Recipe',
+    id: "test-recipe",
+    type: "RecipeCardCompact",
+    title: "Test Recipe",
     chaosRating: 5,
     timeMinutes: 30,
-    difficulty: 'easy',
-    dietTags: ['vegetarian'],
+    difficulty: "easy",
+    dietTags: ["vegetarian"],
   };
-  
+
   const widget: Widget = compactRecipe;
-  
+
   assertEquals(isRecipeCardCompact(widget), true);
   assertEquals(isRecipeCardDetailed(widget), false);
   assertEquals(isWeekPlanner(widget), false);
 });
 
-Deno.test('Phase 1 - Utility functions are available', () => {
+Deno.test("Phase 1 - Utility functions are available", () => {
   assertExists(callModel);
   assertExists(callModelWithRetry);
 });
 
-console.log('✅ Phase 1 validation complete - all imports successful!');
+console.log("✅ Phase 1 validation complete - all imports successful!");

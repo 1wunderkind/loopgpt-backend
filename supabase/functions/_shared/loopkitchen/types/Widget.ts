@@ -1,13 +1,13 @@
 /**
  * Widget Type Definitions
- * 
+ *
  * Shared widget schemas for LoopGPT recipe generation.
  * Ported from LoopKitchen for integration into LoopGPT backend.
  */
 
 /**
  * ShareMeta - Social sharing metadata for widgets
- * 
+ *
  * Enables widgets to be shared on social media with rich previews.
  * Used by the ShareButton component and create_share_snapshot tool.
  */
@@ -47,12 +47,12 @@ export interface WidgetBase {
 
 /**
  * RecipeCardCompact - Compact recipe card widget
- * 
+ *
  * Displays a recipe in a compact card format.
  * Used in recipe lists, search results, and carousels.
  */
 export interface RecipeCardCompact extends WidgetBase {
-  type: 'RecipeCardCompact';
+  type: "RecipeCardCompact";
 
   /** Recipe title (e.g., "Spicy Thai Basil Chicken") */
   title: string;
@@ -70,7 +70,7 @@ export interface RecipeCardCompact extends WidgetBase {
   timeMinutes: number;
 
   /** Difficulty level */
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
 
   /** Dietary tags (e.g., ["vegan", "gluten-free", "low-carb"]) */
   dietTags: string[];
@@ -105,12 +105,12 @@ export interface RecipeCardCompact extends WidgetBase {
 
 /**
  * RecipeCardDetailed - Detailed recipe card widget
- * 
+ *
  * Displays a recipe with full details including ingredients and instructions.
  * Used when viewing a single recipe.
  */
 export interface RecipeCardDetailed extends WidgetBase {
-  type: 'RecipeCardDetailed';
+  type: "RecipeCardDetailed";
 
   /** Recipe title */
   title: string;
@@ -128,7 +128,7 @@ export interface RecipeCardDetailed extends WidgetBase {
   timeMinutes: number;
 
   /** Difficulty level */
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
 
   /** Number of servings */
   servings: number;
@@ -157,12 +157,12 @@ export interface RecipeCardDetailed extends WidgetBase {
 
 /**
  * WeekPlanner - Weekly meal plan widget
- * 
+ *
  * Displays a 7-day meal plan in a calendar grid format.
  * Used for meal planning and weekly organization.
  */
 export interface WeekPlanner extends WidgetBase {
-  type: 'WeekPlanner';
+  type: "WeekPlanner";
 
   /** Start date of the meal plan (YYYY-MM-DD) */
   startDate: string;
@@ -211,12 +211,12 @@ export interface WeekPlanner extends WidgetBase {
 
 /**
  * NutritionSummary - Nutrition information widget
- * 
+ *
  * Displays nutritional information for a recipe or meal plan.
  * Shows both total and per-serving breakdowns.
  */
 export interface NutritionSummary extends WidgetBase {
-  type: 'NutritionSummary';
+  type: "NutritionSummary";
 
   /** Number of servings */
   servings: number;
@@ -245,17 +245,17 @@ export interface NutritionSummary extends WidgetBase {
   dietTags: string[];
 
   /** Confidence level of nutrition estimates */
-  confidence: 'low' | 'medium' | 'high';
+  confidence: "low" | "medium" | "high";
 }
 
 /**
  * GroceryList - Shopping list widget
- * 
+ *
  * Displays a categorized grocery list with checkable items.
  * Used for meal plan shopping lists.
  */
 export interface GroceryList extends WidgetBase {
-  type: 'GroceryList';
+  type: "GroceryList";
 
   /** Categorized grocery items */
   categories: Array<{
@@ -278,14 +278,14 @@ export interface GroceryList extends WidgetBase {
 
 /**
  * InfoMessage - Information/warning/error message widget
- * 
+ *
  * Used for displaying system messages, warnings, or errors to the user.
  */
 export interface InfoMessage extends WidgetBase {
-  type: 'InfoMessage';
+  type: "InfoMessage";
 
   /** Message severity level */
-  severity: 'info' | 'warning' | 'error';
+  severity: "info" | "warning" | "error";
 
   /** Message title */
   title: string;
@@ -349,7 +349,7 @@ export interface CheckoutConfirmationModalWidget extends WidgetBase {
   };
 
   title: string; // "You’re being redirected to {providerName}"
-  body: string;  // "You will complete checkout on {providerName} in a new tab."
+  body: string; // "You will complete checkout on {providerName} in a new tab."
 
   disclaimerText: string;
 
@@ -382,7 +382,7 @@ export interface CheckoutConfirmationModalWidget extends WidgetBase {
 
 /**
  * Widget - Union type of all widget types
- * 
+ *
  * Use this type for functions that can handle any widget.
  * TypeScript will narrow the type based on the `type` discriminator.
  */
@@ -399,26 +399,30 @@ export type Widget =
 /**
  * Type guards for widget type checking
  */
-export function isRecipeCardCompact(widget: Widget): widget is RecipeCardCompact {
-  return widget.type === 'RecipeCardCompact';
+export function isRecipeCardCompact(
+  widget: Widget,
+): widget is RecipeCardCompact {
+  return widget.type === "RecipeCardCompact";
 }
 
-export function isRecipeCardDetailed(widget: Widget): widget is RecipeCardDetailed {
-  return widget.type === 'RecipeCardDetailed';
+export function isRecipeCardDetailed(
+  widget: Widget,
+): widget is RecipeCardDetailed {
+  return widget.type === "RecipeCardDetailed";
 }
 
 export function isWeekPlanner(widget: Widget): widget is WeekPlanner {
-  return widget.type === 'WeekPlanner';
+  return widget.type === "WeekPlanner";
 }
 
 export function isNutritionSummary(widget: Widget): widget is NutritionSummary {
-  return widget.type === 'NutritionSummary';
+  return widget.type === "NutritionSummary";
 }
 
 export function isGroceryList(widget: Widget): widget is GroceryList {
-  return widget.type === 'GroceryList';
+  return widget.type === "GroceryList";
 }
 
 export function isInfoMessage(widget: Widget): widget is InfoMessage {
-  return widget.type === 'InfoMessage';
+  return widget.type === "InfoMessage";
 }

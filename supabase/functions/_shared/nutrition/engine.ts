@@ -1,39 +1,36 @@
 /**
  * Deterministic Nutrition Engine
- * 
+ *
  * Core engine for recipe nutrition estimation with:
  * - Deterministic ingredient mapping
  * - Fixed unit conversions
  * - Rule-based macro calculation
  * - Confidence scoring
  * - Zero LLM calls (pure computation)
- * 
+ *
  * Guarantees: Same input → Same output (idempotent)
- * 
+ *
  * Part of: Step 4 - Deterministic Nutrition Engine
  */
 
 import {
   FOOD_DATABASE,
-  UNIT_CONVERSIONS,
   normalizeIngredientName,
+  UNIT_CONVERSIONS,
 } from "./dictionary.ts";
 
 import type {
-  RecipeNutritionInput,
-  RecipeNutritionResult,
+  ConfidenceLevel,
+  FoodEntry,
+  IngredientLookupResult,
+  IngredientQuantity,
   Macros,
   Micronutrients,
-  IngredientQuantity,
-  IngredientLookupResult,
-  FoodEntry,
-  ConfidenceLevel,
+  RecipeNutritionInput,
+  RecipeNutritionResult,
 } from "./types.ts";
 
-import {
-  CONFIDENCE_THRESHOLDS,
-  ROUNDING_CONFIG,
-} from "./types.ts";
+import { CONFIDENCE_THRESHOLDS, ROUNDING_CONFIG } from "./types.ts";
 
 import { getDietTags } from "./tags.ts";
 import { normalizeIngredientName as normalizeForLookup } from "./dictionary.ts";
@@ -60,9 +57,15 @@ function roundMacros(macros: Macros): Macros {
     protein_g: round(macros.protein_g, ROUNDING_CONFIG.macros),
     carbs_g: round(macros.carbs_g, ROUNDING_CONFIG.macros),
     fat_g: round(macros.fat_g, ROUNDING_CONFIG.macros),
-    fiber_g: macros.fiber_g !== undefined ? round(macros.fiber_g, ROUNDING_CONFIG.macros) : undefined,
-    sugar_g: macros.sugar_g !== undefined ? round(macros.sugar_g, ROUNDING_CONFIG.macros) : undefined,
-    sodium_mg: macros.sodium_mg !== undefined ? round(macros.sodium_mg, ROUNDING_CONFIG.micronutrients) : undefined,
+    fiber_g: macros.fiber_g !== undefined
+      ? round(macros.fiber_g, ROUNDING_CONFIG.macros)
+      : undefined,
+    sugar_g: macros.sugar_g !== undefined
+      ? round(macros.sugar_g, ROUNDING_CONFIG.macros)
+      : undefined,
+    sodium_mg: macros.sodium_mg !== undefined
+      ? round(macros.sodium_mg, ROUNDING_CONFIG.micronutrients)
+      : undefined,
   };
 }
 
@@ -71,13 +74,16 @@ function roundMacros(macros: Macros): Macros {
  */
 function roundMicronutrients(micros: Micronutrients): Micronutrients {
   const rounded: Micronutrients = {};
-  
+
   for (const [key, value] of Object.entries(micros)) {
     if (value !== undefined) {
-      rounded[key as keyof Micronutrients] = round(value, ROUNDING_CONFIG.micronutrients);
+      rounded[key as keyof Micronutrients] = round(
+        value,
+        ROUNDING_CONFIG.micronutrients,
+      );
     }
   }
-  
+
   return rounded;
 }
 
@@ -87,20 +93,22 @@ function roundMicronutrients(micros: Micronutrients): Micronutrients {
 
 /**
  * Look up an ingredient in the food database
- * 
+ *
  * Steps:
  * 1. Normalize ingredient name (lowercase, trim, remove punctuation)
  * 2. Check synonyms map
  * 3. Check canonical names
  * 4. Try partial matching (last resort)
- * 
+ *
  * @param ingredient - Ingredient with name, quantity, unit
  * @returns Lookup result with matched food entry or null
  */
-export function lookupIngredient(ingredient: IngredientQuantity): IngredientLookupResult {
+export function lookupIngredient(
+  ingredient: IngredientQuantity,
+): IngredientLookupResult {
   const canonicalName = normalizeIngredientName(ingredient.name);
   const foodEntry = FOOD_DATABASE[canonicalName];
-  
+
   if (foodEntry) {
     return {
       originalName: ingredient.name,
@@ -109,7 +117,7 @@ export function lookupIngredient(ingredient: IngredientQuantity): IngredientLook
       foodEntry,
     };
   }
-  
+
   // Not found
   return {
     originalName: ingredient.name,
@@ -125,13 +133,13 @@ export function lookupIngredient(ingredient: IngredientQuantity): IngredientLook
 
 /**
  * Convert ingredient quantity to grams or milliliters
- * 
+ *
  * Rules:
  * 1. If ingredient has gramsPerUnit, use it (for pieces, slices, etc.)
  * 2. If unit matches ingredient's baseUnit, use quantity directly
  * 3. Otherwise, use standard unit conversion factors
  * 4. If unit not found, assume grams (default)
- * 
+ *
  * @param quantity - Numeric quantity
  * @param unit - Unit string (g, cup, tbsp, piece, etc.)
  * @param foodEntry - Food entry from database (may have gramsPerUnit)
@@ -140,23 +148,26 @@ export function lookupIngredient(ingredient: IngredientQuantity): IngredientLook
 export function convertToBaseUnit(
   quantity: number,
   unit: string,
-  foodEntry: FoodEntry
+  foodEntry: FoodEntry,
 ): number {
   const normalizedUnit = unit.toLowerCase().trim();
-  
+
   // Case 1: Ingredient has gramsPerUnit (for pieces, slices, etc.)
-  if (foodEntry.gramsPerUnit && 
-      (normalizedUnit === "piece" || normalizedUnit === "pieces" || 
-       normalizedUnit === "slice" || normalizedUnit === "slices" ||
-       normalizedUnit === "whole" || normalizedUnit === "item" || normalizedUnit === "items")) {
+  if (
+    foodEntry.gramsPerUnit &&
+    (normalizedUnit === "piece" || normalizedUnit === "pieces" ||
+      normalizedUnit === "slice" || normalizedUnit === "slices" ||
+      normalizedUnit === "whole" || normalizedUnit === "item" ||
+      normalizedUnit === "items")
+  ) {
     return quantity * foodEntry.gramsPerUnit;
   }
-  
+
   // Case 2: Unit matches ingredient's baseUnit
   if (normalizedUnit === foodEntry.baseUnit) {
     return quantity;
   }
-  
+
   // Case 3: Standard unit conversion
   const conversion = UNIT_CONVERSIONS[normalizedUnit];
   if (conversion) {
@@ -164,9 +175,11 @@ export function convertToBaseUnit(
     // For now, assume all conversions are compatible
     return quantity * conversion.factor;
   }
-  
+
   // Case 4: Unknown unit - assume quantity is already in base unit
-  console.warn(`[NutritionEngine] Unknown unit "${unit}" for "${foodEntry.canonicalName}", assuming base unit`);
+  console.warn(
+    `[NutritionEngine] Unknown unit "${unit}" for "${foodEntry.canonicalName}", assuming base unit`,
+  );
   return quantity;
 }
 
@@ -176,34 +189,44 @@ export function convertToBaseUnit(
 
 /**
  * Calculate macros for a single ingredient
- * 
+ *
  * Steps:
  * 1. Convert quantity to base unit (grams or ml)
  * 2. Scale nutrition data by quantity
  * 3. Return macros + micronutrients
- * 
+ *
  * @param ingredient - Ingredient with quantity and unit
  * @param foodEntry - Food entry from database
  * @returns Macros for this ingredient
  */
 export function calculateIngredientMacros(
   ingredient: IngredientQuantity,
-  foodEntry: FoodEntry
+  foodEntry: FoodEntry,
 ): { macros: Macros; micronutrients?: Micronutrients } {
   // Convert to base unit
-  const baseQuantity = convertToBaseUnit(ingredient.quantity, ingredient.unit, foodEntry);
-  
+  const baseQuantity = convertToBaseUnit(
+    ingredient.quantity,
+    ingredient.unit,
+    foodEntry,
+  );
+
   // Scale nutrition data
   const macros: Macros = {
     calories: foodEntry.nutrition.calories * baseQuantity,
     protein_g: foodEntry.nutrition.protein_g * baseQuantity,
     carbs_g: foodEntry.nutrition.carbs_g * baseQuantity,
     fat_g: foodEntry.nutrition.fat_g * baseQuantity,
-    fiber_g: foodEntry.nutrition.fiber_g ? foodEntry.nutrition.fiber_g * baseQuantity : undefined,
-    sugar_g: foodEntry.nutrition.sugar_g ? foodEntry.nutrition.sugar_g * baseQuantity : undefined,
-    sodium_mg: foodEntry.nutrition.sodium_mg ? foodEntry.nutrition.sodium_mg * baseQuantity : undefined,
+    fiber_g: foodEntry.nutrition.fiber_g
+      ? foodEntry.nutrition.fiber_g * baseQuantity
+      : undefined,
+    sugar_g: foodEntry.nutrition.sugar_g
+      ? foodEntry.nutrition.sugar_g * baseQuantity
+      : undefined,
+    sodium_mg: foodEntry.nutrition.sodium_mg
+      ? foodEntry.nutrition.sodium_mg * baseQuantity
+      : undefined,
   };
-  
+
   // Scale micronutrients if present
   let micronutrients: Micronutrients | undefined;
   if (foodEntry.micronutrients) {
@@ -214,13 +237,13 @@ export function calculateIngredientMacros(
       }
     }
   }
-  
+
   return { macros, micronutrients };
 }
 
 /**
  * Aggregate macros across multiple ingredients
- * 
+ *
  * @param ingredientMacros - Array of macros from individual ingredients
  * @returns Total macros
  */
@@ -234,13 +257,13 @@ export function aggregateMacros(ingredientMacros: Macros[]): Macros {
     sugar_g: 0,
     sodium_mg: 0,
   };
-  
+
   for (const macros of ingredientMacros) {
     totals.calories += macros.calories;
     totals.protein_g += macros.protein_g;
     totals.carbs_g += macros.carbs_g;
     totals.fat_g += macros.fat_g;
-    
+
     if (macros.fiber_g !== undefined) {
       totals.fiber_g = (totals.fiber_g || 0) + macros.fiber_g;
     }
@@ -251,22 +274,24 @@ export function aggregateMacros(ingredientMacros: Macros[]): Macros {
       totals.sodium_mg = (totals.sodium_mg || 0) + macros.sodium_mg;
     }
   }
-  
+
   return totals;
 }
 
 /**
  * Aggregate micronutrients across multiple ingredients
- * 
+ *
  * @param ingredientMicros - Array of micronutrients from individual ingredients
  * @returns Total micronutrients
  */
-export function aggregateMicronutrients(ingredientMicros: (Micronutrients | undefined)[]): Micronutrients {
+export function aggregateMicronutrients(
+  ingredientMicros: (Micronutrients | undefined)[],
+): Micronutrients {
   const totals: Micronutrients = {};
-  
+
   for (const micros of ingredientMicros) {
     if (!micros) continue;
-    
+
     for (const [key, value] of Object.entries(micros)) {
       if (value !== undefined) {
         const k = key as keyof Micronutrients;
@@ -274,7 +299,7 @@ export function aggregateMicronutrients(ingredientMicros: (Micronutrients | unde
       }
     }
   }
-  
+
   return totals;
 }
 
@@ -284,21 +309,24 @@ export function aggregateMicronutrients(ingredientMicros: (Micronutrients | unde
 
 /**
  * Calculate confidence level based on ingredient match rate
- * 
+ *
  * Rules:
  * - High: ≥80% ingredients matched
  * - Medium: ≥60% ingredients matched
  * - Low: <60% ingredients matched
- * 
+ *
  * @param matchedCount - Number of ingredients found in database
  * @param totalCount - Total number of ingredients
  * @returns Confidence level
  */
-export function calculateConfidence(matchedCount: number, totalCount: number): ConfidenceLevel {
+export function calculateConfidence(
+  matchedCount: number,
+  totalCount: number,
+): ConfidenceLevel {
   if (totalCount === 0) return "low";
-  
+
   const matchRate = matchedCount / totalCount;
-  
+
   if (matchRate >= CONFIDENCE_THRESHOLDS.HIGH_MATCH_RATE) {
     return "high";
   } else if (matchRate >= CONFIDENCE_THRESHOLDS.MEDIUM_MATCH_RATE) {
@@ -314,10 +342,10 @@ export function calculateConfidence(matchedCount: number, totalCount: number): C
 
 /**
  * Estimate nutrition for a recipe
- * 
+ *
  * This is the main entry point for nutrition estimation.
  * Guaranteed to be deterministic: same input → same output.
- * 
+ *
  * Steps:
  * 1. Look up each ingredient in database
  * 2. Calculate macros for matched ingredients
@@ -325,49 +353,54 @@ export function calculateConfidence(matchedCount: number, totalCount: number): C
  * 4. Calculate per-serving macros
  * 5. Calculate confidence based on match rate
  * 6. Return complete nutrition result
- * 
+ *
  * @param input - Recipe nutrition input
  * @returns Complete nutrition result with macros, confidence, debug info
  */
-export function estimateRecipeNutrition(input: RecipeNutritionInput): RecipeNutritionResult {
+export function estimateRecipeNutrition(
+  input: RecipeNutritionInput,
+): RecipeNutritionResult {
   const debug = {
     ingredientBreakdown: {} as Record<string, Macros>,
     rulesApplied: [] as string[],
     unmatchedIngredients: [] as string[],
     matchedIngredients: [] as string[],
   };
-  
+
   // Track matched ingredients
   let matchedCount = 0;
   const allMacros: Macros[] = [];
   const allMicronutrients: (Micronutrients | undefined)[] = [];
-  
+
   // Process each ingredient
   for (const ingredient of input.ingredients) {
     const lookup = lookupIngredient(ingredient);
-    
+
     if (lookup.matched && lookup.foodEntry) {
       // Ingredient found - calculate macros
       matchedCount++;
       debug.matchedIngredients.push(ingredient.name);
-      
-      const { macros, micronutrients } = calculateIngredientMacros(ingredient, lookup.foodEntry);
+
+      const { macros, micronutrients } = calculateIngredientMacros(
+        ingredient,
+        lookup.foodEntry,
+      );
       allMacros.push(macros);
       allMicronutrients.push(micronutrients);
-      
+
       // Store breakdown for debugging
       debug.ingredientBreakdown[ingredient.name] = roundMacros(macros);
-      
+
       debug.rulesApplied.push(
-        `Matched "${ingredient.name}" → "${lookup.canonicalName}" (${ingredient.quantity} ${ingredient.unit})`
+        `Matched "${ingredient.name}" → "${lookup.canonicalName}" (${ingredient.quantity} ${ingredient.unit})`,
       );
     } else {
       // Ingredient not found - use zeros
       debug.unmatchedIngredients.push(ingredient.name);
       debug.rulesApplied.push(
-        `Unknown ingredient "${ingredient.name}" - using zero macros`
+        `Unknown ingredient "${ingredient.name}" - using zero macros`,
       );
-      
+
       allMacros.push({
         calories: 0,
         protein_g: 0,
@@ -379,50 +412,60 @@ export function estimateRecipeNutrition(input: RecipeNutritionInput): RecipeNutr
       });
     }
   }
-  
+
   // Aggregate totals
   const totalMacros = aggregateMacros(allMacros);
   const totalMicronutrients = aggregateMicronutrients(allMicronutrients);
-  
+
   // Calculate per-serving macros
   const perServingMacros: Macros = {
     calories: totalMacros.calories / input.servings,
     protein_g: totalMacros.protein_g / input.servings,
     carbs_g: totalMacros.carbs_g / input.servings,
     fat_g: totalMacros.fat_g / input.servings,
-    fiber_g: totalMacros.fiber_g ? totalMacros.fiber_g / input.servings : undefined,
-    sugar_g: totalMacros.sugar_g ? totalMacros.sugar_g / input.servings : undefined,
-    sodium_mg: totalMacros.sodium_mg ? totalMacros.sodium_mg / input.servings : undefined,
+    fiber_g: totalMacros.fiber_g
+      ? totalMacros.fiber_g / input.servings
+      : undefined,
+    sugar_g: totalMacros.sugar_g
+      ? totalMacros.sugar_g / input.servings
+      : undefined,
+    sodium_mg: totalMacros.sodium_mg
+      ? totalMacros.sodium_mg / input.servings
+      : undefined,
   };
-  
+
   // Calculate per-serving micronutrients
   const perServingMicronutrients: Micronutrients = {};
   for (const [key, value] of Object.entries(totalMicronutrients)) {
     if (value !== undefined) {
-      perServingMicronutrients[key as keyof Micronutrients] = value / input.servings;
+      perServingMicronutrients[key as keyof Micronutrients] = value /
+        input.servings;
     }
   }
-  
+
   // Calculate confidence
-  const confidence = calculateConfidence(matchedCount, input.ingredients.length);
-  debug.rulesApplied.push(
-    `Confidence: ${confidence} (${matchedCount}/${input.ingredients.length} ingredients matched)`
+  const confidence = calculateConfidence(
+    matchedCount,
+    input.ingredients.length,
   );
-  
+  debug.rulesApplied.push(
+    `Confidence: ${confidence} (${matchedCount}/${input.ingredients.length} ingredients matched)`,
+  );
+
   // Round all values
   const roundedTotal = roundMacros(totalMacros);
   const roundedPerServing = roundMacros(perServingMacros);
   const roundedMicronutrients = Object.keys(perServingMicronutrients).length > 0
     ? roundMicronutrients(perServingMicronutrients)
     : undefined;
-  
+
   // Calculate diet tags
   const canonicalNames = input.ingredients
-    .map(ing => normalizeForLookup(ing.name))
-    .filter(name => FOOD_DATABASE[name] !== undefined);
-  
+    .map((ing) => normalizeForLookup(ing.name))
+    .filter((name) => FOOD_DATABASE[name] !== undefined);
+
   const dietTags = getDietTags(canonicalNames, roundedPerServing);
-  
+
   return {
     recipeId: input.recipeId,
     recipeName: input.recipeName,
@@ -443,18 +486,20 @@ export function estimateRecipeNutrition(input: RecipeNutritionInput): RecipeNutr
 /**
  * Estimate nutrition for multiple recipes
  * Useful for meal plans with multiple recipes
- * 
+ *
  * @param inputs - Array of recipe nutrition inputs
  * @returns Array of nutrition results
  */
-export function estimateMultipleRecipes(inputs: RecipeNutritionInput[]): RecipeNutritionResult[] {
-  return inputs.map(input => estimateRecipeNutrition(input));
+export function estimateMultipleRecipes(
+  inputs: RecipeNutritionInput[],
+): RecipeNutritionResult[] {
+  return inputs.map((input) => estimateRecipeNutrition(input));
 }
 
 /**
  * Aggregate nutrition across multiple recipes
  * Useful for daily/weekly meal plan totals
- * 
+ *
  * @param results - Array of nutrition results
  * @returns Aggregated macros and micronutrients
  */
@@ -462,11 +507,15 @@ export function aggregateRecipeNutrition(results: RecipeNutritionResult[]): {
   totalMacros: Macros;
   totalMicronutrients: Micronutrients;
 } {
-  const allMacros = results.map(r => r.total);
-  const allMicros = results.map(r => r.micronutrients).filter(m => m !== undefined) as Micronutrients[];
-  
+  const allMacros = results.map((r) => r.total);
+  const allMicros = results.map((r) => r.micronutrients).filter((m) =>
+    m !== undefined
+  ) as Micronutrients[];
+
   return {
     totalMacros: roundMacros(aggregateMacros(allMacros)),
-    totalMicronutrients: roundMicronutrients(aggregateMicronutrients(allMicros)),
+    totalMicronutrients: roundMicronutrients(
+      aggregateMicronutrients(allMicros),
+    ),
   };
 }

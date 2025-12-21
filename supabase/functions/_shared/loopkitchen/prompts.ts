@@ -1,16 +1,17 @@
 /**
  * OpenAI Prompt Templates for LoopGPT Recipe Generation
- * 
+ *
  * System and user prompts for generating recipes, meal plans, and nutrition data.
  * Ported from LoopKitchen for integration into LoopGPT backend.
  */
 
 /**
  * LeftoverGPT - Recipe List Generation (Chaos Mode Included)
- * 
+ *
  * System prompt for generating 3-8 recipe suggestions from ingredients
  */
-export const LEFTOVERGPT_LIST_SYSTEM = `Generate 3-8 recipe ideas from ingredients. Output valid JSON only.
+export const LEFTOVERGPT_LIST_SYSTEM =
+  `Generate 3-8 recipe ideas from ingredients. Output valid JSON only.
 
 Schema:
 {
@@ -38,24 +39,32 @@ export const LEFTOVERGPT_LIST_USER = (
   vibes?: string[],
   timeLimit?: number,
   dietConstraints?: string[],
-  extraNotes?: string
-) => `User ingredients (from fridge/pantry): ${ingredients.join(', ')}
+  extraNotes?: string,
+) =>
+  `User ingredients (from fridge/pantry): ${ingredients.join(", ")}
 
-User requested vibes: ${vibes && vibes.length > 0 ? vibes.join(', ') : 'none specified'}
+User requested vibes: ${
+    vibes && vibes.length > 0 ? vibes.join(", ") : "none specified"
+  }
 
 User constraints (if any):
-- Max time in minutes: ${timeLimit || 'none'}
-- Dietary constraints: ${dietConstraints && dietConstraints.length > 0 ? dietConstraints.join(', ') : 'none'}
-- Notes: ${extraNotes || 'none'}
+- Max time in minutes: ${timeLimit || "none"}
+- Dietary constraints: ${
+    dietConstraints && dietConstraints.length > 0
+      ? dietConstraints.join(", ")
+      : "none"
+  }
+- Notes: ${extraNotes || "none"}
 
 Return a JSON object following the specified schema.`;
 
 /**
  * LeftoverGPT - Recipe Detail Generation
- * 
+ *
  * System prompt for generating detailed recipe information
  */
-export const LEFTOVERGPT_DETAIL_SYSTEM = `You are LeftoverGPT, an AI chef that turns leftover ingredients into fun, slightly chaotic but still cookable recipes.
+export const LEFTOVERGPT_DETAIL_SYSTEM =
+  `You are LeftoverGPT, an AI chef that turns leftover ingredients into fun, slightly chaotic but still cookable recipes.
 
 You will be given:
 - A recipe title
@@ -108,21 +117,23 @@ export const LEFTOVERGPT_DETAIL_USER = (
   ingredients: string[],
   vibes?: string[],
   chaosTarget?: number,
-  timeLimit?: number
-) => `Base recipe title: ${recipeTitle}
-User ingredients available: ${ingredients.join(', ')}
-Requested vibes: ${vibes && vibes.length > 0 ? vibes.join(', ') : 'none'}
-Target chaos rating (1-10): ${chaosTarget || 'none'}
-Requested time limit in minutes (or null): ${timeLimit || 'null'}
+  timeLimit?: number,
+) =>
+  `Base recipe title: ${recipeTitle}
+User ingredients available: ${ingredients.join(", ")}
+Requested vibes: ${vibes && vibes.length > 0 ? vibes.join(", ") : "none"}
+Target chaos rating (1-10): ${chaosTarget || "none"}
+Requested time limit in minutes (or null): ${timeLimit || "null"}
 
 Generate one full recipe as JSON following the specified schema.`;
 
 /**
  * NutritionGPT - Nutrition Analysis
- * 
+ *
  * System prompt for generating nutrition information
  */
-export const NUTRITIONGPT_SYSTEM = `Estimate nutrition from ingredients. Output valid JSON only.
+export const NUTRITIONGPT_SYSTEM =
+  `Estimate nutrition from ingredients. Output valid JSON only.
 
 Schema:
 {
@@ -142,14 +153,19 @@ Rules:
 - perServing * servings ≈ total
 - Lower confidence if data incomplete`;
 
-export const NUTRITIONGPT_USER = (recipeTitle: string, servings: number, ingredients: Array<{ name: string; quantity: string }>) => `Recipe to analyze:
+export const NUTRITIONGPT_USER = (
+  recipeTitle: string,
+  servings: number,
+  ingredients: Array<{ name: string; quantity: string }>,
+) =>
+  `Recipe to analyze:
 
 Title: ${recipeTitle}
 
 Servings: ${servings}
 
 Ingredients:
-${ingredients.map(i => `- ${i.quantity} ${i.name}`).join('\n')}
+${ingredients.map((i) => `- ${i.quantity} ${i.name}`).join("\n")}
 
 Notes:
 - If any ingredient quantity is missing, make a reasonable assumption.
@@ -159,10 +175,11 @@ Return a JSON object following the schema specified in the system prompt.`;
 
 /**
  * GroceryGPT - Grocery List Generation
- * 
+ *
  * System prompt for organizing ingredients into a grocery list
  */
-export const GROCERYGPT_SYSTEM = `Organize ingredients into grocery list. Output valid JSON only.
+export const GROCERYGPT_SYSTEM =
+  `Organize ingredients into grocery list. Output valid JSON only.
 
 Schema:
 {
@@ -179,21 +196,25 @@ Rules:
 - Clear quantities
 - All unchecked`;
 
-export const GROCERYGPT_USER = (recipeTitle: string, ingredients: Array<{ name: string; quantity: string }>) => `
+export const GROCERYGPT_USER = (
+  recipeTitle: string,
+  ingredients: Array<{ name: string; quantity: string }>,
+) => `
 Recipe: ${recipeTitle}
 
 Needed ingredients:
-${ingredients.map(i => `- ${i.quantity} ${i.name}`).join('\n')}
+${ingredients.map((i) => `- ${i.quantity} ${i.name}`).join("\n")}
 
 Organize these into a categorized grocery list.
 `;
 
 /**
  * MealPlannerGPT - Weekly Meal Plan Generation
- * 
+ *
  * System prompt for generating 7-day meal plans
  */
-export const MEALPLANNERGPT_SYSTEM = `Generate meal plan from ingredients. Output valid JSON only.
+export const MEALPLANNERGPT_SYSTEM =
+  `Generate meal plan from ingredients. Output valid JSON only.
 
 Schema:
 {
@@ -223,13 +244,14 @@ export const MEALPLANNERGPT_USER = (
   goalCaloriesPerDay: number | null,
   dietNotes: string,
   days: number,
-  todayIso: string
-) => `Base ingredients the user often has:
-${ingredients.join(', ')}
+  todayIso: string,
+) =>
+  `Base ingredients the user often has:
+${ingredients.join(", ")}
 
 Goal:
-- Calorie target per day (or null): ${goalCaloriesPerDay || 'null'}
-- Diet style notes: ${dietNotes || 'none'}
+- Calorie target per day (or null): ${goalCaloriesPerDay || "null"}
+- Diet style notes: ${dietNotes || "none"}
 - Days to plan: ${days}
 
 Today's date (for startDate): ${todayIso}

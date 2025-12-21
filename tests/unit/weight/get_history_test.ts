@@ -3,23 +3,30 @@
  * Tests for retrieving weight history
  */
 
-import {
-  assertEquals,
-  assertExists,
-  assert,
-  testData,
-} from "../../helpers.ts";
+import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 Deno.test("weight_history: returns entries in chronological order", async () => {
   const userId = testData.userId();
   const mockEntries = [
-    testData.weightEntry({ user_id: userId, recorded_at: "2024-01-01T00:00:00Z", weight_kg: 70 }),
-    testData.weightEntry({ user_id: userId, recorded_at: "2024-01-02T00:00:00Z", weight_kg: 69.5 }),
-    testData.weightEntry({ user_id: userId, recorded_at: "2024-01-03T00:00:00Z", weight_kg: 69 }),
+    testData.weightEntry({
+      user_id: userId,
+      recorded_at: "2024-01-01T00:00:00Z",
+      weight_kg: 70,
+    }),
+    testData.weightEntry({
+      user_id: userId,
+      recorded_at: "2024-01-02T00:00:00Z",
+      weight_kg: 69.5,
+    }),
+    testData.weightEntry({
+      user_id: userId,
+      recorded_at: "2024-01-03T00:00:00Z",
+      weight_kg: 69,
+    }),
   ];
 
   assertEquals(mockEntries.length, 3);
-  
+
   // Check chronological order
   for (let i = 1; i < mockEntries.length; i++) {
     const prev = new Date(mockEntries[i - 1].recorded_at);
@@ -79,7 +86,7 @@ Deno.test("weight_history: filters by user correctly", async () => {
     testData.weightEntry({ user_id: userId }),
   ];
 
-  assert(mockEntries.every(e => e.user_id === userId));
+  assert(mockEntries.every((e) => e.user_id === userId));
 });
 
 Deno.test("weight_history: handles pagination", async () => {

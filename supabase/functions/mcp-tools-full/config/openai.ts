@@ -10,7 +10,7 @@ let client: OpenAI | null = null;
 export function getOpenAIClient(): OpenAI {
   if (!client) {
     const apiKey = Deno.env.get("OPENAI_API_KEY");
-    
+
     if (!apiKey) {
       throw new Error("OPENAI_API_KEY environment variable is not set");
     }

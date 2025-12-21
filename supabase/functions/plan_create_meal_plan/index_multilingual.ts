@@ -4,11 +4,25 @@
  */
 
 import { withLogging } from "../../middleware/logging.ts";
-import { createErrorResponse, createSuccessResponse, validateRequired } from "../../middleware/errorHandler.ts";
-import { getKCalGoals, getRecipesFromLeftover, getMacrosFromNutrition } from "../_lib/mcpWrappers.ts";
-import { buildAffiliateLinks, generateAffiliateSummary } from "../_lib/affiliate.ts";
-import { formatMealPlan, detectLanguage } from "../_lib/multilingual.ts";
-import type { GenerateWeekPlanRequest, GenerateWeekPlanResponse } from "../_lib/types.ts";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  validateRequired,
+} from "../../middleware/errorHandler.ts";
+import {
+  getKCalGoals,
+  getMacrosFromNutrition,
+  getRecipesFromLeftover,
+} from "../_lib/mcpWrappers.ts";
+import {
+  buildAffiliateLinks,
+  generateAffiliateSummary,
+} from "../_lib/affiliate.ts";
+import { detectLanguage, formatMealPlan } from "../_lib/multilingual.ts";
+import type {
+  GenerateWeekPlanRequest,
+  GenerateWeekPlanResponse,
+} from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
   try {
@@ -32,27 +46,37 @@ async function handler(req: Request): Promise<Response> {
     } = body;
 
     // NEW: Detect language from user input
-    const userInput = vibe || goal_type || dietary_restrictions.join(" ") || "healthy meal plan";
+    const userInput = vibe || goal_type || dietary_restrictions.join(" ") ||
+      "healthy meal plan";
     const detectedLanguage = language || detectLanguage(userInput);
-    
-    console.log(`[MULTILINGUAL] Detected language: ${detectedLanguage} from input: "${userInput}"`);
+
+    console.log(
+      `[MULTILINGUAL] Detected language: ${detectedLanguage} from input: "${userInput}"`,
+    );
 
     // Calculate date range (default to 7 days starting tomorrow)
     const startDate = start_date || getNextDay();
     const endDate = end_date || getDateAfterDays(startDate, 7);
 
-    console.log(`Generating meal plan for user ${chatgpt_user_id} from ${startDate} to ${endDate}`);
+    console.log(
+      `Generating meal plan for user ${chatgpt_user_id} from ${startDate} to ${endDate}`,
+    );
 
     // Step 1: Get user goals from K-Cal GPT
     const userGoals = await getKCalGoals(chatgpt_user_id);
-    const finalCaloriesTarget = calories_target || userGoals?.daily_calorie_goal || 2000;
+    const finalCaloriesTarget = calories_target ||
+      userGoals?.daily_calorie_goal || 2000;
     const finalMacrosTarget = macros_target || {
       protein_g: userGoals?.daily_protein_goal || 150,
       carbs_g: userGoals?.daily_carbs_goal || 200,
       fat_g: userGoals?.daily_fat_goal || 65,
     };
 
-    console.log(`User goals: ${finalCaloriesTarget} cal, ${JSON.stringify(finalMacrosTarget)} macros`);
+    console.log(
+      `User goals: ${finalCaloriesTarget} cal, ${
+        JSON.stringify(finalMacrosTarget)
+      } macros`,
+    );
 
     // Step 2: Generate recipes for the week
     const dailyMeals: any[] = [];
@@ -62,7 +86,11 @@ async function handler(req: Request): Promise<Response> {
       const dayDate = getDateAfterDays(startDate, day - 1);
 
       for (let mealOrder = 1; mealOrder <= recipes_per_day; mealOrder++) {
-        const mealType = mealOrder === 1 ? "breakfast" : mealOrder === 2 ? "lunch" : "dinner";
+        const mealType = mealOrder === 1
+          ? "breakfast"
+          : mealOrder === 2
+          ? "lunch"
+          : "dinner";
 
         // Generate recipe from LeftoverGPT
         const recipe = await getRecipesFromLeftover({
@@ -107,7 +135,7 @@ async function handler(req: Request): Promise<Response> {
         carbs_g: acc.carbs_g + (meal.macros?.carbs_g || 0),
         fat_g: acc.fat_g + (meal.macros?.fat_g || 0),
       }),
-      { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }
+      { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 },
     );
 
     // Step 4: Build affiliate summary
@@ -145,7 +173,6 @@ async function handler(req: Request): Promise<Response> {
       formatted_message: formattedMessage,
       language: detectedLanguage,
     });
-
   } catch (error) {
     console.error("Error generating meal plan:", error);
     return createErrorResponse(error);
@@ -167,4 +194,3 @@ function getDateAfterDays(startDate: string, days: number): string {
 
 // Export handler with logging middleware
 export default withLogging(handler);
-

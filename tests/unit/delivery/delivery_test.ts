@@ -3,7 +3,7 @@
  * Comprehensive tests for delivery functionality
  */
 
-import { assertEquals, assertExists, assert, testData } from "../../helpers.ts";
+import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 // Search Restaurants Tests (10 tests)
 Deno.test("delivery: searches restaurants by query", async () => {
@@ -13,7 +13,7 @@ Deno.test("delivery: searches restaurants by query", async () => {
     { id: "2", name: "NY Pizza", cuisine: "Italian" },
   ];
   assert(mockResults.length > 0);
-  assert(mockResults.every(r => r.name.toLowerCase().includes("pizza")));
+  assert(mockResults.every((r) => r.name.toLowerCase().includes("pizza")));
 });
 
 Deno.test("delivery: filters by location", async () => {
@@ -30,7 +30,7 @@ Deno.test("delivery: filters by cuisine type", async () => {
     { id: "1", cuisine: "Italian" },
     { id: "2", cuisine: "Italian" },
   ];
-  assert(mockResults.every(r => r.cuisine === cuisine));
+  assert(mockResults.every((r) => r.cuisine === cuisine));
 });
 
 Deno.test("delivery: sorts by distance", async () => {
@@ -66,7 +66,7 @@ Deno.test("delivery: filters by rating", async () => {
     { id: "1", rating: 4.5 },
     { id: "2", rating: 4.8 },
   ];
-  assert(mockResults.every(r => r.rating >= minRating));
+  assert(mockResults.every((r) => r.rating >= minRating));
 });
 
 Deno.test("delivery: handles no results", async () => {
@@ -201,7 +201,7 @@ Deno.test("order: validates items", async () => {
     { item_id: "1", quantity: 2 },
     { item_id: "2", quantity: 1 },
   ];
-  assert(items.every(i => i.quantity > 0));
+  assert(items.every((i) => i.quantity > 0));
 });
 
 Deno.test("order: calculates subtotal", async () => {
@@ -370,7 +370,7 @@ Deno.test("track: includes contact options", async () => {
 // Provider Routing Tests (7 tests)
 Deno.test("routing: queries multiple providers", async () => {
   const providers = ["instacart", "mealme", "walmart"];
-  const mockQuotes = providers.map(p => ({ provider: p, available: true }));
+  const mockQuotes = providers.map((p) => ({ provider: p, available: true }));
   assertEquals(mockQuotes.length, 3);
 });
 
@@ -389,7 +389,9 @@ Deno.test("routing: compares delivery times", async () => {
     { provider: "instacart", delivery_minutes: 45 },
     { provider: "mealme", delivery_minutes: 30 },
   ];
-  const fastest = quotes.reduce((min, q) => q.delivery_minutes < min.delivery_minutes ? q : min);
+  const fastest = quotes.reduce((min, q) =>
+    q.delivery_minutes < min.delivery_minutes ? q : min
+  );
   assertEquals(fastest.provider, "mealme");
 });
 
@@ -419,7 +421,7 @@ Deno.test("routing: handles provider failures", async () => {
     { provider: "instacart", available: true },
     { provider: "mealme", available: false, error: "Service unavailable" },
   ];
-  const available = quotes.filter(q => q.available);
+  const available = quotes.filter((q) => q.available);
   assertEquals(available.length, 1);
 });
 

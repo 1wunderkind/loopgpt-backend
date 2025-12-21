@@ -1,17 +1,17 @@
 /**
  * Reliability Layer Validation Tests
- * 
+ *
  * Tests the reliability utilities (timeout, retry, error classification)
  * Run with: deno test --allow-net --allow-env reliability.test.ts
  */
 
 import { assertEquals, assertRejects } from "std/assert/mod.ts";
 import {
-  withTimeout,
-  withRetry,
-  withToolReliability,
   classifyError,
   type ToolErrorCode,
+  withRetry,
+  withTimeout,
+  withToolReliability,
 } from "../mcp-server/lib/reliability.ts";
 
 // ============================================================================
@@ -22,7 +22,7 @@ Deno.test("withTimeout - resolves within timeout", async () => {
   const result = await withTimeout(
     Promise.resolve("success"),
     1000,
-    "test operation"
+    "test operation",
   );
   assertEquals(result, "success");
 });
@@ -33,11 +33,11 @@ Deno.test("withTimeout - throws on timeout", async () => {
       await withTimeout(
         new Promise((resolve) => setTimeout(resolve, 2000)),
         100,
-        "slow operation"
+        "slow operation",
       );
     },
     Error,
-    "Operation 'slow operation' timed out after 100ms"
+    "Operation 'slow operation' timed out after 100ms",
   );
 });
 
@@ -47,11 +47,11 @@ Deno.test("withTimeout - propagates errors", async () => {
       await withTimeout(
         Promise.reject(new Error("test error")),
         1000,
-        "failing operation"
+        "failing operation",
       );
     },
     Error,
-    "test error"
+    "test error",
   );
 });
 
@@ -70,7 +70,7 @@ Deno.test("withRetry - succeeds on first attempt", async () => {
       maxRetries: 3,
       retryDelayMs: 10,
       shouldRetry: () => true,
-    }
+    },
   );
   assertEquals(result, "success");
   assertEquals(attempts, 1);
@@ -90,7 +90,7 @@ Deno.test("withRetry - retries on failure and succeeds", async () => {
       maxRetries: 3,
       retryDelayMs: 10,
       shouldRetry: () => true,
-    }
+    },
   );
   assertEquals(result, "success");
   assertEquals(attempts, 3);
@@ -109,11 +109,11 @@ Deno.test("withRetry - exhausts retries and throws", async () => {
           maxRetries: 2,
           retryDelayMs: 10,
           shouldRetry: () => true,
-        }
+        },
       );
     },
     Error,
-    "persistent failure"
+    "persistent failure",
   );
   assertEquals(attempts, 3); // Initial + 2 retries
 });
@@ -131,11 +131,11 @@ Deno.test("withRetry - respects shouldRetry condition", async () => {
           maxRetries: 3,
           retryDelayMs: 10,
           shouldRetry: () => false, // Never retry
-        }
+        },
       );
     },
     Error,
-    "non-retryable"
+    "non-retryable",
   );
   assertEquals(attempts, 1); // No retries
 });
@@ -200,7 +200,7 @@ Deno.test("withToolReliability - success case", async () => {
       toolName: "test_tool",
       timeoutMs: 1000,
       maxRetries: 0,
-    }
+    },
   );
   assertEquals(result.ok, true);
   if (result.ok) {
@@ -218,7 +218,7 @@ Deno.test("withToolReliability - timeout case", async () => {
       toolName: "test_tool",
       timeoutMs: 100,
       maxRetries: 0,
-    }
+    },
   );
   assertEquals(result.ok, false);
   if (!result.ok) {
@@ -245,7 +245,7 @@ Deno.test("withToolReliability - retry on retryable error", async () => {
       maxRetries: 2,
       retryDelayMs: 10,
       retryOnCodes: ["UPSTREAM_5XX"],
-    }
+    },
   );
   assertEquals(result.ok, true);
   assertEquals(attempts, 2);
@@ -266,7 +266,7 @@ Deno.test("withToolReliability - no retry on non-retryable error", async () => {
       maxRetries: 2,
       retryDelayMs: 10,
       retryOnCodes: ["UPSTREAM_5XX"], // Only retry 5xx
-    }
+    },
   );
   assertEquals(result.ok, false);
   assertEquals(attempts, 1); // No retries for 4xx
@@ -282,10 +282,10 @@ Deno.test("withToolReliability - no retry on non-retryable error", async () => {
 Deno.test("classifyError - sanitizes sensitive information", () => {
   const error = new Error("API key abc123xyz is invalid");
   const result = classifyError(error, "test_tool");
-  
+
   // Message should not contain the API key
   assertEquals(result.message.includes("abc123xyz"), false);
-  
+
   // Technical message may contain it (for debugging)
   assertEquals(result.technicalMessage?.includes("abc123xyz"), true);
 });
@@ -297,7 +297,7 @@ Deno.test("classifyError - sanitizes sensitive information", () => {
 Deno.test("withRetry - uses exponential backoff", async () => {
   let attempts = 0;
   const delays: number[] = [];
-  
+
   await assertRejects(async () => {
     await withRetry(
       async () => {
@@ -309,10 +309,10 @@ Deno.test("withRetry - uses exponential backoff", async () => {
         maxRetries: 3,
         retryDelayMs: 100,
         shouldRetry: () => true,
-      }
+      },
     );
   });
-  
+
   assertEquals(attempts, 4); // Initial + 3 retries
   // Delays should be approximately: 100ms, 200ms, 400ms (exponential)
 });

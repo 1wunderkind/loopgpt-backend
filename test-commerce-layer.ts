@@ -1,11 +1,12 @@
 /**
  * Commerce Layer Test Script
- * 
+ *
  * Tests pantry management, missing ingredient detection,
  * cart preparation, and integration with commerce router.
  */
 
-const SUPABASE_URL = "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
+const SUPABASE_URL =
+  "https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-tools";
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!SERVICE_ROLE_KEY) {
@@ -40,7 +41,7 @@ const tests: TestCase[] = [
     },
     expectedFields: ["totalItems", "categories"],
   },
-  
+
   // Test 2: Grocery list with pantry (missing ingredient detection)
   {
     name: "Grocery list with pantry - detect missing ingredients",
@@ -65,9 +66,15 @@ const tests: TestCase[] = [
         { name: "olive oil", quantity: "1 bottle" },
       ],
     },
-    expectedFields: ["totalItems", "categories", "missingSummary", "missingCount", "availableCount"],
+    expectedFields: [
+      "totalItems",
+      "categories",
+      "missingSummary",
+      "missingCount",
+      "availableCount",
+    ],
   },
-  
+
   // Test 3: Prepare cart from grocery list (mock commerce router)
   {
     name: "Prepare cart from grocery list",
@@ -98,9 +105,15 @@ const tests: TestCase[] = [
         optimizeFor: "balanced",
       },
     },
-    expectedFields: ["success", "provider", "quote", "scoreBreakdown", "confirmationToken"],
+    expectedFields: [
+      "success",
+      "provider",
+      "quote",
+      "scoreBreakdown",
+      "confirmationToken",
+    ],
   },
-  
+
   // Test 4: Prepare cart from recipes (no grocery list)
   {
     name: "Prepare cart from recipes directly",
@@ -128,16 +141,22 @@ const tests: TestCase[] = [
         optimizeFor: "price",
       },
     },
-    expectedFields: ["success", "provider", "quote", "scoreBreakdown", "confirmationToken"],
+    expectedFields: [
+      "success",
+      "provider",
+      "quote",
+      "scoreBreakdown",
+      "confirmationToken",
+    ],
   },
 ];
 
 async function runTest(test: TestCase): Promise<boolean> {
   console.log(`\n=== Test: ${test.name} ===`);
   console.log(`Tool: ${test.tool}`);
-  
+
   const startTime = Date.now();
-  
+
   try {
     const response = await fetch(`${SUPABASE_URL}/tools/${test.tool}`, {
       method: "POST",
@@ -147,61 +166,68 @@ async function runTest(test: TestCase): Promise<boolean> {
       },
       body: JSON.stringify(test.params),
     });
-    
+
     const duration = Date.now() - startTime;
-    
+
     if (!response.ok) {
       console.error(`❌ HTTP error: ${response.status} ${response.statusText}`);
       const text = await response.text();
       console.error(`Response: ${text}`);
       return false;
     }
-    
+
     const result = await response.json();
-    
+
     console.log(`Duration: ${duration}ms`);
     console.log(`Response keys: ${Object.keys(result).join(", ")}`);
-    
+
     // Check expected fields
     if (test.expectedFields) {
-      const missingFields = test.expectedFields.filter(field => !(field in result));
+      const missingFields = test.expectedFields.filter((field) =>
+        !(field in result)
+      );
       if (missingFields.length > 0) {
-        console.error(`❌ Missing expected fields: ${missingFields.join(", ")}`);
+        console.error(
+          `❌ Missing expected fields: ${missingFields.join(", ")}`,
+        );
         return false;
       }
       console.log(`✅ All expected fields present`);
     }
-    
+
     // Test-specific validations
     if (test.tool === "grocery.list" && test.params.pantry) {
       console.log(`\nMissing Ingredient Detection:`);
       console.log(`  Missing Summary: ${result.missingSummary || "N/A"}`);
       console.log(`  Missing Count: ${result.missingCount || 0}`);
       console.log(`  Available Count: ${result.availableCount || 0}`);
-      
-      if (result.missingCount !== undefined && result.availableCount !== undefined) {
+
+      if (
+        result.missingCount !== undefined && result.availableCount !== undefined
+      ) {
         console.log(`✅ Missing ingredient detection working`);
       } else {
         console.log(`⚠️  Missing ingredient detection not working`);
       }
     }
-    
+
     if (test.tool === "commerce.prepareCart") {
       console.log(`\nCommerce Router Response:`);
       console.log(`  Provider: ${result.provider || "N/A"}`);
       console.log(`  Total: $${result.quote?.total || "N/A"}`);
       console.log(`  Score: ${result.scoreBreakdown?.weightedTotal || "N/A"}`);
-      console.log(`  Explanation: ${result.scoreBreakdown?.explanation || "N/A"}`);
-      
+      console.log(
+        `  Explanation: ${result.scoreBreakdown?.explanation || "N/A"}`,
+      );
+
       if (result.provider && result.quote && result.scoreBreakdown) {
         console.log(`✅ Commerce router integration working`);
       } else {
         console.log(`⚠️  Commerce router integration not working`);
       }
     }
-    
+
     return true;
-    
   } catch (error: any) {
     const duration = Date.now() - startTime;
     console.error(`❌ Test failed: ${error.message}`);
@@ -214,10 +240,10 @@ async function main() {
   console.log("=== Commerce Layer Test Suite ===");
   console.log(`Testing: ${SUPABASE_URL}`);
   console.log(`Total tests: ${tests.length}\n`);
-  
+
   let passed = 0;
   let failed = 0;
-  
+
   for (const test of tests) {
     const success = await runTest(test);
     if (success) {
@@ -225,16 +251,16 @@ async function main() {
     } else {
       failed++;
     }
-    
+
     // Wait between tests to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
-  
+
   console.log("\n=== Test Summary ===");
   console.log(`Passed: ${passed}/${tests.length}`);
   console.log(`Failed: ${failed}/${tests.length}`);
   console.log(`Success rate: ${((passed / tests.length) * 100).toFixed(1)}%`);
-  
+
   if (failed === 0) {
     console.log("\n✅ All tests passed!");
   } else {

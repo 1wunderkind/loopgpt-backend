@@ -1,14 +1,15 @@
 # ✅ LoopKitchen Integration - Phase 2 Complete!
 
-**Date**: December 6, 2025  
-**Status**: ✅ Complete  
+**Date**: December 6, 2025\
+**Status**: ✅ Complete\
 **Duration**: ~45 minutes
 
 ---
 
 ## 🎯 Phase 2 Objectives
 
-Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, soft constraints, and widget support.
+Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode,
+soft constraints, and widget support.
 
 ---
 
@@ -19,6 +20,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 **File**: `mcp-tools/loopkitchen_recipes.ts` (220 lines)
 
 **Features**:
+
 - ✅ Chaos mode support (1-10 rating)
 - ✅ Soft time constraints (flags over-time recipes)
 - ✅ Soft diet constraints (flags non-matching recipes)
@@ -29,6 +31,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 - ✅ Retry logic (2 attempts with exponential backoff)
 
 **Input Parameters**:
+
 ```typescript
 {
   ingredients: string[];      // Required
@@ -41,6 +44,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 ```
 
 **Output**:
+
 ```typescript
 {
   widgets: RecipeCardCompact[] | [InfoMessage]
@@ -48,6 +52,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 ```
 
 **RecipeCardCompact Fields**:
+
 - `id` - Slug-based ID
 - `title` - Recipe name
 - `shortDescription` - 1-2 sentence description
@@ -69,6 +74,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 **File**: `mcp-tools/loopkitchen_recipe_details.ts` (268 lines)
 
 **Features**:
+
 - ✅ Full recipe with instructions
 - ✅ Ingredient split (have vs need)
 - ✅ Nutrition analysis (parallel call)
@@ -79,6 +85,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 - ✅ InfoMessage widget for errors
 
 **Input Parameters**:
+
 ```typescript
 {
   recipeId: string;          // Required (slug-based)
@@ -91,6 +98,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 ```
 
 **Output**:
+
 ```typescript
 {
   widgets: [
@@ -102,6 +110,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 ```
 
 **RecipeCardDetailed Fields**:
+
 - `id` - Slug-based ID
 - `title` - Recipe name
 - `description` - Short fun description
@@ -115,6 +124,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 - `proTip` - Optional helpful tip
 
 **NutritionSummary Fields**:
+
 - `servings` - Number of servings
 - `totalNutrition` - {calories, protein_g, carbs_g, fat_g, fiber_g?, sugar_g?}
 - `perServing` - {calories, protein_g, carbs_g, fat_g, fiber_g?, sugar_g?}
@@ -122,6 +132,7 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 - `confidence` - low | medium | high
 
 **GroceryList Fields**:
+
 - `categories` - Array of {name, items: [{name, quantity, checked}]}
 
 ---
@@ -131,27 +142,29 @@ Implement `generateRecipes` and `getRecipeDetails` MCP tools with chaos mode, so
 **File**: `mcp-tools/loopkitchen_index.ts` (10 lines)
 
 Exports all LoopKitchen tools for easy importing:
+
 ```typescript
-export { generateRecipes } from './loopkitchen_recipes.ts';
-export { getRecipeDetails } from './loopkitchen_recipe_details.ts';
+export { generateRecipes } from "./loopkitchen_recipes.ts";
+export { getRecipeDetails } from "./loopkitchen_recipe_details.ts";
 ```
 
 ---
 
 ## 📊 Files Created
 
-| File | Lines | Purpose |
-|------|-------|---------|
-| `loopkitchen_recipes.ts` | 220 | Recipe generation with chaos mode |
-| `loopkitchen_recipe_details.ts` | 268 | Recipe details with nutrition |
-| `loopkitchen_index.ts` | 10 | Tool exports |
-| **Total** | **498** | **Complete recipe tools** |
+| File                            | Lines   | Purpose                           |
+| ------------------------------- | ------- | --------------------------------- |
+| `loopkitchen_recipes.ts`        | 220     | Recipe generation with chaos mode |
+| `loopkitchen_recipe_details.ts` | 268     | Recipe details with nutrition     |
+| `loopkitchen_index.ts`          | 10      | Tool exports                      |
+| **Total**                       | **498** | **Complete recipe tools**         |
 
 ---
 
 ## 🎁 Key Features Delivered
 
 ### Chaos Mode ✅
+
 ```typescript
 {
   chaosRating: 7,  // 1-10 scale
@@ -161,6 +174,7 @@ export { getRecipeDetails } from './loopkitchen_recipe_details.ts';
 ```
 
 ### Soft Constraints ✅
+
 ```typescript
 {
   timeMinutes: 35,
@@ -174,6 +188,7 @@ export { getRecipeDetails } from './loopkitchen_recipe_details.ts';
 ```
 
 ### Ingredient Split ✅
+
 ```typescript
 {
   ingredientsHave: [
@@ -188,9 +203,10 @@ export { getRecipeDetails } from './loopkitchen_recipe_details.ts';
 ```
 
 ### Pro Tips ✅
+
 ```typescript
 {
-  proTip: "Add a splash of lemon juice right before serving for a clean, bright finish."
+  proTip: "Add a splash of lemon juice right before serving for a clean, bright finish.";
 }
 ```
 
@@ -198,24 +214,25 @@ export { getRecipeDetails } from './loopkitchen_recipe_details.ts';
 
 ## 🔄 Comparison: Old vs New
 
-| Feature | Old (`recipes.ts`) | New (LoopKitchen) |
-|---------|-------------------|-------------------|
-| **Chaos Mode** | ❌ No | ✅ Yes (1-10 rating) |
-| **Soft Constraints** | ❌ Hard filters | ✅ Flags (user sees all options) |
-| **Slug IDs** | ❌ Random IDs | ✅ Readable slugs |
-| **Ingredient Split** | ❌ No | ✅ Have vs Need |
-| **Pro Tips** | ❌ No | ✅ Yes |
-| **Vibes** | ❌ No | ✅ AI-normalized |
-| **Widget System** | ❌ No | ✅ Yes (RecipeCard, InfoMessage) |
-| **Nutrition** | ✅ Yes (separate call) | ✅ Yes (parallel, better schema) |
-| **Grocery List** | ❌ No | ✅ Yes (categorized) |
-| **Error Handling** | ⚠️ Fallback recipes | ✅ InfoMessage widget |
+| Feature              | Old (`recipes.ts`)     | New (LoopKitchen)                |
+| -------------------- | ---------------------- | -------------------------------- |
+| **Chaos Mode**       | ❌ No                  | ✅ Yes (1-10 rating)             |
+| **Soft Constraints** | ❌ Hard filters        | ✅ Flags (user sees all options) |
+| **Slug IDs**         | ❌ Random IDs          | ✅ Readable slugs                |
+| **Ingredient Split** | ❌ No                  | ✅ Have vs Need                  |
+| **Pro Tips**         | ❌ No                  | ✅ Yes                           |
+| **Vibes**            | ❌ No                  | ✅ AI-normalized                 |
+| **Widget System**    | ❌ No                  | ✅ Yes (RecipeCard, InfoMessage) |
+| **Nutrition**        | ✅ Yes (separate call) | ✅ Yes (parallel, better schema) |
+| **Grocery List**     | ❌ No                  | ✅ Yes (categorized)             |
+| **Error Handling**   | ⚠️ Fallback recipes    | ✅ InfoMessage widget            |
 
 ---
 
 ## 🧪 Example Usage
 
 ### Generate Recipes
+
 ```typescript
 const result = await generateRecipes({
   ingredients: ['chicken', 'rice', 'broccoli'],
@@ -253,6 +270,7 @@ const result = await generateRecipes({
 ```
 
 ### Get Recipe Details
+
 ```typescript
 const result = await getRecipeDetails({
   recipeId: 'cozy-chicken-rice-bowl-0',
@@ -312,16 +330,19 @@ const result = await getRecipeDetails({
 ## 🚀 Next Steps
 
 **Phase 3: Nutrition Enhancement (1 day)**
+
 - Add NutritionGPT as standalone tool
 - Support recipe-less nutrition queries
 - Add meal logging
 
 **Phase 4: Meal Planning Enhancement (2 days)**
+
 - Add MealPlannerGPT tool
 - Generate 7-day meal plans
 - Integrate with commerce layer
 
 **Phase 5: Testing & Deployment (2 days)**
+
 - Unit tests
 - Integration tests
 - Staging deployment

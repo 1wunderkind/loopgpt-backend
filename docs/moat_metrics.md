@@ -3,6 +3,7 @@
 These metrics quantify LoopGPT's economic leverage and competitive advantage.
 
 ## 1. Provider Intelligence Dossier
+
 Internal record for negotiating with providers.
 
 ```sql
@@ -23,7 +24,9 @@ GROUP BY 1;
 ## 2. Moat Metrics (Investor Grade)
 
 ### A. GMV per Agent Decision
+
 Measures the economic density of our intelligence.
+
 ```sql
 SELECT 
     SUM(gmv_usd) / COUNT(DISTINCT request_id) as gmv_per_decision
@@ -32,7 +35,9 @@ WHERE agent_action IN ('QUOTE', 'ROUTE_PROVIDER');
 ```
 
 ### B. Learning Lift
+
 Measures improvement in routing outcomes over time.
+
 ```sql
 WITH monthly_stats AS (
     SELECT 
@@ -46,7 +51,9 @@ SELECT * FROM monthly_stats ORDER BY 1;
 ```
 
 ### C. Provider Concentration Risk
+
 Ensures we aren't dependent on a single provider.
+
 ```sql
 SELECT 
     provider,

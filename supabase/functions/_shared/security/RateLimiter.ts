@@ -3,9 +3,9 @@
  * Prevent abuse and DDoS attacks
  */
 
-import { Logger } from '../monitoring/Logger.ts';
+import { Logger } from "../monitoring/Logger.ts";
 
-const logger = new Logger({ context: 'RateLimiter' });
+const logger = new Logger({ context: "RateLimiter" });
 
 export interface RateLimitConfig {
   maxRequests: number;
@@ -42,7 +42,7 @@ export class RateLimiter {
 
     // Remove old requests outside the window
     const validRequests = requests.filter(
-      time => now - time < this.config.windowMs
+      (time) => now - time < this.config.windowMs,
     );
 
     // Check if limit exceeded
@@ -54,12 +54,15 @@ export class RateLimiter {
       this.requests.set(identifier, validRequests);
     }
 
-    const remaining = Math.max(0, this.config.maxRequests - validRequests.length);
+    const remaining = Math.max(
+      0,
+      this.config.maxRequests - validRequests.length,
+    );
     const oldestRequest = validRequests[0] || now;
     const resetTime = oldestRequest + this.config.windowMs;
 
     if (!allowed) {
-      logger.warn('Rate limit exceeded', {
+      logger.warn("Rate limit exceeded", {
         identifier,
         requests: validRequests.length,
         limit: this.config.maxRequests,
@@ -82,7 +85,7 @@ export class RateLimiter {
 
     for (const [identifier, requests] of this.requests.entries()) {
       const validRequests = requests.filter(
-        time => now - time < this.config.windowMs
+        (time) => now - time < this.config.windowMs,
       );
 
       if (validRequests.length === 0) {
@@ -94,7 +97,7 @@ export class RateLimiter {
     }
 
     if (cleaned > 0) {
-      logger.debug('Rate limiter cleanup', { cleaned });
+      logger.debug("Rate limiter cleanup", { cleaned });
     }
   }
 
@@ -113,7 +116,7 @@ export class RateLimiter {
     const requests = this.requests.get(identifier) || [];
 
     return requests.filter(
-      time => now - time < this.config.windowMs
+      (time) => now - time < this.config.windowMs,
     ).length;
   }
 
@@ -131,38 +134,44 @@ export class RateLimiter {
 export function rateLimitMiddleware(config: RateLimitConfig) {
   const limiter = new RateLimiter(config);
 
-  return async (req: Request, next: () => Promise<Response>): Promise<Response> => {
+  return async (
+    req: Request,
+    next: () => Promise<Response>,
+  ): Promise<Response> => {
     // Get identifier (IP address, user ID, etc.)
     const identifier = config.identifier
       ? config.identifier(req)
-      : req.headers.get('x-forwarded-for') || 'unknown';
+      : req.headers.get("x-forwarded-for") || "unknown";
 
     // Check rate limit
     const result = limiter.check(identifier);
 
     // Add rate limit headers
     const headers = new Headers();
-    headers.set('X-RateLimit-Limit', config.maxRequests.toString());
-    headers.set('X-RateLimit-Remaining', result.remaining.toString());
-    headers.set('X-RateLimit-Reset', new Date(result.resetTime).toISOString());
+    headers.set("X-RateLimit-Limit", config.maxRequests.toString());
+    headers.set("X-RateLimit-Remaining", result.remaining.toString());
+    headers.set("X-RateLimit-Reset", new Date(result.resetTime).toISOString());
 
     if (!result.allowed) {
       // Rate limit exceeded
-      headers.set('Retry-After', Math.ceil((result.resetTime - Date.now()) / 1000).toString());
+      headers.set(
+        "Retry-After",
+        Math.ceil((result.resetTime - Date.now()) / 1000).toString(),
+      );
 
       return new Response(
         JSON.stringify({
-          error: 'Rate limit exceeded',
-          message: 'Too many requests. Please try again later.',
+          error: "Rate limit exceeded",
+          message: "Too many requests. Please try again later.",
           retryAfter: result.resetTime,
         }),
         {
           status: 429,
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             ...Object.fromEntries(headers),
           },
-        }
+        },
       );
     }
 

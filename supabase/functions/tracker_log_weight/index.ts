@@ -1,16 +1,16 @@
 /**
  * log_weight Edge Function
- * 
+ *
  * Logs a user's daily weight measurement.
  * Converts units to kg internally (canonical format).
  * Upserts by (chatgpt_user_id, date) to prevent duplicates.
- * 
+ *
  * @param {string} chatgpt_user_id - User identifier
  * @param {number} weight - Weight value
  * @param {string} unit - Unit ('kg' or 'lb'), defaults to 'kg'
  * @param {string} date - Date in YYYY-MM-DD format, defaults to today
  * @param {string} source - Source of measurement ('manual', 'apple_health', 'fitbit')
- * 
+ *
  * @returns {object} { ok: true, data: {...} }
  */
 
@@ -33,27 +33,34 @@ async function handler(req: Request): Promise<Response> {
   try {
     // Parse request body
     const body: LogWeightRequest = await req.json();
-    const { chatgpt_user_id, weight, unit = "kg", date, source = "manual", language } = body;
+    const {
+      chatgpt_user_id,
+      weight,
+      unit = "kg",
+      date,
+      source = "manual",
+      language,
+    } = body;
 
     // Validation
     if (!chatgpt_user_id) {
       return new Response(
         JSON.stringify({ ok: false, error: "chatgpt_user_id is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     if (!weight || typeof weight !== "number" || weight <= 0) {
       return new Response(
         JSON.stringify({ ok: false, error: "Valid weight is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     if (unit !== "kg" && unit !== "lb") {
       return new Response(
         JSON.stringify({ ok: false, error: "Unit must be 'kg' or 'lb'" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -63,11 +70,11 @@ async function handler(req: Request): Promise<Response> {
     // Validate converted weight is within reasonable bounds
     if (weight_kg < 20 || weight_kg > 500) {
       return new Response(
-        JSON.stringify({ 
-          ok: false, 
-          error: "Weight out of reasonable range (20-500 kg)" 
+        JSON.stringify({
+          ok: false,
+          error: "Weight out of reasonable range (20-500 kg)",
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -78,45 +85,32 @@ async function handler(req: Request): Promise<Response> {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(log_date)) {
       return new Response(
-        JSON.stringify({ 
-          ok: false, 
-          error: "Date must be in YYYY-MM-DD format" 
+        JSON.stringify({
+          ok: false,
+          error: "Date must be in YYYY-MM-DD format",
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     // Create Supabase client
     // Get authenticated Supabase client (enforces RLS)
 
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-    
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: authError }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
-    
-
     if (!userId) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
     // Upsert weight log (prevents duplicates for same user/date)
@@ -131,7 +125,7 @@ async function handler(req: Request): Promise<Response> {
         },
         {
           onConflict: "chatgpt_user_id,date",
-        }
+        },
       )
       .select()
       .single();
@@ -140,12 +134,12 @@ async function handler(req: Request): Promise<Response> {
       console.error("Database error:", error);
       return new Response(
         JSON.stringify({ ok: false, error: error.message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     // Format response in user's language
-    const weight_display = unit === "lb" 
+    const weight_display = unit === "lb"
       ? `${(data.weight_kg / 0.45359237).toFixed(1)} lb`
       : `${data.weight_kg.toFixed(1)} kg`;
 
@@ -159,7 +153,7 @@ async function handler(req: Request): Promise<Response> {
         weight_display,
         date: data.date,
       },
-      userInput
+      userInput,
     );
 
     // Return success with logged data
@@ -177,7 +171,7 @@ async function handler(req: Request): Promise<Response> {
         },
         message: formatted_message, // Multilingual!
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
     return handleError(error);
@@ -186,4 +180,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export with logging middleware
 export default withStandardAPI(withLogging(handler));
-

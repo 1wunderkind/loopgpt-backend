@@ -1,28 +1,32 @@
 /**
  * LoopKitchen Recipe Details Tool
- * 
+ *
  * Generate full recipe details with ingredient split (have vs need),
  * nutrition analysis, and grocery list.
  */
 
 import {
-  // Types
-  RecipeCardDetailed,
-  NutritionSummary,
+  // Utilities
+  callModelWithRetry,
+  GROCERYGPT_SYSTEM,
+  GROCERYGPT_USER,
   GroceryList,
   InfoMessage,
-  Widget,
   // Prompts
   LEFTOVERGPT_DETAIL_SYSTEM,
   LEFTOVERGPT_DETAIL_USER,
   NUTRITIONGPT_SYSTEM,
   NUTRITIONGPT_USER,
-  GROCERYGPT_SYSTEM,
-  GROCERYGPT_USER,
-  // Utilities
-  callModelWithRetry,
+  NutritionSummary,
+  // Types
+  RecipeCardDetailed,
+  Widget,
 } from "../_shared/loopkitchen/index.ts";
-import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import {
+  categorizeError,
+  logStructuredError,
+  logSuccess,
+} from "./errorTypes.ts";
 
 // ============================================================================
 // Types
@@ -46,13 +50,13 @@ export interface GetRecipeDetailsInput {
  */
 function extractTitleFromId(recipeId: string): string {
   // Remove trailing index number
-  const withoutIndex = recipeId.replace(/-\d+$/, '');
-  
+  const withoutIndex = recipeId.replace(/-\d+$/, "");
+
   // Convert slug to title case
   return withoutIndex
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 /**
@@ -62,7 +66,7 @@ function validateInput(params: any): GetRecipeDetailsInput {
   if (!params.recipeId) {
     throw new Error("recipeId is required");
   }
-  
+
   return {
     recipeId: params.recipeId,
     recipeTitle: params.recipeTitle || extractTitleFromId(params.recipeId),
@@ -80,27 +84,31 @@ function validateInput(params: any): GetRecipeDetailsInput {
 /**
  * Get detailed recipe with nutrition and grocery list
  */
-export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[] }> {
+export async function getRecipeDetails(
+  params: any,
+): Promise<{ widgets: Widget[] }> {
   const startTime = Date.now();
-  
+
   try {
     console.log("[loopkitchen_recipe_details.get] Starting...", { params });
-    
+
     // Validate input
     const input = validateInput(params);
-    
+
     // Build prompts for recipe detail
     const detailSystemPrompt = LEFTOVERGPT_DETAIL_SYSTEM;
     const detailUserPrompt = LEFTOVERGPT_DETAIL_USER(
-      input.recipeTitle || '',
+      input.recipeTitle || "",
       input.ingredients || [],
       input.vibes || [],
       input.chaosTarget || 5,
-      input.timeLimit || 30
+      input.timeLimit || 30,
     );
-    
-    console.log("[loopkitchen_recipe_details.get] Calling OpenAI for recipe details...");
-    
+
+    console.log(
+      "[loopkitchen_recipe_details.get] Calling OpenAI for recipe details...",
+    );
+
     // Call OpenAI for recipe details
     interface RecipeDetailResponse {
       title: string;
@@ -108,34 +116,38 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
       servings: number;
       timeMinutes: number;
       chaosRating: number;
-      difficulty: 'easy' | 'medium' | 'hard';
+      difficulty: "easy" | "medium" | "hard";
       ingredientsHave: Array<{ name: string; quantity: string }>;
       ingredientsNeed: Array<{ name: string; quantity: string }>;
       instructions: string[];
       proTip?: string;
     }
-    
+
     const recipeDetail = await callModelWithRetry<RecipeDetailResponse>(
       detailSystemPrompt,
       detailUserPrompt,
       {
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         temperature: 0.7,
         maxTokens: 2000,
       },
-      2
+      2,
     );
-    
+
     // Build prompts for nutrition analysis
     const nutritionSystemPrompt = NUTRITIONGPT_SYSTEM;
     const nutritionUserPrompt = NUTRITIONGPT_USER(
       recipeDetail.title,
       recipeDetail.servings,
-      [...recipeDetail.ingredientsHave, ...recipeDetail.ingredientsNeed].map(i => ({ name: i.name, quantity: i.quantity }))
+      [...recipeDetail.ingredientsHave, ...recipeDetail.ingredientsNeed].map(
+        (i) => ({ name: i.name, quantity: i.quantity }),
+      ),
     );
-    
-    console.log("[loopkitchen_recipe_details.get] Calling OpenAI for nutrition...");
-    
+
+    console.log(
+      "[loopkitchen_recipe_details.get] Calling OpenAI for nutrition...",
+    );
+
     // Call OpenAI for nutrition (parallel with grocery list)
     const [nutritionResponse, groceryResponse] = await Promise.all([
       callModelWithRetry<{
@@ -157,30 +169,33 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
           sugar_g?: number;
         };
         dietTags: string[];
-        confidence: 'low' | 'medium' | 'high';
+        confidence: "low" | "medium" | "high";
       }>(
         nutritionSystemPrompt,
         nutritionUserPrompt,
         {
-          model: 'gpt-4o-mini',
+          model: "gpt-4o-mini",
           temperature: 0.3,
           maxTokens: 1000,
         },
-        2
+        2,
       ),
-      
+
       // Build grocery list from ingredientsNeed
       (async () => {
         if (recipeDetail.ingredientsNeed.length === 0) {
           return null;
         }
-        
+
         const grocerySystemPrompt = GROCERYGPT_SYSTEM;
         const groceryUserPrompt = GROCERYGPT_USER(
           recipeDetail.title,
-          recipeDetail.ingredientsNeed.map(i => ({ name: i.name, quantity: i.quantity }))
+          recipeDetail.ingredientsNeed.map((i) => ({
+            name: i.name,
+            quantity: i.quantity,
+          })),
         );
-        
+
         return await callModelWithRetry<{
           categories: Array<{
             name: string;
@@ -194,27 +209,36 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
           grocerySystemPrompt,
           groceryUserPrompt,
           {
-            model: 'gpt-4o-mini',
+            model: "gpt-4o-mini",
             temperature: 0.3,
             maxTokens: 1000,
           },
-          2
+          2,
         );
       })(),
     ]);
-    
+
     // Build widgets
     const widgets: Widget[] = [];
-    
+
     // 1. RecipeCardDetailed
-    const allIngredients = [...recipeDetail.ingredientsHave, ...recipeDetail.ingredientsNeed];
-    const ingredientsList = allIngredients.slice(0, 3).map(i => i.name).join(", ");
+    const allIngredients = [
+      ...recipeDetail.ingredientsHave,
+      ...recipeDetail.ingredientsNeed,
+    ];
+    const ingredientsList = allIngredients.slice(0, 3).map((i) => i.name).join(
+      ", ",
+    );
     const shareTitle = `Check out this recipe: "${recipeDetail.title}"`;
-    const shareDescription = `${recipeDetail.description}. Ingredients: ${ingredientsList}${allIngredients.length > 3 ? ", and more" : ""}`;
-    const suggestedCaption = `Just got the full recipe for "${recipeDetail.title}" from LoopKitchen! 🍽️ #LoopGPT #Recipe`;
-    
+    const shareDescription =
+      `${recipeDetail.description}. Ingredients: ${ingredientsList}${
+        allIngredients.length > 3 ? ", and more" : ""
+      }`;
+    const suggestedCaption =
+      `Just got the full recipe for "${recipeDetail.title}" from LoopKitchen! 🍽️ #LoopGPT #Recipe`;
+
     const recipeWidget: RecipeCardDetailed = {
-      type: 'RecipeCardDetailed',
+      type: "RecipeCardDetailed",
       id: input.recipeId,
       title: recipeDetail.title,
       description: recipeDetail.description,
@@ -235,10 +259,10 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
       },
     };
     widgets.push(recipeWidget);
-    
+
     // 2. NutritionSummary
     const nutritionWidget: NutritionSummary = {
-      type: 'NutritionSummary',
+      type: "NutritionSummary",
       id: `nutrition-${input.recipeId}`,
       servings: nutritionResponse.servings,
       totalNutrition: nutritionResponse.totalNutrition,
@@ -247,40 +271,43 @@ export async function getRecipeDetails(params: any): Promise<{ widgets: Widget[]
       confidence: nutritionResponse.confidence,
     };
     widgets.push(nutritionWidget);
-    
+
     // 3. GroceryList (if needed)
     if (groceryResponse) {
       const groceryWidget: GroceryList = {
-        type: 'GroceryList',
+        type: "GroceryList",
         id: `grocery-${input.recipeId}`,
         categories: groceryResponse.categories,
       };
       widgets.push(groceryWidget);
     }
-    
+
     const duration = Date.now() - startTime;
     logSuccess("loopkitchen_recipe_details.get", duration, {
       widgetCount: widgets.length,
     });
-    
+
     return { widgets };
   } catch (error: any) {
     const duration = Date.now() - startTime;
-    const categorized = categorizeError(error, "loopkitchen_recipe_details.get");
-    
+    const categorized = categorizeError(
+      error,
+      "loopkitchen_recipe_details.get",
+    );
+
     // Log structured error
     logStructuredError(categorized, true, duration);
-    
+
     // Return InfoMessage widget for errors
     const errorMessage: InfoMessage = {
-      type: 'InfoMessage',
+      type: "InfoMessage",
       id: `error-${Date.now()}`,
-      severity: 'error',
-      title: 'Recipe Details Failed',
+      severity: "error",
+      title: "Recipe Details Failed",
       message: `Unable to load recipe details: ${categorized.message}`,
-      actionLabel: 'Back to Recipes',
+      actionLabel: "Back to Recipes",
     };
-    
+
     return { widgets: [errorMessage] };
   }
 }

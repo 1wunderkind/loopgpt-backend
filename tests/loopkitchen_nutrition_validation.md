@@ -1,7 +1,7 @@
 # LoopKitchen Nutrition Analysis - Phase 3 Validation
 
-**Date**: December 6, 2025  
-**Phase**: 3 - Nutrition Enhancement  
+**Date**: December 6, 2025\
+**Phase**: 3 - Nutrition Enhancement\
 **Status**: Ready for Testing
 
 ---
@@ -13,6 +13,7 @@
 **Tool**: `loopkitchen.nutrition.analyze`
 
 **Test Input**:
+
 ```json
 {
   "recipes": [
@@ -40,6 +41,7 @@
 ```
 
 **Expected Output**:
+
 - Widget type: `NutritionSummary`
 - Fields present:
   - `totalNutrition` (calories, protein, carbs, fat, fiber, sugar, sodium)
@@ -53,6 +55,7 @@
   - `source` = "Grilled Chicken Salad"
 
 **Validation Criteria**:
+
 - ✅ Calories should be reasonable (300-500 per serving for this recipe)
 - ✅ Protein should be high (chicken is primary protein source)
 - ✅ Health score should be 70+ (healthy ingredients)
@@ -68,6 +71,7 @@
 **Tool**: `loopkitchen.nutrition.analyze`
 
 **Test Input**:
+
 ```json
 {
   "ingredients": [
@@ -82,11 +86,13 @@
 ```
 
 **Expected Output**:
+
 - Widget type: `NutritionSummary`
 - Source: "Custom Ingredients"
 - Servings: 1
 
 **Validation Criteria**:
+
 - ✅ Calories should be reasonable (250-350 for oatmeal)
 - ✅ Carbs should be high (oats + banana)
 - ✅ Fiber should be moderate-high (oats are fiber-rich)
@@ -100,6 +106,7 @@
 **Tool**: `loopkitchen.nutrition.analyze`
 
 **Test Input**:
+
 ```json
 {
   "servings": 2
@@ -107,11 +114,13 @@
 ```
 
 **Expected Output**:
+
 - Widget type: `InfoMessage`
 - Severity: `error`
 - Message: Contains "Either 'recipes' or 'ingredients' must be provided"
 
 **Validation Criteria**:
+
 - ✅ Returns InfoMessage widget (not error thrown)
 - ✅ Error message is user-friendly
 - ✅ Severity is "error"
@@ -123,6 +132,7 @@
 **Tool**: `loopkitchen.nutrition.analyze`
 
 **Test Input**:
+
 ```json
 {
   "recipes": []
@@ -130,6 +140,7 @@
 ```
 
 **Expected Output**:
+
 - Widget type: `InfoMessage`
 - Severity: `error`
 - Message: Contains "must be a non-empty array"
@@ -141,6 +152,7 @@
 **Tool**: `loopkitchen.nutrition.logMeal`
 
 **Test Input**:
+
 ```json
 {
   "userId": "test_user_123",
@@ -163,12 +175,14 @@
 ```
 
 **Expected Output (Phase 3 - Placeholder)**:
+
 - Widget type: `InfoMessage`
 - Severity: `info`
 - Message: Contains "ready for database integration in Phase 4"
 - Message should mention the recipe title and meal type
 
 **Validation Criteria**:
+
 - ✅ Validates required fields (userId, mealType, recipeTitle, nutrition)
 - ✅ Returns friendly placeholder message
 - ✅ Does not throw errors
@@ -180,6 +194,7 @@
 **Tool**: `loopkitchen.nutrition.daily`
 
 **Test Input**:
+
 ```json
 {
   "userId": "test_user_123",
@@ -188,12 +203,14 @@
 ```
 
 **Expected Output (Phase 3 - Placeholder)**:
+
 - Widget type: `InfoMessage`
 - Severity: `info`
 - Message: Contains "ready for database integration in Phase 4"
 - Message should mention the target date
 
 **Validation Criteria**:
+
 - ✅ Validates userId is required
 - ✅ Defaults to today if date not provided
 - ✅ Returns friendly placeholder message
@@ -207,11 +224,13 @@
 **Scenario**: Get recipe details with nutrition analysis
 
 **Tool Chain**:
+
 1. `loopkitchen.recipes.generate` → Get recipe list
 2. `loopkitchen.recipes.details` → Get full recipe (includes nutrition)
 3. Verify nutrition data matches standalone analysis
 
 **Validation Criteria**:
+
 - ✅ Nutrition data is consistent across tools
 - ✅ Parallel calls work correctly
 - ✅ Widget structure is correct
@@ -220,9 +239,11 @@
 
 ### 8. Complete Meal Flow (Future - Phase 4)
 
-**Scenario**: Generate recipe → Analyze nutrition → Log meal → View daily summary
+**Scenario**: Generate recipe → Analyze nutrition → Log meal → View daily
+summary
 
 **Tool Chain**:
+
 1. `loopkitchen.recipes.generate`
 2. `loopkitchen.recipes.details`
 3. `loopkitchen.nutrition.logMeal`
@@ -239,10 +260,12 @@
 **Target**: < 3 seconds for nutrition analysis
 
 **Test**:
+
 - Analyze nutrition for a recipe with 10 ingredients
 - Measure time from request to response
 
 **Validation Criteria**:
+
 - ✅ Response time < 3s (GPT-4o-mini is fast)
 - ✅ Retry logic works if first attempt fails
 - ✅ Error handling doesn't add significant overhead
@@ -254,6 +277,7 @@
 **Test**: Verify all widgets match TypeScript types
 
 **Validation Criteria**:
+
 - ✅ NutritionSummary has all required fields
 - ✅ InfoMessage has all required fields
 - ✅ Meta fields are present (generatedAt, durationMs, model)
@@ -268,14 +292,17 @@
 **File**: `/database/schemas/loopkitchen_meal_logs.sql`
 
 **Validation Criteria**:
+
 - ✅ Tables created: `loopkitchen_meal_logs`, `loopkitchen_user_nutrition_prefs`
 - ✅ Materialized view created: `loopkitchen_daily_nutrition`
-- ✅ Functions created: `refresh_loopkitchen_daily_nutrition`, `get_weekly_nutrition_summary`, `get_nutrition_progress`
+- ✅ Functions created: `refresh_loopkitchen_daily_nutrition`,
+  `get_weekly_nutrition_summary`, `get_nutrition_progress`
 - ✅ Triggers created for auto-updating timestamps
 - ✅ Indexes created for performance
 - ✅ Sample data inserted successfully
 
 **Test Commands** (when database is available):
+
 ```sql
 -- Test table creation
 SELECT table_name FROM information_schema.tables 
@@ -360,9 +387,11 @@ Phase 3 is considered complete when:
 ## Notes
 
 - **Phase 3 Focus**: Standalone nutrition analysis + database schema prep
-- **Phase 4 Will Add**: Database integration for meal logging and daily summaries
+- **Phase 4 Will Add**: Database integration for meal logging and daily
+  summaries
 - **Database Schema**: Ready to deploy, just needs Supabase connection
-- **Placeholder Functions**: Validate inputs and return friendly messages until Phase 4
+- **Placeholder Functions**: Validate inputs and return friendly messages until
+  Phase 4
 
 ---
 

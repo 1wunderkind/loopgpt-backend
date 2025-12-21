@@ -1,16 +1,16 @@
 /**
  * Trial Reminder Cron Job
- * 
+ *
  * Purpose: Send email reminders to users 1 day before trial ends
- * 
+ *
  * Schedule: Run daily at 10:00 AM UTC
  * Cron: 0 10 * * *
- * 
+ *
  * Setup:
  * 1. Deploy this function
  * 2. Set up Supabase Edge Function cron trigger
  * 3. Or use external cron service (e.g., GitHub Actions, Vercel Cron)
- * 
+ *
  * What it does:
  * - Finds users with trials ending in 24-48 hours
  * - Sends reminder email via Supabase Auth
@@ -21,13 +21,12 @@ import { serve } from "std@0.168.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
 import { withWebhook } from "../_shared/security/applyMiddleware.ts";
 
-
 const handler = async (req) => {
   try {
     // Verify cron secret (optional security measure)
     const authHeader = req.headers.get("authorization");
     const cronSecret = Deno.env.get("CRON_SECRET");
-    
+
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
       return new Response("Unauthorized", { status: 401 });
     }
@@ -59,7 +58,7 @@ const handler = async (req) => {
       console.error("❌ Error fetching expiring trials:", error);
       return new Response(
         JSON.stringify({ error: error.message }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
+        { status: 500, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -67,7 +66,7 @@ const handler = async (req) => {
       console.log("✅ No trials expiring tomorrow");
       return new Response(
         JSON.stringify({ message: "No trials expiring", count: 0 }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -83,25 +82,29 @@ const handler = async (req) => {
         // Calculate hours remaining
         const trialEndDate = new Date(trial.trial_end);
         const hoursRemaining = Math.floor(
-          (trialEndDate.getTime() - Date.now()) / (1000 * 60 * 60)
+          (trialEndDate.getTime() - Date.now()) / (1000 * 60 * 60),
         );
 
         // Send email via Supabase Auth (using magic link with custom message)
         // Note: This requires custom email templates in Supabase Auth settings
-        const { error: emailError } = await supabase.auth.admin.inviteUserByEmail(
-          trial.email,
-          {
-            data: {
-              trial_reminder: true,
-              hours_remaining: hoursRemaining,
-              tier: trial.tier,
+        const { error: emailError } = await supabase.auth.admin
+          .inviteUserByEmail(
+            trial.email,
+            {
+              data: {
+                trial_reminder: true,
+                hours_remaining: hoursRemaining,
+                tier: trial.tier,
+              },
+              redirectTo: `${appUrl}/account`,
             },
-            redirectTo: `${appUrl}/account`,
-          }
-        );
+          );
 
         if (emailError) {
-          console.error(`❌ Failed to send email to ${trial.email}:`, emailError);
+          console.error(
+            `❌ Failed to send email to ${trial.email}:`,
+            emailError,
+          );
           emailsFailed++;
         } else {
           console.log(`✅ Sent trial reminder to ${trial.email}`);
@@ -125,7 +128,9 @@ const handler = async (req) => {
       }
     }
 
-    console.log(`✅ Trial reminder job complete: ${emailsSent} sent, ${emailsFailed} failed`);
+    console.log(
+      `✅ Trial reminder job complete: ${emailsSent} sent, ${emailsFailed} failed`,
+    );
 
     return new Response(
       JSON.stringify({
@@ -138,17 +143,16 @@ const handler = async (req) => {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("❌ Trial reminder cron job error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { "Content-Type": "application/json" } },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withWebhook(handler));
-

@@ -23,22 +23,22 @@ export class InputSanitizer {
    * Recursively sanitizes an object or array.
    */
   static sanitize(input: any): any {
-    if (typeof input === 'string') {
+    if (typeof input === "string") {
       return this.sanitizeString(input);
     }
-    
+
     if (Array.isArray(input)) {
-      return input.map(item => this.sanitize(item));
+      return input.map((item) => this.sanitize(item));
     }
-    
-    if (typeof input === 'object' && input !== null) {
+
+    if (typeof input === "object" && input !== null) {
       const result: any = {};
       for (const [key, value] of Object.entries(input)) {
         result[key] = this.sanitize(value);
       }
       return result;
     }
-    
+
     return input;
   }
 

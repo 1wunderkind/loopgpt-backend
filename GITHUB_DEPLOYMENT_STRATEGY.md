@@ -1,7 +1,7 @@
 # GitHub & Deployment Strategy
 
-**Date:** December 2, 2024  
-**Current Status:** 6-Week Guardrails Complete (95% Production Ready)  
+**Date:** December 2, 2024\
+**Current Status:** 6-Week Guardrails Complete (95% Production Ready)\
 **Repository:** https://github.com/1wunderkind/loopgpt-backend.git
 
 ---
@@ -11,14 +11,18 @@
 ### Unpushed Changes
 
 **1 Unpushed Commit:**
-- `7b821aa` - "Security fixes: Replace SERVICE_ROLE_KEY with authenticated client + OAuth validation + Rate limiting"
+
+- `7b821aa` - "Security fixes: Replace SERVICE_ROLE_KEY with authenticated
+  client + OAuth validation + Rate limiting"
 
 **44 Modified Files:**
+
 - 43 edge functions (security middleware applied)
 - 1 deno.lock file
 - 2 MCP manifest files
 
 **New Files (Untracked):**
+
 - 14 documentation files (Week 1-6 completion reports)
 - 4 new edge functions (commerce routing + compliance)
 - 3 database migrations (Phase 3, indexes, analytics)
@@ -35,36 +39,43 @@
 ### Critical Files (Must Push)
 
 **1. Security Middleware (Week 6)**
+
 - `supabase/functions/_shared/security/` - All security utilities
 - All 48 modified edge functions with middleware
 - Security documentation
 
 **2. Phase 3 Commerce Router**
+
 - `supabase/functions/_shared/commerce/` - Scoring algorithm
 - `supabase/functions/loopgpt_*` - 4 commerce functions
 - Phase 3 database migration
 
 **3. Testing Infrastructure (Week 1)**
+
 - `tests/` - Complete test suite (300 tests)
 - `deno.json` - Test configuration
 - Test helpers and utilities
 
 **4. Monitoring & Observability (Weeks 2 & 5)**
+
 - `supabase/functions/_shared/monitoring/` - Logging, metrics
 - `supabase/functions/_shared/observability/` - Tracing, analytics
 - `supabase/functions/_shared/errors/` - Error handling
 
 **5. Caching & Performance (Week 4)**
+
 - `supabase/functions/_shared/cache/` - Redis integration
 - Performance indexes migration
 - Database optimization utilities
 
 **6. Compliance (Week 3)**
+
 - `supabase/functions/gdpr_*` - GDPR endpoints
 - `supabase/functions/ccpa_opt_out` - CCPA endpoint
 - `docs/legal/` - Privacy Policy, Terms of Service
 
 **7. Documentation**
+
 - All Week 1-6 completion reports
 - Security audit documents
 - Deployment guides
@@ -77,16 +88,19 @@
 ### Option A: Single Comprehensive Commit (Recommended)
 
 **Pros:**
+
 - Clean history
 - Easy to review
 - Single deployment unit
 - Clear milestone
 
 **Cons:**
+
 - Large commit
 - Harder to rollback specific features
 
 **Commands:**
+
 ```bash
 cd /home/ubuntu/loopgpt-backend
 
@@ -124,17 +138,20 @@ git push origin master
 ### Option B: Separate Commits by Week
 
 **Pros:**
+
 - Granular history
 - Easy to review each week
 - Can rollback specific weeks
 - Better for team collaboration
 
 **Cons:**
+
 - More commits
 - Takes longer
 - May have interdependencies
 
 **Commands:**
+
 ```bash
 # Week 1: Testing
 git add tests/ deno.json
@@ -238,17 +255,20 @@ git push origin master
 ### Option C: Feature Branch Strategy
 
 **Pros:**
+
 - Safest approach
 - Can test before merging
 - Easy to review
 - Professional workflow
 
 **Cons:**
+
 - More steps
 - Takes longest
 - May be overkill for solo project
 
 **Commands:**
+
 ```bash
 # Create feature branch
 git checkout -b feature/6-week-guardrails
@@ -310,12 +330,14 @@ git push origin feature/6-week-guardrails
 #### Option 1: Supabase CLI Deployment (Recommended)
 
 **Pros:**
+
 - Official method
 - Handles migrations automatically
 - Atomic deployment
 - Easy rollback
 
 **Steps:**
+
 ```bash
 # 1. Ensure you're logged in
 supabase login
@@ -340,11 +362,13 @@ curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/health
 #### Option 2: Selective Function Deployment
 
 **Pros:**
+
 - Deploy only changed functions
 - Faster deployment
 - Lower risk
 
 **Steps:**
+
 ```bash
 # Deploy critical functions first
 supabase functions deploy loopgpt_route_order
@@ -368,12 +392,14 @@ supabase functions deploy --all
 #### Option 3: GitHub Actions CI/CD
 
 **Pros:**
+
 - Automated deployment
 - Runs tests before deploy
 - Professional workflow
 - Audit trail
 
 **Steps:**
+
 1. Create `.github/workflows/deploy.yml`
 2. Configure Supabase secrets in GitHub
 3. Push to master → auto-deploy
@@ -429,18 +455,21 @@ supabase functions deploy --all
 ### Recommended Approach
 
 **1. Git Strategy: Option A (Single Comprehensive Commit)**
+
 - Cleaner history
 - Easier to review
 - Single deployment unit
 - Matches our "6-week journey" narrative
 
 **2. Deployment Strategy: Option 1 (Supabase CLI)**
+
 - Official method
 - Most reliable
 - Handles everything automatically
 - Easy to rollback if needed
 
 **3. Timing: Deploy Immediately After Push**
+
 - No reason to wait
 - System is ready (95% production ready)
 - All tests passing (300/300)
@@ -451,6 +480,7 @@ supabase functions deploy --all
 ### Step-by-Step Execution Plan
 
 **Phase 1: Commit to Git (5 minutes)**
+
 ```bash
 cd /home/ubuntu/loopgpt-backend
 git add .
@@ -471,11 +501,13 @@ Test Coverage: 70% (from 5%)"
 ```
 
 **Phase 2: Push to GitHub (1 minute)**
+
 ```bash
 git push origin master
 ```
 
 **Phase 3: Deploy to Supabase (10 minutes)**
+
 ```bash
 # Run migrations
 supabase db push
@@ -488,6 +520,7 @@ curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/health
 ```
 
 **Phase 4: Verify & Monitor (5 minutes)**
+
 ```bash
 # Check health
 curl https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/health
@@ -613,18 +646,19 @@ supabase db reset --linked
 
 ## ❓ What Do You Think?
 
-**Option A:** Commit, push, and deploy immediately (recommended)  
-**Option B:** Commit and push now, deploy tomorrow  
-**Option C:** Review changes first, then commit/push/deploy  
+**Option A:** Commit, push, and deploy immediately (recommended)\
+**Option B:** Commit and push now, deploy tomorrow\
+**Option C:** Review changes first, then commit/push/deploy\
 **Option D:** Something else?
 
 **My strong recommendation: Option A** ✅
 
-The system is ready, tested, and documented. There's no reason to wait. Let's launch this! 🚀
+The system is ready, tested, and documented. There's no reason to wait. Let's
+launch this! 🚀
 
 ---
 
-**Status:** READY TO DEPLOY  
-**Confidence:** 95%  
-**Risk:** Low  
+**Status:** READY TO DEPLOY\
+**Confidence:** 95%\
+**Risk:** Low\
 **Recommendation:** GO! 🚀

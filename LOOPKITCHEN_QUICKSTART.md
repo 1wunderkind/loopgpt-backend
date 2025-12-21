@@ -1,7 +1,7 @@
 # LoopKitchen Quick Start Guide
 
-**For**: Dev/Staging Environment Testing  
-**Time**: ~15 minutes  
+**For**: Dev/Staging Environment Testing\
+**Time**: ~15 minutes\
 **Prerequisites**: Supabase CLI, OpenAI API key
 
 ---
@@ -24,6 +24,7 @@ supabase link --project-ref YOUR_DEV_PROJECT_REF
 **Go to**: Supabase Dashboard → Project Settings → Edge Functions
 
 **Add**:
+
 - `OPENAI_API_KEY` = `sk-...` (your OpenAI key)
 
 **Click**: Save
@@ -55,6 +56,7 @@ curl https://YOUR_PROJECT.supabase.co/functions/v1/mcp-tools/health | jq '.'
 ```
 
 **Expected**:
+
 ```json
 {
   "status": "healthy",
@@ -79,7 +81,8 @@ cd /home/ubuntu/loopgpt-backend
 
 If all tests passed, your dev environment is ready!
 
-**Next**: Review test results and proceed to production deployment using `LOOPKITCHEN_DEPLOYMENT_CHECKLIST.md`
+**Next**: Review test results and proceed to production deployment using
+`LOOPKITCHEN_DEPLOYMENT_CHECKLIST.md`
 
 ---
 
@@ -104,19 +107,23 @@ curl -X POST https://YOUR_PROJECT.supabase.co/functions/v1/mcp-tools/tools/loopk
 ## 🐛 Troubleshooting
 
 ### "OpenAI API error"
+
 - Check `OPENAI_API_KEY` is set correctly
 - Verify API key has quota
 - Check OpenAI status: https://status.openai.com
 
 ### "Function not found"
+
 - Ensure both `_shared` and `mcp-tools` deployed
 - Check `supabase functions list`
 
 ### "Timeout"
+
 - First request may be slow (cold start)
 - Try again - should be faster
 
 ### Tests fail
+
 - Check logs: `supabase functions logs mcp-tools --tail`
 - Review error messages
 - See `LOOPKITCHEN_DEPLOYMENT_CHECKLIST.md` for detailed debugging
@@ -131,4 +138,4 @@ curl -X POST https://YOUR_PROJECT.supabase.co/functions/v1/mcp-tools/tools/loopk
 
 ---
 
-*Quick Start Guide - LoopKitchen Integration*
+_Quick Start Guide - LoopKitchen Integration_

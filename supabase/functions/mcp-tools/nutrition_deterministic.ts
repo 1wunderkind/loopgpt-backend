@@ -1,18 +1,21 @@
 /**
  * Deterministic Nutrition Analysis Tool (MCP)
- * 
+ *
  * Replaces LLM-based nutrition analysis with deterministic rule-based engine.
- * 
+ *
  * Features:
  * - Deterministic macro calculation (same input → same output)
  * - Rule-based diet tagging
  * - No LLM calls in calculation path
  * - Integrates with analytics.meal_logs
- * 
+ *
  * Part of: Step 4 - Deterministic Nutrition Engine
  */
 
-import { estimateRecipeNutrition, type RecipeNutritionInput } from "../_shared/nutrition/index.ts";
+import {
+  estimateRecipeNutrition,
+  type RecipeNutritionInput,
+} from "../_shared/nutrition/index.ts";
 import { logMealLog } from "../_shared/analytics/index.ts";
 import type { RecipeCardDetailed } from "../_shared/loopkitchen/types/index.ts";
 
@@ -23,17 +26,17 @@ import type { RecipeCardDetailed } from "../_shared/loopkitchen/types/index.ts";
 interface NutritionInput {
   // Option 1: Analyze from recipe objects
   recipes?: RecipeCardDetailed[];
-  
+
   // Option 2: Analyze from raw ingredients
   ingredients?: Array<{
     name: string;
     quantity?: string | number;
     unit?: string;
   }>;
-  
+
   // Optional: Servings count (defaults to 1)
   servings?: number;
-  
+
   // Optional: Meal context for logging
   mealContext?: {
     mealType?: "breakfast" | "lunch" | "dinner" | "snack";
@@ -101,7 +104,7 @@ function validateNutritionInput(params: any): NutritionInput {
 
 /**
  * Calculate health score based on macros and diet tags
- * 
+ *
  * Scoring factors:
  * - High protein: +10
  * - High fiber: +10
@@ -110,24 +113,24 @@ function validateNutritionInput(params: any): NutritionInput {
  * - Vegan/vegetarian: +10
  * - High fat: -5
  * - High carbs: -5
- * 
+ *
  * Base score: 50
  * Range: 0-100
  */
 function calculateHealthScore(macros: NutritionMacros, tags: string[]): number {
   let score = 50; // Base score
-  
+
   // Positive factors
   if (macros.protein >= 20) score += 10;
   if (macros.fiber >= 5) score += 10;
   if (macros.sodium < 200) score += 10;
   if (macros.sugar < 5) score += 10;
   if (tags.includes("vegan") || tags.includes("vegetarian")) score += 10;
-  
+
   // Negative factors
   if (macros.fat > 30) score -= 5;
   if (macros.carbs > 60) score -= 5;
-  
+
   // Clamp to 0-100
   return Math.max(0, Math.min(100, score));
 }
@@ -141,23 +144,25 @@ function calculateHealthScore(macros: NutritionMacros, tags: string[]): number {
  */
 function generateWarnings(macros: NutritionMacros): string[] {
   const warnings: string[] = [];
-  
+
   if (macros.sodium > 500) {
-    warnings.push("High sodium content - may not be suitable for those watching salt intake");
+    warnings.push(
+      "High sodium content - may not be suitable for those watching salt intake",
+    );
   }
-  
+
   if (macros.sugar > 20) {
     warnings.push("High sugar content - consider reducing added sugars");
   }
-  
+
   if (macros.fat > 40) {
     warnings.push("High fat content - ensure it's from healthy sources");
   }
-  
+
   if (macros.calories > 800) {
     warnings.push("High calorie content - consider portion size");
   }
-  
+
   return warnings;
 }
 
@@ -166,31 +171,33 @@ function generateWarnings(macros: NutritionMacros): string[] {
  */
 function generateInsights(macros: NutritionMacros, tags: string[]): string[] {
   const insights: string[] = [];
-  
+
   if (macros.protein >= 20) {
-    insights.push("Good protein source - helps with muscle maintenance and satiety");
+    insights.push(
+      "Good protein source - helps with muscle maintenance and satiety",
+    );
   }
-  
+
   if (macros.fiber >= 5) {
     insights.push("High fiber content - supports digestive health");
   }
-  
+
   if (tags.includes("vegan")) {
     insights.push("Plant-based meal - rich in phytonutrients and antioxidants");
   }
-  
+
   if (tags.includes("low_carb")) {
     insights.push("Low carb option - may help with blood sugar management");
   }
-  
+
   if (tags.includes("keto_friendly")) {
     insights.push("Keto-friendly - high fat, very low carb");
   }
-  
+
   if (macros.sodium < 200) {
     insights.push("Low sodium - heart-healthy choice");
   }
-  
+
   return insights;
 }
 
@@ -198,7 +205,9 @@ function generateInsights(macros: NutritionMacros, tags: string[]): string[] {
 // Main Function
 // ============================================================================
 
-export async function analyzeNutrition(params: any): Promise<NutritionAnalysisResult> {
+export async function analyzeNutrition(
+  params: any,
+): Promise<NutritionAnalysisResult> {
   const startTime = Date.now();
 
   try {
@@ -220,12 +229,14 @@ export async function analyzeNutrition(params: any): Promise<NutritionAnalysisRe
       // Recipe-based analysis
       const recipe = input.recipes[0]; // For now, analyze first recipe
       recipeName = recipe.title;
-      
+
       recipeInput = {
         recipeId: recipe.id,
         recipeName: recipe.title,
         servings: recipe.servings || input.servings || 1,
-        ingredients: (recipe.ingredientsHave || []).concat(recipe.ingredientsNeed || []).map(ing => ({
+        ingredients: (recipe.ingredientsHave || []).concat(
+          recipe.ingredientsNeed || [],
+        ).map((ing) => ({
           name: ing.name,
           quantity: parseFloat(String(ing.quantity || 1)),
           unit: "piece", // Default unit as it's not strictly typed in RecipeCardDetailed
@@ -234,11 +245,11 @@ export async function analyzeNutrition(params: any): Promise<NutritionAnalysisRe
     } else if (input.ingredients && input.ingredients.length > 0) {
       // Ingredient-based analysis
       recipeName = "Custom Ingredients";
-      
+
       recipeInput = {
         recipeName,
         servings: input.servings || 1,
-        ingredients: input.ingredients.map(ing => ({
+        ingredients: input.ingredients.map((ing) => ({
           name: ing.name,
           quantity: parseFloat(String(ing.quantity || 1)),
           unit: ing.unit || "piece",
@@ -296,12 +307,12 @@ export async function analyzeNutrition(params: any): Promise<NutritionAnalysisRe
           sourceGpt: "NutritionDeterministic",
           description: recipeName, // Use recipeName as description
           mealType: input.mealContext.mealType || "snack",
-          log_date: input.mealContext.date || new Date().toISOString().split('T')[0],
+          log_date: input.mealContext.date ||
+            new Date().toISOString().split("T")[0],
           caloriesKcal: perServing.calories,
           proteinG: perServing.protein,
           carbsG: perServing.carbs,
           fatG: perServing.fat,
-
         });
         console.log("[nutrition_deterministic] Meal logged successfully");
       } catch (error) {
@@ -323,7 +334,6 @@ export async function analyzeNutrition(params: any): Promise<NutritionAnalysisRe
       confidence: result.confidence,
       insights,
     };
-
   } catch (error) {
     console.error("[nutrition_deterministic] Error:", error);
     throw error;

@@ -13,11 +13,11 @@ function getSupabaseClient() {
   if (!supabase) {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY");
-    
+
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
       throw new RateLimitError("Supabase credentials not configured");
     }
-    
+
     supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   }
   return supabase;
@@ -40,7 +40,7 @@ const DEFAULT_CONFIG: RateLimitConfig = {
  */
 export async function checkRateLimit(
   userId: string,
-  config: RateLimitConfig = DEFAULT_CONFIG
+  config: RateLimitConfig = DEFAULT_CONFIG,
 ): Promise<void> {
   const now = new Date();
   const windowStart = new Date(now.getTime() - config.windowMs);
@@ -65,7 +65,7 @@ export async function checkRateLimit(
       if (data.request_count >= config.maxRequests) {
         throw new RateLimitError(
           `Rate limit exceeded for user ${userId}`,
-          new Date(data.window_end)
+          new Date(data.window_end),
         );
       }
 
@@ -93,19 +93,24 @@ export async function checkRateLimit(
       throw err;
     }
     // Log but don't block on database errors
-    logWarn("Rate limit check error", { userId, error: (err as Error).message });
+    logWarn("Rate limit check error", {
+      userId,
+      error: (err as Error).message,
+    });
   }
 }
 
 /**
  * Get current usage stats for a user
  */
-export async function getUserUsage(userId: string): Promise<{
-  requestCount: number;
-  maxRequests: number;
-  remainingQuota: number;
-  resetAt: string;
-} | null> {
+export async function getUserUsage(userId: string): Promise<
+  {
+    requestCount: number;
+    maxRequests: number;
+    remainingQuota: number;
+    resetAt: string;
+  } | null
+> {
   try {
     const now = new Date();
     const { data, error } = await getSupabaseClient()
@@ -126,7 +131,10 @@ export async function getUserUsage(userId: string): Promise<{
       resetAt: data.window_end,
     };
   } catch (err) {
-    logWarn("Failed to get user usage", { userId, error: (err as Error).message });
+    logWarn("Failed to get user usage", {
+      userId,
+      error: (err as Error).message,
+    });
     return null;
   }
 }

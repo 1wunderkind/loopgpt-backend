@@ -3,7 +3,7 @@
  * Generates affiliate URLs for food delivery partners
  */
 
-import type { DeliveryPartner, DeliveryAffiliateLink } from "./types.ts";
+import type { DeliveryAffiliateLink, DeliveryPartner } from "./types.ts";
 
 /**
  * Build affiliate link for a delivery partner
@@ -15,11 +15,11 @@ import type { DeliveryPartner, DeliveryAffiliateLink } from "./types.ts";
 export function buildDeliveryAffiliateLink(
   partner: DeliveryPartner,
   cuisine: string,
-  location?: string
+  location?: string,
 ): string {
   const baseUrl = partner.base_url;
   const affiliateId = partner.affiliate_id;
-  
+
   // Build UTM parameters for tracking
   const utmParams = new URLSearchParams({
     utm_source: "mealplanner",
@@ -35,7 +35,7 @@ export function buildDeliveryAffiliateLink(
 
   // Add cuisine search parameter (partner-specific)
   const searchParam = getSearchParam(partner.name, cuisine);
-  
+
   return `${baseUrl}?${utmParams.toString()}${searchParam}`;
 }
 
@@ -45,7 +45,7 @@ export function buildDeliveryAffiliateLink(
 export function buildDeliveryAffiliateLinks(
   partners: DeliveryPartner[],
   cuisine: string,
-  location?: string
+  location?: string,
 ): DeliveryAffiliateLink[] {
   return partners.map((partner) => ({
     partner_id: partner.id,
@@ -66,7 +66,7 @@ export function buildDeliveryAffiliateLinks(
  */
 function getSearchParam(partnerName: string, cuisine: string): string {
   const encodedCuisine = encodeURIComponent(cuisine);
-  
+
   switch (partnerName.toLowerCase()) {
     case "uber eats":
       return `&q=${encodedCuisine}`;
@@ -90,15 +90,15 @@ function getSearchParam(partnerName: string, cuisine: string): string {
 export function buildDeliveryCartUrl(
   partner: DeliveryPartner,
   items: string[],
-  location?: string
+  location?: string,
 ): string {
   // This is a placeholder for future deep linking functionality
   // Most delivery partners don't support cart pre-filling via URLs
   // But we can prepare the structure for when they do
-  
+
   const baseUrl = partner.base_url;
   const affiliateId = partner.affiliate_id;
-  
+
   const utmParams = new URLSearchParams({
     utm_source: "mealplanner",
     utm_medium: "affiliate",
@@ -125,7 +125,7 @@ export interface TrackClickParams {
  */
 export function generateTrackingPixel(
   partner: DeliveryPartner,
-  orderId: string
+  orderId: string,
 ): string | null {
   // This would integrate with partner-specific tracking pixels
   // For now, return null - to be implemented when we have real affiliate accounts
@@ -138,12 +138,12 @@ export function generateTrackingPixel(
 export function validateAffiliateLink(url: string): boolean {
   try {
     const parsed = new URL(url);
-    
+
     // Check for required UTM parameters
     const hasUtmSource = parsed.searchParams.has("utm_source");
     const hasUtmMedium = parsed.searchParams.has("utm_medium");
     const hasUtmCampaign = parsed.searchParams.has("utm_campaign");
-    
+
     return hasUtmSource && hasUtmMedium && hasUtmCampaign;
   } catch {
     return false;
@@ -168,4 +168,3 @@ export function extractCuisineFromUrl(url: string): string | null {
 export function getAffiliateDisclosure(): string {
   return "As a delivery affiliate partner, we earn from qualifying orders. This helps us keep MealPlanner free for everyone.";
 }
-

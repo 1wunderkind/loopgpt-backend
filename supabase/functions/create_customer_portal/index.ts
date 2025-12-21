@@ -1,14 +1,14 @@
 /**
  * Create Stripe Customer Portal Session
- * 
+ *
  * Purpose: Generate a Stripe Customer Portal session for self-service billing management
- * 
+ *
  * Input:
  * - chatgpt_user_id: User identifier
- * 
+ *
  * Output:
  * - portal_url: Stripe Customer Portal URL
- * 
+ *
  * Features:
  * - Update payment method
  * - Cancel subscription
@@ -21,10 +21,10 @@ import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 interface PortalRequest {
@@ -45,7 +45,10 @@ const handler = async (req: Request): Promise<Response> => {
     if (!chatgpt_user_id) {
       return new Response(
         JSON.stringify({ error: "chatgpt_user_id is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -64,14 +67,20 @@ const handler = async (req: Request): Promise<Response> => {
     if (subError || !subscription) {
       return new Response(
         JSON.stringify({ error: "No subscription found for this user" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
     if (!subscription.stripe_customer_id) {
       return new Response(
         JSON.stringify({ error: "No Stripe customer ID found" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -113,7 +122,7 @@ const handler = async (req: Request): Promise<Response> => {
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("❌ Error creating customer portal session:", error);
@@ -125,11 +134,10 @@ const handler = async (req: Request): Promise<Response> => {
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withStandardAPI(handler));
-

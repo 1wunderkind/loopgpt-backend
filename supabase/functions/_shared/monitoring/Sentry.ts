@@ -13,7 +13,7 @@ export interface SentryConfig {
 export interface SentryEvent {
   event_id: string;
   timestamp: number;
-  level: 'fatal' | 'error' | 'warning' | 'info' | 'debug';
+  level: "fatal" | "error" | "warning" | "info" | "debug";
   message?: string;
   exception?: {
     values: Array<{
@@ -35,7 +35,7 @@ export interface SentryEvent {
     username?: string;
   };
   tags?: Record<string, string>;
-  extra?: Record<string, any>;
+  extra?: Record<string, unknown>;
   request?: {
     url: string;
     method: string;
@@ -51,9 +51,9 @@ export class SentryClient {
   private enabled: boolean;
 
   constructor(config?: Partial<SentryConfig>) {
-    const dsn = config?.dsn || Deno.env.get('SENTRY_DSN') || '';
-    const environment =
-      config?.environment || Deno.env.get('ENVIRONMENT') || 'development';
+    const dsn = config?.dsn || Deno.env.get("SENTRY_DSN") || "";
+    const environment = config?.environment || Deno.env.get("ENVIRONMENT") ||
+      "development";
 
     this.config = {
       dsn,
@@ -73,9 +73,9 @@ export class SentryClient {
     context?: {
       user?: { id?: string; email?: string };
       tags?: Record<string, string>;
-      extra?: Record<string, any>;
+      extra?: Record<string, unknown>;
       request?: Request;
-    }
+    },
   ): Promise<void> {
     if (!this.enabled) {
       return;
@@ -86,12 +86,12 @@ export class SentryClient {
       return;
     }
 
-    const event = this.createEvent('error', error, context);
+    const event = this.createEvent("error", error, context);
 
     try {
       await this.sendEvent(event);
     } catch (sendError) {
-      console.error('Failed to send error to Sentry:', sendError);
+      console.error("Failed to send error to Sentry:", sendError);
     }
   }
 
@@ -100,12 +100,12 @@ export class SentryClient {
    */
   async captureMessage(
     message: string,
-    level: 'fatal' | 'error' | 'warning' | 'info' | 'debug' = 'info',
+    level: "fatal" | "error" | "warning" | "info" | "debug" = "info",
     context?: {
       user?: { id?: string; email?: string };
       tags?: Record<string, string>;
-      extra?: Record<string, any>;
-    }
+      extra?: Record<string, unknown>;
+    },
   ): Promise<void> {
     if (!this.enabled) {
       return;
@@ -127,7 +127,7 @@ export class SentryClient {
     try {
       await this.sendEvent(event);
     } catch (error) {
-      console.error('Failed to send message to Sentry:', error);
+      console.error("Failed to send message to Sentry:", error);
     }
   }
 
@@ -135,14 +135,14 @@ export class SentryClient {
    * Create Sentry event from error
    */
   private createEvent(
-    level: 'fatal' | 'error' | 'warning',
+    level: "fatal" | "error" | "warning",
     error: Error,
     context?: {
       user?: { id?: string; email?: string };
       tags?: Record<string, string>;
-      extra?: Record<string, any>;
+      extra?: Record<string, unknown>;
       request?: Request;
-    }
+    },
   ): SentryEvent {
     const event: SentryEvent = {
       event_id: this.generateEventId(),
@@ -193,7 +193,7 @@ export class SentryClient {
     }
 
     const frames = stack
-      .split('\n')
+      .split("\n")
       .slice(1) // Skip first line (error message)
       .map((line) => {
         const match = line.match(/at (.+) \((.+):(\d+):(\d+)\)/);
@@ -223,10 +223,10 @@ export class SentryClient {
 
     // Parse DSN
     const dsnMatch = dsn.match(
-      /^https:\/\/([^@]+)@([^\/]+)\/(.+)$/
+      /^https:\/\/([^@]+)@([^\/]+)\/(.+)$/,
     );
     if (!dsnMatch) {
-      console.error('Invalid Sentry DSN format');
+      console.error("Invalid Sentry DSN format");
       return;
     }
 
@@ -235,19 +235,20 @@ export class SentryClient {
 
     // Send to Sentry
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'X-Sentry-Auth': `Sentry sentry_version=7, sentry_key=${publicKey}, sentry_client=loopgpt-edge/1.0`,
+        "Content-Type": "application/json",
+        "X-Sentry-Auth":
+          `Sentry sentry_version=7, sentry_key=${publicKey}, sentry_client=loopgpt-edge/1.0`,
       },
       body: JSON.stringify(event),
     });
 
     if (!response.ok) {
       console.error(
-        'Failed to send event to Sentry:',
+        "Failed to send event to Sentry:",
         response.status,
-        await response.text()
+        await response.text(),
       );
     }
   }
@@ -256,7 +257,7 @@ export class SentryClient {
    * Generate event ID
    */
   private generateEventId(): string {
-    return crypto.randomUUID().replace(/-/g, '');
+    return crypto.randomUUID().replace(/-/g, "");
   }
 
   /**
@@ -265,11 +266,11 @@ export class SentryClient {
   addBreadcrumb(
     message: string,
     category?: string,
-    level?: 'info' | 'warning' | 'error'
+    _level?: "info" | "warning" | "error",
   ): void {
     // Breadcrumbs would be stored in memory and sent with next event
     // Simplified for edge functions
-    console.log(`[Breadcrumb] ${category || 'default'}: ${message}`);
+    console.log(`[Breadcrumb] ${category || "default"}: ${message}`);
   }
 
   /**
@@ -278,7 +279,7 @@ export class SentryClient {
   setUser(user: { id?: string; email?: string; username?: string }): void {
     // Store user context for subsequent events
     // Simplified for edge functions
-    console.log('[Sentry] User context set:', user);
+    console.log("[Sentry] User context set:", user);
   }
 
   /**
@@ -299,7 +300,7 @@ export const sentry = new SentryClient();
  * Middleware to add Sentry to edge functions
  */
 export function withSentry(
-  handler: (req: Request) => Promise<Response>
+  handler: (req: Request) => Promise<Response>,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     try {
@@ -311,9 +312,9 @@ export function withSentry(
         {
           request: req,
           tags: {
-            function: 'edge_function',
+            function: "edge_function",
           },
-        }
+        },
       );
 
       // Re-throw to be handled by error handler

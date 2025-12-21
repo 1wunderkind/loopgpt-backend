@@ -1,7 +1,7 @@
 /**
  * Walmart Provider Implementation
  * Dual-mode: Mock for testing, Real API for production
- * 
+ *
  * Environment Variables:
  * - WALMART_API_KEY: Walmart API key
  * - WALMART_PARTNER_ID: Walmart partner/affiliate ID
@@ -11,37 +11,47 @@
  */
 
 import type {
-  ProviderQuote,
-  ProviderConfig,
   CartItem,
   ItemAvailability,
+  ProviderConfig,
   ProviderMeta,
-} from '../types/index.ts';
-import { ProviderError } from '../types/index.ts';
-import { BaseCommerceProvider, type QuoteRequest } from './ICommerceProvider.ts';
-import { getWalmartClient, isWalmartConfigured } from './clients/walmartClient.ts';
+  ProviderQuote,
+} from "../types/index.ts";
+import { ProviderError } from "../types/index.ts";
+import {
+  BaseCommerceProvider,
+  type QuoteRequest,
+} from "./ICommerceProvider.ts";
+import {
+  getWalmartClient,
+  isWalmartConfigured,
+} from "./clients/walmartClient.ts";
 
 /**
  * WalmartProvider - Direct integration with Walmart API
- * 
+ *
  * Features:
  * - Walmart store inventory and pricing
  * - Competitive pricing (often lowest)
  * - Walmart+ membership benefits
  * - 1-2 hour delivery windows
- * 
+ *
  * API Docs: https://developer.walmart.com/
  */
 class WalmartProvider extends BaseCommerceProvider {
-  readonly id = 'WALMART_API' as const;
+  readonly id = "WALMART_API" as const;
 
-  async getQuote(request: QuoteRequest, config: ProviderConfig): Promise<ProviderQuote> {
+  async getQuote(
+    request: QuoteRequest,
+    config: ProviderConfig,
+  ): Promise<ProviderQuote> {
     // Check if we should use mock mode
-    const forceMock = Deno.env.get('LOOPGPT_WALMART_MOCK') === 'true';
-    const allowMockFallback = Deno.env.get('LOOPGPT_WALMART_ALLOW_MOCK_FALLBACK') === 'true';
+    const forceMock = Deno.env.get("LOOPGPT_WALMART_MOCK") === "true";
+    const allowMockFallback =
+      Deno.env.get("LOOPGPT_WALMART_ALLOW_MOCK_FALLBACK") === "true";
 
     if (forceMock || !isWalmartConfigured()) {
-      console.log('[WalmartProvider] Using mock mode');
+      console.log("[WalmartProvider] Using mock mode");
       return this.getMockQuote(request, config);
     }
 
@@ -49,11 +59,11 @@ class WalmartProvider extends BaseCommerceProvider {
     try {
       return await this.getRealQuote(request, config);
     } catch (error) {
-      console.error('[WalmartProvider] Real API failed:', error);
+      console.error("[WalmartProvider] Real API failed:", error);
 
       // Fallback to mock if allowed
       if (allowMockFallback) {
-        console.log('[WalmartProvider] Falling back to mock mode');
+        console.log("[WalmartProvider] Falling back to mock mode");
         return this.getMockQuote(request, config);
       }
 
@@ -64,7 +74,10 @@ class WalmartProvider extends BaseCommerceProvider {
   /**
    * Get quote from real Walmart API
    */
-  private async getRealQuote(request: QuoteRequest, config: ProviderConfig): Promise<ProviderQuote> {
+  private async getRealQuote(
+    request: QuoteRequest,
+    config: ProviderConfig,
+  ): Promise<ProviderQuote> {
     const client = await getWalmartClient();
 
     // 1. Find nearest store (optional - for store pickup)
@@ -92,20 +105,21 @@ class WalmartProvider extends BaseCommerceProvider {
           itemAvailability.push({
             clientItemId: item.id,
             requestedItem: item.name,
-            status: 'unavailable',
+            status: "unavailable",
             inStock: false,
           });
           continue;
         }
 
         // Take first matching product that's available online
-        const product = searchResult.items.find(p => p.availableOnline) || searchResult.items[0];
+        const product = searchResult.items.find((p) => p.availableOnline) ||
+          searchResult.items[0];
 
-        if (!product || product.stock === 'Out of Stock') {
+        if (!product || product.stock === "Out of Stock") {
           itemAvailability.push({
             clientItemId: item.id,
             requestedItem: item.name,
-            status: 'unavailable',
+            status: "unavailable",
             inStock: false,
           });
           continue;
@@ -118,7 +132,7 @@ class WalmartProvider extends BaseCommerceProvider {
           providerSku: product.itemId,
           name: product.name,
           quantity: item.quantity,
-          unit: item.unit || 'pcs',
+          unit: item.unit || "pcs",
           priceCents,
         });
 
@@ -127,8 +141,8 @@ class WalmartProvider extends BaseCommerceProvider {
         itemAvailability.push({
           clientItemId: item.id,
           requestedItem: item.name,
-          status: 'found',
-          inStock: product.stock === 'Available',
+          status: "found",
+          inStock: product.stock === "Available",
           providerSku: product.itemId,
           foundProduct: {
             id: product.itemId,
@@ -137,24 +151,30 @@ class WalmartProvider extends BaseCommerceProvider {
           },
         });
       } catch (error) {
-        console.error(`[WalmartProvider] Error finding product for "${item.name}":`, error);
+        console.error(
+          `[WalmartProvider] Error finding product for "${item.name}":`,
+          error,
+        );
         itemAvailability.push({
           clientItemId: item.id,
           requestedItem: item.name,
-          status: 'unavailable',
+          status: "unavailable",
           inStock: false,
         });
       }
     }
 
     // 3. Calculate pricing
-    const subtotalCents = cartItems.reduce((sum, item) => sum + (item.priceCents * item.quantity), 0);
+    const subtotalCents = cartItems.reduce(
+      (sum, item) => sum + (item.priceCents * item.quantity),
+      0,
+    );
     const feesCents = this.dollarsToCents(7.95); // Walmart delivery fee (or free with Walmart+)
     const taxCents = Math.round(subtotalCents * 0.07); // 7% tax (varies by state)
     const totalCents = subtotalCents + feesCents + taxCents;
 
     // 4. Build affiliate URL
-    const affiliateUrl = client.buildAffiliateUrl(itemIds, 'LOOPGPT');
+    const affiliateUrl = client.buildAffiliateUrl(itemIds, "LOOPGPT");
 
     // 5. Build quote
     const providerMeta: ProviderMeta = {
@@ -166,18 +186,21 @@ class WalmartProvider extends BaseCommerceProvider {
     return {
       provider: providerMeta,
       config,
-      store: store ? {
-        id: store.storeId,
-        name: store.name,
-        address: `${store.streetAddress}, ${store.city}, ${store.stateProvCode} ${store.zip}`,
-      } : undefined,
+      store: store
+        ? {
+          id: store.storeId,
+          name: store.name,
+          address:
+            `${store.streetAddress}, ${store.city}, ${store.stateProvCode} ${store.zip}`,
+        }
+        : undefined,
       cart: cartItems,
       quote: {
         subtotalCents,
         feesCents,
         taxCents,
         totalCents,
-        currency: 'USD',
+        currency: "USD",
         estimatedDeliveryMinutes: 90, // 1-2 hour window (average 1.5 hours)
         // Legacy fields
         subtotal: this.centsToDollars(subtotalCents),
@@ -192,8 +215,8 @@ class WalmartProvider extends BaseCommerceProvider {
       itemAvailability,
       affiliateUrl,
       raw: {
-        provider: 'walmart',
-        mode: 'real',
+        provider: "walmart",
+        mode: "real",
         storeId: store?.storeId,
         timestamp: new Date().toISOString(),
       },
@@ -203,7 +226,10 @@ class WalmartProvider extends BaseCommerceProvider {
   /**
    * Get mock quote for testing/fallback
    */
-  private getMockQuote(request: QuoteRequest, config: ProviderConfig): ProviderQuote {
+  private getMockQuote(
+    request: QuoteRequest,
+    config: ProviderConfig,
+  ): ProviderQuote {
     const providerMeta: ProviderMeta = {
       id: this.id,
       name: config.name,
@@ -213,25 +239,31 @@ class WalmartProvider extends BaseCommerceProvider {
     // Mock cart items (Walmart typically has lowest prices)
     const cart: CartItem[] = request.items.map((item, idx) => ({
       clientItemId: item.id,
-      providerSku: `WM-MOCK-${idx.toString().padStart(5, '0')}`,
+      providerSku: `WM-MOCK-${idx.toString().padStart(5, "0")}`,
       name: item.name,
       quantity: item.quantity,
-      unit: item.unit || 'pcs',
+      unit: item.unit || "pcs",
       priceCents: this.dollarsToCents(9.99), // Walmart's competitive pricing
       substituted: false,
     }));
 
     // Mock pricing
-    const subtotalCents = cart.reduce((sum, item) => sum + (item.priceCents * item.quantity), 0);
+    const subtotalCents = cart.reduce(
+      (sum, item) => sum + (item.priceCents * item.quantity),
+      0,
+    );
     const feesCents = this.dollarsToCents(7.95);
     const taxCents = Math.round(subtotalCents * 0.07);
     const totalCents = subtotalCents + feesCents + taxCents;
 
     // Mock availability
-    const itemAvailability: ItemAvailability[] = request.items.map((item, idx) => ({
+    const itemAvailability: ItemAvailability[] = request.items.map((
+      item,
+      idx,
+    ) => ({
       clientItemId: item.id,
       requestedItem: item.name,
-      status: 'found' as const,
+      status: "found" as const,
       inStock: true,
       providerSku: cart[idx].providerSku,
       foundProduct: {
@@ -241,7 +273,8 @@ class WalmartProvider extends BaseCommerceProvider {
       },
     }));
 
-    const affiliateUrl = `https://www.walmart.com/cart?cartId=mock-walmart-${Date.now()}&affId=LOOPGPT`;
+    const affiliateUrl =
+      `https://www.walmart.com/cart?cartId=mock-walmart-${Date.now()}&affId=LOOPGPT`;
 
     return {
       provider: providerMeta,
@@ -252,7 +285,7 @@ class WalmartProvider extends BaseCommerceProvider {
         feesCents,
         taxCents,
         totalCents,
-        currency: 'USD',
+        currency: "USD",
         estimatedDeliveryMinutes: 90,
         // Legacy fields
         subtotal: this.centsToDollars(subtotalCents),
@@ -267,8 +300,8 @@ class WalmartProvider extends BaseCommerceProvider {
       itemAvailability,
       affiliateUrl,
       raw: {
-        provider: 'walmart',
-        mode: 'mock',
+        provider: "walmart",
+        mode: "mock",
         timestamp: new Date().toISOString(),
       },
     };
@@ -276,13 +309,13 @@ class WalmartProvider extends BaseCommerceProvider {
 
   override async healthCheck(config: ProviderConfig): Promise<boolean> {
     // Check if mock mode
-    if (Deno.env.get('LOOPGPT_WALMART_MOCK') === 'true') {
+    if (Deno.env.get("LOOPGPT_WALMART_MOCK") === "true") {
       return config.enabled;
     }
 
     // Check if API is configured
     if (!isWalmartConfigured()) {
-      console.warn('[WalmartProvider] API credentials not configured');
+      console.warn("[WalmartProvider] API credentials not configured");
       return false;
     }
 
@@ -291,13 +324,13 @@ class WalmartProvider extends BaseCommerceProvider {
       await getWalmartClient();
       return true;
     } catch (error) {
-      console.error('[WalmartProvider] Health check failed:', error);
+      console.error("[WalmartProvider] Health check failed:", error);
       return false;
     }
   }
 
   override getName(): string {
-    return 'Walmart Direct';
+    return "Walmart Direct";
   }
 }
 

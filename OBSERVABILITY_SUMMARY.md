@@ -2,13 +2,15 @@
 
 **Step 2 of Production Readiness**
 
-This document summarizes the observability and monitoring layer implementation for LoopGPT MCP tools.
+This document summarizes the observability and monitoring layer implementation
+for LoopGPT MCP tools.
 
 ---
 
 ## 🎯 Objective
 
 Implement comprehensive observability for all MCP tools with:
+
 1. Database-backed metrics storage
 2. Structured JSON logging
 3. Per-tool health monitoring views
@@ -23,6 +25,7 @@ Implement comprehensive observability for all MCP tools with:
 **Migration:** `supabase/migrations/20251206_tool_invocations_observability.sql`
 
 **Table Structure:**
+
 - `tool_name` - MCP tool identifier
 - `user_id`, `session_id`, `gpt_name` - Context fields
 - `started_at`, `finished_at`, `duration_ms` - Timing metrics
@@ -31,6 +34,7 @@ Implement comprehensive observability for all MCP tools with:
 - `metadata` - JSONB for debugging context
 
 **Indexes (5 total):**
+
 - `idx_tool_invocations_tool_name` - Filter by tool
 - `idx_tool_invocations_created_at` - Time-based queries
 - `idx_tool_invocations_success` - Success/failure filtering
@@ -38,6 +42,7 @@ Implement comprehensive observability for all MCP tools with:
 - `idx_tool_invocations_error_code` - Error analysis
 
 **Security:**
+
 - RLS enabled
 - Service role-only access
 
@@ -46,6 +51,7 @@ Implement comprehensive observability for all MCP tools with:
 ### 2. Structured Logger Module (`lib/logger.ts`)
 
 **Features:**
+
 - 4 log levels: debug, info, warn, error
 - JSON-formatted output for log aggregation
 - Structured context fields
@@ -54,22 +60,24 @@ Implement comprehensive observability for all MCP tools with:
 - Utility functions: `sanitizeLogContext()`, `formatDuration()`
 
 **Example Usage:**
-```typescript
-import { logInfo, logError } from "./lib/logger";
 
-logInfo("Tool executed successfully", { 
+```typescript
+import { logError, logInfo } from "./lib/logger";
+
+logInfo("Tool executed successfully", {
   toolName: "delivery_search_restaurants",
-  durationMs: 1234 
+  durationMs: 1234,
 });
 
-logError("Tool failed", { 
+logError("Tool failed", {
   toolName: "delivery_place_order",
   errorCode: "TIMEOUT",
-  retryable: true 
+  retryable: true,
 });
 ```
 
 **Log Output:**
+
 ```json
 {
   "level": "error",
@@ -88,6 +96,7 @@ logError("Tool failed", {
 ### 3. Tool Metrics Logging (`lib/tool-metrics.ts`)
 
 **Features:**
+
 - `logToolInvocationToDb()` - Async database logging
 - `inferGptNameFromTool()` - Maps tool names to GPT names
 - `inferProviderFromTool()` - Maps tool names to external providers
@@ -96,11 +105,13 @@ logError("Tool failed", {
 - Non-throwing error handling
 
 **Integration Points:**
+
 - MCP server success path
 - MCP server invocation error path
 - MCP server unexpected error path
 
 **Logged Fields:**
+
 - `tool_name`, `started_at`, `finished_at`, `duration_ms`
 - `success`, `error_code`
 - `user_id`, `gpt_name`, `provider`
@@ -115,12 +126,15 @@ logError("Tool failed", {
 **Views Created:**
 
 #### `analytics.tool_error_rate_24h` (Materialized)
+
 - Per-tool error rates over 24 hours
-- Fields: `total_invocations`, `error_count`, `error_rate_pct`, `most_common_error`
+- Fields: `total_invocations`, `error_count`, `error_rate_pct`,
+  `most_common_error`
 - Sorted by error rate (highest first)
 - Indexed on `tool_name`
 
 #### `analytics.tool_latency_p50_p95_24h` (Materialized)
+
 - Per-tool latency percentiles over 24 hours
 - Fields: `p50_ms`, `p95_ms`, `avg_ms`, `min_ms`, `max_ms`
 - Only includes successful invocations
@@ -128,6 +142,7 @@ logError("Tool failed", {
 - Indexed on `tool_name`
 
 #### `analytics.tool_health_summary` (Regular View)
+
 - Combines error rates + latency metrics
 - Adds `health_status` classification:
   - **Critical:** error_rate > 10%
@@ -135,9 +150,11 @@ logError("Tool failed", {
   - **Healthy:** Otherwise
 
 **Refresh Function:**
+
 ```sql
 SELECT analytics.refresh_all_views();
 ```
+
 - Refreshes both materialized views concurrently
 - Should be run periodically (e.g., hourly cron job)
 
@@ -148,12 +165,16 @@ SELECT analytics.refresh_all_views();
 **File:** `supabase/functions/mcp-server/lib/reliability.ts`
 
 **Changes:**
-- Imported structured logger: `logDebug()`, `logInfo()`, `logWarn()`, `logError()`
+
+- Imported structured logger: `logDebug()`, `logInfo()`, `logWarn()`,
+  `logError()`
 - Replaced 5 console.log calls with structured logging
-- Added context fields: `toolName`, `errorCode`, `attemptNumber`, `maxRetries`, `delayMs`, `durationMs`, `retryable`
+- Added context fields: `toolName`, `errorCode`, `attemptNumber`, `maxRetries`,
+  `delayMs`, `durationMs`, `retryable`
 - Kept backward-compatible JSON logging
 
 **Log Locations:**
+
 1. Retry skip (debug)
 2. Max retries exhausted (warn)
 3. Retry attempt (info)
@@ -230,6 +251,7 @@ SELECT analytics.refresh_all_views();
 ## 🎯 Benefits
 
 ### For Operations Team:
+
 - ✅ **Centralized metrics:** All tool invocations in one table
 - ✅ **Error tracking:** Per-tool error rates and common error codes
 - ✅ **Latency monitoring:** P50/P95 percentiles for SLA tracking
@@ -237,6 +259,7 @@ SELECT analytics.refresh_all_views();
 - ✅ **Alerting-ready:** Can set up alerts on error rates or latency
 
 ### For Developers:
+
 - ✅ **Structured logs:** Easy to parse and analyze
 - ✅ **Rich context:** All relevant fields in every log entry
 - ✅ **Debugging:** Metadata field captures error details
@@ -244,6 +267,7 @@ SELECT analytics.refresh_all_views();
 - ✅ **Performance insights:** Duration tracking for optimization
 
 ### For Product Team:
+
 - ✅ **Usage metrics:** Which tools are most/least used
 - ✅ **Reliability metrics:** Which tools have highest error rates
 - ✅ **User experience:** Latency percentiles show user-facing performance
@@ -254,6 +278,7 @@ SELECT analytics.refresh_all_views();
 ## 📈 Key Metrics
 
 ### Error Rate Metrics:
+
 - **Total invocations** - Volume of tool usage
 - **Error count** - Number of failures
 - **Error rate %** - Percentage of failures
@@ -261,12 +286,14 @@ SELECT analytics.refresh_all_views();
 - **Unique error codes** - Variety of failure modes
 
 ### Latency Metrics:
+
 - **P50 (median)** - Typical latency
 - **P95** - Worst-case latency for 95% of requests
 - **Average** - Mean latency
 - **Min/Max** - Range of latencies
 
 ### Health Status:
+
 - **Healthy** - error_rate ≤ 5% AND p95_latency ≤ 10s
 - **Warning** - error_rate > 5% OR p95_latency > 10s
 - **Critical** - error_rate > 10%
@@ -280,6 +307,7 @@ SELECT analytics.refresh_all_views();
 **Recommended:** Refresh materialized views every hour
 
 **Option 1: pg_cron (Supabase)**
+
 ```sql
 SELECT cron.schedule(
   'refresh-tool-health-views',
@@ -289,6 +317,7 @@ SELECT cron.schedule(
 ```
 
 **Option 2: External Cron Job**
+
 ```bash
 # Add to crontab
 0 * * * * curl -X POST https://your-supabase-project.supabase.co/rest/v1/rpc/refresh_all_views \
@@ -302,13 +331,14 @@ SELECT cron.schedule(
 
 **Recommended thresholds for alerts:**
 
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| Error rate | > 5% | > 10% |
-| P95 latency | > 5s | > 10s |
-| Total errors (24h) | > 100 | > 500 |
+| Metric             | Warning | Critical |
+| ------------------ | ------- | -------- |
+| Error rate         | > 5%    | > 10%    |
+| P95 latency        | > 5s    | > 10s    |
+| Total errors (24h) | > 100   | > 500    |
 
 **Example Alert Query:**
+
 ```sql
 SELECT tool_name, error_rate_pct, p95_ms
 FROM analytics.tool_health_summary
@@ -320,9 +350,11 @@ ORDER BY health_status, error_rate_pct DESC;
 
 ## 🧪 Testing
 
-See [OBSERVABILITY_TESTING.md](./OBSERVABILITY_TESTING.md) for comprehensive testing instructions.
+See [OBSERVABILITY_TESTING.md](./OBSERVABILITY_TESTING.md) for comprehensive
+testing instructions.
 
 **Quick Validation:**
+
 ```sql
 -- Check if data is being logged
 SELECT COUNT(*) FROM analytics.tool_invocations
@@ -345,7 +377,9 @@ SELECT * FROM analytics.tool_health_summary;
 ## 📝 Files Changed
 
 ### New Files Created (6):
-1. `supabase/migrations/20251206_tool_invocations_observability.sql` - Database schema
+
+1. `supabase/migrations/20251206_tool_invocations_observability.sql` - Database
+   schema
 2. `supabase/migrations/20251206_tool_health_views.sql` - Materialized views
 3. `supabase/functions/mcp-server/lib/logger.ts` - Structured logger
 4. `supabase/functions/mcp-server/lib/tool-metrics.ts` - Tool metrics logging
@@ -353,8 +387,10 @@ SELECT * FROM analytics.tool_health_summary;
 6. `OBSERVABILITY_SUMMARY.md` - This document
 
 ### Files Modified (2):
+
 1. `supabase/functions/mcp-server/index.ts` - Added tool metrics logging
-2. `supabase/functions/mcp-server/lib/reliability.ts` - Integrated structured logger
+2. `supabase/functions/mcp-server/lib/reliability.ts` - Integrated structured
+   logger
 
 ---
 
@@ -378,18 +414,21 @@ SELECT * FROM analytics.tool_health_summary;
 ## 📊 Success Metrics
 
 ### Immediate (Day 1):
+
 - ✅ All tool invocations logged to database
 - ✅ Structured logs appear in console
 - ✅ Materialized views return data
 - ✅ No errors in Edge Function logs
 
 ### Short-Term (Week 1):
+
 - ✅ Error rates < 5% for all tools
 - ✅ P95 latencies < 5s for all tools
 - ✅ Logging overhead < 5% of total execution time
 - ✅ No database bottlenecks
 
 ### Long-Term (Month 1):
+
 - ✅ Dashboard showing tool health
 - ✅ Alerts configured for high error rates
 - ✅ Integrated with external observability tools
@@ -412,13 +451,15 @@ SELECT * FROM analytics.tool_health_summary;
 ## 📞 Support
 
 **Questions or Issues?**
-- Check [OBSERVABILITY_TESTING.md](./OBSERVABILITY_TESTING.md) for troubleshooting
+
+- Check [OBSERVABILITY_TESTING.md](./OBSERVABILITY_TESTING.md) for
+  troubleshooting
 - Review Edge Function logs in Supabase dashboard
 - Query `analytics.tool_invocations` for debugging
 - Contact: technical-support@theloopgpt.ai
 
 ---
 
-**Last Updated:** 2025-12-06  
-**Version:** 1.0.0  
+**Last Updated:** 2025-12-06\
+**Version:** 1.0.0\
 **Status:** ✅ Production Ready

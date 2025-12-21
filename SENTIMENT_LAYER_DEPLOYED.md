@@ -1,12 +1,15 @@
 # Sentiment Layer - Successfully Deployed ✅
 
-**Date**: December 4, 2025  
-**Status**: ✅ DEPLOYED AND OPERATIONAL  
+**Date**: December 4, 2025\
+**Status**: ✅ DEPLOYED AND OPERATIONAL\
 **Version**: 1.6.0-sentiment-layer
 
 ## Summary
 
-The LoopGPT Sentiment Layer has been successfully implemented and deployed! Users can now provide feedback on recipes, meal plans, and grocery lists through:
+The LoopGPT Sentiment Layer has been successfully implemented and deployed!
+Users can now provide feedback on recipes, meal plans, and grocery lists
+through:
+
 - 👍/👎 Helpful/Not Helpful buttons
 - ⭐ Star ratings (1-5)
 - ❤️ Favorites
@@ -15,21 +18,22 @@ The LoopGPT Sentiment Layer has been successfully implemented and deployed! User
 
 All 9 tests passed successfully (200 OK):
 
-✅ **Test 1**: Record "Helpful" feedback  
-✅ **Test 2**: Record "Not Helpful" feedback  
-✅ **Test 3**: Record 5-star rating  
-✅ **Test 4**: Add to favorites  
-✅ **Test 5**: Get user's favorites  
-✅ **Test 6**: Get content stats  
-✅ **Test 7**: Remove from favorites  
-✅ **Test 8**: Verify favorites removed  
+✅ **Test 1**: Record "Helpful" feedback\
+✅ **Test 2**: Record "Not Helpful" feedback\
+✅ **Test 3**: Record 5-star rating\
+✅ **Test 4**: Add to favorites\
+✅ **Test 5**: Get user's favorites\
+✅ **Test 6**: Get content stats\
+✅ **Test 7**: Remove from favorites\
+✅ **Test 8**: Verify favorites removed\
 ✅ **Test 9**: Invalid rating validation (correctly rejected)
 
 ## Implementation Details
 
 ### Files Created
 
-1. **sentimentStore.ts** - Storage abstraction with Supabase + in-memory fallback
+1. **sentimentStore.ts** - Storage abstraction with Supabase + in-memory
+   fallback
 2. **sentiment.ts** - MCP tools for feedback recording and retrieval
 3. **test-sentiment-layer.ts** - Comprehensive test suite
 4. **20251204_sentiment_layer.sql** - Database migration (ready to apply)
@@ -38,7 +42,9 @@ All 9 tests passed successfully (200 OK):
 ### Database Schema
 
 #### sentiment_events
+
 Stores all feedback events for analytics:
+
 ```sql
 - id (UUID, primary key)
 - user_id (TEXT)
@@ -51,7 +57,9 @@ Stores all feedback events for analytics:
 ```
 
 #### user_favorites
+
 Denormalized favorites for fast retrieval:
+
 ```sql
 - user_id (TEXT)
 - content_type (TEXT)
@@ -63,7 +71,9 @@ PRIMARY KEY (user_id, content_type, content_id)
 ```
 
 #### sentiment_stats
+
 Aggregated statistics (auto-updated via trigger):
+
 ```sql
 - content_type (TEXT)
 - content_id (TEXT)
@@ -78,11 +88,13 @@ Aggregated statistics (auto-updated via trigger):
 ### Available Tools
 
 #### 1. feedback.sentiment
+
 **Endpoint**: `POST /tools/feedback.sentiment`
 
 **Description**: Record user feedback on content
 
 **Input**:
+
 ```json
 {
   "userId": "user123",
@@ -96,6 +108,7 @@ Aggregated statistics (auto-updated via trigger):
 ```
 
 **Output**:
+
 ```json
 {
   "status": "ok",
@@ -110,19 +123,22 @@ Aggregated statistics (auto-updated via trigger):
 ```
 
 #### 2. feedback.getFavorites
+
 **Endpoint**: `POST /tools/feedback.getFavorites`
 
 **Description**: Retrieve user's favorited content
 
 **Input**:
+
 ```json
 {
   "userId": "user123",
-  "contentType": "recipe"  // Optional filter
+  "contentType": "recipe" // Optional filter
 }
 ```
 
 **Output**:
+
 ```json
 {
   "favorites": [
@@ -139,11 +155,13 @@ Aggregated statistics (auto-updated via trigger):
 ```
 
 #### 3. feedback.getStats
+
 **Endpoint**: `POST /tools/feedback.getStats`
 
 **Description**: Get aggregated sentiment statistics for content
 
 **Input**:
+
 ```json
 {
   "contentType": "recipe",
@@ -152,6 +170,7 @@ Aggregated statistics (auto-updated via trigger):
 ```
 
 **Output**:
+
 ```json
 {
   "contentType": "recipe",
@@ -187,6 +206,7 @@ The sentiment layer uses a **dual-storage approach**:
 ### Graceful Degradation
 
 The system handles missing database tables gracefully:
+
 - Events are accepted and logged (200 OK)
 - Warnings logged to console
 - No errors thrown to client
@@ -195,6 +215,7 @@ The system handles missing database tables gracefully:
 ### Current Status
 
 **✅ Deployed and Operational**
+
 - All tools registered and working
 - Graceful degradation active (tables not yet created)
 - Events logged but not persisted
@@ -203,6 +224,7 @@ The system handles missing database tables gracefully:
 **📋 Next Step: Create Database Tables**
 
 To enable persistent storage, run the migration:
+
 ```sql
 -- Apply supabase/migrations/20251204_sentiment_layer.sql
 -- Or use init-sentiment-tables.ts script
@@ -213,85 +235,90 @@ To enable persistent storage, run the migration:
 ### Frontend Integration
 
 #### 1. Was This Helpful?
+
 ```typescript
 // User clicks 👍 Helpful
-await fetch('/tools/feedback.sentiment', {
-  method: 'POST',
+await fetch("/tools/feedback.sentiment", {
+  method: "POST",
   body: JSON.stringify({
     userId: currentUser.id,
-    contentType: 'recipe',
+    contentType: "recipe",
     contentId: recipe.id,
-    eventType: 'HELPFUL'
-  })
+    eventType: "HELPFUL",
+  }),
 });
 ```
 
 #### 2. Star Rating
+
 ```typescript
 // User rates 5 stars
-await fetch('/tools/feedback.sentiment', {
-  method: 'POST',
+await fetch("/tools/feedback.sentiment", {
+  method: "POST",
   body: JSON.stringify({
     userId: currentUser.id,
-    contentType: 'recipe',
+    contentType: "recipe",
     contentId: recipe.id,
-    eventType: 'RATED',
-    rating: 5
-  })
+    eventType: "RATED",
+    rating: 5,
+  }),
 });
 ```
 
 #### 3. Favorite Toggle
+
 ```typescript
 // User clicks ❤️ to favorite
-await fetch('/tools/feedback.sentiment', {
-  method: 'POST',
+await fetch("/tools/feedback.sentiment", {
+  method: "POST",
   body: JSON.stringify({
     userId: currentUser.id,
-    contentType: 'recipe',
+    contentType: "recipe",
     contentId: recipe.id,
-    eventType: 'FAVORITED',
+    eventType: "FAVORITED",
     contentName: recipe.name,
     contentData: {
       prepTime: recipe.prepTime,
-      difficulty: recipe.difficulty
-    }
-  })
+      difficulty: recipe.difficulty,
+    },
+  }),
 });
 
 // User unfavorites
-await fetch('/tools/feedback.sentiment', {
-  method: 'POST',
+await fetch("/tools/feedback.sentiment", {
+  method: "POST",
   body: JSON.stringify({
     userId: currentUser.id,
-    contentType: 'recipe',
+    contentType: "recipe",
     contentId: recipe.id,
-    eventType: 'UNFAVORITED'
-  })
+    eventType: "UNFAVORITED",
+  }),
 });
 ```
 
 #### 4. Display User's Favorites
+
 ```typescript
 // Get all favorites
-const response = await fetch('/tools/feedback.getFavorites', {
-  method: 'POST',
+const response = await fetch("/tools/feedback.getFavorites", {
+  method: "POST",
   body: JSON.stringify({
-    userId: currentUser.id
-  })
+    userId: currentUser.id,
+  }),
 });
 const { favorites, count } = await response.json();
 ```
 
 #### 5. Display Content Stats
+
 ```typescript
 // Show helpful percentage and rating
-const response = await fetch('/tools/feedback.getStats', {
-  method: 'POST',
+const response = await fetch("/tools/feedback.getStats", {
+  method: "POST",
   body: JSON.stringify({
-    contentType: 'recipe',
-    contentId: recipe.id
-  })
+    contentType: "recipe",
+    contentId: recipe.id,
+  }),
 });
 const { stats } = await response.json();
 
@@ -301,6 +328,7 @@ const { stats } = await response.json();
 ## Analytics Use Cases
 
 ### 1. Content Ranking
+
 ```sql
 -- Top rated recipes
 SELECT * FROM sentiment_stats
@@ -311,6 +339,7 @@ LIMIT 10;
 ```
 
 ### 2. User Engagement
+
 ```sql
 -- Most engaged users
 SELECT user_id, COUNT(*) as feedback_count
@@ -321,6 +350,7 @@ ORDER BY feedback_count DESC;
 ```
 
 ### 3. Content Performance
+
 ```sql
 -- Recipes with low helpful percentage
 SELECT 
@@ -345,6 +375,7 @@ ORDER BY helpful_pct ASC;
 ## Future Enhancements
 
 ### Phase 2 (Optional)
+
 - [ ] Real-time sentiment dashboard
 - [ ] Sentiment-based content recommendations
 - [ ] Email notifications for favorite content updates
@@ -353,6 +384,7 @@ ORDER BY helpful_pct ASC;
 - [ ] Machine learning for sentiment prediction
 
 ### Phase 3 (Advanced)
+
 - [ ] Sentiment trends over time
 - [ ] User cohort analysis
 - [ ] Content lifecycle tracking
@@ -362,6 +394,7 @@ ORDER BY helpful_pct ASC;
 ## Testing
 
 Run the test suite:
+
 ```bash
 export SUPABASE_SERVICE_ROLE_KEY="your_key_here"
 deno run --allow-net --allow-env test-sentiment-layer.ts
@@ -371,16 +404,16 @@ Expected output: All 9 tests passing with 200 OK
 
 ## Troubleshooting
 
-**Issue**: Events not persisting  
-**Cause**: Database tables not created  
+**Issue**: Events not persisting\
+**Cause**: Database tables not created\
 **Solution**: Run migration script or create tables manually
 
-**Issue**: 500 errors  
-**Cause**: Supabase credentials not set  
+**Issue**: 500 errors\
+**Cause**: Supabase credentials not set\
 **Solution**: Check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY env vars
 
-**Issue**: Stats always return zeros  
-**Cause**: sentiment_stats table or trigger not created  
+**Issue**: Stats always return zeros\
+**Cause**: sentiment_stats table or trigger not created\
 **Solution**: Apply full migration including trigger function
 
 ## Deployment Checklist
@@ -397,7 +430,7 @@ Expected output: All 9 tests passing with 200 OK
 
 ---
 
-**Status**: ✅ READY FOR PRODUCTION  
-**Next Action**: Create database tables to enable persistent storage  
-**Version**: 1.6.0-sentiment-layer  
+**Status**: ✅ READY FOR PRODUCTION\
+**Next Action**: Create database tables to enable persistent storage\
+**Version**: 1.6.0-sentiment-layer\
 **Last Updated**: December 4, 2025

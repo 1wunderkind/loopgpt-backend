@@ -1,8 +1,8 @@
 /**
  * Upgrade to Premium (MCP Tool)
- * 
+ *
  * Purpose: MCP tool for ChatGPT to initiate premium upgrade flow
- * 
+ *
  * Flow:
  * 1. User requests upgrade in ChatGPT
  * 2. This tool sends magic link to user's email
@@ -10,12 +10,12 @@
  * 4. Billing page creates checkout session
  * 5. User completes payment in Stripe
  * 6. Webhook activates subscription
- * 
+ *
  * Input:
  * - chatgpt_user_id: User identifier
  * - email: User email for magic link
  * - plan: 'monthly' | 'annual' | 'family' (optional, default: 'monthly')
- * 
+ *
  * Output:
  * - success: boolean
  * - message: Instructions for user
@@ -26,16 +26,16 @@ import { serve } from "std@0.168.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
 import { withStandardAPI } from "../_shared/security/applyMiddleware.ts";
 
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 interface UpgradeRequest {
   chatgpt_user_id: string;
   email: string;
-  plan?: 'monthly' | 'annual' | 'family';
+  plan?: "monthly" | "annual" | "family";
 }
 
 const handler = async (req) => {
@@ -46,13 +46,17 @@ const handler = async (req) => {
 
   try {
     // Parse request
-    const { chatgpt_user_id, email, plan = 'monthly' }: UpgradeRequest = await req.json();
+    const { chatgpt_user_id, email, plan = "monthly" }: UpgradeRequest =
+      await req.json();
 
     // Validate input
     if (!chatgpt_user_id || !email) {
       return new Response(
         JSON.stringify({ error: "chatgpt_user_id and email are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -61,7 +65,10 @@ const handler = async (req) => {
     if (!emailRegex.test(email)) {
       return new Response(
         JSON.stringify({ error: "Invalid email format" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -79,11 +86,15 @@ const handler = async (req) => {
 
     if (existingSub) {
       const now = new Date();
-      const trialEnd = existingSub.trial_end ? new Date(existingSub.trial_end) : null;
+      const trialEnd = existingSub.trial_end
+        ? new Date(existingSub.trial_end)
+        : null;
       const trialActive = trialEnd ? trialEnd > now : false;
 
-      if ((existingSub.status === 'active' || trialActive) && 
-          (existingSub.tier === 'premium' || existingSub.tier === 'family')) {
+      if (
+        (existingSub.status === "active" || trialActive) &&
+        (existingSub.tier === "premium" || existingSub.tier === "family")
+      ) {
         return new Response(
           JSON.stringify({
             success: false,
@@ -95,7 +106,7 @@ const handler = async (req) => {
           {
             status: 200,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
+          },
         );
       }
     }
@@ -103,16 +114,18 @@ const handler = async (req) => {
     const appUrl = Deno.env.get("APP_URL") || "https://theloopgpt.ai";
 
     // Send magic link via Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${appUrl}/billing?plan=${plan}&user_id=${chatgpt_user_id}`,
-        data: {
-          chatgpt_user_id,
-          plan,
+    const { data: authData, error: authError } = await supabase.auth
+      .signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo:
+            `${appUrl}/billing?plan=${plan}&user_id=${chatgpt_user_id}`,
+          data: {
+            chatgpt_user_id,
+            plan,
+          },
         },
-      },
-    });
+      });
 
     if (authError) {
       console.error("❌ Error sending magic link:", authError);
@@ -125,7 +138,7 @@ const handler = async (req) => {
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -146,7 +159,10 @@ const handler = async (req) => {
     const planDetails = {
       monthly: { price: "$4.99/month", trial: "7-day free trial" },
       annual: { price: "$49/year (save $10!)", trial: "7-day free trial" },
-      family: { price: "$14.99/month (up to 5 users)", trial: "7-day free trial" },
+      family: {
+        price: "$14.99/month (up to 5 users)",
+        trial: "7-day free trial",
+      },
     };
 
     const details = planDetails[plan];
@@ -158,20 +174,21 @@ const handler = async (req) => {
         plan,
         plan_price: details.price,
         trial_period: details.trial,
-        message: `📧 Check your email! We've sent a magic link to ${email}.\n\n` +
-                 `Click the link to complete your upgrade to LoopGPT Premium (${details.price}).\n\n` +
-                 `✨ Includes ${details.trial} - no payment required today!\n\n` +
-                 `After your trial, you'll get:\n` +
-                 `• Unlimited meal plans\n` +
-                 `• Advanced nutrition tracking\n` +
-                 `• Restaurant ordering\n` +
-                 `• Priority support\n\n` +
-                 `The link expires in 60 minutes. Check your spam folder if you don't see it.`,
+        message:
+          `📧 Check your email! We've sent a magic link to ${email}.\n\n` +
+          `Click the link to complete your upgrade to LoopGPT Premium (${details.price}).\n\n` +
+          `✨ Includes ${details.trial} - no payment required today!\n\n` +
+          `After your trial, you'll get:\n` +
+          `• Unlimited meal plans\n` +
+          `• Advanced nutrition tracking\n` +
+          `• Restaurant ordering\n` +
+          `• Priority support\n\n` +
+          `The link expires in 60 minutes. Check your spam folder if you don't see it.`,
       }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("❌ Error in upgrade_to_premium:", error);
@@ -183,11 +200,10 @@ const handler = async (req) => {
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   }
 };
 
 // Apply security middleware (rate limiting, request size limits, security headers)
 serve(withStandardAPI(handler));
-

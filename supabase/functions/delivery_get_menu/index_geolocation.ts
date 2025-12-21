@@ -7,27 +7,36 @@ import { serve } from "std@0.168.0/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
 import { withLogging } from "../../middleware/logging.ts";
 import {
+  AppError,
   createErrorResponse,
   createSuccessResponse,
-  validateRequired,
-  AppError,
   ErrorCodes,
+  validateRequired,
 } from "../../middleware/errorHandler.ts";
-import { buildDeliveryAffiliateLinks, getAffiliateDisclosure } from "../_lib/deliveryAffiliate.ts";
-import { rankPartners, suggestAlternativeCuisines } from "../_lib/deliveryMatcher.ts";
-import { formatDeliveryRecommendations, detectLanguage } from "../_lib/multilingual.ts";
 import {
+  buildDeliveryAffiliateLinks,
+  getAffiliateDisclosure,
+} from "../_lib/deliveryAffiliate.ts";
+import {
+  rankPartners,
+  suggestAlternativeCuisines,
+} from "../_lib/deliveryMatcher.ts";
+import {
+  detectLanguage,
+  formatDeliveryRecommendations,
+} from "../_lib/multilingual.ts";
+import {
+  calculateLocationConfidence,
   formatCountryDisplay,
-  needsLocationConfirmation,
   generateLocationConfirmationPrompt,
   getAlternativeCountries,
-  calculateLocationConfidence,
+  needsLocationConfirmation,
 } from "../_lib/locationUtils.ts";
 import type {
+  DeliveryMatchCriteria,
+  DeliveryPartner,
   GetDeliveryRecommendationsRequest,
   GetDeliveryRecommendationsResponse,
-  DeliveryPartner,
-  DeliveryMatchCriteria,
 } from "../_lib/types.ts";
 
 async function handler(req: Request): Promise<Response> {
@@ -49,7 +58,7 @@ async function handler(req: Request): Promise<Response> {
     } = body;
 
     console.log(
-      `Fetching delivery recommendations for user ${chatgpt_user_id}, cuisine: ${cuisine}, diet: ${diet}`
+      `Fetching delivery recommendations for user ${chatgpt_user_id}, cuisine: ${cuisine}, diet: ${diet}`,
     );
 
     // Initialize Supabase client
@@ -66,15 +75,18 @@ async function handler(req: Request): Promise<Response> {
     // Step 2: Get user location (NEW - GEOLOCATION)
     const geoHint = req.headers.get("X-User-Country") || undefined;
 
-    const locationResponse = await fetch(`${supabaseUrl}/functions/v1/get_user_location`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chatgpt_user_id,
-        detected_language: detectedLanguage,
-        geo_hint: geoHint,
-      }),
-    });
+    const locationResponse = await fetch(
+      `${supabaseUrl}/functions/v1/get_user_location`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chatgpt_user_id,
+          detected_language: detectedLanguage,
+          geo_hint: geoHint,
+        }),
+      },
+    );
 
     const locationData = await locationResponse.json();
 
@@ -84,16 +96,20 @@ async function handler(req: Request): Promise<Response> {
     if (locationData.needs_confirmation && !confirmed_country) {
       const confidence = calculateLocationConfidence(
         locationData.source,
-        detectedLanguage === locationData.language
+        detectedLanguage === locationData.language,
       );
 
       if (needsLocationConfirmation(confidence)) {
         // Generate confirmation prompt
-        const alternatives = getAlternativeCountries(detectedLanguage, locationData.country, 1);
+        const alternatives = getAlternativeCountries(
+          detectedLanguage,
+          locationData.country,
+          1,
+        );
         const confirmationPrompt = generateLocationConfirmationPrompt(
           detectedLanguage,
           locationData.country || alternatives[0],
-          alternatives
+          alternatives,
         );
 
         console.log(`[GEOLOCATION] Needs confirmation: ${confirmationPrompt}`);
@@ -132,25 +148,31 @@ async function handler(req: Request): Promise<Response> {
     console.log(`[GEOLOCATION] Using country: ${userCountry}`);
 
     // Step 5: Get affiliates for user's country (NEW - GEOLOCATION)
-    const affiliatesResponse = await fetch(`${supabaseUrl}/functions/v1/get_affiliate_by_country`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ country: userCountry }),
-    });
+    const affiliatesResponse = await fetch(
+      `${supabaseUrl}/functions/v1/get_affiliate_by_country`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ country: userCountry }),
+      },
+    );
 
     const affiliatesData = await affiliatesResponse.json();
 
-    console.log(`[GEOLOCATION] Found ${affiliatesData.count} affiliates for ${userCountry}`);
+    console.log(
+      `[GEOLOCATION] Found ${affiliatesData.count} affiliates for ${userCountry}`,
+    );
 
     if (!affiliatesData.affiliates || affiliatesData.affiliates.length === 0) {
       // No affiliates for this country
       const countryDisplay = formatCountryDisplay(userCountry);
-      
+
       return createSuccessResponse({
         success: true,
         recommendations: [],
         user_country: userCountry,
-        message: `We don't have delivery partners in ${countryDisplay} yet. We're working on expanding to your region!`,
+        message:
+          `We don't have delivery partners in ${countryDisplay} yet. We're working on expanding to your region!`,
         disclaimer: getAffiliateDisclosure(),
       });
     }
@@ -168,7 +190,7 @@ async function handler(req: Request): Promise<Response> {
       throw new AppError(
         ErrorCodes.DATABASE_ERROR,
         `Failed to fetch delivery partners: ${partnersError.message}`,
-        500
+        500,
       );
     }
 
@@ -176,11 +198,13 @@ async function handler(req: Request): Promise<Response> {
       throw new AppError(
         ErrorCodes.NOT_FOUND,
         "No delivery partners available",
-        404
+        404,
       );
     }
 
-    console.log(`Found ${partners.length} active delivery partners for ${userCountry}`);
+    console.log(
+      `Found ${partners.length} active delivery partners for ${userCountry}`,
+    );
 
     // Step 7: Build match criteria
     const criteria: DeliveryMatchCriteria = {
@@ -191,16 +215,24 @@ async function handler(req: Request): Promise<Response> {
     };
 
     // Step 8: Rank partners by match score
-    const rankedPartners = rankPartners(partners as DeliveryPartner[], criteria, limit);
+    const rankedPartners = rankPartners(
+      partners as DeliveryPartner[],
+      criteria,
+      limit,
+    );
 
     if (rankedPartners.length === 0) {
       // No matches found - suggest alternatives
       const alternatives = suggestAlternativeCuisines(
         cuisine || "pizza",
-        partners as DeliveryPartner[]
+        partners as DeliveryPartner[],
       );
 
-      console.log(`No matches for ${cuisine}, suggesting alternatives: ${alternatives.join(", ")}`);
+      console.log(
+        `No matches for ${cuisine}, suggesting alternatives: ${
+          alternatives.join(", ")
+        }`,
+      );
 
       return createSuccessResponse({
         success: true,
@@ -208,7 +240,10 @@ async function handler(req: Request): Promise<Response> {
         alternatives,
         user_country: userCountry,
         disclaimer: getAffiliateDisclosure(),
-        message: `No ${cuisine} delivery options found. Try these alternatives: ${alternatives.join(", ")}`,
+        message:
+          `No ${cuisine} delivery options found. Try these alternatives: ${
+            alternatives.join(", ")
+          }`,
       });
     }
 
@@ -216,13 +251,13 @@ async function handler(req: Request): Promise<Response> {
     const recommendations = rankedPartners.map((partner) => {
       // Find affiliate ID for this partner in this country
       const affiliateMapping = affiliatesData.affiliates.find(
-        (a: any) => a.partner_id === partner.id
+        (a: any) => a.partner_id === partner.id,
       );
 
       const affiliateLinks = buildDeliveryAffiliateLinks(
         partner,
         cuisine || "food",
-        affiliateMapping?.affiliate_id || "DEFAULT"
+        affiliateMapping?.affiliate_id || "DEFAULT",
       );
 
       return {
@@ -262,7 +297,10 @@ async function handler(req: Request): Promise<Response> {
     };
 
     // Step 12: Format response in user's language (NEW - MULTILINGUAL)
-    const formattedMessage = await formatDeliveryRecommendations(responseData, userInput);
+    const formattedMessage = await formatDeliveryRecommendations(
+      responseData,
+      userInput,
+    );
 
     console.log(`[MULTILINGUAL] Formatted response in ${detectedLanguage}`);
 
@@ -272,7 +310,6 @@ async function handler(req: Request): Promise<Response> {
       formatted_message: formattedMessage,
       language: detectedLanguage,
     });
-
   } catch (error) {
     console.error("Error fetching delivery recommendations:", error);
     return createErrorResponse(error);
@@ -281,4 +318,3 @@ async function handler(req: Request): Promise<Response> {
 
 // Export handler with logging middleware
 serve(withLogging(handler));
-

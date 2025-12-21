@@ -11,8 +11,13 @@
  *     --version=v1
  */
 
-import { loadUSDAData, filterCommonFoods } from "./src/ingest_usda.ts";
-import { normalizeName, generateAliases, classifyGroup, defaultMeasures } from "./src/utils.ts";
+import { filterCommonFoods, loadUSDAData } from "./src/ingest_usda.ts";
+import {
+  classifyGroup,
+  defaultMeasures,
+  generateAliases,
+  normalizeName,
+} from "./src/utils.ts";
 import { buildNGramIndex, getIndexStats } from "./src/generate_index.ts";
 
 interface Food {
@@ -49,7 +54,7 @@ const args = Object.fromEntries(
   Deno.args.map((a) => {
     const [key, value] = a.split("=");
     return [key.replace(/^--/, ""), value];
-  })
+  }),
 );
 
 const INPUT_DIR = args.input ?? "./data";
@@ -74,10 +79,10 @@ await Deno.mkdir(OUT_DIR, { recursive: true });
  */
 async function loadExistingFoods(): Promise<Food[]> {
   console.log("📦 Loading existing 107 foods...");
-  
+
   const json = await Deno.readTextFile(EXISTING_FILE);
   const existing: ExistingFood[] = JSON.parse(json);
-  
+
   // Normalize category names to canonical 8 groups
   const categoryMap: Record<string, string> = {
     "fruits": "fruit",
@@ -89,14 +94,16 @@ async function loadExistingFoods(): Promise<Food[]> {
     "condiments": "condiment",
     "misc": "misc",
   };
-  
+
   const foods: Food[] = existing.map((food, index) => ({
     id: index + 1,
     name: normalizeName(food.name),
-    aliases: food.name_variations.length > 0 ? food.name_variations : generateAliases(food.name),
+    aliases: food.name_variations.length > 0
+      ? food.name_variations
+      : generateAliases(food.name),
     group: categoryMap[food.category] || classifyGroup(food.category),
-    measures: food.common_servings.length > 0 
-      ? food.common_servings.map(s => ({ label: s.name, grams: s.grams }))
+    measures: food.common_servings.length > 0
+      ? food.common_servings.map((s) => ({ label: s.name, grams: s.grams }))
       : defaultMeasures(categoryMap[food.category] || "misc"),
     kcal: Math.round(food.calories_per_100g),
     protein: Math.round(food.protein_per_100g * 10) / 10,
@@ -106,7 +113,7 @@ async function loadExistingFoods(): Promise<Food[]> {
     sugar: Math.round(food.sugar_per_100g * 10) / 10,
     sodium: 0, // Not in existing schema
   }));
-  
+
   console.log(`✅ Loaded ${foods.length} existing foods`);
   return foods;
 }
@@ -117,47 +124,47 @@ async function loadExistingFoods(): Promise<Food[]> {
 async function build() {
   // Load existing foods
   const existingFoods = await loadExistingFoods();
-  const existingNames = new Set(existingFoods.map(f => f.name));
-  
+  const existingNames = new Set(existingFoods.map((f) => f.name));
+
   // Load USDA data
   const usdaFoods = await loadUSDAData(INPUT_DIR);
-  
+
   // Filter to common foods
   const commonFoods = filterCommonFoods(usdaFoods, LIMIT * 2); // Get 2x to account for duplicates
-  
+
   console.log(`📊 Filtered to ${commonFoods.length} common USDA foods`);
   console.log("");
-  
+
   // Merge with existing foods
   const foods: Food[] = [...existingFoods];
   let nextId = existingFoods.length + 1;
-  
+
   console.log("🔄 Merging USDA foods...");
-  
+
   for (const usdaFood of commonFoods) {
     if (foods.length >= LIMIT) break;
-    
+
     const name = normalizeName(usdaFood.description);
-    
+
     // Skip if duplicate
     if (existingNames.has(name)) {
       continue;
     }
-    
+
     // Skip if too similar to existing
-    const isDuplicate = existingFoods.some(existing => {
+    const isDuplicate = existingFoods.some((existing) => {
       const similarity = calculateSimilarity(name, existing.name);
       return similarity > 0.8;
     });
-    
+
     if (isDuplicate) {
       continue;
     }
-    
+
     existingNames.add(name);
-    
+
     const group = classifyGroup(usdaFood.category);
-    
+
     foods.push({
       id: nextId++,
       name,
@@ -173,31 +180,41 @@ async function build() {
       sodium: Math.round(usdaFood.nutrients.sodium * 10) / 10,
     });
   }
-  
-  console.log(`✅ Built database with ${foods.length} foods (${foods.length - existingFoods.length} new)`);
+
+  console.log(
+    `✅ Built database with ${foods.length} foods (${
+      foods.length - existingFoods.length
+    } new)`,
+  );
   console.log("");
-  
+
   // Write output
   const foodsPath = `${OUT_DIR}/foods@${VERSION}.json`;
   await Deno.writeTextFile(foodsPath, JSON.stringify(foods, null, 0));
-  
+
   const fileInfo = await Deno.stat(foodsPath);
   const fileSizeKB = Math.round(fileInfo.size / 1024);
-  
-  console.log(`✅ Wrote ${foods.length} foods → ${foodsPath} (${fileSizeKB} KB)`);
-  
+
+  console.log(
+    `✅ Wrote ${foods.length} foods → ${foodsPath} (${fileSizeKB} KB)`,
+  );
+
   // Generate statistics
   const groupCounts = foods.reduce((acc, food) => {
     acc[food.group] = (acc[food.group] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  
+
   console.log("");
   console.log("📊 Food groups distribution:");
-  for (const [group, count] of Object.entries(groupCounts).sort((a, b) => b[1] - a[1])) {
+  for (
+    const [group, count] of Object.entries(groupCounts).sort((a, b) =>
+      b[1] - a[1]
+    )
+  ) {
     console.log(`   ${group.padEnd(12)} ${count.toString().padStart(4)} foods`);
   }
-  
+
   // Write manifest
   const manifest = {
     version: VERSION,
@@ -207,31 +224,33 @@ async function build() {
     groups: groupCounts,
     generated_at: new Date().toISOString(),
   };
-  
+
   const manifestPath = `${OUT_DIR}/manifest@${VERSION}.json`;
   await Deno.writeTextFile(manifestPath, JSON.stringify(manifest, null, 2));
-  
+
   console.log("");
   console.log(`✅ Manifest written → ${manifestPath}`);
-  
+
   // Build n-gram index
   console.log("");
   console.log("🔍 Building n-gram fuzzy search index...");
-  
+
   const index = buildNGramIndex(foods);
   const stats = getIndexStats(index);
-  
+
   const indexPath = `${OUT_DIR}/index.ngram@${VERSION}.json`;
   await Deno.writeTextFile(indexPath, JSON.stringify(index, null, 0));
-  
+
   const indexFileInfo = await Deno.stat(indexPath);
   const indexSizeKB = Math.round(indexFileInfo.size / 1024);
-  
+
   console.log(`✅ N-gram index built → ${indexPath} (${indexSizeKB} KB)`);
-  console.log(`   ${stats.tokenCount} tokens, avg ${stats.avgFoodsPerToken} foods/token`);
+  console.log(
+    `   ${stats.tokenCount} tokens, avg ${stats.avgFoodsPerToken} foods/token`,
+  );
   console.log("");
   console.log("🎉 Build complete!");
-  
+
   return foods;
 }
 
@@ -241,10 +260,10 @@ async function build() {
 function calculateSimilarity(a: string, b: string): number {
   const wordsA = new Set(a.split(" "));
   const wordsB = new Set(b.split(" "));
-  
-  const intersection = new Set([...wordsA].filter(x => wordsB.has(x)));
+
+  const intersection = new Set([...wordsA].filter((x) => wordsB.has(x)));
   const union = new Set([...wordsA, ...wordsB]);
-  
+
   return intersection.size / union.size;
 }
 
@@ -252,4 +271,3 @@ function calculateSimilarity(a: string, b: string): number {
 if (import.meta.main) {
   await build();
 }
-

@@ -18,7 +18,9 @@ export function normalizeIngredient(ingredient: string): string {
 /**
  * Build affiliate links for a single ingredient
  */
-export function buildAffiliateLinksForIngredient(ingredient: string): AffiliateLinks {
+export function buildAffiliateLinksForIngredient(
+  ingredient: string,
+): AffiliateLinks {
   const normalized = normalizeIngredient(ingredient);
   const encoded = encodeURIComponent(ingredient);
 
@@ -26,12 +28,14 @@ export function buildAffiliateLinksForIngredient(ingredient: string): AffiliateL
 
   // Amazon Fresh link
   if (AMAZON_AFFILIATE_TAG) {
-    links.amazon_fresh = `https://www.amazon.com/s?k=${encoded}&tag=${AMAZON_AFFILIATE_TAG}`;
+    links.amazon_fresh =
+      `https://www.amazon.com/s?k=${encoded}&tag=${AMAZON_AFFILIATE_TAG}`;
   }
 
   // Instacart link
   if (INSTACART_AFFILIATE_ID) {
-    links.instacart = `https://www.instacart.com/store/search?q=${encoded}&utm_source=affiliate&utm_medium=mealplanner&utm_campaign=${INSTACART_AFFILIATE_ID}`;
+    links.instacart =
+      `https://www.instacart.com/store/search?q=${encoded}&utm_source=affiliate&utm_medium=mealplanner&utm_campaign=${INSTACART_AFFILIATE_ID}`;
   }
 
   // Walmart link (future)
@@ -43,7 +47,9 @@ export function buildAffiliateLinksForIngredient(ingredient: string): AffiliateL
 /**
  * Build affiliate links for multiple ingredients
  */
-export function buildAffiliateLinks(ingredients: string[]): Record<string, AffiliateLinks> {
+export function buildAffiliateLinks(
+  ingredients: string[],
+): Record<string, AffiliateLinks> {
   const result: Record<string, AffiliateLinks> = {};
 
   for (const ingredient of ingredients) {
@@ -61,7 +67,7 @@ export function buildAffiliateLinks(ingredients: string[]): Record<string, Affil
  */
 export function buildCartUrl(
   ingredients: string[],
-  platform: "amazon_fresh" | "instacart"
+  platform: "amazon_fresh" | "instacart",
 ): string {
   const query = ingredients.map((i) => encodeURIComponent(i)).join(",");
 
@@ -89,7 +95,9 @@ export interface AffiliateSummary {
   estimated_cost?: number;
 }
 
-export function generateAffiliateSummary(ingredients: string[]): AffiliateSummary {
+export function generateAffiliateSummary(
+  ingredients: string[],
+): AffiliateSummary {
   const uniqueIngredients = [...new Set(ingredients.map(normalizeIngredient))];
 
   return {
@@ -102,4 +110,3 @@ export function generateAffiliateSummary(ingredients: string[]): AffiliateSummar
     },
   };
 }
-

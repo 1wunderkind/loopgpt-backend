@@ -3,12 +3,7 @@
  * Tests for logging meals and food consumption
  */
 
-import {
-  assertEquals,
-  assertExists,
-  assert,
-  testData,
-} from "../../helpers.ts";
+import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 Deno.test("meal_logging: creates meal entry successfully", async () => {
   const userId = testData.userId();
@@ -31,7 +26,7 @@ Deno.test("meal_logging: creates meal entry successfully", async () => {
 
 Deno.test("meal_logging: validates meal type", async () => {
   const validMealTypes = ["breakfast", "lunch", "dinner", "snack"];
-  
+
   for (const mealType of validMealTypes) {
     const isValid = validMealTypes.includes(mealType);
     assertEquals(isValid, true);
@@ -102,5 +97,5 @@ Deno.test("meal_logging: handles multiple foods in one meal", async () => {
   };
 
   assertEquals(mockMeal.foods.length, 3);
-  assert(mockMeal.foods.every(f => f.food_id && f.quantity));
+  assert(mockMeal.foods.every((f) => f.food_id && f.quantity));
 });

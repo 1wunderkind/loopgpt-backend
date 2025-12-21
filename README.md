@@ -1,13 +1,48 @@
-# TheLoopGPT.ai Backend
+# LooptOS — the Agentic Commerce intelligence layer
 
-**Unified Supabase backend for the entire LoopGPT ecosystem**
+**Unified Supabase backend for the entire LooptOS ecosystem**
 
-This repository contains all Edge Functions, database migrations, and shared utilities for:
+LooptOS is the Agentic Commerce intelligence layer.
+
+It sits between user intent and execution, orchestrating autonomous agents, decision logic, and external commerce systems.
+
+LooptOS interprets intent, evaluates context, coordinates specialized agents, and routes actions across providers, APIs, and platforms — continuously learning from outcomes to improve future decisions.
+
+Applications and GPTs built on LooptOS do not implement commerce logic themselves; they rely on LooptOS as the underlying operating layer for reasoning, routing, optimization, and execution.
+
+This repository contains all Edge Functions, database migrations, and shared utilities for the functional apps built on LooptOS:
+
 - **MealPlannerGPT** - AI-powered meal planning with 1-click ordering
 - **WeightTrackerGPT** - Weight tracking and automatic plan adaptation
 - **Delivery Affiliates** - Location-aware delivery recommendations
 - **MealMe Integration** - 1-click food ordering from 1M+ restaurants
 - **Geolocation** - Multi-country support with smart affiliate routing
+
+---
+
+## 📖 What is LooptOS?
+
+**LooptOS — the Agentic Commerce intelligence layer**
+
+LooptOS was created to solve a fundamental problem in AI-driven commerce: models can understand intent, but they struggle to reliably act across real-world systems.
+
+Modern commerce requires more than recommendations. It requires coordination — across data, agents, providers, constraints, and outcomes.
+
+LooptOS was designed as an operating layer that closes this gap.
+
+Instead of embedding business logic inside every application, LooptOS centralizes reasoning, routing, and execution into a shared intelligence layer. Applications built on LooptOS focus on user experience and intent, while LooptOS handles orchestration, optimization, and learning.
+
+As new agents, providers, and verticals are added, LooptOS adapts — continuously improving decisions through feedback loops and real-world results.
+
+LooptOS is not an app. It is the intelligence layer that enables agentic commerce at scale.
+
+---
+
+## 🛡️ Brand Guardrails
+
+1.  **Platform Layer:** LooptOS is the PLATFORM LAYER (not a user-facing app). Users should NOT "chat with LooptOS" or select it as an app/tool.
+2.  **Functional Naming:** GPT/apps must NOT include "Loop" or "Loopt" in their visible names. They are function-first: LeftoverGPT, NutritionGPT, MealPlannerGPT, GroceryGPT, etc.
+3.  **Attribution:** In UI/app surfaces, show attribution as: "Powered by LooptOS" OR "Built on LooptOS". Never "Use LooptOS", never "LooptOS app".
 
 ---
 
@@ -21,13 +56,13 @@ loopgpt-backend/
 │   ├── migrations/          # Database schema migrations
 │   ├── seed/                # Seed data
 │   └── functions/
-│       ├── me- `mcp-server/`      # MCP Server implementation
-    - `mcp-tools/`       # MCP Tools (Commerce, Grocery, MealPlan, Nutrition, Recipes)
-    - `_shared/`         # Shared utilities and types
-    - `loopgpt_route_order/` # Commerce Router
-    - `loopgpt_confirm_order/` # Order Confirmation
-    - `loopgpt_cancel_order/` # Order Cancellation
-    - `loopgpt_record_outcome/` # Outcome Recordingared utilities
+│       ├── mcp-server/      # MCP Server implementation
+│       ├── mcp-tools/       # MCP Tools (Commerce, Grocery, MealPlan, Nutrition, Recipes)
+│       ├── _shared/         # Shared utilities and types
+│       ├── loopgpt_route_order/ # Commerce Router (Legacy Name)
+│       ├── loopgpt_confirm_order/ # Order Confirmation (Legacy Name)
+│       ├── loopgpt_cancel_order/ # Order Cancellation (Legacy Name)
+│       └── loopgpt_record_outcome/ # Outcome Recording (Legacy Name)
 └── scripts/                 # Deployment and testing scripts
 ```
 
@@ -38,7 +73,6 @@ loopgpt-backend/
 - ✅ **25 Countries** - Geolocation and affiliate routing
 - ✅ **MealMe Integration** - 1-click ordering from 1M+ restaurants
 - ✅ **WeightTracker** - Complete feedback loop (Plan → Track → Adapt)
-- ✅ **$80-250k/month revenue potential**
 
 ---
 
@@ -64,7 +98,8 @@ cp .env.example .env
 # Edit .env with your credentials
 ```
 
-Required environment variables:
+Required environment variables (Note: `LOOPGPT_*` vars are supported for backward compatibility, but `LOOPTOS_*` is preferred):
+
 - `SUPABASE_URL` - Your Supabase project URL
 - `SUPABASE_ANON_KEY` - Your Supabase anon key
 - `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key
@@ -77,23 +112,10 @@ Required environment variables:
 supabase db push
 ```
 
-This creates:
-- 18 database tables
-- RLS policies for security
-- Indexes for performance
-- Helper functions
-- Seed data
-
 ### **4. Deploy Edge Functions**
 
 ```bash
 supabase functions deploy
-```
-
-### **5. Test**
-
-```bash
-deno test
 ```
 
 ---
@@ -141,135 +163,6 @@ deno test
 - `feature_flags` - Feature toggles
 - `events` - Analytics events
 
-### **Security**
-
-All tables have **Row Level Security (RLS)** enabled:
-- Users can only access their own data
-- Public read for recipes, affiliates, partners
-- Service role for analytics
-
----
-
-## 🌍 Multilingual Support
-
-All responses are formatted in the user's native language using GPT-4.1-mini:
-
-```typescript
-// Automatic language detection
-const language = detectLanguage(userInput);
-
-// Format response in user's language
-const formattedResponse = await formatMealPlan(data, language);
-```
-
-**Supported:** 100+ languages (English, Spanish, Chinese, French, German, Japanese, etc.)
-
----
-
-## 📍 Geolocation & Affiliates
-
-Smart location detection ensures correct affiliate routing:
-
-```typescript
-// Get user's location (stored or geo hint)
-const location = await getUserLocation(userId);
-
-// Get affiliates for user's country
-const affiliates = await getAffiliatesByCountry(location.country);
-```
-
-**Supported:** 25 countries with 50+ affiliate mappings
-
----
-
-## 🍔 MealMe Integration
-
-1-click ordering from 1M+ restaurants:
-
-```typescript
-// Search local stores
-const stores = await mealmeSearch(location, cuisine);
-
-// Create cart from meal plan
-const cart = await mealmeCreateCart(planId, storeId);
-
-// Get delivery quotes
-const quotes = await mealmeGetQuotes(cartId);
-
-// Generate checkout URL
-const checkoutUrl = await mealmeCheckoutUrl(cartId, quoteId);
-```
-
-**Revenue:** 5-15% commission per order
-
----
-
-## ⚖️ WeightTracker Feedback Loop
-
-Automatic plan adaptation based on results:
-
-```typescript
-// Log weight daily
-await logWeight(userId, weightKg, date);
-
-// Calculate weekly trend (EWMA smoothing)
-const trend = await weeklyTrend(userId, days=7);
-
-// Evaluate plan outcome
-const outcome = await evaluatePlanOutcome(userId, planId);
-// Returns: { actual_delta_kg, recommended_adjustment_kcal }
-
-// Apply recommendation to next plan
-await pushPlanFeedback(userId, outcomeId);
-```
-
-**Plan → Eat → Track → Result → Adapt** 🔄
-
----
-
-## 🧪 Testing
-
-### **Manual Testing**
-
-```bash
-# Test meal planning
-curl -X POST https://your-project.supabase.co/functions/v1/generate_week_plan \
-  -H "Authorization: Bearer YOUR_ANON_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"goal": "weight_loss", "days": 7}'
-
-# Test weight logging
-curl -X POST https://your-project.supabase.co/functions/v1/log_weight \
-  -H "Authorization: Bearer YOUR_ANON_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"weight_kg": 75.5, "date": "2025-11-01"}'
-```
-
-### **Automated Testing**
-
-```bash
-./scripts/test-functions.sh
-```
-
----
-
-## 📊 Analytics
-
-### **Order Analytics**
-
-```sql
-SELECT * FROM order_analytics
-WHERE date >= NOW() - INTERVAL '30 days';
-```
-
-### **Delivery Analytics**
-
-```sql
-SELECT * FROM delivery_analytics
-WHERE country = 'US'
-ORDER BY total_recommendations DESC;
-```
-
 ---
 
 ## 🚢 Deployment
@@ -292,7 +185,7 @@ Set these in Supabase Dashboard:
 OPENAI_API_KEY=sk-...
 MEALME_API_KEY=your-key
 MEALME_PARTNER_ID=your-id
-AMAZON_AFFILIATE_ID=theloopgpt-20
+AMAZON_AFFILIATE_ID=looptos-20
 INSTACART_AFFILIATE_ID=your-id
 LEFTOVER_GPT_API_URL=https://leftovergpt.railway.app
 KCAL_GPT_API_URL=https://kcalgpt.onrender.com
@@ -301,124 +194,18 @@ NUTRITION_GPT_API_URL=https://nutritiongpt.railway.app
 
 ---
 
-## 📈 Revenue Model
-
-### **Affiliate Commissions**
-
-- **Grocery (Amazon, Instacart):** 1-4% commission
-- **Delivery (Uber Eats, DoorDash):** 5-15% commission
-- **MealMe Orders:** 5-15% commission
-
-### **Projected Revenue**
-
-- **Month 1:** $5-10k
-- **Month 3:** $20-40k
-- **Month 6:** $80-150k
-- **Month 12:** $250k+
-
----
-
-## 🔒 Security
-
-### **Row Level Security (RLS)**
-
-All tables have RLS policies:
-- Users can only access their own data
-- Service role for admin operations
-- Public read for non-sensitive data
-
-### **Authentication**
-
-- Supabase Auth with JWT tokens
-- Automatic user profile creation
-- Secure session management
-
-### **API Keys**
-
-- Never expose API keys in client code
-- Use Supabase Edge Functions as proxy
-- Store secrets in Supabase Dashboard
-
----
-
-## 🐛 Troubleshooting
-
-### **Function not deploying?**
-
-```bash
-# Check Supabase CLI version
-supabase --version
-
-# Update to latest
-npm install -g supabase@latest
-
-# Check logs
-supabase functions logs <function-name>
-```
-
-### **Database migration failed?**
-
-```bash
-# Reset local database
-supabase db reset
-
-# Re-run migrations
-supabase db push
-```
-
-### **RLS policy blocking access?**
-
-```sql
--- Check if user is authenticated
-SELECT auth.uid();
-
--- Check RLS policies
-SELECT * FROM pg_policies WHERE tablename = 'your_table';
-```
-
----
-
-## 📚 Documentation
-
-- [Supabase Docs](https://supabase.com/docs)
-- [Edge Functions Guide](https://supabase.com/docs/guides/functions)
-- [Row Level Security](https://supabase.com/docs/guides/auth/row-level-security)
-- [MealMe API Docs](https://docs.mealme.ai)
-
----
-
 ## 🤝 Contributing
 
-This is a private repository for TheLoopGPT.ai. For questions or issues, contact the team.
+This is a private repository for LooptOS. For questions or issues, contact the team.
 
 ---
 
 ## 📄 License
 
-UNLICENSED - Proprietary software for TheLoopGPT.ai
+UNLICENSED - Proprietary software for LooptOS
 
 ---
 
-## 🎉 What's Next?
-
-### **Phase 2 (Month 2):** Migrate K-Cal GPT
-- Move from Render to Supabase
-- Share user data with MealPlanner
-- Unified calorie tracking
-
-### **Phase 3 (Month 3):** Migrate LeftoverGPT
-- Move from Railway to Supabase
-- Direct recipe generation (no HTTP calls)
-- Faster meal planning
-
-### **Phase 4 (Month 4):** Migrate NutritionGPT
-- Move from Railway to Supabase
-- Complete ecosystem on single platform
-- **$25/month total cost** (vs $100/month separate)
-
----
-
-**Built with ❤️ by TheLoopGPT.ai Team**
+**Built on LooptOS**
 
 **Plan → Eat → Track → Result → Adapt** 🔄
-

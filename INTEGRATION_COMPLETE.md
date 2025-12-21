@@ -1,7 +1,7 @@
 # LoopKitchen Recommendation Engine - Integration Complete
 
-**Date:** December 6, 2025  
-**Status:** ✅ All 3 GPT Tools Integrated  
+**Date:** December 6, 2025\
+**Status:** ✅ All 3 GPT Tools Integrated\
 **Commit:** `17aa4ee`
 
 ---
@@ -13,6 +13,7 @@
 **Integration Type:** Post-generation scoring and ranking
 
 **How it works:**
+
 1. User submits ingredients
 2. GPT generates candidate recipes
 3. **NEW:** Recommendation engine scores each recipe (0-100 points)
@@ -23,6 +24,7 @@
    - `confidence` - 'high', 'medium', or 'low'
 
 **Example Response:**
+
 ```json
 {
   "type": "RecipeCardCompact",
@@ -38,6 +40,7 @@
 ```
 
 **Analytics Tracking:**
+
 - ✅ `logIngredientSubmission()` - When ingredients are submitted
 - ✅ `logRecipeEvent('generated')` - For each recipe generated
 
@@ -48,6 +51,7 @@
 **Integration Type:** Context enrichment before generation
 
 **How it works:**
+
 1. User requests meal plan
 2. **NEW:** Fetch user's ingredient profile (top 10 frequently used ingredients)
 3. **NEW:** Fetch user's recipe preferences (acceptance rate, preferred persona)
@@ -56,6 +60,7 @@
 6. Return meal plan to user
 
 **Example Context Added to Prompt:**
+
 ```
 User's frequently used ingredients: chicken, rice, eggs, soy sauce, broccoli, garlic, onions, olive oil, tomatoes, pasta
 
@@ -65,6 +70,7 @@ User's recipe preferences:
 ```
 
 **Analytics Tracking:**
+
 - ✅ `logMealPlanGenerated()` - When meal plan is created
 
 ---
@@ -74,6 +80,7 @@ User's recipe preferences:
 **Integration Type:** Post-generation scoring and ranking + analytics
 
 **How it works:**
+
 1. User submits ingredients
 2. GPT generates candidate recipes
 3. **NEW:** Recommendation engine scores each recipe (0-100 points)
@@ -82,6 +89,7 @@ User's recipe preferences:
 6. Return scored recipes to user
 
 **Example Response:**
+
 ```json
 {
   "id": "pasta-marinara-001",
@@ -95,6 +103,7 @@ User's recipe preferences:
 ```
 
 **Analytics Tracking:**
+
 - ✅ `logIngredientSubmission()` - When ingredients are submitted
 - ✅ `logRecipeEvent('generated')` - For each recipe generated
 
@@ -105,11 +114,13 @@ User's recipe preferences:
 ### `/supabase/functions/_shared/recommendations/index.ts`
 
 **Exports:**
+
 - `scoreRecipes()` - Main recommendation engine integration
 - `getUserIngredientProfile()` - Get user's ingredient usage patterns
 - `getUserRecipePreferences()` - Get user's recipe preferences
 
 **Features:**
+
 - ✅ Graceful fallback for anonymous users
 - ✅ Error handling (never breaks user flow)
 - ✅ Automatic sorting by score
@@ -117,13 +128,14 @@ User's recipe preferences:
 - ✅ Match reason generation
 
 **Usage Example:**
+
 ```typescript
-import { scoreRecipes } from '../_shared/recommendations/index.ts';
+import { scoreRecipes } from "../_shared/recommendations/index.ts";
 
 const scoredRecipes = await scoreRecipes({
-  userId: 'user-123',
+  userId: "user-123",
   recipes: candidateRecipes,
-  limit: 5
+  limit: 5,
 });
 ```
 
@@ -133,15 +145,16 @@ const scoredRecipes = await scoreRecipes({
 
 ### Complete Analytics Tracking Across All Tools
 
-| Tool | Ingredient Submission | Recipe Generated | Meal Plan | Session |
-|------|----------------------|------------------|-----------|---------|
-| **LeftoverGPT** | ✅ | ✅ | N/A | ⏳ |
-| **MealPlannerGPT** | N/A | N/A | ✅ | ⏳ |
-| **RecipeGPT** | ✅ | ✅ | N/A | ⏳ |
-| **KCalGPT** | N/A | N/A | N/A | ⏳ |
-| **NutritionGPT** | N/A | N/A | N/A | ⏳ |
+| Tool               | Ingredient Submission | Recipe Generated | Meal Plan | Session |
+| ------------------ | --------------------- | ---------------- | --------- | ------- |
+| **LeftoverGPT**    | ✅                    | ✅               | N/A       | ⏳      |
+| **MealPlannerGPT** | N/A                   | N/A              | ✅        | ⏳      |
+| **RecipeGPT**      | ✅                    | ✅               | N/A       | ⏳      |
+| **KCalGPT**        | N/A                   | N/A              | N/A       | ⏳      |
+| **NutritionGPT**   | N/A                   | N/A              | N/A       | ⏳      |
 
 **Legend:**
+
 - ✅ Implemented
 - ⏳ Pending (session tracking needs separate implementation)
 - N/A Not applicable
@@ -153,22 +166,26 @@ const scoredRecipes = await scoreRecipes({
 ### Scoring Breakdown (0-100 points)
 
 #### 1. Ingredient Match Score (0-40 points)
+
 - Compares recipe ingredients with user's pantry history
 - Higher score = more ingredients user already has
 - Boosts recipes using recently submitted ingredients
 
 #### 2. Goal Alignment Score (0-25 points)
+
 - Matches recipe calories/macros to user's active goal
 - Filters out recipes violating dietary restrictions
 - Higher score = closer to calorie target
 
 #### 3. Behavioral Score (0-20 points)
+
 - Learns from past recipe accepts/rejects
 - Penalizes previously rejected recipes (-15 pts)
 - Boosts previously accepted recipes (+5 pts)
 - Adapts to user's acceptance rate over time
 
 #### 4. Diversity Score (0-15 points)
+
 - Prevents repetitive suggestions
 - Higher score = longer time since similar recipe
 - Ensures variety in recommendations
@@ -182,6 +199,7 @@ const scoredRecipes = await scoreRecipes({
 **Input:** User submits ["chicken", "rice", "soy sauce"]
 
 **What Happens:**
+
 1. LeftoverGPT generates 5 candidate recipes
 2. Recommendation engine scores them:
    - All get neutral scores (~50 points)
@@ -201,6 +219,7 @@ const scoredRecipes = await scoreRecipes({
 **Input:** User submits ["chicken", "rice", "soy sauce"]
 
 **What Happens:**
+
 1. LeftoverGPT generates 5 candidate recipes
 2. Recommendation engine fetches user history:
    - Frequently uses: chicken (12x), rice (10x), soy sauce (8x)
@@ -224,6 +243,7 @@ const scoredRecipes = await scoreRecipes({
 **User Goal:** Vegetarian, 1800 cal/day
 
 **What Happens:**
+
 1. RecipeGPT generates 3 candidate recipes:
    - "Chicken Alfredo" (500 cal)
    - "Pasta Primavera" (400 cal)
@@ -245,12 +265,12 @@ const scoredRecipes = await scoreRecipes({
 
 ### Response Times
 
-| Operation | Typical Time | Notes |
-|-----------|--------------|-------|
-| Recipe Generation (GPT) | 2-4 seconds | Unchanged |
-| Recommendation Scoring | 100-300ms | Added overhead |
-| User Profile Fetch | 50-100ms | Cached in DB |
-| **Total Impact** | **+150-400ms** | **~10% slower** |
+| Operation               | Typical Time   | Notes           |
+| ----------------------- | -------------- | --------------- |
+| Recipe Generation (GPT) | 2-4 seconds    | Unchanged       |
+| Recommendation Scoring  | 100-300ms      | Added overhead  |
+| User Profile Fetch      | 50-100ms       | Cached in DB    |
+| **Total Impact**        | **+150-400ms** | **~10% slower** |
 
 ### Caching Strategy
 
@@ -259,6 +279,7 @@ const scoredRecipes = await scoreRecipes({
 - ⏳ Recommendation scores NOT cached (always fresh)
 
 **Future Optimization:**
+
 - Add Redis caching for recommendation scores (1-hour TTL)
 - Materialize user profiles for faster lookups
 - Batch score calculations for meal plans
@@ -274,6 +295,7 @@ const scoredRecipes = await scoreRecipes({
 **Target (With Personalization):** >40% acceptance rate
 
 **How We'll Measure:**
+
 ```sql
 -- Query acceptance rate by source GPT
 SELECT 
@@ -299,7 +321,8 @@ GROUP BY source_gpt;
 
 - [ ] **MealPlannerGPT**
   - [ ] Generate meal plan as anonymous user (should work, no context)
-  - [ ] Generate meal plan as logged-in user (should include user context in prompt)
+  - [ ] Generate meal plan as logged-in user (should include user context in
+        prompt)
   - [ ] Verify meal plan quality improves with context
   - [ ] Check analytics events are logged
 
@@ -320,7 +343,9 @@ GROUP BY source_gpt;
 ## 🐛 Known Issues & Limitations
 
 ### 1. Nutrition Data Estimation
-**Issue:** Recipes don't have real nutrition data, using defaults (500 cal, 25g protein, etc.)
+
+**Issue:** Recipes don't have real nutrition data, using defaults (500 cal, 25g
+protein, etc.)
 
 **Impact:** Goal alignment score is less accurate
 
@@ -329,15 +354,18 @@ GROUP BY source_gpt;
 ---
 
 ### 2. No Session Tracking Yet
+
 **Issue:** Session events not logged by MCP tools
 
-**Impact:** Can't track engagement metrics (sessions per user, events per session)
+**Impact:** Can't track engagement metrics (sessions per user, events per
+session)
 
 **Solution:** Add session tracking in next iteration
 
 ---
 
 ### 3. Cache Invalidation
+
 **Issue:** Cached recipes don't get re-scored when user preferences change
 
 **Impact:** Stale recommendations for 24 hours
@@ -349,18 +377,21 @@ GROUP BY source_gpt;
 ## 📝 Next Steps
 
 ### Immediate (This Week)
+
 1. ✅ Deploy to production
 2. ⏳ Monitor recommendation engine performance
 3. ⏳ Measure acceptance rate improvement
 4. ⏳ Fix any bugs discovered in production
 
 ### Short Term (Next 2 Weeks)
+
 1. ⏳ Add session tracking to all MCP tools
 2. ⏳ Integrate nutrition API for accurate calorie data
 3. ⏳ Add Redis caching for recommendation scores
 4. ⏳ Build simple dashboard to view analytics
 
 ### Long Term (Next Month)
+
 1. ⏳ Add collaborative filtering (similar users)
 2. ⏳ Implement seasonal ingredient boosting
 3. ⏳ Add cuisine preference learning
@@ -371,6 +402,7 @@ GROUP BY source_gpt;
 ## 🏆 Summary
 
 ### What We Built
+
 - ✅ **3 GPT tools** now use personalized recommendations
 - ✅ **4-dimensional scoring** (ingredient, goal, behavioral, diversity)
 - ✅ **Complete analytics tracking** across all tools
@@ -378,6 +410,7 @@ GROUP BY source_gpt;
 - ✅ **Dietary restriction filtering** for safety
 
 ### Lines of Code Added
+
 - Recommendation module: 200 lines
 - LeftoverGPT integration: 50 lines
 - MealPlannerGPT integration: 40 lines
@@ -385,6 +418,7 @@ GROUP BY source_gpt;
 - **Total: 360 lines**
 
 ### Impact
+
 - **10% slower** response times (acceptable trade-off)
 - **Expected 60% improvement** in acceptance rate (25% → 40%)
 - **Fully automated** personalization (no manual curation)
@@ -394,10 +428,11 @@ GROUP BY source_gpt;
 
 **The LoopKitchen Data Flywheel is now fully operational!** 🚀
 
-Every recipe interaction makes the next recommendation better. The system learns, adapts, and improves automatically.
+Every recipe interaction makes the next recommendation better. The system
+learns, adapts, and improves automatically.
 
 ---
 
-**Deployed by:** Manus AI  
-**Integration Date:** December 6, 2025  
+**Deployed by:** Manus AI\
+**Integration Date:** December 6, 2025\
 **Status:** ✅ Ready for Production Testing

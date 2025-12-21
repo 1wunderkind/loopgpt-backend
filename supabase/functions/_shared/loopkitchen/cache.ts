@@ -1,6 +1,6 @@
 /**
  * Simple in-memory cache for LoopKitchen responses
- * 
+ *
  * Caches OpenAI responses to reduce API calls and improve performance.
  * Uses LRU eviction when cache size exceeds limit.
  */
@@ -49,7 +49,7 @@ class SimpleCache {
    */
   get<T>(key: string, ttl?: number): T | null {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       return null;
     }
@@ -65,7 +65,7 @@ class SimpleCache {
 
     // Update hit count
     entry.hits++;
-    
+
     return entry.value as T;
   }
 
@@ -95,7 +95,7 @@ class SimpleCache {
     for (const [key, entry] of this.cache.entries()) {
       // Prefer entries with fewer hits and older timestamps
       const score = entry.timestamp - (entry.hits * 60000); // 1 hit = 1 minute bonus
-      
+
       if (score < oldestTime) {
         oldestTime = score;
         oldestKey = key;
@@ -131,7 +131,7 @@ const globalCache = new SimpleCache(1000, 3600000); // 1000 entries, 1 hour TTL
 
 /**
  * Get or compute cached value
- * 
+ *
  * @param toolName - Name of the tool (for cache key)
  * @param params - Parameters (for cache key)
  * @param compute - Function to compute value if not cached
@@ -142,13 +142,13 @@ export async function getCached<T>(
   toolName: string,
   params: any,
   compute: () => Promise<T>,
-  ttl?: number
+  ttl?: number,
 ): Promise<{ value: T; cached: boolean }> {
   const key = globalCache.generateKey(toolName, params);
-  
+
   // Try to get from cache
   const cached = globalCache.get<T>(key, ttl);
-  
+
   if (cached !== null) {
     console.log(`[cache] HIT: ${toolName}`);
     return { value: cached, cached: true };
@@ -157,10 +157,10 @@ export async function getCached<T>(
   // Compute value
   console.log(`[cache] MISS: ${toolName}`);
   const value = await compute();
-  
+
   // Store in cache
   globalCache.set(key, value);
-  
+
   return { value, cached: false };
 }
 

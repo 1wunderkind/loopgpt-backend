@@ -1,15 +1,19 @@
 /**
  * LoopKitchen Share Snapshot Tool
- * 
+ *
  * Creates shareable snapshots of widgets for social media sharing.
  * Generates unique URLs and preview images for recipes, meal plans, etc.
- * 
+ *
  * Part of: Widget Implementation (Prompt 5)
  */
 
 import { createClient } from "@supabase/supabase-js";
 import type { Widget } from "../_shared/loopkitchen/types/index.ts";
-import { categorizeError, logStructuredError, logSuccess } from "./errorTypes.ts";
+import {
+  categorizeError,
+  logStructuredError,
+  logSuccess,
+} from "./errorTypes.ts";
 
 // ============================================================================
 // Types
@@ -47,11 +51,11 @@ async function storeShareSnapshot(
   shareId: string,
   widgetId: string,
   widgetType: string,
-  widgetData: any
+  widgetData: any,
 ): Promise<void> {
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") || "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || ""
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "",
   );
 
   const { error } = await supabase
@@ -74,7 +78,7 @@ async function storeShareSnapshot(
 
 /**
  * Generate preview image URL for widget
- * 
+ *
  * For now, returns a placeholder. In production, this would:
  * 1. Render the widget as HTML
  * 2. Use Puppeteer/Playwright to capture screenshot
@@ -83,11 +87,11 @@ async function storeShareSnapshot(
  */
 function generatePreviewImageUrl(
   shareId: string,
-  widgetType: string
+  widgetType: string,
 ): string {
   // Placeholder: Use a generic preview image based on widget type
   const baseUrl = Deno.env.get("PUBLIC_URL") || "https://loopgpt.app";
-  
+
   // In production, this would be the actual rendered image
   // For now, use a placeholder service or static image
   return `${baseUrl}/api/share/preview/${shareId}.png`;
@@ -100,11 +104,11 @@ function validateInput(params: any): CreateShareSnapshotInput {
   if (!params.widgetId) {
     throw new Error("widgetId is required");
   }
-  
+
   if (!params.widgetType) {
     throw new Error("widgetType is required");
   }
-  
+
   return {
     widgetId: params.widgetId,
     widgetType: params.widgetType,
@@ -118,39 +122,39 @@ function validateInput(params: any): CreateShareSnapshotInput {
 
 /**
  * Create a shareable snapshot of a widget
- * 
+ *
  * @param params - Input parameters
  * @returns Share URL and preview image URL
  */
 export async function createShareSnapshot(
-  params: any
+  params: any,
 ): Promise<{ shareUrl: string; imageUrl?: string }> {
   const startTime = Date.now();
-  
+
   try {
     console.log("[loopkitchen_share.create] Starting...", { params });
-    
+
     // Validate input
     const input = validateInput(params);
-    
+
     // Generate unique share ID
     const shareId = generateShareId();
-    
+
     // Store snapshot in database
     await storeShareSnapshot(
       shareId,
       input.widgetId,
       input.widgetType,
-      input.widget || null
+      input.widget || null,
     );
-    
+
     // Generate share URL
     const baseUrl = Deno.env.get("PUBLIC_URL") || "https://loopgpt.app";
     const shareUrl = `${baseUrl}/s/${shareId}`;
-    
+
     // Generate preview image URL
     const imageUrl = generatePreviewImageUrl(shareId, input.widgetType);
-    
+
     // Log success
     const duration = Date.now() - startTime;
     logSuccess("loopkitchen_share.create", duration, {
@@ -158,14 +162,14 @@ export async function createShareSnapshot(
       widgetId: input.widgetId,
       widgetType: input.widgetType,
     });
-    
+
     console.log("[loopkitchen_share.create] Success", {
       shareId,
       shareUrl,
       imageUrl,
       duration,
     });
-    
+
     return {
       shareUrl,
       imageUrl,
@@ -173,19 +177,25 @@ export async function createShareSnapshot(
   } catch (error) {
     const duration = Date.now() - startTime;
     const errorCategory = categorizeError(error);
-    
-    logStructuredError("loopkitchen_share.create", error, errorCategory, duration, {
-      widgetId: params.widgetId,
-      widgetType: params.widgetType,
-    });
-    
+
+    logStructuredError(
+      "loopkitchen_share.create",
+      error,
+      errorCategory,
+      duration,
+      {
+        widgetId: params.widgetId,
+        widgetType: params.widgetType,
+      },
+    );
+
     console.error("[loopkitchen_share.create] Error:", error);
-    
+
     // Return a fallback response instead of throwing
     // This ensures the share button doesn't completely break
     const fallbackId = generateShareId();
     const baseUrl = Deno.env.get("PUBLIC_URL") || "https://loopgpt.app";
-    
+
     return {
       shareUrl: `${baseUrl}/s/${fallbackId}`,
       imageUrl: undefined,
@@ -199,7 +209,7 @@ export async function createShareSnapshot(
 
 /**
  * Required database table (to be created in migration):
- * 
+ *
  * CREATE TABLE public.share_snapshots (
  *   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
  *   share_id TEXT NOT NULL UNIQUE,
@@ -211,7 +221,7 @@ export async function createShareSnapshot(
  *   view_count INTEGER NOT NULL DEFAULT 0,
  *   last_viewed_at TIMESTAMPTZ
  * );
- * 
+ *
  * CREATE INDEX idx_share_snapshots_share_id ON public.share_snapshots(share_id);
  * CREATE INDEX idx_share_snapshots_expires_at ON public.share_snapshots(expires_at);
  * CREATE INDEX idx_share_snapshots_widget_id ON public.share_snapshots(widget_id);

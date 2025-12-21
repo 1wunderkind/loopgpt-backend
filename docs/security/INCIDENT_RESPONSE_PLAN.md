@@ -1,15 +1,17 @@
 # Incident Response Plan
 
-**Project:** LoopGPT  
-**Version:** 1.0  
-**Last Updated:** December 2, 2024  
+**Project:** LoopGPT\
+**Version:** 1.0\
+**Last Updated:** December 2, 2024\
 **Owner:** Security Team
 
 ---
 
 ## Executive Summary
 
-This Incident Response Plan defines procedures for detecting, responding to, and recovering from security incidents. The plan ensures rapid response, minimizes impact, and facilitates learning from incidents.
+This Incident Response Plan defines procedures for detecting, responding to, and
+recovering from security incidents. The plan ensures rapid response, minimizes
+impact, and facilitates learning from incidents.
 
 ### Objectives
 
@@ -26,39 +28,43 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 ### Severity Levels
 
 **P0 - Critical**
+
 - Data breach affecting user data
 - Complete service outage
 - Active security attack
 - Regulatory compliance violation
 
-**Response Time:** Immediate (< 15 minutes)  
+**Response Time:** Immediate (< 15 minutes)\
 **Escalation:** CEO, CTO, Legal
 
 **P1 - High**
+
 - Partial service outage
 - Security vulnerability discovered
 - Unauthorized access attempt
 - Performance degradation
 
-**Response Time:** < 1 hour  
+**Response Time:** < 1 hour\
 **Escalation:** CTO, Engineering Lead
 
 **P2 - Medium**
+
 - Minor service disruption
 - Security concern identified
 - Suspicious activity detected
 - Configuration issue
 
-**Response Time:** < 4 hours  
+**Response Time:** < 4 hours\
 **Escalation:** Engineering Lead
 
 **P3 - Low**
+
 - Minor bug or issue
 - User complaint
 - Performance concern
 - Documentation issue
 
-**Response Time:** < 24 hours  
+**Response Time:** < 24 hours\
 **Escalation:** None
 
 ---
@@ -68,11 +74,13 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 ### Phase 1: Detection & Analysis (0-30 minutes)
 
 **Objectives:**
+
 - Detect incident
 - Assess severity
 - Gather initial information
 
 **Actions:**
+
 1. **Detect Incident**
    - Monitoring alerts (Sentry, logs)
    - User reports
@@ -98,6 +106,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
    - Escalate if P0/P1
 
 **Deliverables:**
+
 - Incident ticket created
 - Initial assessment documented
 - Team notified
@@ -108,11 +117,13 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 ### Phase 2: Containment (30 minutes - 2 hours)
 
 **Objectives:**
+
 - Stop incident from spreading
 - Protect unaffected systems
 - Preserve evidence
 
 **Actions:**
+
 1. **Short-term Containment**
    - Isolate affected systems
    - Block malicious IPs
@@ -138,6 +149,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
    - Prepare external communications
 
 **Deliverables:**
+
 - Incident contained
 - Evidence preserved
 - Impact assessed
@@ -148,11 +160,13 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 ### Phase 3: Eradication (2-8 hours)
 
 **Objectives:**
+
 - Remove threat
 - Fix vulnerabilities
 - Verify systems clean
 
 **Actions:**
+
 1. **Root Cause Analysis**
    - Identify how incident occurred
    - Determine vulnerabilities exploited
@@ -177,6 +191,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
    - Implement additional controls
 
 **Deliverables:**
+
 - Threat removed
 - Vulnerabilities patched
 - Systems verified clean
@@ -187,11 +202,13 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 ### Phase 4: Recovery (8-24 hours)
 
 **Objectives:**
+
 - Restore normal operations
 - Verify system integrity
 - Monitor for recurrence
 
 **Actions:**
+
 1. **Restore Systems**
    - Bring systems back online
    - Restore from clean backups if needed
@@ -217,6 +234,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
    - Offer support resources
 
 **Deliverables:**
+
 - Systems restored
 - Integrity verified
 - Monitoring enhanced
@@ -227,11 +245,13 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 ### Phase 5: Post-Incident (24-72 hours)
 
 **Objectives:**
+
 - Learn from incident
 - Improve processes
 - Prevent recurrence
 
 **Actions:**
+
 1. **Post-Mortem Meeting**
    - Review incident timeline
    - Analyze response effectiveness
@@ -257,6 +277,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
    - Train team on changes
 
 **Deliverables:**
+
 - Post-mortem report
 - Action items created
 - Processes updated
@@ -271,6 +292,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 **Definition:** Unauthorized access to user data
 
 **Response:**
+
 1. Immediately isolate affected systems
 2. Revoke all access credentials
 3. Assess scope of data exposure
@@ -282,6 +304,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 9. Implement additional controls
 
 **Legal Requirements:**
+
 - GDPR: Notify within 72 hours
 - CCPA: Notify without unreasonable delay
 - Document all actions taken
@@ -293,6 +316,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 **Definition:** Complete or partial service unavailability
 
 **Response:**
+
 1. Assess scope and impact
 2. Identify root cause
 3. Implement fix or workaround
@@ -302,6 +326,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 7. Conduct post-mortem
 
 **Communication:**
+
 - Status page: Update immediately
 - Email: Notify if > 1 hour outage
 - Social media: For major outages
@@ -313,6 +338,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 **Definition:** Discovered security weakness
 
 **Response:**
+
 1. Assess severity and exploitability
 2. Determine if actively exploited
 3. Develop and test fix
@@ -322,6 +348,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 7. Update security documentation
 
 **Disclosure:**
+
 - Internal: Immediate
 - Users: If exploited or high risk
 - Public: After fix deployed
@@ -333,6 +360,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 **Definition:** Distributed denial of service attack
 
 **Response:**
+
 1. Confirm DDoS attack (vs. legitimate traffic)
 2. Enable DDoS protection (Cloudflare, etc.)
 3. Block malicious IPs
@@ -342,6 +370,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 7. Analyze attack for improvements
 
 **Mitigation:**
+
 - Rate limiting
 - IP blocking
 - Traffic filtering
@@ -354,6 +383,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 **Definition:** Malicious or negligent insider action
 
 **Response:**
+
 1. Immediately revoke access
 2. Preserve evidence
 3. Assess damage
@@ -363,6 +393,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 7. Review access policies
 
 **Legal Considerations:**
+
 - Employment law
 - Evidence preservation
 - Law enforcement involvement
@@ -374,6 +405,7 @@ This Incident Response Plan defines procedures for detecting, responding to, and
 ### Internal Incident Notification
 
 **Slack:**
+
 ```
 🚨 INCIDENT ALERT - P[0/1/2/3]
 
@@ -390,12 +422,14 @@ Next Update: [Time]
 ### Status Page Update
 
 **Investigating:**
+
 ```
 We are investigating reports of [issue description]. 
 We will provide an update as soon as more information is available.
 ```
 
 **Identified:**
+
 ```
 We have identified the issue affecting [services]. 
 Our team is working to resolve it. 
@@ -403,12 +437,14 @@ ETA: [time]
 ```
 
 **Monitoring:**
+
 ```
 The issue has been resolved and we are monitoring the situation.
 All services should be operating normally.
 ```
 
 **Resolved:**
+
 ```
 This incident has been resolved. 
 All services are operating normally.
@@ -419,6 +455,7 @@ Root Cause: [brief explanation]
 ### User Email Notification
 
 **Data Breach:**
+
 ```
 Subject: Important Security Notice - Action Required
 
@@ -454,6 +491,7 @@ The LoopGPT Security Team
 ## Roles and Responsibilities
 
 ### Incident Commander
+
 - Lead incident response
 - Make critical decisions
 - Coordinate team activities
@@ -461,24 +499,28 @@ The LoopGPT Security Team
 - Declare incident closed
 
 ### Technical Lead
+
 - Assess technical impact
 - Execute technical response
 - Coordinate with engineers
 - Verify technical resolution
 
 ### Communications Lead
+
 - Update status page
 - Send user notifications
 - Handle media inquiries
 - Coordinate messaging
 
 ### Security Lead
+
 - Assess security impact
 - Preserve evidence
 - Conduct forensic analysis
 - Recommend security improvements
 
 ### Legal Counsel
+
 - Assess legal obligations
 - Guide regulatory notifications
 - Review communications
@@ -489,18 +531,21 @@ The LoopGPT Security Team
 ## Tools and Resources
 
 ### Incident Management
+
 - Incident tracking: [System]
 - Communication: Slack #incidents
 - Status page: status.loopgpt.ai
 - Documentation: Confluence/Notion
 
 ### Monitoring and Logging
+
 - Error tracking: Sentry
 - Logging: Better Stack
 - Metrics: Grafana
 - Tracing: OpenTelemetry
 
 ### Security Tools
+
 - Vulnerability scanning: [Tool]
 - Penetration testing: [Tool]
 - SIEM: [Tool]
@@ -511,17 +556,20 @@ The LoopGPT Security Team
 ## Training and Drills
 
 ### Training Requirements
+
 - All team members: Incident response basics
 - On-call engineers: Full incident response
 - Incident commanders: Leadership and communication
 - Security team: Advanced forensics and analysis
 
 ### Drill Schedule
+
 - Quarterly: Tabletop exercise
 - Semi-annually: Simulated incident
 - Annually: Full-scale drill
 
 ### Drill Scenarios
+
 1. Data breach simulation
 2. Service outage drill
 3. DDoS attack response
@@ -534,16 +582,19 @@ The LoopGPT Security Team
 ### Regulatory Requirements
 
 **GDPR:**
+
 - Notify supervisory authority within 72 hours
 - Notify affected individuals without undue delay
 - Document all breaches (even if not reported)
 
 **CCPA:**
+
 - Notify affected individuals without unreasonable delay
 - Provide specific information about breach
 - Offer appropriate remedies
 
 ### Documentation Requirements
+
 - Incident timeline
 - Actions taken
 - Data affected
@@ -551,6 +602,7 @@ The LoopGPT Security Team
 - Remediation steps
 
 ### Retention
+
 - Incident reports: 7 years
 - Forensic evidence: 7 years
 - Communications: 7 years
@@ -560,6 +612,7 @@ The LoopGPT Security Team
 ## Continuous Improvement
 
 ### Metrics
+
 - Time to detect
 - Time to respond
 - Time to resolve
@@ -567,11 +620,13 @@ The LoopGPT Security Team
 - Incident severity distribution
 
 ### Review Process
+
 - Monthly: Incident metrics review
 - Quarterly: Plan effectiveness review
 - Annually: Full plan update
 
 ### Improvement Areas
+
 - Detection capabilities
 - Response procedures
 - Communication effectiveness
@@ -584,41 +639,44 @@ The LoopGPT Security Team
 
 ### A. Incident Severity Matrix
 
-| Severity | Data Impact | Service Impact | User Impact | Response Time |
-|----------|-------------|----------------|-------------|---------------|
-| P0 | Breach | Complete outage | All users | < 15 min |
-| P1 | Exposure risk | Partial outage | Many users | < 1 hour |
-| P2 | Minor concern | Degradation | Some users | < 4 hours |
-| P3 | None | Minor issue | Few users | < 24 hours |
+| Severity | Data Impact   | Service Impact  | User Impact | Response Time |
+| -------- | ------------- | --------------- | ----------- | ------------- |
+| P0       | Breach        | Complete outage | All users   | < 15 min      |
+| P1       | Exposure risk | Partial outage  | Many users  | < 1 hour      |
+| P2       | Minor concern | Degradation     | Some users  | < 4 hours     |
+| P3       | None          | Minor issue     | Few users   | < 24 hours    |
 
 ### B. Escalation Matrix
 
-| Severity | Notify | Escalate To |
-|----------|--------|-------------|
-| P0 | Immediately | CEO, CTO, Legal |
-| P1 | < 30 min | CTO, Engineering Lead |
-| P2 | < 2 hours | Engineering Lead |
-| P3 | < 8 hours | Team Lead |
+| Severity | Notify      | Escalate To           |
+| -------- | ----------- | --------------------- |
+| P0       | Immediately | CEO, CTO, Legal       |
+| P1       | < 30 min    | CTO, Engineering Lead |
+| P2       | < 2 hours   | Engineering Lead      |
+| P3       | < 8 hours   | Team Lead             |
 
 ### C. Contact Information
 
 **On-Call:**
+
 - Primary: [Name] - [Phone]
 - Secondary: [Name] - [Phone]
 
 **Escalation:**
+
 - Engineering Lead: [Name] - [Phone]
 - CTO: [Name] - [Phone]
 - CEO: [Name] - [Phone]
 - Legal: [Name] - [Phone]
 
 **External:**
+
 - Supabase Support: support@supabase.io
 - Security Consultant: [Contact]
 - Legal Counsel: [Contact]
 
 ---
 
-**Plan Status:** ACTIVE  
-**Next Review:** March 2, 2025  
+**Plan Status:** ACTIVE\
+**Next Review:** March 2, 2025\
 **Version:** 1.0

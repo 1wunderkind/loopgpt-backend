@@ -1,9 +1,9 @@
 /**
  * Redaction Utility
- * 
+ *
  * Removes sensitive data from objects before logging or returning errors.
  * Ensures no secrets (tokens, API keys, passwords) leak into logs.
- * 
+ *
  * Part of: Step 5 - Security Hardening
  */
 
@@ -25,7 +25,7 @@ const SENSITIVE_KEYS = [
   "session",
   "cookie",
   "csrf",
-  
+
   // API Keys
   "apikey",
   "api_key",
@@ -35,7 +35,7 @@ const SENSITIVE_KEYS = [
   "private",
   "privatekey",
   "private_key",
-  
+
   // Credentials
   "password",
   "passwd",
@@ -43,7 +43,7 @@ const SENSITIVE_KEYS = [
   "pass",
   "credential",
   "credentials",
-  
+
   // Payment
   "card",
   "cardnumber",
@@ -53,13 +53,13 @@ const SENSITIVE_KEYS = [
   "pin",
   "account",
   "routing",
-  
+
   // Personal Info
   "ssn",
   "social",
   "license",
   "passport",
-  
+
   // Provider Secrets
   "stripe",
   "paypal",
@@ -94,7 +94,7 @@ const REDACTED = "[REDACTED]";
  */
 function shouldRedact(key: string): boolean {
   const lowerKey = key.toLowerCase();
-  return SENSITIVE_KEYS.some(pattern => lowerKey.includes(pattern));
+  return SENSITIVE_KEYS.some((pattern) => lowerKey.includes(pattern));
 }
 
 /**
@@ -102,7 +102,7 @@ function shouldRedact(key: string): boolean {
  */
 function shouldPartialRedact(key: string): boolean {
   const lowerKey = key.toLowerCase();
-  return PARTIAL_REDACT_KEYS.some(pattern => lowerKey.includes(pattern));
+  return PARTIAL_REDACT_KEYS.some((pattern) => lowerKey.includes(pattern));
 }
 
 /**
@@ -113,13 +113,13 @@ function partialRedact(value: string): string {
   if (value.length <= 4) {
     return "***";
   }
-  
+
   // For emails, preserve domain
   if (value.includes("@")) {
     const [local, domain] = value.split("@");
     return `***@${domain}`;
   }
-  
+
   // For other strings, show last 4 chars
   const last4 = value.slice(-4);
   return `***${last4}`;
@@ -133,19 +133,19 @@ function redactValue(key: string, value: unknown): unknown {
   if (shouldRedact(key)) {
     return REDACTED;
   }
-  
+
   // Partial redaction
   if (shouldPartialRedact(key) && typeof value === "string") {
     return partialRedact(value);
   }
-  
+
   // No redaction needed
   return value;
 }
 
 /**
  * Recursively redact sensitive data from an object
- * 
+ *
  * @param obj - Object to redact (can be nested)
  * @param maxDepth - Maximum recursion depth (prevents infinite loops)
  * @returns Redacted copy of the object
@@ -155,33 +155,33 @@ export function redact(obj: unknown, maxDepth: number = 10): unknown {
   if (maxDepth <= 0) {
     return "[MAX_DEPTH_EXCEEDED]";
   }
-  
+
   if (obj === null || obj === undefined) {
     return obj;
   }
-  
+
   if (typeof obj !== "object") {
     return obj;
   }
-  
+
   // Handle arrays
   if (Array.isArray(obj)) {
-    return obj.map(item => redact(item, maxDepth - 1));
+    return obj.map((item) => redact(item, maxDepth - 1));
   }
-  
+
   // Handle objects
   const redacted: Record<string, unknown> = {};
-  
+
   for (const [key, value] of Object.entries(obj)) {
     // Check if this key should be redacted
     const redactedValue = redactValue(key, value);
-    
+
     // If value was redacted, use the redacted placeholder
     if (redactedValue === REDACTED) {
       redacted[key] = REDACTED;
       continue;
     }
-    
+
     // If value is an object or array, recurse
     if (typeof value === "object" && value !== null) {
       redacted[key] = redact(value, maxDepth - 1);
@@ -189,27 +189,29 @@ export function redact(obj: unknown, maxDepth: number = 10): unknown {
       redacted[key] = redactedValue;
     }
   }
-  
+
   return redacted;
 }
 
 /**
  * Redact HTTP headers
- * 
+ *
  * Specifically handles common header names:
  * - Authorization
  * - Cookie
  * - X-API-Key
  * - etc.
  */
-export function redactHeaders(headers: Headers | Record<string, string>): Record<string, string> {
+export function redactHeaders(
+  headers: Headers | Record<string, string>,
+): Record<string, string> {
   const redacted: Record<string, string> = {};
-  
+
   // Convert Headers to plain object if needed
   const headerObj = headers instanceof Headers
     ? Object.fromEntries(headers.entries())
     : headers;
-  
+
   for (const [key, value] of Object.entries(headerObj)) {
     if (shouldRedact(key)) {
       redacted[key] = REDACTED;
@@ -217,27 +219,27 @@ export function redactHeaders(headers: Headers | Record<string, string>): Record
       redacted[key] = value;
     }
   }
-  
+
   return redacted;
 }
 
 /**
  * Redact URL query parameters
- * 
+ *
  * Example: "?token=abc123&user=john" → "?token=[REDACTED]&user=john"
  */
 export function redactUrl(url: string): string {
   try {
     const urlObj = new URL(url);
     const params = new URLSearchParams(urlObj.search);
-    
+
     // Redact sensitive query params
     for (const [key, value] of params.entries()) {
       if (shouldRedact(key)) {
         params.set(key, REDACTED);
       }
     }
-    
+
     urlObj.search = params.toString();
     return urlObj.toString();
   } catch {
@@ -248,7 +250,7 @@ export function redactUrl(url: string): string {
 
 /**
  * Redact error messages
- * 
+ *
  * Ensures error messages don't leak sensitive data
  */
 export function redactError(error: Error | unknown): unknown {
@@ -259,13 +261,13 @@ export function redactError(error: Error | unknown): unknown {
       // Don't include stack trace (may contain file paths with secrets)
     };
   }
-  
+
   return redact(error);
 }
 
 /**
  * Safe stringify with redaction
- * 
+ *
  * Converts object to JSON string with sensitive data redacted
  */
 export function safeStringify(obj: unknown, space?: number): string {
@@ -279,7 +281,7 @@ export function safeStringify(obj: unknown, space?: number): string {
 
 /**
  * Check if a string looks like a token/secret
- * 
+ *
  * Heuristics:
  * - Long alphanumeric strings (>20 chars)
  * - Base64-like patterns
@@ -290,37 +292,37 @@ export function looksLikeSecret(value: string): boolean {
   if (/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(value)) {
     return true;
   }
-  
+
   // Long base64-like string
   if (value.length > 20 && /^[A-Za-z0-9+/=_-]+$/.test(value)) {
     return true;
   }
-  
+
   // API key patterns
   if (/^(sk|pk|api)[-_][A-Za-z0-9]{20,}$/.test(value)) {
     return true;
   }
-  
+
   return false;
 }
 
 /**
  * Redact any string that looks like a secret
- * 
+ *
  * Useful for sanitizing user input or log messages
  */
 export function redactPotentialSecrets(text: string): string {
   // Split into words
   const words = text.split(/\s+/);
-  
+
   // Redact words that look like secrets
-  const redacted = words.map(word => {
+  const redacted = words.map((word) => {
     if (looksLikeSecret(word)) {
       return REDACTED;
     }
     return word;
   });
-  
+
   return redacted.join(" ");
 }
 

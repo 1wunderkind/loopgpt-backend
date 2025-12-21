@@ -1,16 +1,16 @@
 /**
  * evaluate_plan_outcome Edge Function (with Multilingual Support)
- * 
+ *
  * Compares planned vs. observed weight change for a week.
  * Generates bounded calorie adjustment recommendations (±300 kcal/day max).
  * Stores result in plan_outcomes table.
- * 
+ *
  * @param {string} chatgpt_user_id - User identifier
  * @param {string} meal_plan_id - Meal plan UUID (optional)
  * @param {string} week_start - Week start date (YYYY-MM-DD)
  * @param {number} target_delta_kg - Expected weekly weight change (negative = loss)
  * @param {string} language - Optional language hint for response formatting
- * 
+ *
  * @returns {object} { ok: true, observed_delta_kg, prediction_error_kg, recommendation, formatted_message }
  */
 
@@ -39,61 +39,57 @@ async function handler(req: Request): Promise<Response> {
   try {
     // Parse request body
     const body: EvaluatePlanOutcomeRequest = await req.json();
-    const { chatgpt_user_id, meal_plan_id, week_start, target_delta_kg, language } = body;
+    const {
+      chatgpt_user_id,
+      meal_plan_id,
+      week_start,
+      target_delta_kg,
+      language,
+    } = body;
 
     // Validation
     if (!chatgpt_user_id) {
       return new Response(
         JSON.stringify({ ok: false, error: "chatgpt_user_id is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     if (!week_start) {
       return new Response(
         JSON.stringify({ ok: false, error: "week_start is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     if (typeof target_delta_kg !== "number") {
       return new Response(
-        JSON.stringify({ ok: false, error: "target_delta_kg must be a number" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        JSON.stringify({
+          ok: false,
+          error: "target_delta_kg must be a number",
+        }),
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
     // Create Supabase client
     // Get authenticated Supabase client (enforces RLS)
 
-    const { supabase, userId, error: authError } = await createAuthenticatedClient(req);
-
-    
+    const { supabase, userId, error: authError } =
+      await createAuthenticatedClient(req);
 
     if (authError) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: authError }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
-    
-
     if (!userId) {
-
       return new Response(
-
         JSON.stringify({ ok: false, error: "Authentication required" }),
-
-        { status: 401, headers: { "Content-Type": "application/json" } }
-
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
-
     }
 
     // Calculate week end date
@@ -115,7 +111,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("Database error:", weightError);
       return new Response(
         JSON.stringify({ ok: false, error: weightError.message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -124,9 +120,10 @@ async function handler(req: Request): Promise<Response> {
       return new Response(
         JSON.stringify({
           ok: false,
-          error: "Insufficient weight data for the specified week (need at least 2 data points)",
+          error:
+            "Insufficient weight data for the specified week (need at least 2 data points)",
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -136,13 +133,15 @@ async function handler(req: Request): Promise<Response> {
     const observed_delta_kg = Number((endWeight - startWeight).toFixed(2));
 
     // Calculate prediction error
-    const prediction_error_kg = Number((observed_delta_kg - target_delta_kg).toFixed(2));
+    const prediction_error_kg = Number(
+      (observed_delta_kg - target_delta_kg).toFixed(2),
+    );
 
     // Generate recommendation
     const recommendation = generateRecommendation(
       target_delta_kg,
       observed_delta_kg,
-      prediction_error_kg
+      prediction_error_kg,
     );
 
     // Store outcome in database
@@ -167,7 +166,7 @@ async function handler(req: Request): Promise<Response> {
       console.error("Database error:", outcomeError);
       return new Response(
         JSON.stringify({ ok: false, error: outcomeError.message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -182,7 +181,7 @@ async function handler(req: Request): Promise<Response> {
         recommendation_text: recommendation.message,
         rationale: recommendation.rationale || "",
       },
-      userInput
+      userInput,
     );
 
     // Return result
@@ -196,7 +195,7 @@ async function handler(req: Request): Promise<Response> {
         recommendation,
         formatted_message, // Multilingual!
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
     return handleError(error);
@@ -211,7 +210,7 @@ async function handler(req: Request): Promise<Response> {
 function generateRecommendation(
   target_delta_kg: number,
   observed_delta_kg: number,
-  prediction_error_kg: number
+  prediction_error_kg: number,
 ): Recommendation {
   const MAX_ADJUSTMENT_KCAL = 300;
   const KCAL_PER_KG = 7700;
@@ -222,7 +221,8 @@ function generateRecommendation(
       type: "maintain",
       delta_kcal_per_day: 0,
       message: "Plan is working well. Maintain current calorie intake.",
-      rationale: `Observed change (${observed_delta_kg} kg) is close to target (${target_delta_kg} kg).`,
+      rationale:
+        `Observed change (${observed_delta_kg} kg) is close to target (${target_delta_kg} kg).`,
     };
   }
 
@@ -234,7 +234,7 @@ function generateRecommendation(
   // Bound adjustment to ±300 kcal/day
   const bounded_adjustment = Math.max(
     -MAX_ADJUSTMENT_KCAL,
-    Math.min(MAX_ADJUSTMENT_KCAL, Math.round(raw_adjustment))
+    Math.min(MAX_ADJUSTMENT_KCAL, Math.round(raw_adjustment)),
   );
 
   if (bounded_adjustment > 0) {
@@ -242,18 +242,21 @@ function generateRecommendation(
       type: "increase",
       delta_kcal_per_day: bounded_adjustment,
       message: `Increase daily calories by ${bounded_adjustment} kcal.`,
-      rationale: `You lost more weight than planned (${observed_delta_kg} kg vs ${target_delta_kg} kg). Adding calories will slow weight loss to target rate.`,
+      rationale:
+        `You lost more weight than planned (${observed_delta_kg} kg vs ${target_delta_kg} kg). Adding calories will slow weight loss to target rate.`,
     };
   } else {
     return {
       type: "decrease",
       delta_kcal_per_day: bounded_adjustment,
-      message: `Decrease daily calories by ${Math.abs(bounded_adjustment)} kcal.`,
-      rationale: `You lost less weight than planned (${observed_delta_kg} kg vs ${target_delta_kg} kg). Reducing calories will accelerate weight loss to target rate.`,
+      message: `Decrease daily calories by ${
+        Math.abs(bounded_adjustment)
+      } kcal.`,
+      rationale:
+        `You lost less weight than planned (${observed_delta_kg} kg vs ${target_delta_kg} kg). Reducing calories will accelerate weight loss to target rate.`,
     };
   }
 }
 
 // Export with logging middleware
 export default withHeavyOperation(withLogging(handler));
-

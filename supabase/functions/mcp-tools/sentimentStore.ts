@@ -1,6 +1,6 @@
 /**
  * Sentiment Store
- * 
+ *
  * Abstraction for storing and retrieving sentiment events and favorites.
  * Supports Supabase Postgres backend.
  */
@@ -54,8 +54,15 @@ export interface ISentimentStore {
   recordEvent(event: SentimentEvent): Promise<void>;
   getFavorites(userId: string, contentType?: string): Promise<FavoriteItem[]>;
   addFavorite(favorite: FavoriteItem): Promise<void>;
-  removeFavorite(userId: string, contentType: string, contentId: string): Promise<void>;
-  getStats(contentType: string, contentId: string): Promise<SentimentStats | null>;
+  removeFavorite(
+    userId: string,
+    contentType: string,
+    contentId: string,
+  ): Promise<void>;
+  getStats(
+    contentType: string,
+    contentId: string,
+  ): Promise<SentimentStats | null>;
 }
 
 /**
@@ -95,7 +102,9 @@ export class SupabaseSentimentStore implements ISentimentStore {
       if (error) {
         // If table doesn't exist, log and continue (will use in-memory on next call)
         if (error.message.includes("Could not find the table")) {
-          console.warn("[SentimentStore] Tables not yet created, event logged but not persisted");
+          console.warn(
+            "[SentimentStore] Tables not yet created, event logged but not persisted",
+          );
           return;
         }
         throw new Error(`Failed to record sentiment event: ${error.message}`);
@@ -110,7 +119,10 @@ export class SupabaseSentimentStore implements ISentimentStore {
   /**
    * Get user's favorites
    */
-  async getFavorites(userId: string, contentType?: string): Promise<FavoriteItem[]> {
+  async getFavorites(
+    userId: string,
+    contentType?: string,
+  ): Promise<FavoriteItem[]> {
     try {
       let query = this.supabase
         .from("user_favorites")
@@ -126,7 +138,9 @@ export class SupabaseSentimentStore implements ISentimentStore {
 
       if (error) {
         if (error.message.includes("Could not find the table")) {
-          console.warn("[SentimentStore] Tables not yet created, returning empty favorites");
+          console.warn(
+            "[SentimentStore] Tables not yet created, returning empty favorites",
+          );
           return [];
         }
         throw new Error(`Failed to get favorites: ${error.message}`);
@@ -134,7 +148,11 @@ export class SupabaseSentimentStore implements ISentimentStore {
 
       return (data || []).map((row: Record<string, unknown>) => ({
         userId: row.user_id as string,
-        contentType: row.content_type as "recipe" | "mealplan" | "grocery" | "other",
+        contentType: row.content_type as
+          | "recipe"
+          | "mealplan"
+          | "grocery"
+          | "other",
         contentId: row.content_id as string,
         contentName: row.content_name as string | undefined,
         contentData: row.content_data as Record<string, unknown> | undefined,
@@ -167,7 +185,9 @@ export class SupabaseSentimentStore implements ISentimentStore {
 
       if (error) {
         if (error.message.includes("Could not find the table")) {
-          console.warn("[SentimentStore] Tables not yet created, favorite not persisted");
+          console.warn(
+            "[SentimentStore] Tables not yet created, favorite not persisted",
+          );
           return;
         }
         throw new Error(`Failed to add favorite: ${error.message}`);
@@ -181,7 +201,11 @@ export class SupabaseSentimentStore implements ISentimentStore {
   /**
    * Remove from favorites
    */
-  async removeFavorite(userId: string, contentType: string, contentId: string): Promise<void> {
+  async removeFavorite(
+    userId: string,
+    contentType: string,
+    contentId: string,
+  ): Promise<void> {
     try {
       const { error } = await this.supabase
         .from("user_favorites")
@@ -192,7 +216,9 @@ export class SupabaseSentimentStore implements ISentimentStore {
 
       if (error) {
         if (error.message.includes("Could not find the table")) {
-          console.warn("[SentimentStore] Tables not yet created, favorite not removed");
+          console.warn(
+            "[SentimentStore] Tables not yet created, favorite not removed",
+          );
           return;
         }
         throw new Error(`Failed to remove favorite: ${error.message}`);
@@ -206,7 +232,10 @@ export class SupabaseSentimentStore implements ISentimentStore {
   /**
    * Get aggregated stats for content
    */
-  async getStats(contentType: string, contentId: string): Promise<SentimentStats | null> {
+  async getStats(
+    contentType: string,
+    contentId: string,
+  ): Promise<SentimentStats | null> {
     try {
       const { data, error } = await this.supabase
         .from("sentiment_stats")
@@ -216,7 +245,10 @@ export class SupabaseSentimentStore implements ISentimentStore {
         .single();
 
       if (error) {
-        if (error.code === "PGRST116" || error.message.includes("Could not find the table")) {
+        if (
+          error.code === "PGRST116" ||
+          error.message.includes("Could not find the table")
+        ) {
           // No stats found or table doesn't exist
           return null;
         }
@@ -257,10 +289,13 @@ export class InMemorySentimentStore implements ISentimentStore {
     console.log("[InMemory] Recorded event:", event.eventType);
   }
 
-  async getFavorites(userId: string, contentType?: string): Promise<FavoriteItem[]> {
+  async getFavorites(
+    userId: string,
+    contentType?: string,
+  ): Promise<FavoriteItem[]> {
     const userFavorites = this.favorites.get(userId) || [];
     if (contentType) {
-      return userFavorites.filter(f => f.contentType === contentType);
+      return userFavorites.filter((f) => f.contentType === contentType);
     }
     return userFavorites;
   }
@@ -268,9 +303,11 @@ export class InMemorySentimentStore implements ISentimentStore {
   async addFavorite(favorite: FavoriteItem): Promise<void> {
     const userFavorites = this.favorites.get(favorite.userId) || [];
     const existing = userFavorites.findIndex(
-      f => f.contentType === favorite.contentType && f.contentId === favorite.contentId
+      (f) =>
+        f.contentType === favorite.contentType &&
+        f.contentId === favorite.contentId,
     );
-    
+
     if (existing === -1) {
       userFavorites.push({
         ...favorite,
@@ -281,29 +318,40 @@ export class InMemorySentimentStore implements ISentimentStore {
     console.log("[InMemory] Added favorite");
   }
 
-  async removeFavorite(userId: string, contentType: string, contentId: string): Promise<void> {
+  async removeFavorite(
+    userId: string,
+    contentType: string,
+    contentId: string,
+  ): Promise<void> {
     const userFavorites = this.favorites.get(userId) || [];
     const filtered = userFavorites.filter(
-      f => !(f.contentType === contentType && f.contentId === contentId)
+      (f) => !(f.contentType === contentType && f.contentId === contentId),
     );
     this.favorites.set(userId, filtered);
     console.log("[InMemory] Removed favorite");
   }
 
-  async getStats(contentType: string, contentId: string): Promise<SentimentStats | null> {
+  async getStats(
+    contentType: string,
+    contentId: string,
+  ): Promise<SentimentStats | null> {
     const relevantEvents = this.events.filter(
-      e => e.contentType === contentType && e.contentId === contentId
+      (e) => e.contentType === contentType && e.contentId === contentId,
     );
 
     if (relevantEvents.length === 0) {
       return null;
     }
 
-    const helpful = relevantEvents.filter(e => e.eventType === "HELPFUL").length;
-    const notHelpful = relevantEvents.filter(e => e.eventType === "NOT_HELPFUL").length;
-    const ratings = relevantEvents.filter(e => e.eventType === "RATED");
-    const favorited = relevantEvents.filter(e => e.eventType === "FAVORITED").length;
-    const unfavorited = relevantEvents.filter(e => e.eventType === "UNFAVORITED").length;
+    const helpful =
+      relevantEvents.filter((e) => e.eventType === "HELPFUL").length;
+    const notHelpful =
+      relevantEvents.filter((e) => e.eventType === "NOT_HELPFUL").length;
+    const ratings = relevantEvents.filter((e) => e.eventType === "RATED");
+    const favorited =
+      relevantEvents.filter((e) => e.eventType === "FAVORITED").length;
+    const unfavorited =
+      relevantEvents.filter((e) => e.eventType === "UNFAVORITED").length;
 
     const avgRating = ratings.length > 0
       ? ratings.reduce((sum, e) => sum + (e.rating || 0), 0) / ratings.length

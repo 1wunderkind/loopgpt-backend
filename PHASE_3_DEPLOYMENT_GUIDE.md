@@ -80,6 +80,7 @@ supabase functions list
 ```
 
 Expected output should include:
+
 - `loopgpt_route_order`
 - `loopgpt_confirm_order`
 - `loopgpt_cancel_order`
@@ -90,6 +91,7 @@ Expected output should include:
 ## Step 3: Update MCP Manifest
 
 The MCP manifest has already been updated with the 3 new tools:
+
 1. `loopgpt_route_order`
 2. `loopgpt_confirm_order`
 3. `loopgpt_cancel_order`
@@ -136,6 +138,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/loopgpt_route
 ```
 
 Expected response:
+
 - `success: true`
 - `provider` name
 - `scoreBreakdown` with explanation
@@ -159,6 +162,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/loopgpt_confi
 ```
 
 Expected response:
+
 - `success: true`
 - `order_ids` array
 - `message` confirmation
@@ -176,6 +180,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/loopgpt_cance
 ```
 
 Expected response:
+
 - `success: true`
 - `message` confirmation
 
@@ -198,6 +203,7 @@ curl -X POST https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/loopgpt_recor
 ```
 
 Expected response:
+
 - `success: true`
 - `message` confirmation
 
@@ -267,6 +273,7 @@ All should execute without errors.
 Save these queries in Supabase Dashboard for quick access:
 
 #### Provider Win Rates (Last 7 Days)
+
 ```sql
 SELECT 
   provider_id,
@@ -280,6 +287,7 @@ ORDER BY win_rate DESC;
 ```
 
 #### Average Scores by Provider
+
 ```sql
 SELECT 
   provider_id,
@@ -295,6 +303,7 @@ GROUP BY provider_id;
 ```
 
 #### Success Rate by Provider
+
 ```sql
 SELECT 
   provider_id,
@@ -316,7 +325,8 @@ ORDER BY success_rate DESC;
 If using ChatGPT Desktop:
 
 1. Open ChatGPT Desktop → Settings → Model Context Protocol
-2. Verify server: `https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server`
+2. Verify server:
+   `https://qmagnwxeijctkksqbcqz.supabase.co/functions/v1/mcp-server`
 3. Restart ChatGPT Desktop
 4. Test new tools:
    - `loopgpt_route_order`
@@ -336,6 +346,7 @@ User ID: test_user_001
 ```
 
 ChatGPT should:
+
 1. Call `loopgpt_route_order`
 2. Show quote with explanation
 3. Show alternatives
@@ -348,6 +359,7 @@ ChatGPT should:
 ### Issue: Database migration fails
 
 **Solution:**
+
 1. Check if tables already exist
 2. Drop existing tables if safe
 3. Re-run migration
@@ -362,13 +374,16 @@ DROP TABLE IF EXISTS weight_adjustments CASCADE;
 ### Issue: Edge function deployment fails
 
 **Solution:**
+
 1. Check Supabase CLI is logged in: `supabase login`
 2. Check project is linked: `supabase link`
-3. Check function syntax: `deno check supabase/functions/loopgpt_route_order/index.ts`
+3. Check function syntax:
+   `deno check supabase/functions/loopgpt_route_order/index.ts`
 
 ### Issue: Scoring returns errors
 
 **Solution:**
+
 1. Check database connection
 2. Verify provider_metrics table exists
 3. Check RLS policies allow service role access
@@ -376,6 +391,7 @@ DROP TABLE IF EXISTS weight_adjustments CASCADE;
 ### Issue: Reliability score always 50
 
 **Solution:**
+
 - No historical data yet
 - Record some outcomes using `loopgpt_record_outcome`
 - Wait for data to accumulate
@@ -439,6 +455,6 @@ If you encounter issues:
 
 ---
 
-**Deployment Guide Version:** 1.0  
-**Last Updated:** December 2, 2025  
+**Deployment Guide Version:** 1.0\
+**Last Updated:** December 2, 2025\
 **Status:** Ready for Production

@@ -2,7 +2,7 @@
  * Unit Tests: Meal Planning - Predict Outcome & Optimize Macros
  */
 
-import { assertEquals, assert } from "../../helpers.ts";
+import { assert, assertEquals } from "../../helpers.ts";
 
 // Predict Outcome Tests (8 tests)
 Deno.test("predict: estimates weight change", async () => {
@@ -42,7 +42,9 @@ Deno.test("predict: accounts for metabolism adaptation", async () => {
 
 Deno.test("predict: includes confidence interval", async () => {
   const prediction = { value: 70, min: 68, max: 72 };
-  assert(prediction.value >= prediction.min && prediction.value <= prediction.max);
+  assert(
+    prediction.value >= prediction.min && prediction.value <= prediction.max,
+  );
 });
 
 Deno.test("predict: handles plateau scenarios", async () => {

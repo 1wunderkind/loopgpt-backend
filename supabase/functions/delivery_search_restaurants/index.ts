@@ -1,19 +1,19 @@
 /**
  * MealMe Search Edge Function
- * 
+ *
  * Searches for stores, restaurants, or products via MealMe API
  * based on user location and query.
- * 
+ *
  * RELIABILITY: Wrapped with timeout and retry logic
  */
 
 import { withLogging } from "../../middleware/logging.ts";
 import { handleError } from "../../middleware/errorHandler.ts";
 import { withSearchAPI } from "../_shared/security/applyMiddleware.ts";
-import { 
-  withToolReliability, 
+import {
   fetchWithTimeout,
-  type ToolResult 
+  type ToolResult,
+  withToolReliability,
 } from "../mcp-server/lib/reliability.ts";
 
 const MEALME_API = Deno.env.get("MEALME_API_BASE") || "https://api.mealme.ai";
@@ -65,7 +65,9 @@ async function implSearchMealMe(req: SearchRequest): Promise<SearchResponse> {
     ? `${MEALME_API}/groceries/search`
     : `${MEALME_API}/restaurants/search`;
 
-  console.log(`[MealMe Search] Searching ${mode} near (${latitude}, ${longitude}) for "${query}"`);
+  console.log(
+    `[MealMe Search] Searching ${mode} near (${latitude}, ${longitude}) for "${query}"`,
+  );
 
   // Call MealMe API with timeout
   const response = await fetchWithTimeout(
@@ -83,15 +85,19 @@ async function implSearchMealMe(req: SearchRequest): Promise<SearchResponse> {
         limit,
       }),
     },
-    8000 // 8 second timeout
+    8000, // 8 second timeout
   );
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error(`[MealMe Search] API error: ${response.status} - ${errorText}`);
-    
+    console.error(
+      `[MealMe Search] API error: ${response.status} - ${errorText}`,
+    );
+
     // Create error with status code for proper classification
-    const error: any = new Error(`MealMe API error: ${response.status} - ${errorText}`);
+    const error: any = new Error(
+      `MealMe API error: ${response.status} - ${errorText}`,
+    );
     error.status = response.status;
     throw error;
   }
@@ -110,16 +116,18 @@ async function implSearchMealMe(req: SearchRequest): Promise<SearchResponse> {
 /**
  * Wrapped search function with reliability features
  */
-async function searchMealMe(req: SearchRequest): Promise<ToolResult<SearchResponse>> {
+async function searchMealMe(
+  req: SearchRequest,
+): Promise<ToolResult<SearchResponse>> {
   return withToolReliability(
     () => implSearchMealMe(req),
     {
       toolName: "delivery_search_restaurants",
-      timeoutMs: 8000,           // 8 second timeout
-      maxRetries: 2,             // Retry up to 2 times (3 total attempts)
-      retryDelayMs: 400,         // Start with 400ms, exponential backoff
+      timeoutMs: 8000, // 8 second timeout
+      maxRetries: 2, // Retry up to 2 times (3 total attempts)
+      retryDelayMs: 400, // Start with 400ms, exponential backoff
       retryOnCodes: ["NETWORK_ERROR", "UPSTREAM_5XX", "TIMEOUT"], // Only retry on safe errors
-    }
+    },
   );
 }
 
@@ -150,7 +158,7 @@ const handler = async (req: Request): Promise<Response> => {
         {
           status: 200, // Return 200 even for errors
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
   } catch (error) {

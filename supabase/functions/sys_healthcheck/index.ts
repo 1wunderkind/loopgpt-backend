@@ -10,14 +10,14 @@ const handler = async (req: Request) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
-    
+
     // Ping database
     const { data, error } = await supabase
       .from("tracker_foods")
       .select("count", { count: "exact", head: true });
-    
+
     const dbStatus = error ? "error" : "ok";
-    
+
     return new Response(
       JSON.stringify({
         status: "ok",
@@ -25,12 +25,12 @@ const handler = async (req: Request) => {
         version: VERSION,
         database: {
           status: dbStatus,
-          connection: supabaseUrl ? "configured" : "missing"
+          connection: supabaseUrl ? "configured" : "missing",
         },
         tools: {
           total: TOTAL_TOOLS,
           active: TOTAL_TOOLS,
-          deprecated: 0
+          deprecated: 0,
         },
         features: {
           security_middleware: true,
@@ -38,25 +38,25 @@ const handler = async (req: Request) => {
           request_size_limits: true,
           phase3_commerce_routing: true,
           gdpr_ccpa_compliance: true,
-          mcp_server: true
-        }
+          mcp_server: true,
+        },
       }),
       {
         headers: { "Content-Type": "application/json" },
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         status: "error",
         timestamp: new Date().toISOString(),
-        error: error.message 
+        error: error.message,
       }),
       {
         headers: { "Content-Type": "application/json" },
         status: 500,
-      }
+      },
     );
   }
 };

@@ -3,12 +3,7 @@
  * Tests for retrieving detailed food information
  */
 
-import {
-  assertEquals,
-  assertExists,
-  assert,
-  testData,
-} from "../../helpers.ts";
+import { assert, assertEquals, assertExists, testData } from "../../helpers.ts";
 
 Deno.test("food_details: returns complete nutrition data", async () => {
   const foodId = 12345;

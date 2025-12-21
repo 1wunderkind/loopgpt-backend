@@ -2,7 +2,7 @@
  * Unit Tests: Meal Planning - Adjust Calories
  */
 
-import { assertEquals, assert } from "../../helpers.ts";
+import { assert, assertEquals } from "../../helpers.ts";
 
 Deno.test("adjust: increases calories correctly", async () => {
   const original = 2000;
@@ -39,7 +39,7 @@ Deno.test("adjust: validates maximum calories", async () => {
 Deno.test("adjust: scales all meals proportionally", async () => {
   const meals = [500, 700, 700, 100];
   const scale = 1.1;
-  const scaled = meals.map(m => m * scale);
+  const scaled = meals.map((m) => m * scale);
   assertEquals(scaled[0], 550);
 });
 

@@ -2,12 +2,15 @@
 
 /**
  * Test Nutrition Engine with 1,000-Food Database
- * 
+ *
  * Verifies that the nutrition engine correctly uses the new 1,000-food database
  */
 
 import { estimateRecipeNutrition } from "./supabase/functions/_shared/nutrition/index.ts";
-import { FOOD_DATABASE, SYNONYM_MAP } from "./supabase/functions/_shared/nutrition/dictionary.ts";
+import {
+  FOOD_DATABASE,
+  SYNONYM_MAP,
+} from "./supabase/functions/_shared/nutrition/dictionary.ts";
 
 console.log("🧪 Testing Nutrition Engine with 1,000-Food Database\n");
 
@@ -18,12 +21,20 @@ console.log("🧪 Testing Nutrition Engine with 1,000-Food Database\n");
 console.log("📊 Test 1: Database Size");
 console.log(`   Foods in database: ${Object.keys(FOOD_DATABASE).length}`);
 console.log(`   Synonyms in map: ${Object.keys(SYNONYM_MAP).length}`);
-console.log(`   Total lookups: ${Object.keys(FOOD_DATABASE).length + Object.keys(SYNONYM_MAP).length}`);
+console.log(
+  `   Total lookups: ${
+    Object.keys(FOOD_DATABASE).length + Object.keys(SYNONYM_MAP).length
+  }`,
+);
 
 if (Object.keys(FOOD_DATABASE).length === 1000) {
   console.log("   ✅ PASS: Database has 1,000 foods\n");
 } else {
-  console.log(`   ❌ FAIL: Expected 1,000 foods, got ${Object.keys(FOOD_DATABASE).length}\n`);
+  console.log(
+    `   ❌ FAIL: Expected 1,000 foods, got ${
+      Object.keys(FOOD_DATABASE).length
+    }\n`,
+  );
 }
 
 // ============================================================================
@@ -42,7 +53,7 @@ const sampleFoods = [
   "cheese",
   "eggs",
   "banana",
-  "almonds"
+  "almonds",
 ];
 
 let foundCount = 0;
@@ -77,7 +88,7 @@ const testRecipe = {
 
 try {
   const result = estimateRecipeNutrition(testRecipe);
-  
+
   console.log(`   Recipe: ${testRecipe.recipeName}`);
   console.log(`   Servings: ${result.servings}`);
   console.log(`   Confidence: ${result.confidence}`);
@@ -92,8 +103,10 @@ try {
   console.log(`     Carbs: ${result.total.carbs_g}g`);
   console.log(`     Fat: ${result.total.fat_g}g`);
   console.log(`   \n   Diet Tags: ${result.dietTags.join(", ") || "none"}`);
-  console.log(`   \n   Matched Ingredients: ${result.matchedIngredients}/${testRecipe.ingredients.length}`);
-  
+  console.log(
+    `   \n   Matched Ingredients: ${result.matchedIngredients}/${testRecipe.ingredients.length}`,
+  );
+
   if (result.matchedIngredients === testRecipe.ingredients.length) {
     console.log(`   ✅ PASS: All ingredients matched\n`);
   } else {
@@ -122,11 +135,15 @@ for (const test of synonymTests) {
     console.log(`   ✅ "${test.input}" → "${canonical}"`);
     synonymPassCount++;
   } else {
-    console.log(`   ❌ "${test.input}" → "${canonical}" (expected "${test.expected}")`);
+    console.log(
+      `   ❌ "${test.input}" → "${canonical}" (expected "${test.expected}")`,
+    );
   }
 }
 
-console.log(`   Passed ${synonymPassCount}/${synonymTests.length} synonym tests\n`);
+console.log(
+  `   Passed ${synonymPassCount}/${synonymTests.length} synonym tests\n`,
+);
 
 // ============================================================================
 // Test 5: Coverage Analysis
@@ -138,7 +155,7 @@ const foodGroups: Record<string, number> = {};
 
 for (const [name, entry] of Object.entries(FOOD_DATABASE)) {
   // Count by first word as rough category
-  const category = name.split(' ')[0];
+  const category = name.split(" ")[0];
   foodGroups[category] = (foodGroups[category] || 0) + 1;
 }
 
@@ -162,7 +179,11 @@ console.log("📊 SUMMARY");
 console.log("=".repeat(60));
 console.log(`Total Foods: ${Object.keys(FOOD_DATABASE).length}`);
 console.log(`Total Synonyms: ${Object.keys(SYNONYM_MAP).length}`);
-console.log(`Total Lookups: ${Object.keys(FOOD_DATABASE).length + Object.keys(SYNONYM_MAP).length}`);
+console.log(
+  `Total Lookups: ${
+    Object.keys(FOOD_DATABASE).length + Object.keys(SYNONYM_MAP).length
+  }`,
+);
 console.log(`Sample Foods Found: ${foundCount}/${sampleFoods.length}`);
 console.log(`Synonym Tests Passed: ${synonymPassCount}/${synonymTests.length}`);
 console.log("=".repeat(60));

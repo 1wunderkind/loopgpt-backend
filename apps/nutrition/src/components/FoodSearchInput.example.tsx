@@ -1,6 +1,6 @@
 /**
  * FoodSearchInput - Example Usage
- * 
+ *
  * This file demonstrates how to use the FoodSearchInput component
  * in your TheLoop nutrition app.
  */
@@ -56,7 +56,9 @@ export function FoodLogForm() {
     // TODO: Call your tracker_log_food Edge Function here
     // const response = await fetch('/functions/v1/tracker_log_food', { ... });
 
-    alert(`Logged ${quantity}${unit} of ${selectedFood.name} (${calories} cal)`);
+    alert(
+      `Logged ${quantity}${unit} of ${selectedFood.name} (${calories} cal)`,
+    );
   };
 
   return (
@@ -137,4 +139,3 @@ export function FoodLogForm() {
     </div>
   );
 }
-
