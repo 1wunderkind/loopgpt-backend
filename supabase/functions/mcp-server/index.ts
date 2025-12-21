@@ -36,7 +36,7 @@ serve(async (req) => {
       return new Response(JSON.stringify({
         schema_version: "v1",
         display_name: "LeftoverGPT",
-        description: "Turn your leftovers into delicious meals. Generate recipes, adjust them to your taste, and order missing ingredients.",
+        description: "Turn your leftovers into delicious meals. Generate recipes, adjust them to your taste, and order missing ingredients. Powered by LooptOS.",
         tools: LEFTOVERGPT_TOOLS
       }), {
         headers: { ...getCorsHeaders(req), "Content-Type": "application/json" }
