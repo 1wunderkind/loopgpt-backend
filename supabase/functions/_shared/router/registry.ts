@@ -9,6 +9,7 @@ export interface ProviderDef {
   supported_countries: string[]; // ISO-2 codes
   capabilities: ("grocery" | "restaurant")[];
   handoff_type: "address_first" | "search";
+  requires_address_capture: boolean; // True if provider flow starts with address capture
   buildUrl: (context: { basket: { name: string; quantity: string }[] }) => string;
   weight: number; // For competitive selection (0-100)
 }
@@ -20,6 +21,7 @@ export const PROVIDERS: Record<string, ProviderDef> = {
     supported_countries: ["US", "CA"], // MealMe covers US & CA
     capabilities: ["grocery", "restaurant"],
     handoff_type: "address_first",
+    requires_address_capture: true,
     weight: 60, // Slightly higher weight to promote new integration
     buildUrl: ({ basket }) => {
       // MealMe Address-First Flow
@@ -41,6 +43,7 @@ export const PROVIDERS: Record<string, ProviderDef> = {
     supported_countries: ["US", "CA"],
     capabilities: ["grocery"],
     handoff_type: "search",
+    requires_address_capture: false, // Search link doesn't require address upfront
     weight: 40,
     buildUrl: ({ basket }) => {
       // Instacart Search Fallback
@@ -56,6 +59,7 @@ export const FALLBACK_PROVIDER: ProviderDef = {
   supported_countries: [],
   capabilities: [],
   handoff_type: "search",
+  requires_address_capture: false,
   weight: 0,
   buildUrl: () => "https://loopkitchen-ui.vercel.app/unavailable" // Hosted info page
 };

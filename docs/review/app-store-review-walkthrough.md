@@ -47,3 +47,6 @@ Exposes EXACTLY 4 tools:
 - **Backend:** Supabase Edge Functions (Deno)
 - **Frontend:** React (Vercel)
 - **Database:** Supabase (PostgreSQL)
+
+### 5. Security Hardening
+- **JWT_SECRET:** The server requires a `JWT_SECRET` environment variable to be present at runtime for HMAC signing. If missing, the service will fail to start, ensuring no default secrets are ever used.

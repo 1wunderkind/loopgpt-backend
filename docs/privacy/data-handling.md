@@ -20,3 +20,6 @@ When you choose to order missing ingredients, we generate a secure, opaque link 
 > If you proceed to checkout, you will be redirected to a third-party provider who may request address information to fulfill your order.
 
 This "Address-First Handoff" ensures that your sensitive delivery information is provided directly to the merchant, never to us.
+
+## Security Note
+All commerce tokens are signed using a server-side `JWT_SECRET` that must be configured in the environment. We do not use default or hardcoded secrets.

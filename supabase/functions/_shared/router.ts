@@ -25,7 +25,7 @@ export interface RouterInput {
 export interface RouterOutput {
   provider: string;
   handoff_url: string;
-  requires_address: true;
+  requires_address: boolean;
 }
 
 // Simple deterministic RNG based on hash string
@@ -78,6 +78,8 @@ export function selectProvider(input: RouterInput): RouterOutput {
   return {
     provider: selected.id,
     handoff_url: selected.buildUrl({ basket }),
-    requires_address: true
+    // requires_address indicates whether provider requires address capture immediately at start of their flow,
+    // not whether delivery eventually needs an address (which all delivery does).
+    requires_address: selected.requires_address_capture
   };
 }
