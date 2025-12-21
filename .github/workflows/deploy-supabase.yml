@@ -3,7 +3,7 @@ name: Deploy to Supabase
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 jobs:
@@ -65,6 +65,8 @@ jobs:
           supabase functions deploy get_affiliate_by_country --project-ref $SUPABASE_PROJECT_ID &
           supabase functions deploy change_location --project-ref $SUPABASE_PROJECT_ID &
           supabase functions deploy mcp-server --project-ref $SUPABASE_PROJECT_ID &
+          supabase functions deploy leftovergpt --project-ref $SUPABASE_PROJECT_ID &
+          supabase functions deploy checkout_redirect --project-ref $SUPABASE_PROJECT_ID &
 
           # Wait for all background jobs to complete
           echo "⏳ Waiting for all deployments to complete..."
