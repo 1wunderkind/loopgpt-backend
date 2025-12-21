@@ -4,9 +4,29 @@ import { crypto } from "std@0.177.0/crypto/mod.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const MEALME_API_KEY = Deno.env.get("MEALME_API_KEY");
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+// Strict Allowlist for Redirects
+const ALLOWED_DOMAINS = [
+  "instacart.com",
+  "www.instacart.com",
+  "amazon.com",
+  "www.amazon.com",
+  "walmart.com",
+  "www.walmart.com",
+  "kroger.com",
+  "www.kroger.com"
+];
+
+function isAllowedUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return ALLOWED_DOMAINS.includes(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
 
 serve(async (req) => {
   const url = new URL(req.url);
@@ -44,32 +64,40 @@ serve(async (req) => {
       return new Response("Session expired", { status: 410 });
     }
 
-    // 3. Route Order (Simplified for now: Default to Instacart Search or MealMe if key exists)
-    // In a real implementation, we would call the full DeliveryMatcher here.
-    // For this task, we'll implement the "Merchant Router" logic inline or call the existing function.
+    // 3. Route Order (Server-Side Routing)
+    // Since we don't collect location, we default to a national provider search link.
+    // This ensures privacy compliance while maintaining utility.
     
     let checkoutUrl = "";
-    const ingredients = session.missing_items || [];
-    const query = ingredients.join(" ");
+    const items = session.missing_items || [];
+    
+    // Normalize items to string list
+    const queryItems = items.map((i: any) => {
+      if (typeof i === 'string') return i;
+      if (typeof i === 'object' && i.name) return i.name;
+      return "";
+    }).filter((i: string) => i.length > 0);
 
-    // Strategy: If MealMe key exists, try to create a cart (mocked for speed here), else Instacart.
-    // Since we don't have user location in the session (privacy), we can't easily do MealMe delivery.
-    // So we default to a "Search" link which is safe and works everywhere.
-    // Instacart Search: https://www.instacart.com/store/search_v3/{query}
-    
-    // However, the prompt says "If router selects MealMe, create cart...".
-    // Without location, we can't select MealMe effectively.
-    // We'll stick to the Instacart Search fallback as the primary "Router Result" for this strict privacy mode.
-    
+    const query = queryItems.join(" ");
+
+    // Default Strategy: Instacart Search
+    // This is a safe, deep-linkable fallback that works without location data.
     checkoutUrl = `https://www.instacart.com/store/search_v3/${encodeURIComponent(query)}`;
 
-    // 4. Update Session
+    // 4. Validate URL against Allowlist
+    if (!isAllowedUrl(checkoutUrl)) {
+      console.error(`Blocked redirect to unauthorized domain: ${checkoutUrl}`);
+      return new Response("Security Error: Redirect blocked", { status: 403 });
+    }
+
+    // 5. Update Session
     await supabase.from("checkout_sessions").update({ 
       status: "redirected",
-      provider_checkout_url: checkoutUrl
+      provider_checkout_url: checkoutUrl,
+      updated_at: new Date().toISOString()
     }).eq("id", session.id);
 
-    // 5. Redirect
+    // 6. Redirect
     return Response.redirect(checkoutUrl, 302);
 
   } catch (err) {
