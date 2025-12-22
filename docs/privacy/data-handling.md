@@ -26,11 +26,11 @@ All commerce tokens are signed using a server-side `JWT_SECRET` that must be con
 
 ## Data Access Boundaries (Recipes Table)
 
-- The recipes table has Row Level Security (RLS) enabled.
-- There are NO INSERT/UPDATE/DELETE policies for recipes.
+- The `recipes` table has Row Level Security (RLS) enabled.
+- There are **no** INSERT/UPDATE/DELETE policies for `recipes`.
 - Anonymous and authenticated clients cannot write recipes via the Supabase API.
 - Recipes are written only by LooptOS Edge Functions using the Supabase service role key.
 - The service role key is never exposed to clients.
-- If public viewing is enabled: "SELECT is allowed via a dedicated read policy; write operations remain blocked."
+- Public viewing is allowed via a dedicated SELECT-only policy; write operations remain blocked.
 
 This prevents client-side abuse, cost burn, and unintended data modification.
