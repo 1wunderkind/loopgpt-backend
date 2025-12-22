@@ -80,6 +80,7 @@ export async function handleLeftoverGPTRequest(req: Request): Promise<Response> 
       const result = JSON.parse(completion.choices[0].message.content || "{}");
       
       // Save to DB (Service Role Only)
+      // Recipes are stored server-side; clients cannot write directly.
       const { data: recipe, error } = await supabase
         .from("recipes")
         .insert({

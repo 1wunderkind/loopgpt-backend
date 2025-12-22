@@ -50,3 +50,14 @@ Exposes EXACTLY 4 tools:
 
 ### 5. Security Hardening
 - **JWT_SECRET:** The server requires a `JWT_SECRET` environment variable to be present at runtime for HMAC signing. If missing, the service will fail to start, ensuring no default secrets are ever used.
+
+### 6. Data Access Boundaries (Recipes Table)
+
+- The recipes table has Row Level Security (RLS) enabled.
+- There are NO INSERT/UPDATE/DELETE policies for recipes.
+- Anonymous and authenticated clients cannot write recipes via the Supabase API.
+- Recipes are written only by LooptOS Edge Functions using the Supabase service role key.
+- The service role key is never exposed to clients.
+- If public viewing is enabled: "SELECT is allowed via a dedicated read policy; write operations remain blocked."
+
+This prevents client-side abuse, cost burn, and unintended data modification.
