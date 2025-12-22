@@ -26,13 +26,13 @@ import {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const JWT_SECRET = Deno.env.get("JWT_SECRET");
-if (!JWT_SECRET) throw new Error("Missing required env: JWT_SECRET");
+const JWT_SECRET = Deno.env.get("JWT_SECRET") ?? "";
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const FRONTEND_URL = "https://loopkitchen-ui.vercel.app";
 
 // Helper to sign tokens
 async function signCommerceToken(recipeId: string): Promise<string> {
+  if (!JWT_SECRET) throw new Error("Missing JWT_SECRET");
   const encoder = new TextEncoder();
   const keyData = encoder.encode(JWT_SECRET);
   const key = await crypto.subtle.importKey(
@@ -51,6 +51,10 @@ async function verifyCommerceToken(recipeId: string, token: string): Promise<boo
 
 export async function handleLeftoverGPTRequest(req: Request): Promise<Response> {
   try {
+    if (!JWT_SECRET) {
+      console.error("Critical: JWT_SECRET is missing");
+      return createErrorResponse("Server configuration error. Please contact support.");
+    }
     const { tool, parameters } = await req.json();
 
     // 1. Generate Recipe
