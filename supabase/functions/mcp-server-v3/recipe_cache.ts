@@ -8,6 +8,7 @@ interface CachedRecipe {
   slug: string;
   title: string;
   ingredients: string[];
+  fingerprint: string;
   timestamp: number;
 }
 
@@ -29,17 +30,19 @@ export function cacheRecipe(
   recipeId: string,
   slug: string,
   title: string,
-  ingredients: string[]
+  ingredients: string[],
+  fingerprint: string
 ): void {
   recipeCache.set(recipeId, {
     recipeId,
     slug,
     title,
     ingredients,
+    fingerprint,
     timestamp: Date.now()
   });
   
-  console.log(`[RecipeCache] Cached recipe: ${recipeId} -> ${slug}`);
+  console.log(`[RecipeCache] Cached recipe: ${recipeId} -> ${slug} (fp: ${fingerprint})`);
 }
 
 /**

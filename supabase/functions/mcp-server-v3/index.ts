@@ -411,12 +411,13 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
             const recipe = formatRecipeResponse(widget, args.ingredients);
             recipes.push(recipe);
             
-            // Cache the recipe ID -> slug mapping  
+            // Cache the recipe ID -> slug mapping with fingerprint
             cacheRecipe(
               recipe.recipeId,
               recipe.slug,
               recipe.title,
-              args.ingredients
+              args.ingredients,
+              recipe.fingerprint || recipe.recipeId
             );
           }
         }

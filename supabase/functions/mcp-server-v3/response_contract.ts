@@ -119,6 +119,7 @@ export interface RecipeResponse {
   difficulty: string;
   primaryIngredients: string[];
   dietTags?: string[];
+  fingerprint?: string; // Hash of title + ingredients for validation
 }
 
 // Recipe details response structure
@@ -170,6 +171,9 @@ export function formatRecipeResponse(backendRecipe: any, userIngredients: string
   const slug = backendRecipe.id || backendRecipe.slug || title.toLowerCase().replace(/\s+/g, "-");
   const recipeId = generateRecipeId(title, userIngredients);
   
+  // Generate fingerprint for validation
+  const fingerprint = generateRecipeId(title, userIngredients.sort());
+  
   return {
     recipeId,
     slug,
@@ -178,7 +182,8 @@ export function formatRecipeResponse(backendRecipe: any, userIngredients: string
     timeMinutes: backendRecipe.timeMinutes || 30,
     difficulty: backendRecipe.difficulty || "medium",
     primaryIngredients: userIngredients,
-    dietTags: backendRecipe.dietTags || []
+    dietTags: backendRecipe.dietTags || [],
+    fingerprint
   };
 }
 
