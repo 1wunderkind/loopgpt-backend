@@ -30,6 +30,12 @@ import {
   cleanupCache
 } from "./recipe_cache.ts";
 
+// Import validation utilities
+import {
+  validateRecipeIngredients,
+  isGenericFallback
+} from "./validation.ts";
+
 // Import existing tool implementations
 import { generateRecipes as loopkitchenGenerateRecipes } from "../mcp-tools/loopkitchen_recipes.ts";
 import { getRecipeDetails as loopkitchenGetRecipeDetails } from "../mcp-tools/loopkitchen_recipe_details.ts";
@@ -363,7 +369,7 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
             const recipe = formatRecipeResponse(widget, args.ingredients);
             recipes.push(recipe);
             
-            // Cache the recipe ID -> slug mapping
+            // Cache the recipe ID -> slug mapping  
             cacheRecipe(
               recipe.recipeId,
               recipe.slug,
@@ -406,6 +412,59 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
     }
 
     if (name === "loopkitchen.recipes.details") {
+      // CRITICAL: Validate recipe matches expected ingredients
+      const cached = getCachedRecipe(args.recipeId);
+      const expectedIngredients = cached?.ingredients || args.userIngredients || args.pantry || [];
+      const expectedTitle = cached?.title;
+      
+      // Check for generic fallback templates
+      if (isGenericFallback(backendResult)) {
+        console.warn(`[${requestId}] Generic fallback detected for ${args.recipeId}`);
+        
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(createDegradedResponse(
+              requestId,
+              "generic_fallback_detected",
+              {
+                recipe: null,
+                text: `⚠️ Unable to retrieve specific recipe details for "${expectedTitle || args.recipeId}". The backend returned a generic template instead of the requested recipe. Please try generating recipes again.`
+              }
+            ), null, 2)
+          }]
+        };
+      }
+      
+      // Validate ingredient overlap
+      if (expectedIngredients.length > 0) {
+        const validation = validateRecipeIngredients(backendResult, expectedIngredients, 0.3);
+        
+        if (!validation.valid) {
+          console.warn(`[${requestId}] Ingredient mismatch for ${args.recipeId}:`, {
+            expected: expectedIngredients,
+            received: validation.detailsIngredients,
+            overlap: validation.overlap
+          });
+          
+          return {
+            content: [{
+              type: "text",
+              text: JSON.stringify(createDegradedResponse(
+                requestId,
+                "ingredient_mismatch",
+                {
+                  recipe: null,
+                  text: `⚠️ Recipe mismatch detected. Expected ingredients: ${expectedIngredients.join(', ')}. Received recipe uses: ${validation.detailsIngredients.slice(0, 5).join(', ')}. Overlap: ${(validation.overlap * 100).toFixed(0)}%. Please try generating recipes again.`
+                }
+              ), null, 2)
+            }]
+          };
+        }
+        
+        console.log(`[${requestId}] Recipe validation passed: ${(validation.overlap * 100).toFixed(0)}% overlap`);
+      }
+      
       // Format recipe details with stable structure
       const recipeDetails = formatRecipeDetailsResponse(
         backendResult,
