@@ -240,77 +240,130 @@ function formatToolResult(result: any, toolName: string): string {
   }
   
   // For recipe details, format nicely
-  if (toolName === "loopkitchen.recipes.details" && result.recipe) {
-    const r = result.recipe;
-    let formatted = `## ${r.title}\n\n`;
-    formatted += `**Time:** ${r.timeMinutes} min | **Difficulty:** ${r.difficulty}\n\n`;
-    formatted += `**Description:** ${r.shortDescription}\n\n`;
-    
-    if (r.instructions) {
-      formatted += `### Instructions:\n${r.instructions.map((step: any, i: number) => `${i + 1}. ${step.text}`).join("\n")}\n\n`;
-    }
-    
-    if (result.ingredientSplit) {
-      formatted += `### Ingredients You Have:\n${result.ingredientSplit.have.join(", ")}\n\n`;
-      if (result.ingredientSplit.need.length > 0) {
-        formatted += `### Ingredients You Need:\n${result.ingredientSplit.need.join(", ")}\n\n`;
+  if (toolName === "loopkitchen.recipes.details") {
+    // Handle widget-based response
+    if (result.widgets && result.widgets.length > 0) {
+      const widget = result.widgets[0];
+      if (widget.type === "RecipeCardDetailed") {
+        let formatted = `## ${widget.title}\n\n`;
+        formatted += `**Time:** ${widget.timeMinutes} min | **Difficulty:** ${widget.difficulty} | **Servings:** ${widget.servings}\n\n`;
+        formatted += `${widget.description}\n\n`;
+        
+        // Ingredients you have
+        if (widget.ingredientsHave && widget.ingredientsHave.length > 0) {
+          formatted += `### Ingredients You Have:\n`;
+          widget.ingredientsHave.forEach((ing: any) => {
+            formatted += `- ${ing.quantity} ${ing.name}\n`;
+          });
+          formatted += `\n`;
+        }
+        
+        // Ingredients you need
+        if (widget.ingredientsNeed && widget.ingredientsNeed.length > 0) {
+          formatted += `### Ingredients You Need:\n`;
+          widget.ingredientsNeed.forEach((ing: any) => {
+            formatted += `- ${ing.quantity} ${ing.name}\n`;
+          });
+          formatted += `\n`;
+        }
+        
+        // Instructions (limit to essential steps)
+        if (widget.instructions && widget.instructions.length > 0) {
+          formatted += `### Instructions:\n`;
+          widget.instructions.slice(0, 8).forEach((step: any, i: number) => {
+            // Handle both string and object formats
+            const stepText = typeof step === 'string' ? step : (step.text || step.instruction || '');
+            // Remove "Step X:" prefix if present
+            const cleanStep = stepText.replace(/^Step \d+:\s*/i, '');
+            formatted += `${i + 1}. ${cleanStep}\n`;
+          });
+          if (widget.instructions.length > 8) {
+            formatted += `\n*... and ${widget.instructions.length - 8} more steps*\n`;
+          }
+          formatted += `\n`;
+        }
+        
+        // Nutrition (basic info only)
+        if (widget.nutrition) {
+          const n = widget.nutrition;
+          formatted += `### Nutrition (per serving):\n`;
+          formatted += `Calories: ${n.calories} | Protein: ${n.protein}g | Carbs: ${n.carbs}g | Fat: ${n.fat}g\n`;
+        }
+        
+        return formatted;
       }
     }
     
-    if (result.nutrition) {
-      const n = result.nutrition;
-      formatted += `### Nutrition (per serving):\n`;
-      formatted += `- Calories: ${n.calories}\n`;
-      formatted += `- Protein: ${n.protein}g\n`;
-      formatted += `- Carbs: ${n.carbs}g\n`;
-      formatted += `- Fat: ${n.fat}g\n`;
+    // Fallback for old format
+    if (result.recipe) {
+      const r = result.recipe;
+      let formatted = `## ${r.title}\n\n`;
+      formatted += `**Time:** ${r.timeMinutes} min | **Difficulty:** ${r.difficulty}\n\n`;
+      formatted += `**Description:** ${r.shortDescription || r.description}\n\n`;
+      return formatted;
     }
-    
-    return formatted;
   }
   
-  // For other tools, return simplified JSON
-  return JSON.stringify(result, null, 2);
+  // For other tools, return simplified JSON (but limit size)
+  const jsonStr = JSON.stringify(result, null, 2);
+  if (jsonStr.length > 3000) {
+    // If response is too large, return a summary
+    return `Response too large to display fully. Summary:\n${JSON.stringify(result, null, 2).substring(0, 2000)}...\n\n[Response truncated]`;
+  }
+  return jsonStr;
+}
+
+// Timeout wrapper for tool execution
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, toolName: string): Promise<T> {
+  const timeoutPromise = new Promise<T>((_, reject) => {
+    setTimeout(() => reject(new Error(`Tool ${toolName} timed out after ${timeoutMs}ms`)), timeoutMs);
+  });
+  return Promise.race([promise, timeoutPromise]);
 }
 
 // Handle tools/call request
 async function handleToolsCall(params: any): Promise<any> {
   const { name, arguments: args } = params;
+  const startTime = Date.now();
 
   try {
     let result;
+    // Set timeout based on tool type (complex tools get more time)
+    const timeout = name.includes("mealplan") ? 25000 : 15000;
 
-    switch (name) {
-      case "loopkitchen.recipes.generate":
-        result = await loopkitchenGenerateRecipes(args);
-        break;
-      
-      case "loopkitchen.recipes.details":
-        result = await loopkitchenGetRecipeDetails(args);
-        break;
-      
-      case "loopkitchen.nutrition.analyze":
-        result = await loopkitchenAnalyzeNutrition(args);
-        break;
-      
-      case "loopkitchen.mealplan.generate":
-        result = await loopkitchenGenerateMealPlan(args);
-        break;
-      
-      case "loopkitchen.mealplan.withGrocery":
-        result = await generateMealPlanWithGrocery(args);
-        break;
-      
-      case "loopkitchen.mealplan.complete":
-        result = await generateMealPlanWithCommerce(args);
-        break;
-      
-      default:
-        throw new Error(`Unknown tool: ${name}`);
-    }
+    const toolPromise = (async () => {
+      switch (name) {
+        case "loopkitchen.recipes.generate":
+          return await loopkitchenGenerateRecipes(args);
+        
+        case "loopkitchen.recipes.details":
+          return await loopkitchenGetRecipeDetails(args);
+        
+        case "loopkitchen.nutrition.analyze":
+          return await loopkitchenAnalyzeNutrition(args);
+        
+        case "loopkitchen.mealplan.generate":
+          return await loopkitchenGenerateMealPlan(args);
+        
+        case "loopkitchen.mealplan.withGrocery":
+          return await generateMealPlanWithGrocery(args);
+        
+        case "loopkitchen.mealplan.complete":
+          return await generateMealPlanWithCommerce(args);
+        
+        default:
+          throw new Error(`Unknown tool: ${name}`);
+      }
+    })();
+
+    result = await withTimeout(toolPromise, timeout, name);
 
     // Format the result for better ChatGPT consumption
     const formattedText = formatToolResult(result, name);
+    const executionTime = Date.now() - startTime;
+
+    // Log performance for monitoring
+    console.log(`Tool ${name} executed in ${executionTime}ms`);
 
     return {
       content: [
@@ -321,6 +374,13 @@ async function handleToolsCall(params: any): Promise<any> {
       ]
     };
   } catch (error) {
+    const executionTime = Date.now() - startTime;
+    console.error(`Tool ${name} failed after ${executionTime}ms:`, error.message);
+    
+    // Return helpful error message
+    if (error.message.includes("timed out")) {
+      throw new Error(`The ${name} tool is taking longer than expected. Please try again with simpler parameters or try a different tool.`);
+    }
     throw new Error(`Tool execution failed: ${error.message}`);
   }
 }
