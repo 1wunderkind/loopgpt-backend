@@ -25,6 +25,8 @@ import {
 import {
   cacheRecipe,
   getCachedRecipe,
+  cacheRecipeDetails,
+  getCachedRecipeDetails,
   cleanupCache
 } from "./recipe_cache.ts";
 
@@ -288,9 +290,17 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
           return await loopkitchenGenerateRecipes(args);
         
         case "loopkitchen.recipes.details":
+          // First check if we have full details cached
+          const cachedDetails = getCachedRecipeDetails(args.recipeId);
+          if (cachedDetails) {
+            console.log(`[${requestId}] Returning cached details for ${args.recipeId}`);
+            return cachedDetails;
+          }
+          
           // Look up recipe from cache to get original slug
           const cached = getCachedRecipe(args.recipeId);
           
+          let detailsResult;
           if (cached) {
             // Use cached slug and ingredients for accurate lookup
             const lookupArgs = {
@@ -301,7 +311,7 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
               chaosTarget: args.chaosTarget,
               timeLimit: args.timeLimit
             };
-            return await loopkitchenGetRecipeDetails(lookupArgs);
+            detailsResult = await loopkitchenGetRecipeDetails(lookupArgs);
           } else {
             // Fallback: try to use recipeId as slug (backwards compatible)
             console.warn(`[${requestId}] Recipe not in cache: ${args.recipeId}`);
@@ -309,8 +319,12 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
               ...args,
               recipeId: args.recipeSlug || args.recipeId
             };
-            return await loopkitchenGetRecipeDetails(lookupArgs);
+            detailsResult = await loopkitchenGetRecipeDetails(lookupArgs);
           }
+          
+          // Cache the full details response
+          cacheRecipeDetails(args.recipeId, detailsResult);
+          return detailsResult;
         
         case "loopkitchen.nutrition.analyze":
           return await loopkitchenAnalyzeNutrition(args);
