@@ -286,6 +286,33 @@ serve(async (req: Request) => {
   try {
     // GET / - Manifest
     if (req.method === "GET" && pathname === "/") {
+      // Check if client wants SSE (ChatGPT Developer mode requires this)
+      const acceptHeader = req.headers.get("accept") || "";
+      const wantsSSE = acceptHeader.includes("text/event-stream");
+      
+      if (wantsSSE) {
+        // Return manifest as SSE stream for ChatGPT Developer mode
+        const stream = new ReadableStream({
+          start(controller) {
+            const encoder = new TextEncoder();
+            const data = `data: ${JSON.stringify(MANIFEST)}\n\n`;
+            controller.enqueue(encoder.encode(data));
+            controller.close();
+          }
+        });
+        
+        return new Response(stream, {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+          },
+        });
+      }
+      
+      // Fallback to JSON for regular clients
       return new Response(JSON.stringify(MANIFEST, null, 2), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
