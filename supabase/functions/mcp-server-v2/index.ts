@@ -227,6 +227,52 @@ function handleToolsList(): any {
   };
 }
 
+// Format tool result for ChatGPT
+function formatToolResult(result: any, toolName: string): string {
+  // For recipe generation, extract just the essential info
+  if (toolName === "loopkitchen.recipes.generate" && result.widgets) {
+    const recipes = result.widgets
+      .filter((w: any) => w.type === "RecipeCardCompact")
+      .map((recipe: any, index: number) => {
+        return `${index + 1}. **${recipe.title}** (${recipe.timeMinutes} min, ${recipe.difficulty})\n   ${recipe.shortDescription}\n   Ingredients: ${recipe.primaryIngredients.join(", ")}`;
+      });
+    return `Here are recipe suggestions:\n\n${recipes.join("\n\n")}`;
+  }
+  
+  // For recipe details, format nicely
+  if (toolName === "loopkitchen.recipes.details" && result.recipe) {
+    const r = result.recipe;
+    let formatted = `## ${r.title}\n\n`;
+    formatted += `**Time:** ${r.timeMinutes} min | **Difficulty:** ${r.difficulty}\n\n`;
+    formatted += `**Description:** ${r.shortDescription}\n\n`;
+    
+    if (r.instructions) {
+      formatted += `### Instructions:\n${r.instructions.map((step: any, i: number) => `${i + 1}. ${step.text}`).join("\n")}\n\n`;
+    }
+    
+    if (result.ingredientSplit) {
+      formatted += `### Ingredients You Have:\n${result.ingredientSplit.have.join(", ")}\n\n`;
+      if (result.ingredientSplit.need.length > 0) {
+        formatted += `### Ingredients You Need:\n${result.ingredientSplit.need.join(", ")}\n\n`;
+      }
+    }
+    
+    if (result.nutrition) {
+      const n = result.nutrition;
+      formatted += `### Nutrition (per serving):\n`;
+      formatted += `- Calories: ${n.calories}\n`;
+      formatted += `- Protein: ${n.protein}g\n`;
+      formatted += `- Carbs: ${n.carbs}g\n`;
+      formatted += `- Fat: ${n.fat}g\n`;
+    }
+    
+    return formatted;
+  }
+  
+  // For other tools, return simplified JSON
+  return JSON.stringify(result, null, 2);
+}
+
 // Handle tools/call request
 async function handleToolsCall(params: any): Promise<any> {
   const { name, arguments: args } = params;
@@ -263,11 +309,14 @@ async function handleToolsCall(params: any): Promise<any> {
         throw new Error(`Unknown tool: ${name}`);
     }
 
+    // Format the result for better ChatGPT consumption
+    const formattedText = formatToolResult(result, name);
+
     return {
       content: [
         {
           type: "text",
-          text: JSON.stringify(result, null, 2)
+          text: formattedText
         }
       ]
     };
