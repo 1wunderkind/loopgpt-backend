@@ -281,7 +281,9 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
     }
 
     // Set timeout based on tool type
-    const timeout = name.includes("mealplan") ? 25000 : 15000;
+    const timeout = name.includes("mealplan") ? 25000 
+                  : name === "loopkitchen.recipes.details" ? 30000 
+                  : 15000;
 
     let backendResult;
     const toolPromise = (async () => {
