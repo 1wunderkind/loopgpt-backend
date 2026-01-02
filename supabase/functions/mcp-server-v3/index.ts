@@ -298,15 +298,43 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
           return await loopkitchenGenerateRecipes(args);
         
         case "loopkitchen.recipes.details":
+          // PHASE 3: Comprehensive logging
+          console.log(`[${requestId}] Details request:`, {
+            recipeId: args.recipeId,
+            userIngredients: args.userIngredients,
+            pantry: args.pantry,
+            timestamp: new Date().toISOString()
+          });
+          
           // First check if we have full details cached
           const cachedDetails = getCachedRecipeDetails(args.recipeId);
           if (cachedDetails) {
-            console.log(`[${requestId}] Returning cached details for ${args.recipeId}`);
+            console.log(`[${requestId}] Cache HIT - returning cached details`, {
+              recipeId: args.recipeId,
+              cachedTitle: cachedDetails.widgets?.[0]?.title,
+              source: "cache"
+            });
             return cachedDetails;
           }
           
+          console.log(`[${requestId}] Cache MISS - fetching from backend`);
+          
           // Look up recipe from cache to get original slug
           const cached = getCachedRecipe(args.recipeId);
+          
+          if (cached) {
+            console.log(`[${requestId}] Found recipe metadata in cache:`, {
+              recipeId: args.recipeId,
+              slug: cached.slug,
+              title: cached.title,
+              ingredients: cached.ingredients
+            });
+          } else {
+            console.warn(`[${requestId}] Recipe metadata NOT in cache:`, {
+              recipeId: args.recipeId,
+              willUseFallback: true
+            });
+          }
           
           let detailsResult;
           if (cached) {
@@ -319,6 +347,13 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
               chaosTarget: args.chaosTarget,
               timeLimit: args.timeLimit
             };
+            
+            console.log(`[${requestId}] Calling backend with:`, {
+              slug: cached.slug,
+              title: cached.title,
+              ingredientCount: lookupArgs.ingredients.length
+            });
+            
             detailsResult = await loopkitchenGetRecipeDetails(lookupArgs);
           } else {
             // Fallback: try to use recipeId as slug (backwards compatible)
@@ -329,6 +364,13 @@ async function handleToolsCall(params: any, requestId: string): Promise<any> {
             };
             detailsResult = await loopkitchenGetRecipeDetails(lookupArgs);
           }
+          
+          // Log what backend returned
+          console.log(`[${requestId}] Backend returned:`, {
+            title: detailsResult.widgets?.[0]?.title,
+            hasIngredients: !!(detailsResult.widgets?.[0]?.ingredientsHave),
+            ingredientCount: detailsResult.widgets?.[0]?.ingredientsHave?.length || 0
+          });
           
           // Cache the full details response
           cacheRecipeDetails(args.recipeId, detailsResult);
